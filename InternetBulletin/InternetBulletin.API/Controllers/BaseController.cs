@@ -32,10 +32,10 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>
 		///   <c>true</c> if this instance is authorized; otherwise, <c>false</c>.
 		/// </returns>
-		public bool IsAuthorized()
+		public async Task<bool> IsAuthorized()
 		{
 			var requestHeaders = this.HttpContext.Request.Headers;
-			var acceptableToken = GetKeyVaultSecretValueAsync(this._configuration, APIAntiforgeryTokenValue);
+			var acceptableToken = await GetKeyVaultSecretValueAsync(this._configuration, APIAntiforgeryTokenValue);
 			if (string.Equals(requestHeaders[APIAntiforgeryTokenConstant], acceptableToken, StringComparison.Ordinal))
 			{
 				return true;

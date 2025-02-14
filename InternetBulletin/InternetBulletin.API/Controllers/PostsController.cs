@@ -45,7 +45,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-				if (this.IsAuthorized())
+				if (await this.IsAuthorized())
 				{
 					var result = await this._postsService.GetPostAsync(postId);
 					if (result is not null && !(Equals(result.PostId, Guid.Empty)))
@@ -83,7 +83,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostId));
-				if (this.IsAuthorized())
+				if (await this.IsAuthorized())
 				{
 					var result = await this._postsService.AddNewPostAsync(newPost);
 					if (result)

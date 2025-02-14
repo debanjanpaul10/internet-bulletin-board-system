@@ -23,13 +23,13 @@ namespace InternetBulletin.Shared.Helpers
 		/// <param name="configuration">The configuration.</param>
 		/// <param name="keyName">Name of the key.</param>
 		/// <returns>The secret value.</returns>
-		public static string GetKeyVaultSecretValueAsync(IConfiguration configuration, string keyName)
+		public static async Task<string> GetKeyVaultSecretValueAsync(IConfiguration configuration, string keyName)
 		{
 			var keyVaultUrl = configuration.GetValue<string>(ConfigurationConstants.KeyVaultEndpointConstant);
 			if (!string.IsNullOrEmpty(keyVaultUrl))
 			{
 				var secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-				var secret = secretClient.GetSecretAsync(keyName).GetAwaiter().GetResult();
+				var secret = await secretClient.GetSecretAsync(keyName);
 				return secret.Value.Value;
 			}
 
