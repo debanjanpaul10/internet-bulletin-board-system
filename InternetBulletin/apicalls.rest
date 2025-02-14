@@ -2,4 +2,4 @@
 @baseUrl https://localhost:44315
 
 GET {{baseUrl}}/InternetBulletinWeb/GetResourceUrl?resourceUrl=Posts/GetPost?postId=19191912
-x-antiforgery-token-web: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.1kR0l-Q5EUwmAykORxbMjGV9OTQ2UJKvDXMEQduW8o8
+x-antiforgery-token-web: token
