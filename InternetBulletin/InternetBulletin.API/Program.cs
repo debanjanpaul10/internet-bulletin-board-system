@@ -5,11 +5,9 @@
 // <summary>Program class from where the execution starts</summary>
 // *********************************************************************************
 
-namespace InternetBulletin.Web
+namespace InternetBulletin.API
 {
-	using InternetBulletin.Web.Configuration;
-	using InternetBulletin.Web.Helpers;
-	using static InternetBulletin.Shared.Constants.ConfigurationConstants;
+	using InternetBulletin.API.Dependencies;
 
 	/// <summary>
 	/// Program class from where the execution starts
@@ -23,11 +21,14 @@ namespace InternetBulletin.Web
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-
-			ConfigureAzureServices.ConfigureAzureAppConfig(builder.Configuration);
+			ConfigureAzureServices.ConfigureAzureAppConfiguration(builder.Configuration);
 			ConfigureAzureServices.ConfigureAzureKeyVault(builder.Configuration);
 			ConfigureAzureServices.ConfigureAzureApplicationInsights(builder.Configuration, builder.Services);
-			ConfigureServices(builder.Services, builder.Configuration);
+			
+			ConfigureServices(builder.Services);
+			DIContainer.ConfigureApplicationDependencies(builder.Configuration, builder.Services);
+			DIContainer.ConfigureBusinessManagerDependencies(builder.Services);
+			DIContainer.ConfigureDataManagerDependencies(builder.Services);
 
 			var app = builder.Build();
 			ConfigureApplication(app);
@@ -37,16 +38,11 @@ namespace InternetBulletin.Web
 		/// Configures the services.
 		/// </summary>
 		/// <param name="services">The services.</param>
-		/// <param name="configuration">The configuration.</param>
-		private static void ConfigureServices(IServiceCollection services, ConfigurationManager configuration)
+		public static void ConfigureServices(IServiceCollection services)
 		{
 			services.AddAuthentication();
 			services.AddControllers();
-			services.AddHttpClient<IHttpClientHelper, HttpClientHelper>(BulletinHttpClientConstant, client =>
-			{
-				client.BaseAddress = new Uri(configuration.GetValue<string>(WebApiBaseAddressConstant)!);
-				client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, KeyVaultHelper.GetKeyValueAsync(configuration, APIAntiforgeryTokenValue));
-			});
+			services.AddOpenApi();
 			services.AddCors(options =>
 			{
 				options.AddDefaultPolicy(p =>
@@ -56,33 +52,25 @@ namespace InternetBulletin.Web
 					.AllowAnyMethod();
 				});
 			});
-
-			services.AddScoped<IHttpClientHelper, HttpClientHelper>();
 		}
 
 		/// <summary>
-		/// Configures the specified application.
+		/// Configures the application.
 		/// </summary>
 		/// <param name="app">The application.</param>
-		private static void ConfigureApplication(WebApplication app)
+		public static void ConfigureApplication(WebApplication app)
 		{
-			if (!app.Environment.IsDevelopment())
+			if (app.Environment.IsDevelopment())
 			{
-				app.UseExceptionHandler("/Error");
-				app.UseHsts();
+				app.MapOpenApi();
 			}
 
 			app.UseHttpsRedirection();
-			app.UseStaticFiles();
-			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();
+
 			app.UseCors();
-
-			app.MapControllerRoute(
-			name: "default",
-			pattern: "{controller=InternetBulletinWeb}/{action=Index}/{id?}");
-
+			app.MapControllers();
 			app.Run();
 		}
 	}

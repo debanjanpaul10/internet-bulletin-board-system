@@ -5,7 +5,7 @@
 // <summary>The Key Vault Helper Class.</summary>
 // *********************************************************************************
 
-namespace InternetBulletin.Web.Helpers
+namespace InternetBulletin.API.Helpers
 {
 	using Azure.Identity;
 	using Azure.Security.KeyVault.Secrets;

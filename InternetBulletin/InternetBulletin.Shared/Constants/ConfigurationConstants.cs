@@ -43,6 +43,16 @@ namespace InternetBulletin.Shared.Constants
 		public static readonly string WebAntiforgeryTokenValue = "x-antiforgery-token-web-kv";
 
 		/// <summary>
+		/// The API antiforgery token constant
+		/// </summary>
+		public static readonly string APIAntiforgeryTokenConstant = "x-antiforgery-token-api";
+
+		/// <summary>
+		/// The API antiforgery token value
+		/// </summary>
+		public static readonly string APIAntiforgeryTokenValue = "x-antiforgery-token-api-kv";
+
+		/// <summary>
 		/// The key vault endpoint constant
 		/// </summary>
 		public static readonly string KeyVaultEndpointConstant = "KeyVaultUrl";
@@ -66,5 +76,15 @@ namespace InternetBulletin.Shared.Constants
 		/// The application json constant
 		/// </summary>
 		public static readonly string ApplicationJsonConstant = "application/json";
+
+		/// <summary>
+		/// The cosmos db connection string constant
+		/// </summary>
+		public static readonly string CosmosConnectionStringConstant = "CosmosConnectionString-kv";
+
+		/// <summary>
+		/// The container name constant
+		/// </summary>
+		public static readonly string ContainerNameConstant = "ContainerName";
 	}
 }

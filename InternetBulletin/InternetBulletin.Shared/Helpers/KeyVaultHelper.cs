@@ -5,11 +5,12 @@
 // <summary>The Key Vault Helper Class.</summary>
 // *********************************************************************************
 
-namespace InternetBulletin.Web.Helpers
+namespace InternetBulletin.Shared.Helpers
 {
 	using Azure.Identity;
 	using Azure.Security.KeyVault.Secrets;
 	using InternetBulletin.Shared.Constants;
+	using Microsoft.Extensions.Configuration;
 
 	/// <summary>
 	/// The Key Vault Helper Class.
@@ -17,19 +18,18 @@ namespace InternetBulletin.Web.Helpers
 	public static class KeyVaultHelper
 	{
 		/// <summary>
-		/// Gets the key value asynchronous.
+		/// Gets the key vault secret value asynchronous.
 		/// </summary>
 		/// <param name="configuration">The configuration.</param>
 		/// <param name="keyName">Name of the key.</param>
-		/// <returns>The key value.</returns>
-		public static string GetKeyValueAsync(ConfigurationManager configuration, string keyName)
+		/// <returns>The secret value.</returns>
+		public static string GetKeyVaultSecretValueAsync(IConfiguration configuration, string keyName)
 		{
-			var keyVaultUri = configuration.GetValue<string>(ConfigurationConstants.KeyVaultEndpointConstant);
-			if (!string.IsNullOrEmpty(keyVaultUri))
+			var keyVaultUrl = configuration.GetValue<string>(ConfigurationConstants.KeyVaultEndpointConstant);
+			if (!string.IsNullOrEmpty(keyVaultUrl))
 			{
-				var client = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
-
-				var secret = client.GetSecretAsync(keyName).GetAwaiter().GetResult();
+				var secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+				var secret = secretClient.GetSecretAsync(keyName).GetAwaiter().GetResult();
 				return secret.Value.Value;
 			}
 

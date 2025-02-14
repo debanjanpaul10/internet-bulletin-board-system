@@ -10,6 +10,7 @@ namespace InternetBulletin.Web.Controllers
 	using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 	using InternetBulletin.Web.Helpers;
 	using Microsoft.AspNetCore.Mvc;
+	using static InternetBulletin.Shared.Helpers.KeyVaultHelper;
 
 	/// <summary>
 	/// The Base Controller Class.
@@ -33,7 +34,7 @@ namespace InternetBulletin.Web.Controllers
 		public bool IsAuthorized()
 		{
 			var requestHeaders = this.HttpContext.Request.Headers;
-			var acceptableToken = KeyVaultHelper.GetKeyValueAsync(this._configuration, WebAntiforgeryTokenValue);
+			var acceptableToken = GetKeyVaultSecretValueAsync(this._configuration, WebAntiforgeryTokenValue);
 			if (string.Equals(requestHeaders[WebAntiforgeryTokenConstant], acceptableToken, StringComparison.Ordinal))
 			{
 				return true;
