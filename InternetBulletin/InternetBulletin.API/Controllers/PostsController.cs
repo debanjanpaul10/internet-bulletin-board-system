@@ -72,6 +72,43 @@ namespace InternetBulletin.API.Controllers
 		}
 
 		/// <summary>
+		/// Gets all posts data asynchronous.
+		/// </summary>
+		/// <returns>The action result.</returns>
+		[HttpGet]
+		[Route(RouteConstants.GetAllPosts_Route)]
+		public async Task<IActionResult> GetAllPostsDataAsync()
+		{
+			try
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
+				if (await this.IsAuthorized())
+				{
+					var result = await this._postsService.GetAllPostsAsync();
+					if (result is not null && result.Count > 0)
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.PostsNotPresentMessageConstant);
+					}
+				}
+
+				return this.HandleUnAuthorizedRequest();
+			}
+			catch (Exception ex)
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsDataAsync), DateTime.UtcNow, ex.Message));
+				throw;
+			}
+			finally
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsDataAsync), DateTime.UtcNow, string.Empty));
+			}
+		}
+
+		/// <summary>
 		/// Adds the new post asynchronous.
 		/// </summary>
 		/// <param name="newPost">The new post.</param>
@@ -106,6 +143,82 @@ namespace InternetBulletin.API.Controllers
 			finally
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostId));
+			}
+		}
+
+		/// <summary>
+		/// Updates the post asynchronous.
+		/// </summary>
+		/// <param name="updatePost">The update post.</param>
+		/// <returns>The action result of the JSON response.</returns>
+		[HttpPost]
+		[Route(RouteConstants.UpdatePost_Route)]
+		public async Task<IActionResult> UpdatePostAsync(Post updatePost)
+		{
+			try
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
+				if (await this.IsAuthorized())
+				{
+					var result = await this._postsService.UpdatePostAsync(updatePost);
+					if (result is not null && result.PostId != Guid.Empty)
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+					}
+				}
+
+				return this.HandleUnAuthorizedRequest();
+			}
+			catch (Exception ex)
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdatePostAsync), DateTime.UtcNow, ex.Message));
+				throw;
+			}
+			finally
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
+			}
+		}
+
+		/// <summary>
+		/// Deletes the post asynchronous.
+		/// </summary>
+		/// <param name="postId">The post identifier.</param>
+		/// <returns>The action result of the JSON response.</returns>
+		[HttpPost]
+		[Route(RouteConstants.DeletePost_Route)]
+		public async Task<IActionResult> DeletePostAsync(string postId)
+		{
+			try
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
+				if (await this.IsAuthorized())
+				{
+					var result = await this._postsService.DeletePostAsync(postId);
+					if (result)
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+					}
+				}
+
+				return this.HandleUnAuthorizedRequest();
+			}
+			catch (Exception ex)
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, ex.Message));
+				throw;
+			}
+			finally
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(DeletePostAsync), DateTime.UtcNow, postId));
 			}
 		}
 	}

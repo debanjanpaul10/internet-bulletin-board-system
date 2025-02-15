@@ -27,5 +27,25 @@ namespace InternetBulletin.Business.Contracts
 		/// <param name="newPost">The new post.</param>
 		/// <returns>The boolean for success or failure.</returns>
 		Task<bool> AddNewPostAsync(Post newPost);
+
+		/// <summary>
+		/// Updates the post asynchronous.
+		/// </summary>
+		/// <param name="updatedPost">The updated post.</param>
+		/// <returns>The updated post data.</returns>
+		Task<Post> UpdatePostAsync(Post updatedPost);
+
+		/// <summary>
+		/// Deletes the post asynchronous.
+		/// </summary>
+		/// <param name="postId">The post identifier.</param>
+		/// <returns>The boolean for success / failure</returns>
+		Task<bool> DeletePostAsync(string postId);
+
+		/// <summary>
+		/// Gets all posts asynchronous.
+		/// </summary>
+		/// <returns>The list of <see cref="Post"/></returns>
+		Task<List<Post>> GetAllPostsAsync();
 	}
 }

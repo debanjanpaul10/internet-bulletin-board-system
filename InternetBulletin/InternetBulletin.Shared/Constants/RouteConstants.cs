@@ -39,9 +39,24 @@ namespace InternetBulletin.Shared.Constants
 		public const string GetPost_Route = "GetPost";
 
 		/// <summary>
+		/// The get all posts route
+		/// </summary>
+		public const string GetAllPosts_Route = "GetAllPosts";
+
+		/// <summary>
 		/// Creates new post route.
 		/// </summary>
 		public const string NewPost_Route = "AddPost";
+
+		/// <summary>
+		/// The update post route
+		/// </summary>
+		public const string UpdatePost_Route = "UpdatePost";
+
+		/// <summary>
+		/// The delete post route
+		/// </summary>
+		public const string DeletePost_Route = "DeletePost";
 
 		#endregion
 	}

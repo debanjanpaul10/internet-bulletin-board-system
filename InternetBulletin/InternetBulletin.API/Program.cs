@@ -21,8 +21,8 @@ namespace InternetBulletin.API
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+
 			ConfigureAzureServices.ConfigureAzureAppConfiguration(builder.Configuration);
-			ConfigureAzureServices.ConfigureAzureKeyVault(builder.Configuration);
 			ConfigureAzureServices.ConfigureAzureApplicationInsights(builder.Configuration, builder.Services);
 			
 			ConfigureServices(builder.Services);

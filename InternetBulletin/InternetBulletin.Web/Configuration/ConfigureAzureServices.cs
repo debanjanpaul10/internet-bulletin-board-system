@@ -23,49 +23,18 @@ namespace InternetBulletin.Web.Configuration
 		/// <param name="configuration">The configuration.</param>
 		public static void ConfigureAzureAppConfig(ConfigurationManager configuration)
 		{
-			var appConfigEndpoint = configuration.GetValue<string>(AppConfigEndpointConstant);
-			var userAssignedClientId = configuration.GetValue<string>(UserAssignedClientIdConstant);
-			if (!string.IsNullOrEmpty(appConfigEndpoint) && !string.IsNullOrEmpty(userAssignedClientId))
+			var appConfigConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, AppConfigurationConnectionString);
+			if (!string.IsNullOrEmpty(appConfigConnectionString))
 			{
-				if (configuration.GetValue<bool>(IsDevelopmentModeConstant))
+				var tokenCredential = new DefaultAzureCredential();
+				configuration.AddAzureAppConfiguration(options =>
 				{
-					var connectionString = configuration.GetValue<string>(AppConfigConnectionStringConstant);
-					configuration.AddAzureAppConfiguration(connectionString);
-				}
-				else
-				{
-					var tokenCredentials = new DefaultAzureCredential(
-										new DefaultAzureCredentialOptions
-										{
-											ManagedIdentityClientId = userAssignedClientId
-										});
-					configuration.AddAzureAppConfiguration(options =>
+					options.Connect(connectionString: appConfigConnectionString);
+					options.ConfigureKeyVault(option =>
 					{
-						options.Connect(new Uri(appConfigEndpoint), tokenCredentials);
-						options.ConfigureKeyVault(options =>
-						{
-							options.SetCredential(tokenCredentials);
-						});
+						option.SetCredential(tokenCredential);
 					});
-				}
-			}
-		}
-
-		/// <summary>
-		/// Configures the azure key vault.
-		/// </summary>
-		/// <param name="configuration">The configuration.</param>
-		public static void ConfigureAzureKeyVault(ConfigurationManager configuration)
-		{
-			var keyVaultEndpoint = configuration.GetValue<string>(KeyVaultEndpointConstant);
-			var userAssignedClientId = configuration.GetValue<string>(UserAssignedClientIdConstant);
-			if (!string.IsNullOrEmpty(keyVaultEndpoint) && !string.IsNullOrEmpty(userAssignedClientId))
-			{
-				configuration.AddAzureKeyVault(new Uri(keyVaultEndpoint), new DefaultAzureCredential(
-					new DefaultAzureCredentialOptions()
-					{
-						ManagedIdentityClientId = userAssignedClientId
-					}));
+				});
 			}
 		}
 
@@ -76,7 +45,7 @@ namespace InternetBulletin.Web.Configuration
 		/// <param name="services">The services.</param>
 		public static void ConfigureAzureApplicationInsights(ConfigurationManager configuration, IServiceCollection services)
 		{
-			var appInsightsTelemetryConnection = KeyVaultHelper.GetKeyValueAsync(configuration, AppInsightsInstrumentationKeykv);
+			var appInsightsTelemetryConnection = KeyVaultHelper.GetSecretDataAsync(configuration, AppInsightsInstrumentationKeykv);
 			var options = new ApplicationInsightsServiceOptions { ConnectionString = appInsightsTelemetryConnection };
 			services.AddApplicationInsightsTelemetry(options);
 		}

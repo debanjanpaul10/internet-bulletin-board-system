@@ -28,7 +28,7 @@ namespace InternetBulletin.API.Dependencies
 		/// <param name="services">The services.</param>
 		public static void ConfigureApplicationDependencies(ConfigurationManager configuration, IServiceCollection services)
 		{
-			var cosmosConnectionString = KeyVaultHelper.GetKeyValueAsync(configuration, ConfigurationConstants.CosmosConnectionStringConstant);
+			var cosmosConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, ConfigurationConstants.CosmosConnectionStringConstant);
 			var containerName = configuration.GetValue<string>(ConfigurationConstants.ContainerNameConstant);
 			if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(containerName))
 			{

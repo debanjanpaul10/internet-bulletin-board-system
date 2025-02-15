@@ -12,6 +12,35 @@ namespace InternetBulletin.Shared.Constants
 	/// </summary>
 	public static class ConfigurationConstants
 	{
+		#region Key Vault Keys Constants
+
+		/// <summary>
+		/// The application configuration connection string
+		/// </summary>
+		public static readonly string AppConfigurationConnectionString = "AppConfig-Connection-kv";
+
+		/// <summary>
+		/// The web antiforgery token value
+		/// </summary>
+		public static readonly string WebAntiforgeryTokenValue = "x-antiforgery-token-web-kv";
+
+		/// <summary>
+		/// The API antiforgery token value
+		/// </summary>
+		public static readonly string APIAntiforgeryTokenValue = "x-antiforgery-token-api-kv";
+
+		/// <summary>
+		/// The application insights instrumentation keykv
+		/// </summary>
+		public static readonly string AppInsightsInstrumentationKeykv = "AppInsights-InstrumentationKey-kv";
+
+		/// <summary>
+		/// The cosmos db connection string constant
+		/// </summary>
+		public static readonly string CosmosConnectionStringConstant = "CosmosConnectionString-kv";
+
+		#endregion
+
 		/// <summary>
 		/// The application configuration endpoint constant
 		/// </summary>
@@ -38,19 +67,9 @@ namespace InternetBulletin.Shared.Constants
 		public static readonly string WebAntiforgeryTokenConstant = "x-antiforgery-token-web";
 
 		/// <summary>
-		/// The web antiforgery token value
-		/// </summary>
-		public static readonly string WebAntiforgeryTokenValue = "x-antiforgery-token-web-kv";
-
-		/// <summary>
 		/// The API antiforgery token constant
 		/// </summary>
 		public static readonly string APIAntiforgeryTokenConstant = "x-antiforgery-token-api";
-
-		/// <summary>
-		/// The API antiforgery token value
-		/// </summary>
-		public static readonly string APIAntiforgeryTokenValue = "x-antiforgery-token-api-kv";
 
 		/// <summary>
 		/// The key vault endpoint constant
@@ -68,19 +87,9 @@ namespace InternetBulletin.Shared.Constants
 		public static readonly string IsDevelopmentModeConstant = "IsDevelopmentMode";
 
 		/// <summary>
-		/// The application insights instrumentation keykv
-		/// </summary>
-		public static readonly string AppInsightsInstrumentationKeykv = "AppInsights-InstrumentationKey-kv";
-
-		/// <summary>
 		/// The application json constant
 		/// </summary>
 		public static readonly string ApplicationJsonConstant = "application/json";
-
-		/// <summary>
-		/// The cosmos db connection string constant
-		/// </summary>
-		public static readonly string CosmosConnectionStringConstant = "CosmosConnectionString-kv";
 
 		/// <summary>
 		/// The container name constant

@@ -25,7 +25,6 @@ namespace InternetBulletin.Web
 			var builder = WebApplication.CreateBuilder(args);
 
 			ConfigureAzureServices.ConfigureAzureAppConfig(builder.Configuration);
-			ConfigureAzureServices.ConfigureAzureKeyVault(builder.Configuration);
 			ConfigureAzureServices.ConfigureAzureApplicationInsights(builder.Configuration, builder.Services);
 			ConfigureServices(builder.Services, builder.Configuration);
 
@@ -45,7 +44,7 @@ namespace InternetBulletin.Web
 			services.AddHttpClient<IHttpClientHelper, HttpClientHelper>(BulletinHttpClientConstant, client =>
 			{
 				client.BaseAddress = new Uri(configuration.GetValue<string>(WebApiBaseAddressConstant)!);
-				client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, KeyVaultHelper.GetKeyValueAsync(configuration, APIAntiforgeryTokenValue));
+				client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, KeyVaultHelper.GetSecretDataAsync(configuration, APIAntiforgeryTokenValue));
 			});
 			services.AddCors(options =>
 			{

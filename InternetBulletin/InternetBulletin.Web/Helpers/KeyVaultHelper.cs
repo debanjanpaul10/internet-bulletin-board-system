@@ -22,7 +22,7 @@ namespace InternetBulletin.Web.Helpers
 		/// <param name="configuration">The configuration.</param>
 		/// <param name="keyName">Name of the key.</param>
 		/// <returns>The key value.</returns>
-		public static string GetKeyValueAsync(ConfigurationManager configuration, string keyName)
+		public static string GetSecretDataAsync(ConfigurationManager configuration, string keyName)
 		{
 			var keyVaultUri = configuration.GetValue<string>(ConfigurationConstants.KeyVaultEndpointConstant);
 			if (!string.IsNullOrEmpty(keyVaultUri))
