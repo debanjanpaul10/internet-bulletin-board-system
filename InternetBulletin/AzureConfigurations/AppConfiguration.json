@@ -1,0 +1,37 @@
+[
+	{
+		"key": "ClientID",
+		"label": null,
+		"value": "20b4f56e-754c-4788-b79f-829b8ee00c11",
+		"content_type": "",
+		"tags": {}
+	},
+	{
+		"key": "ContainerName",
+		"label": null,
+		"value": "internet-bulletin",
+		"content_type": "",
+		"tags": {}
+	},
+	{
+		"key": "KeyVaultUrl",
+		"label": null,
+		"value": "https://kyv-internet-bulletin.vault.azure.net",
+		"content_type": "",
+		"tags": {}
+	},
+	{
+		"key": "WebApiBaseAddress",
+		"label": null,
+		"value": "https://localhost:44352",
+		"content_type": "",
+		"tags": {}
+	},
+	{
+		"key": "WebBaseAddress",
+		"label": null,
+		"value": "https://localhost:44315/",
+		"content_type": "",
+		"tags": {}
+	}
+]
