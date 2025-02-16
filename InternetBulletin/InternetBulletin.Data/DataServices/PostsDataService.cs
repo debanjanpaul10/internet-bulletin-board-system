@@ -83,7 +83,7 @@ namespace InternetBulletin.Data.DataServices
 				}
 				else
 				{
-					var exception = new FileNotFoundException(ExceptionConstants.PostExistsMessageConstant);
+					var exception = new Exception(ExceptionConstants.PostExistsMessageConstant);
 					this._logger.LogError(exception, exception.Message);
 
 					throw exception;
@@ -130,7 +130,7 @@ namespace InternetBulletin.Data.DataServices
 				}
 				else
 				{
-					var exception = new FileNotFoundException(ExceptionConstants.PostNotFoundMessageConstant);
+					var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
 					this._logger.LogError(exception, exception.Message);
 					throw exception;
 				}
@@ -173,7 +173,7 @@ namespace InternetBulletin.Data.DataServices
 				}
 				else
 				{
-					var exception = new FileNotFoundException(ExceptionConstants.PostNotFoundMessageConstant);
+					var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
 					this._logger.LogError(exception, exception.Message);
 					throw exception;
 				}

@@ -43,7 +43,7 @@ namespace InternetBulletin.Business.Services
 		{
 			if (string.IsNullOrWhiteSpace(postId))
 			{
-				var exception = new ArgumentNullException(ExceptionConstants.PostIdNotPresentMessageConstant);
+				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;
@@ -51,7 +51,7 @@ namespace InternetBulletin.Business.Services
 
 			if (!Guid.TryParse(postId, out var postGuid))
 			{
-				var exception = new FormatException(ExceptionConstants.PostGuidNotValidMessageConstant);
+				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;
@@ -64,7 +64,7 @@ namespace InternetBulletin.Business.Services
 			}
 			else
 			{
-				var exception = new FileNotFoundException(ExceptionConstants.PostNotFoundMessageConstant);
+				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;
@@ -82,7 +82,7 @@ namespace InternetBulletin.Business.Services
 		{
 			if (newPost is null)
 			{
-				var exception = new ArgumentNullException(ExceptionConstants.NullPostMessageConstant);
+				var exception = new Exception(ExceptionConstants.NullPostMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;
@@ -101,14 +101,24 @@ namespace InternetBulletin.Business.Services
 		{
 			if (updatedPost is null)
 			{
-				var exception = new ArgumentNullException(ExceptionConstants.NullPostMessageConstant);
+				var exception = new Exception(ExceptionConstants.NullPostMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;
 			}
 
 			var result = await this._postsDataService.UpdatePostAsync(updatedPost);
-			return result;
+			if (result is not null && !Equals(result.PostId, Guid.Empty))
+			{
+				return result;
+			}
+			else
+			{
+				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
+				this._logger.LogError(exception, exception.Message);
+
+				throw exception;
+			}
 		}
 
 		/// <summary>
@@ -120,7 +130,7 @@ namespace InternetBulletin.Business.Services
 		{
 			if (string.IsNullOrWhiteSpace(postId))
 			{
-				var exception = new ArgumentNullException(ExceptionConstants.PostIdNotPresentMessageConstant);
+				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;
@@ -128,7 +138,7 @@ namespace InternetBulletin.Business.Services
 
 			if (!Guid.TryParse(postId, out var postIdGuid))
 			{
-				var exception = new FormatException(ExceptionConstants.PostGuidNotValidMessageConstant);
+				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
 				this._logger.LogError(exception, exception.Message);
 
 				throw exception;

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Business",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Data", "InternetBulletin.Data\InternetBulletin.Data.csproj", "{D2B5ED10-AC23-46EF-9C9C-A48A686C7D8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Business.Tests", "InternetBulletin.Business.Tests\InternetBulletin.Business.Tests.csproj", "{7D5DC3C7-4812-4049-95A4-42117300D03C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{D2B5ED10-AC23-46EF-9C9C-A48A686C7D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2B5ED10-AC23-46EF-9C9C-A48A686C7D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2B5ED10-AC23-46EF-9C9C-A48A686C7D8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D5DC3C7-4812-4049-95A4-42117300D03C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5DC3C7-4812-4049-95A4-42117300D03C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5DC3C7-4812-4049-95A4-42117300D03C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5DC3C7-4812-4049-95A4-42117300D03C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
