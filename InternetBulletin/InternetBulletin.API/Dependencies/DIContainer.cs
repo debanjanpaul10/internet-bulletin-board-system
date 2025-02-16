@@ -32,10 +32,19 @@ namespace InternetBulletin.API.Dependencies
 			var containerName = configuration.GetValue<string>(ConfigurationConstants.ContainerNameConstant);
 			if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(containerName))
 			{
-				services.AddDbContext<InternetBulletinDbContext>(options =>
+				services.AddDbContext<CosmosDbContext>(options =>
 				{
 					options.UseCosmos(cosmosConnectionString, containerName);
 				});
+			}
+
+			var sqlConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, ConfigurationConstants.SqlConnectionStringConstant);
+			if (!string.IsNullOrEmpty(sqlConnectionString))
+			{
+				services.AddDbContext<SqlDbContext>(options =>
+				{
+					options.UseSqlServer(connectionString: sqlConnectionString);
+				} );
 			}
 		}
 

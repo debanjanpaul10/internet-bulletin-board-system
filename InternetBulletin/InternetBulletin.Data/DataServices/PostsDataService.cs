@@ -20,12 +20,12 @@ namespace InternetBulletin.Data.DataServices
 	/// </summary>
 	/// <param name="appDbContext">The Application DB Context.</param>
 	/// <param name="logger">The Logger.</param>
-	public class PostsDataService(InternetBulletinDbContext appDbContext, ILogger<PostsDataService> logger) : IPostsDataService
+	public class PostsDataService(CosmosDbContext appDbContext, ILogger<PostsDataService> logger) : IPostsDataService
 	{
 		/// <summary>
 		/// The application database context
 		/// </summary>
-		private readonly InternetBulletinDbContext _appDbContext = appDbContext;
+		private readonly CosmosDbContext _appDbContext = appDbContext;
 
 		/// <summary>
 		/// The logger

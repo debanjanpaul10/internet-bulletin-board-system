@@ -39,6 +39,11 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public static readonly string CosmosConnectionStringConstant = "CosmosConnectionString-kv";
 
+		/// <summary>
+		/// The SQL connection string constant
+		/// </summary>
+		public static readonly string SqlConnectionStringConstant = "SqlConnectionString-kv";
+
 		#endregion
 
 		/// <summary>
