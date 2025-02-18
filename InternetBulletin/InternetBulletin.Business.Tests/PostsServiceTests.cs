@@ -5,7 +5,7 @@
 // <summary>The Posts Services Test Class.</summary>
 // *********************************************************************************
 
-namespace InternetBulletin.Business.Tests
+namespace InternetBulletin.UnitTests
 {
 	/// <summary>
 	/// The Posts Services Test Class.
@@ -36,8 +36,8 @@ namespace InternetBulletin.Business.Tests
 			this._mockLogger = new Mock<ILogger<PostsService>>();
 
 			this._postsService = new PostsService(
-				this._mockPostsDataService.Object,
-				this._mockLogger.Object);
+				_mockPostsDataService.Object,
+				_mockLogger.Object);
 		}
 
 		#region GetPostAsync
@@ -52,7 +52,7 @@ namespace InternetBulletin.Business.Tests
 			string postId = string.Empty;
 
 			// Act
-			var result = await Assert.ThrowsAsync<Exception>(() => this._postsService.GetPostAsync(postId));
+			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.GetPostAsync(postId));
 
 			// Assert
 			Assert.NotNull(result);
@@ -69,7 +69,7 @@ namespace InternetBulletin.Business.Tests
 			string postId = "invalid-guid";
 
 			// Act
-			var result = await Assert.ThrowsAsync<Exception>(() => this._postsService.GetPostAsync(postId));
+			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.GetPostAsync(postId));
 
 			// Assert
 			Assert.NotNull(result);
@@ -85,10 +85,10 @@ namespace InternetBulletin.Business.Tests
 			// Arrange
 			var postId = Convert.ToString(Guid.NewGuid(), CultureInfo.CurrentCulture) ?? string.Empty;
 			var mockEmptyPost = new Post();
-			this._mockPostsDataService.Setup(x => x.GetPostAsync(It.IsAny<Guid>())).ReturnsAsync(mockEmptyPost);
+			_mockPostsDataService.Setup(x => x.GetPostAsync(It.IsAny<Guid>())).ReturnsAsync(mockEmptyPost);
 
 			// Act
-			var result = await Assert.ThrowsAsync<Exception>(() => this._postsService.GetPostAsync(postId));
+			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.GetPostAsync(postId));
 
 			// Assert
 			Assert.NotNull(result);
@@ -104,10 +104,10 @@ namespace InternetBulletin.Business.Tests
 			// Arrange
 			var expectedPost = TestsHelper.CreateMockPostEntityData();
 			var postId = expectedPost.PostId;
-			this._mockPostsDataService.Setup(x => x.GetPostAsync(It.IsAny<Guid>())).ReturnsAsync(expectedPost);
+			_mockPostsDataService.Setup(x => x.GetPostAsync(It.IsAny<Guid>())).ReturnsAsync(expectedPost);
 
 			// Act
-			var result = await this._postsService.GetPostAsync(postId.ToString());
+			var result = await _postsService.GetPostAsync(postId.ToString());
 
 			// Assert
 			Assert.NotNull(result);
@@ -129,7 +129,7 @@ namespace InternetBulletin.Business.Tests
 			Post newPost = null!;
 
 			// Act
-			var result = await Assert.ThrowsAsync<Exception>(() => this._postsService.AddNewPostAsync(newPost));
+			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.AddNewPostAsync(newPost));
 
 			// Assert
 			Assert.NotNull(result);
@@ -144,10 +144,10 @@ namespace InternetBulletin.Business.Tests
 		{
 			// Arrange
 			var mockPost = TestsHelper.CreateMockPostEntityData();
-			this._mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<Post>())).ReturnsAsync(true);
+			_mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<Post>())).ReturnsAsync(true);
 
 			// Act
-			var result = await this._postsService.AddNewPostAsync(mockPost);
+			var result = await _postsService.AddNewPostAsync(mockPost);
 
 			// Assert
 			Assert.True(result);
@@ -161,10 +161,10 @@ namespace InternetBulletin.Business.Tests
 		{
 			// Arrange
 			var mockPost = TestsHelper.CreateMockPostEntityData();
-			this._mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<Post>())).ReturnsAsync(false);
+			_mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<Post>())).ReturnsAsync(false);
 
 			// Act
-			var result = await this._postsService.AddNewPostAsync(mockPost);
+			var result = await _postsService.AddNewPostAsync(mockPost);
 
 			// Assert
 			Assert.False(result);
@@ -184,7 +184,7 @@ namespace InternetBulletin.Business.Tests
 			Post mockPost = null!;
 
 			// Act
-			var result = await Assert.ThrowsAsync<Exception>(() => this._postsService.UpdatePostAsync(mockPost));
+			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.UpdatePostAsync(mockPost));
 
 			// Assert
 			Assert.NotNull(result);
@@ -199,10 +199,10 @@ namespace InternetBulletin.Business.Tests
 		{
 			// Arrange
 			var mockPost = TestsHelper.CreateMockPostEntityData();
-			this._mockPostsDataService.Setup(x => x.UpdatePostAsync(It.IsAny<Post>())).ReturnsAsync(mockPost);
+			_mockPostsDataService.Setup(x => x.UpdatePostAsync(It.IsAny<Post>())).ReturnsAsync(mockPost);
 
 			// Act
-			var result = await this._postsService.UpdatePostAsync(mockPost);
+			var result = await _postsService.UpdatePostAsync(mockPost);
 
 			// Assert
 			Assert.NotNull(result);
@@ -219,10 +219,10 @@ namespace InternetBulletin.Business.Tests
 			var mockPost = TestsHelper.CreateMockPostEntityData();
 			Post expectedPost = null!;
 
-			this._mockPostsDataService.Setup(x => x.UpdatePostAsync(It.IsAny<Post>())).ReturnsAsync(expectedPost);
+			_mockPostsDataService.Setup(x => x.UpdatePostAsync(It.IsAny<Post>())).ReturnsAsync(expectedPost);
 
 			// Act
-			var result = await Assert.ThrowsAsync<Exception>(() => this._postsService.UpdatePostAsync(mockPost));
+			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.UpdatePostAsync(mockPost));
 
 			// Assert
 			Assert.NotNull(result);
@@ -240,7 +240,7 @@ namespace InternetBulletin.Business.Tests
 			string postId = string.Empty;
 
 			// Act & Assert
-			var exception = await Assert.ThrowsAsync<Exception>(() => this._postsService.DeletePostAsync(postId));
+			var exception = await Assert.ThrowsAsync<Exception>(() => _postsService.DeletePostAsync(postId));
 			Assert.Equal(ExceptionConstants.PostIdNotPresentMessageConstant, exception.Message);
 		}
 
@@ -254,7 +254,7 @@ namespace InternetBulletin.Business.Tests
 			string postId = "invalid-guid";
 
 			// Act & Assert
-			var exception = await Assert.ThrowsAsync<Exception>(() => this._postsService.DeletePostAsync(postId));
+			var exception = await Assert.ThrowsAsync<Exception>(() => _postsService.DeletePostAsync(postId));
 			Assert.Equal(ExceptionConstants.PostGuidNotValidMessageConstant, exception.Message);
 		}
 
@@ -266,10 +266,10 @@ namespace InternetBulletin.Business.Tests
 		{
 			// Arrange
 			var postId = Guid.NewGuid().ToString();
-			this._mockPostsDataService.Setup(x => x.DeletePostAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+			_mockPostsDataService.Setup(x => x.DeletePostAsync(It.IsAny<Guid>())).ReturnsAsync(true);
 
 			// Act
-			var result = await this._postsService.DeletePostAsync(postId);
+			var result = await _postsService.DeletePostAsync(postId);
 
 			// Assert
 			Assert.True(result);
@@ -283,10 +283,10 @@ namespace InternetBulletin.Business.Tests
 		{
 			// Arrange
 			var postId = Guid.NewGuid().ToString();
-			this._mockPostsDataService.Setup(x => x.DeletePostAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+			_mockPostsDataService.Setup(x => x.DeletePostAsync(It.IsAny<Guid>())).ReturnsAsync(false);
 
 			// Act
-			var result = await this._postsService.DeletePostAsync(postId);
+			var result = await _postsService.DeletePostAsync(postId);
 
 			// Assert
 			Assert.False(result);
@@ -304,10 +304,10 @@ namespace InternetBulletin.Business.Tests
 		{
 			// Arrange
 			var mockPostsList = TestsHelper.CreateMockListPostEntityData();
-			this._mockPostsDataService.Setup(x => x.GetAllPostsAsync()).ReturnsAsync(mockPostsList);
+			_mockPostsDataService.Setup(x => x.GetAllPostsAsync()).ReturnsAsync(mockPostsList);
 
 			// Act
-			var result = await this._postsService.GetAllPostsAsync();
+			var result = await _postsService.GetAllPostsAsync();
 
 			// Assert
 			Assert.NotNull(result);

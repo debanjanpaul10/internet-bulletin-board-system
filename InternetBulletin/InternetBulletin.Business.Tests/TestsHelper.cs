@@ -5,7 +5,7 @@
 // <summary>The Tests Helper Class.</summary>
 // *********************************************************************************
 
-namespace InternetBulletin.Business.Tests
+namespace InternetBulletin.UnitTests
 {
 	/// <summary>
 	/// The Tests Helper Class.
@@ -46,6 +46,79 @@ namespace InternetBulletin.Business.Tests
 			}
 
 			return allPosts;
+		}
+
+		/// <summary>
+		/// Creates the mock user entity data.
+		/// </summary>
+		/// <returns>The user data entity.</returns>
+		public static User CreateMockUserEntityData()
+		{
+			return new User()
+			{
+				IsActive = true,
+				IsAdmin = false,
+				Name = "Sample User",
+				UserAlias = "user123",
+				UserEmail = "user@email.com",
+				UserPassword = "password",
+			};
+		}
+
+		/// <summary>
+		/// Creates the mock list user entity data.
+		/// </summary>
+		/// <returns>The list of <see cref="User"/></returns>
+		public static List<User> CreateMockListUserEntityData()
+		{
+			return new List<User>()
+			{
+				new User()
+				{
+					IsActive = true,
+					IsAdmin = false,
+					Name = "Sample User 1",
+					UserAlias = "user1",
+					UserEmail = "user1@email.com",
+					UserPassword = "password1",
+				},
+				new User()
+				{
+					IsActive = true,
+					IsAdmin = true,
+					Name = "Sample User 2",
+					UserAlias = "user2",
+					UserEmail = "user2@email.com",
+					UserPassword = "password2",
+				},
+				new User()
+				{
+					IsActive = true,
+					IsAdmin = false,
+					Name = "Sample User 3",
+					UserAlias = "user3",
+					UserEmail = "user3@email.com",
+					UserPassword = "password3",
+				},
+				new User()
+				{
+					IsActive = true,
+					IsAdmin = false,
+					Name = "Sample User 4",
+					UserAlias = "user4",
+					UserEmail = "user4@email.com",
+					UserPassword = "password4",
+				},
+				new User()
+				{
+					IsActive = true,
+					IsAdmin = false,
+					Name = "Sample User 5",
+					UserAlias = "user5",
+					UserEmail = "user5@email.com",
+					UserPassword = "password5",
+				},
+			};
 		}
 	}
 }

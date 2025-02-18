@@ -55,6 +55,7 @@ namespace InternetBulletin.API.Dependencies
 		public static void ConfigureBusinessManagerDependencies(IServiceCollection services)
 		{
 			services.AddScoped<IPostsService, PostsService>();
+			services.AddScoped<IUsersService, UsersService>();
 		}
 
 		/// <summary>
@@ -64,6 +65,7 @@ namespace InternetBulletin.API.Dependencies
 		public static void ConfigureDataManagerDependencies(IServiceCollection services)
 		{
 			services.AddScoped<IPostsDataService, PostsDataService>();
+			services.AddScoped<IUsersDataService, UsersDataService>();
 		}
 	}
 }

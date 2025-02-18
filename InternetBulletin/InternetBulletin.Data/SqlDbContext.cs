@@ -33,7 +33,6 @@ namespace InternetBulletin.Data
 		/// </remarks>
 		public SqlDbContext()
 		{
-
 		}
 
 		/// <summary>

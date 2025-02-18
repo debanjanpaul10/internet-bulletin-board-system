@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Business",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Data", "InternetBulletin.Data\InternetBulletin.Data.csproj", "{D2B5ED10-AC23-46EF-9C9C-A48A686C7D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Business.Tests", "InternetBulletin.Business.Tests\InternetBulletin.Business.Tests.csproj", "{7D5DC3C7-4812-4049-95A4-42117300D03C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.UnitTests", "InternetBulletin.Business.Tests\InternetBulletin.UnitTests.csproj", "{7D5DC3C7-4812-4049-95A4-42117300D03C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
