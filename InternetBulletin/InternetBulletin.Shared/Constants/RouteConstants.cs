@@ -28,6 +28,8 @@ namespace InternetBulletin.Shared.Constants
 
 		#region API
 
+		#region Posts
+
 		/// <summary>
 		/// The posts base route prefix
 		/// </summary>
@@ -57,6 +59,42 @@ namespace InternetBulletin.Shared.Constants
 		/// The delete post route
 		/// </summary>
 		public const string DeletePost_Route = "DeletePost";
+
+		#endregion
+
+		#region Users
+
+		/// <summary>
+		/// The users base route prefx
+		/// </summary>
+		public const string UsersBase_RoutePrefx = "Users";
+
+		/// <summary>
+		/// The get user route
+		/// </summary>
+		public const string GetUser_Route = "GetUser";
+
+		/// <summary>
+		/// The get all users route
+		/// </summary>
+		public const string GetAllUsers_Route = "GetAllUsers";
+
+		/// <summary>
+		/// Creates new user_route.
+		/// </summary>
+		public const string NewUser_Route = "NewUser";
+
+		/// <summary>
+		/// The update user route
+		/// </summary>
+		public const string UpdateUser_Route = "UpdateUser";
+
+		/// <summary>
+		/// The delete user route
+		/// </summary>
+		public const string DeleteUser_Route = "DeleteUser";
+
+		#endregion
 
 		#endregion
 	}

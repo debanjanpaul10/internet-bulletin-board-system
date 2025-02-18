@@ -18,14 +18,14 @@ namespace InternetBulletin.Data.DataServices
 	/// <summary>
 	/// The Posts DataManager Class.
 	/// </summary>
-	/// <param name="appDbContext">The Application DB Context.</param>
+	/// <param name="cosmosDbContext">The Cosmos DB Context.</param>
 	/// <param name="logger">The Logger.</param>
-	public class PostsDataService(InternetBulletinDbContext appDbContext, ILogger<PostsDataService> logger) : IPostsDataService
+	public class PostsDataService(CosmosDbContext cosmosDbContext, ILogger<PostsDataService> logger) : IPostsDataService
 	{
 		/// <summary>
-		/// The application database context
+		/// The Cosmos database context
 		/// </summary>
-		private readonly InternetBulletinDbContext _appDbContext = appDbContext;
+		private readonly CosmosDbContext _cosmosDbContext = cosmosDbContext;
 
 		/// <summary>
 		/// The logger
@@ -45,7 +45,7 @@ namespace InternetBulletin.Data.DataServices
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
 
-				var post = await this._appDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == postId && p.IsActive);
+				var post = await this._cosmosDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == postId && p.IsActive);
 				return post ?? new Post();
 			}
 			catch (Exception ex)
@@ -73,12 +73,12 @@ namespace InternetBulletin.Data.DataServices
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostId));
 
 				var postId = Guid.NewGuid();
-				var existingPost = await this._appDbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
+				var existingPost = await this._cosmosDbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
 				if (!existingPost)
 				{
 					newPost.PostId = postId;
-					await this._appDbContext.Posts.AddAsync(newPost);
-					await this._appDbContext.SaveChangesAsync();
+					await this._cosmosDbContext.Posts.AddAsync(newPost);
+					await this._cosmosDbContext.SaveChangesAsync();
 					return true;
 				}
 				else
@@ -116,7 +116,7 @@ namespace InternetBulletin.Data.DataServices
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, updatedPost.PostId));
 
-				var dbPostData = await this._appDbContext.Posts.FirstAsync(x => x.PostId == updatedPost.PostId && x.IsActive);
+				var dbPostData = await this._cosmosDbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive);
 				if (dbPostData is not null)
 				{
 					dbPostData.PostTitle = updatedPost.PostTitle;
@@ -124,7 +124,7 @@ namespace InternetBulletin.Data.DataServices
 					dbPostData.PostModifiedDate = DateTime.UtcNow;
 					dbPostData.PostModifiedBy = updatedPost.PostModifiedBy;
 
-					await this._appDbContext.SaveChangesAsync();
+					await this._cosmosDbContext.SaveChangesAsync();
 
 					return dbPostData;
 				}
@@ -163,11 +163,11 @@ namespace InternetBulletin.Data.DataServices
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-				var dbPostData = await this._appDbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId);
+				var dbPostData = await this._cosmosDbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId && post.IsActive);
 				if (dbPostData is not null)
 				{
 					dbPostData.IsActive = false;
-					await this._appDbContext.SaveChangesAsync();
+					await this._cosmosDbContext.SaveChangesAsync();
 
 					return true;
 				}
@@ -204,7 +204,8 @@ namespace InternetBulletin.Data.DataServices
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
-				var result = await this._appDbContext.Posts.Where(x => x.IsActive).ToListAsync();
+				
+				var result = await this._cosmosDbContext.Posts.Where(x => x.IsActive).ToListAsync();
 				return result;
 			}
 			catch (Exception ex)

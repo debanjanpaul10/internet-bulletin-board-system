@@ -1,8 +1,8 @@
 ﻿// *********************************************************************************
-//	<copyright file="InternetBulletinDbContext.cs" company="Personal">
+//	<copyright file="CosmosDbContext.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>The Database Context Class.</summary>
+// <summary>The Cosmos Database Context Class.</summary>
 // *********************************************************************************
 
 namespace InternetBulletin.Data
@@ -13,17 +13,17 @@ namespace InternetBulletin.Data
 	using Microsoft.EntityFrameworkCore;
 
 	/// <summary>
-	/// The Database Context Class.
+	/// The Cosmos Database Context Class.
 	/// </summary>
 	[ExcludeFromCodeCoverage]
-	public class InternetBulletinDbContext : DbContext
+	public class CosmosDbContext : DbContext
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InternetBulletinDbContext"/> class.
+		/// Initializes a new instance of the <see cref="CosmosDbContext"/> class.
 		/// </summary>
 		/// <param name="options">The options.</param>
 		/// <param name="configuration">The configuration.</param>
-		public InternetBulletinDbContext(DbContextOptions<InternetBulletinDbContext> options) : base(options)
+		public CosmosDbContext(DbContextOptions<CosmosDbContext> options) : base(options)
 		{
 		}
 

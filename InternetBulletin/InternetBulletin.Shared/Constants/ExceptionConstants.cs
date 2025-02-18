@@ -50,5 +50,30 @@ namespace InternetBulletin.Shared.Constants
 		/// The posts not present message constant
 		/// </summary>
 		public static readonly string PostsNotPresentMessageConstant = "There are no posts to be shown at the moment!";
+
+		/// <summary>
+		/// The user already exists message constant
+		/// </summary>
+		public static readonly string UserAlreadyExistsMessageConstant = "The given user alias and the user email is already being used!";
+
+		/// <summary>
+		/// The user does not exists message constant
+		/// </summary>
+		public static readonly string UserDoesNotExistsMessageConstant = "The user data does not exist with us anymore!";
+
+		/// <summary>
+		/// The user identifier not correct message constant
+		/// </summary>
+		public static readonly string UserIdNotCorrectMessageConstant = "The user id is not correct. Please enter a valid user id";
+
+		/// <summary>
+		/// The null user message constant
+		/// </summary>
+		public static readonly string NullUserMessageConstant = "Attempted to add null user data.";
+
+		/// <summary>
+		/// The users not present message constants
+		/// </summary>
+		public static readonly string UsersNotPresentMessageConstants = "There are no users registered.";
 	}
 }
