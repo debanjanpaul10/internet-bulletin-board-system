@@ -1,0 +1,95 @@
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+		"Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+		"Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
+}
+
+/* #region Dark Mode */
+
+.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-mode .navbar {
+    background-color: #333333;
+}
+
+.dark-mode .nav-link {
+    color: #ffffff;
+}
+
+.dark-mode .nav-link:hover {
+    color: #bbbbbb;
+}
+
+.dark-mode .form-control {
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #555555;
+}
+
+.dark-mode .form-control::placeholder {
+    color: #bbbbbb;
+}
+
+.lightgrey {
+    color: lightgrey;
+}
+
+/* #endregion */
+
+/* Custom css */
+li {
+	list-style: none;
+}
+a {
+	text-decoration: none;
+}
+input {
+	margin-top: 20px;
+}
+button {
+	margin-top: 20px;
+}
+
+.jumbotron {
+	padding: 2rem 1rem;
+	margin-bottom: 2rem;
+	background-color: #e9ecef;
+	border-radius: 0.3rem;
+}
+
+.nav-link {
+	padding: 10px;
+}
+.nav-link:hover {
+    color: #0000ff;
+}
+.ml-right {
+    margin-left: auto;
+}
+.ml-right > .nav-link {
+    margin-right: 10px;
+}
+
+.buttonStyle {
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+.architectDaughterfont {
+    font-family: "Architects Daughter";
+}
+
+.ml-10 {
+    margin-left: 10px;
+}

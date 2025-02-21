@@ -10,6 +10,8 @@ namespace InternetBulletin.Web
 	using InternetBulletin.Web.Configuration;
 	using InternetBulletin.Web.Helpers;
 	using static InternetBulletin.Shared.Constants.ConfigurationConstants;
+	using Polly;
+	using Polly.Extensions.Http;
 
 	/// <summary>
 	/// Program class from where the execution starts
@@ -41,11 +43,15 @@ namespace InternetBulletin.Web
 		{
 			services.AddAuthentication();
 			services.AddControllers();
+
+			var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
+				.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 			services.AddHttpClient<IHttpClientHelper, HttpClientHelper>(BulletinHttpClientConstant, client =>
 			{
 				client.BaseAddress = new Uri(configuration.GetValue<string>(WebApiBaseAddressConstant)!);
 				client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, KeyVaultHelper.GetSecretDataAsync(configuration, APIAntiforgeryTokenValue));
-			});
+			}).AddPolicyHandler(retryPolicy);
+
 			services.AddCors(options =>
 			{
 				options.AddDefaultPolicy(p =>
