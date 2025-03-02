@@ -23,6 +23,14 @@ export const HeaderPageConstants = {
 			Link: "/",
 		},
 	},
+	ButtonTitles: {
+		HomeButton: "Where the fun starts!",
+		Logout: "Bye bye bye!",
+		Register: "This place is a fit for me",
+		TurnOnLight: "Turn on the light!",
+		TurnOnDark: "I am the dark!",
+        Login: "I am back!"
+	},
 };
 
 export const RegisterPageConstants = {
@@ -35,23 +43,37 @@ export const RegisterPageConstants = {
 			"The password field is mandatory. Else anyone can impersonate you.",
 	},
 	Headings: {
-		RegisterNewUser: "Register yourself, and join the bulletin board's wealth!",
+		RegisterNewUser:
+			"Register yourself, and join the bulletin board's wealth!",
+		AddButton: "Register",
 	},
 };
 
 export const LoginPageConstants = {
-	validations: {},
+	validations: {
+		UserEmailRequired: "Please enter your email.",
+		UserPasswordRequired:
+			"The password field is mandatory. Else anyone can impersonate you.",
+	},
 	Headings: {
 		LoginUser: "Log back in, let the fun begin !",
+		LoginButton: "Login",
 	},
 };
 
 export const ErrorPageConstants = {
-	PageNotFoundMessage: "Oops! The page could not be found, but hey don't be down!",
+	PageNotFoundMessage:
+		"Oops! The page could not be found, but hey don't be down!",
 };
 
 export const HomePageConstants = {
 	Headings: {
-		WelcomeMessage: "Welcome to the Internet Bulletin Board System, where ideas blossom and wisdom's the rhythm!",
+		WelcomeMessage:
+			"Welcome to the Internet Bulletin Board System, where ideas blossom and wisdom's the rhythm!",
 	},
+};
+
+export const CookiesConstants = {
+	IsDarkModeCookie: "darkMode",
+	CurrentLoggedInUserCookie: "currentLoggedIn",
 };

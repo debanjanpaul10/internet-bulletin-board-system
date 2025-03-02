@@ -29,7 +29,7 @@ namespace InternetBulletin.API.Dependencies
 		public static void ConfigureApplicationDependencies(ConfigurationManager configuration, IServiceCollection services)
 		{
 			var cosmosConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, ConfigurationConstants.CosmosConnectionStringConstant);
-			var containerName = configuration.GetValue<string>(ConfigurationConstants.ContainerNameConstant);
+			var containerName = configuration.GetValue<string>(ConfigurationConstants.CosmosDatabaseNameConstant);
 			if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(containerName))
 			{
 				services.AddDbContext<CosmosDbContext>(options =>
@@ -56,6 +56,7 @@ namespace InternetBulletin.API.Dependencies
 		{
 			services.AddScoped<IPostsService, PostsService>();
 			services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IConfigurationService, ConfigurationService>();
 		}
 
 		/// <summary>

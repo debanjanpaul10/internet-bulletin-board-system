@@ -111,7 +111,8 @@ namespace InternetBulletin.Web.Controllers
 					}
 					else
 					{
-						return this.StatusCode((int)response.StatusCode, response.ReasonPhrase);
+						var responseBody = await response.Content.ReadAsStringAsync();
+						return this.StatusCode((int)response.StatusCode, responseBody);
 					}
 				}
 				return this.Unauthorized();

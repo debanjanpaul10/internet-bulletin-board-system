@@ -15,10 +15,8 @@ function HttpUtility() {
 	const GetAsync = async (apiUrl) => {
 		try {
 			const url = ConfigurationConstants.GetBaseUrl + apiUrl;
-			const webForgeryToken = GetKeyVaultSecret(
-				ConfigurationConstants.WebAntiforgeryKeyVault
-			);
-            
+			const webForgeryToken = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.1kR0l-Q5EUwmAykORxbMjGV9OTQ2UJKvDXMEQduW8o8"
+
 			const response = await axios.get(url, {
 				headers: {
 					"x-antiforgery-token-web": webForgeryToken,
@@ -31,7 +29,7 @@ function HttpUtility() {
 
 			return "";
 		} catch (error) {
-			console.error(error);
+			return Promise.reject(error.response ? error.response.data : error.message);
 		}
 	};
 
@@ -44,9 +42,7 @@ function HttpUtility() {
 	const PostAsync = async (apiUrl, data) => {
 		try {
 			const url = ConfigurationConstants.PostBaseUrl + apiUrl;
-			const webForgeryToken = GetKeyVaultSecret(
-				ConfigurationConstants.WebAntiforgeryKeyVault
-			);
+			const webForgeryToken = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.1kR0l-Q5EUwmAykORxbMjGV9OTQ2UJKvDXMEQduW8o8"
 
 			const response = await axios.post(url, data, {
 				headers: {
@@ -58,7 +54,7 @@ function HttpUtility() {
 				return response.data;
 			}
 		} catch (error) {
-			console.error(error);
+			return Promise.reject(error.response ? error.response.data : error.message);
 		}
 	};
 

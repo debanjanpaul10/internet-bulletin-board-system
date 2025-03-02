@@ -11,6 +11,7 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Data.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
+	using InternetBulletin.Shared.DTOs;
 	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
@@ -36,13 +37,13 @@ namespace InternetBulletin.Business.Services
 		/// <summary>
 		/// Gets the user asynchronous.
 		/// </summary>
-		/// <param name="userId">The user identifier.</param>
+		/// <param name="userLogin">The user identifier.</param>
 		/// <returns>
 		/// The user data.
 		/// </returns>
-		public async Task<User> GetUserAsync(int userId)
+		public async Task<User> GetUserAsync(UserLoginDTO userLogin)
 		{
-			if (userId <= 0)
+			if (string.IsNullOrEmpty(userLogin.UserEmail) || string.IsNullOrEmpty(userLogin.UserPassword))
 			{
 				var exception = new Exception(ExceptionConstants.UserIdNotCorrectMessageConstant);
 				this._logger.LogError(exception, exception.Message);
@@ -50,7 +51,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._usersDataService.GetUserDetailsAsync(userId);
+			var result = await this._usersDataService.GetUserDetailsAsync(userLogin);
 			if (result is not null && result.UserId > 0)
 			{
 				return result;
@@ -83,7 +84,7 @@ namespace InternetBulletin.Business.Services
 		/// <returns>
 		/// The boolean for success/failure
 		/// </returns>
-		public async Task<bool> AddNewUserAsync(User newUser)
+		public async Task<bool> AddNewUserAsync(NewUserDTO newUser)
 		{
 			if (newUser is null)
 			{
@@ -93,7 +94,16 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._usersDataService.AddNewUserAsync(newUser);
+			var dbUser = new User()
+			{
+				IsActive = true,
+				IsAdmin = false,
+				Name = newUser.Name,
+				UserAlias = newUser.UserAlias,
+				UserEmail = newUser.UserEmail,
+				UserPassword = newUser.UserPassword,
+			};
+			var result = await this._usersDataService.AddNewUserAsync(dbUser);
 			return result;
 		}
 

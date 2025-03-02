@@ -8,6 +8,7 @@
 namespace InternetBulletin.Business.Contracts
 {
 	using InternetBulletin.Data.Entities;
+	using InternetBulletin.Shared.DTOs;
 
 	/// <summary>
 	/// The Users Service Interface.
@@ -17,9 +18,9 @@ namespace InternetBulletin.Business.Contracts
 		/// <summary>
 		/// Gets the user asynchronous.
 		/// </summary>
-		/// <param name="userId">The user identifier.</param>
+		/// <param name="userLogin">The user identifier.</param>
 		/// <returns>The user data.</returns>
-		Task<User> GetUserAsync(int userId);
+		Task<User> GetUserAsync(UserLoginDTO userLogin);
 
 		/// <summary>
 		/// Gets all users asynchronous.
@@ -32,7 +33,7 @@ namespace InternetBulletin.Business.Contracts
 		/// </summary>
 		/// <param name="newUser">The new user.</param>
 		/// <returns>The boolean for success/failure</returns>
-		Task<bool> AddNewUserAsync(User newUser);
+		Task<bool> AddNewUserAsync(NewUserDTO newUser);
 
 		/// <summary>
 		/// Updates the user asynchronous.

@@ -8,18 +8,19 @@
 namespace InternetBulletin.Data.Contracts
 {
 	using InternetBulletin.Data.Entities;
+    using InternetBulletin.Shared.DTOs;
 
-	/// <summary>
-	/// The Users Data Manager Interface.
-	/// </summary>
-	public interface IUsersDataService
+    /// <summary>
+    /// The Users Data Manager Interface.
+    /// </summary>
+    public interface IUsersDataService
 	{
 		/// <summary>
 		/// Gets the user details asynchronous.
 		/// </summary>
-		/// <param name="userId">The user id.</param>
+		/// <param name="userLogin">The user identifier.</param>
 		/// <returns>The user data dto.</returns>
-		Task<User> GetUserDetailsAsync(int userId);
+		Task<User> GetUserDetailsAsync(UserLoginDTO userLogin);
 
 		/// <summary>
 		/// Gets all users data asynchronous.

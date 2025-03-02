@@ -9,7 +9,9 @@ namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.API.Helpers;
 	using InternetBulletin.Shared.Constants;
+	using InternetBulletin.Shared.DTOs;
 	using Microsoft.AspNetCore.Mvc;
+	using System.Net;
 	using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 	using static InternetBulletin.Shared.Helpers.KeyVaultHelper;
 
@@ -50,7 +52,13 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The unauthorized object result</returns>
 		public UnauthorizedObjectResult HandleUnAuthorizedRequest()
 		{
-			return this.Unauthorized(new { status = 401, isSuccess = false, error = ExceptionConstants.UserUnauthorizedMessageConstant });
+			var responseData = new ResponseDTO()
+			{
+				Data = ExceptionConstants.UserUnauthorizedMessageConstant,
+				StatusCode = (int)HttpStatusCode.Unauthorized,
+				IsSuccess = false,
+			};
+			return this.Unauthorized(responseData);
 		}
 
 		/// <summary>
@@ -60,7 +68,13 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The ok object result</returns>
 		public OkObjectResult HandleSuccessResult(object response)
 		{
-			return this.Ok(new { status = 200, isSuccess = true, response });
+			var responseData = new ResponseDTO()
+			{
+				Data = response,
+				IsSuccess = true,
+				StatusCode = (int)HttpStatusCode.OK
+			};
+			return this.Ok(responseData);
 		}
 
 		/// <summary>
@@ -70,7 +84,13 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The bad request result.</returns>
 		public BadRequestObjectResult HandleBadRequest(string message)
 		{
-			return this.BadRequest(new { status = 400, isSuccess = false, error = message });
+			var responseData = new ResponseDTO()
+			{
+				Data = message,
+				IsSuccess = false,
+				StatusCode = (int)HttpStatusCode.BadRequest
+			};
+			return this.BadRequest(responseData);
 		}
 	}
 }

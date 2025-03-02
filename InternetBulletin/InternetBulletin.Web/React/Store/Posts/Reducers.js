@@ -1,8 +1,14 @@
-import { GET_ALL_POSTS_DATA, GET_POST_DATA } from "@store/Posts/ActionTypes";
+import {
+	GET_ALL_POSTS_DATA,
+	GET_POST_DATA,
+	START_SPINNER,
+	STOP_SPINNER,
+} from "@store/Posts/ActionTypes";
 
 const initialState = {
-	postData: null,
+	postData: {},
 	allPostsData: [],
+	isPostsDataLoading: false,
 };
 
 const PostsReducer = (state = initialState, action) => {
@@ -17,6 +23,18 @@ const PostsReducer = (state = initialState, action) => {
 			return {
 				...state,
 				allPostsData: action.payload,
+			};
+		}
+		case START_SPINNER: {
+			return {
+				...state,
+				isPostsDataLoading: true,
+			};
+		}
+		case STOP_SPINNER: {
+			return {
+				...state,
+				isPostsDataLoading: false,
 			};
 		}
 		default: {
