@@ -10,3 +10,5 @@
 **bin
 **node_modules
 **dist
+appsettings.development.json
+appsettings.Development.json
