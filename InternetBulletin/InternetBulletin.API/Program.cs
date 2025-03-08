@@ -7,73 +7,106 @@
 
 namespace InternetBulletin.API
 {
-	using InternetBulletin.API.Dependencies;
+    using Azure.Identity;
+    using InternetBulletin.API.Dependencies;
+    using Microsoft.OpenApi.Models;
+    using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
-	/// <summary>
-	/// Program class from where the execution starts
-	/// </summary>
-	public static class Program
-	{
-		/// <summary>
-		/// Defines the entry point of the application.
-		/// </summary>
-		/// <param name="args">The arguments.</param>
-		public static void Main(string[] args)
-		{
-			var builder = WebApplication.CreateBuilder(args);
+    /// <summary>
+    /// Program class from where the execution starts
+    /// </summary>
+    public static class Program
+    {
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.development.json", optional: true)
+                .AddEnvironmentVariables();
 
-			ConfigureAzureServices.ConfigureAzureAppConfiguration(builder.Configuration);
-			ConfigureAzureServices.ConfigureAzureApplicationInsights(builder.Configuration, builder.Services);
-			
-			ConfigureServices(builder.Services);
-			DIContainer.ConfigureApplicationDependencies(builder.Configuration, builder.Services);
-			DIContainer.ConfigureBusinessManagerDependencies(builder.Services);
-			DIContainer.ConfigureDataManagerDependencies(builder.Services);
+            var miCredentials = builder.Configuration[ManagedIdentityClientIdConstant];
+            var credentials = builder.Environment.IsDevelopment()
+            ? new DefaultAzureCredential() : new DefaultAzureCredential(new DefaultAzureCredentialOptions
+            {
+                ManagedIdentityClientId = miCredentials
+            });
 
-			var app = builder.Build();
-			ConfigureApplication(app);
-		}
+            builder.ConfigureAzureAppConfiguration(credentials);
+            builder.ConfigureServices();
+            builder.ConfigureApplicationDependencies();
+            builder.ConfigureBusinessManagerDependencies();
+            builder.ConfigureDataManagerDependencies();
 
-		/// <summary>
-		/// Configures the services.
-		/// </summary>
-		/// <param name="services">The services.</param>
-		public static void ConfigureServices(IServiceCollection services)
-		{
-			services.AddAuthentication();
-			services.AddControllers();
-			services.AddOpenApi();
-			services.AddCors(options =>
-			{
-				options.AddDefaultPolicy(p =>
-				{
-					p.AllowAnyOrigin()
-					.AllowAnyHeader()
-					.AllowAnyMethod();
-				});
-			});
-		}
+            var app = builder.Build();
+            ConfigureApplication(app);
+        }
 
-		/// <summary>
-		/// Configures the application.
-		/// </summary>
-		/// <param name="app">The application.</param>
-		public static void ConfigureApplication(WebApplication app)
-		{
-			if (app.Environment.IsDevelopment())
-			{
-				app.MapOpenApi();
-			}
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        public static void ConfigureServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddAuthentication();
+            builder.Services.AddControllers();
+            builder.Services.AddOpenApi();
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(p =>
+                {
+                    p.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
 
-			app.UseHttpsRedirection();
-			app.UseAuthentication();
-			app.UseAuthorization();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Internet Bulletin API",
+                    Version = "v1",
+                    Description = "API Documentation for Internet Bulletin",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Debanjan Paul",
+                        Email = "debanjanpaul10@gmail.com"
+                    }
+                });
+            });
+        }
 
-			app.UseCors();
-			app.MapControllers();
-			app.Run();
-		}
-	}
+        /// <summary>
+        /// Configures the application.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        public static void ConfigureApplication(WebApplication app)
+        {
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Internet Bulletin API v1");
+                    c.RoutePrefix = "swaggerui";
+                });
+            }
+
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseCors();
+            app.MapControllers();
+            app.Run();
+        }
+    }
 }
 
 

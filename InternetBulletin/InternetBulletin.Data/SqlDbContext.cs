@@ -9,7 +9,6 @@ namespace InternetBulletin.Data
 {
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-	using InternetBulletin.Shared.Helpers;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
 
@@ -74,7 +73,7 @@ namespace InternetBulletin.Data
 		/// </remarks>
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			var connectionString = KeyVaultHelper.GetKeyVaultSecretValueAsync(this._configuration, ConfigurationConstants.SqlConnectionStringConstant).GetAwaiter().GetResult();
+			var connectionString = this._configuration[ConfigurationConstants.SqlConnectionStringConstant];
 			optionsBuilder.UseSqlServer(connectionString);
 		}
 

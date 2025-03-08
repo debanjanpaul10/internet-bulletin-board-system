@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import Post from "@components/Posts/Post";
+import PostBody from "@components/Posts/PostBody";
 
+/**
+ * @component
+ * PostsContainer component to display a list of posts.
+ *
+ * @returns {JSX.Element} The posts container jsx element.
+ */
 function PostsContainer() {
 	const AllPostsStoreData = useSelector(
 		(state) => state.PostsReducer.allPostsData
@@ -12,17 +18,21 @@ function PostsContainer() {
 
 	useEffect(() => {
 		if (allPosts !== AllPostsStoreData) {
-			setAllPosts(AllPostsStoreData);
+			let sortedData = AllPostsStoreData.sort(
+				(a, b) =>
+					new Date(b.postCreatedDate) - new Date(a.postCreatedDate)
+			);
+			setAllPosts(sortedData);
 		}
 	}, [AllPostsStoreData]);
 
 	return (
 		Object.keys(allPosts).length > 0 && (
-			<>
+			<div className="container">
 				{allPosts.map((post) => (
-					<Post key={post.PostId} post={post} />
+					<PostBody key={post.PostId} post={post} />
 				))}
-			</>
+			</div>
 		)
 	);
 }

@@ -7,90 +7,106 @@
 
 namespace InternetBulletin.Web
 {
-	using InternetBulletin.Web.Configuration;
-	using InternetBulletin.Web.Helpers;
-	using static InternetBulletin.Shared.Constants.ConfigurationConstants;
-	using Polly;
-	using Polly.Extensions.Http;
+    using InternetBulletin.Web.Configuration;
+    using InternetBulletin.Web.Helpers;
+    using static InternetBulletin.Shared.Constants.ConfigurationConstants;
+    using Polly;
+    using Polly.Extensions.Http;
+    using Azure.Identity;
 
-	/// <summary>
-	/// Program class from where the execution starts
-	/// </summary>
-	public static class Program
-	{
-		/// <summary>
-		/// Defines the entry point of the application.
-		/// </summary>
-		/// <param name="args">The arguments.</param>
-		public static void Main(string[] args)
-		{
-			var builder = WebApplication.CreateBuilder(args);
+    /// <summary>
+    /// Program class from where the execution starts
+    /// </summary>
+    public static class Program
+    {
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.development.json", optional: true).AddEnvironmentVariables();
 
-			ConfigureAzureServices.ConfigureAzureAppConfig(builder.Configuration);
-			ConfigureAzureServices.ConfigureAzureApplicationInsights(builder.Configuration, builder.Services);
-			ConfigureServices(builder.Services, builder.Configuration);
+            var miCredentials = builder.Configuration[ManagedIdentityClientIdConstant];
+            var credentials = builder.Environment.IsDevelopment()
+                ? new DefaultAzureCredential()
+                : new DefaultAzureCredential(new DefaultAzureCredentialOptions
+                {
+                    ManagedIdentityClientId = miCredentials
+                });
 
-			var app = builder.Build();
-			ConfigureApplication(app);
-		}
+            builder.ConfigureAzureAppConfig(credentials);
+            builder.ConfigureServices();
 
-		/// <summary>
-		/// Configures the services.
-		/// </summary>
-		/// <param name="services">The services.</param>
-		/// <param name="configuration">The configuration.</param>
-		private static void ConfigureServices(IServiceCollection services, ConfigurationManager configuration)
-		{
-			services.AddAuthentication();
-			services.AddControllers();
+            var app = builder.Build();
+            ConfigureApplication(app);
+        }
 
-			var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
-				.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
-			services.AddHttpClient<IHttpClientHelper, HttpClientHelper>(BulletinHttpClientConstant, client =>
-			{
-				client.BaseAddress = new Uri(configuration.GetValue<string>(WebApiBaseAddressConstant)!);
-				client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, KeyVaultHelper.GetSecretDataAsync(configuration, APIAntiforgeryTokenValue));
-			}).AddPolicyHandler(retryPolicy);
+        /// <summary>
+        /// Configures services.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        public static void ConfigureServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddAuthentication();
+            builder.Services.AddControllers();
 
-			services.AddCors(options =>
-			{
-				options.AddDefaultPolicy(p =>
-				{
-					p.AllowAnyOrigin()
-					.AllowAnyHeader()
-					.AllowAnyMethod();
-				});
-			});
+            var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 
-			services.AddScoped<IHttpClientHelper, HttpClientHelper>();
-		}
+            var webApiUrl = builder.Configuration[WebApiBaseAddressConstant];
+            var webApiAntiforgeryToken = builder.Configuration[APIAntiforgeryTokenValue];
+            if (!string.IsNullOrEmpty(webApiUrl) && !string.IsNullOrEmpty(webApiAntiforgeryToken))
+            {
+                builder.Services.AddHttpClient(BulletinHttpClientConstant, client =>
+                {
+                    client.BaseAddress = new Uri(webApiUrl);
+                    client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, webApiAntiforgeryToken);
+                    client.Timeout = TimeSpan.FromMinutes(3);
+                }).AddPolicyHandler(retryPolicy);
+            }
 
-		/// <summary>
-		/// Configures the specified application.
-		/// </summary>
-		/// <param name="app">The application.</param>
-		private static void ConfigureApplication(WebApplication app)
-		{
-			if (!app.Environment.IsDevelopment())
-			{
-				app.UseExceptionHandler("/Error");
-				app.UseHsts();
-			}
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(p =>
+                {
+                    p.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
 
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
-			app.UseRouting();
-			app.UseAuthentication();
-			app.UseAuthorization();
-			app.UseCors();
+            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
+        }
 
-			app.MapControllerRoute(
-			name: "default",
-			pattern: "{controller=InternetBulletinWeb}/{action=Index}/{id?}");
+        /// <summary>
+        /// Configures the specified application.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        private static void ConfigureApplication(WebApplication app)
+        {
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
 
-			app.Run();
-		}
-	}
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseCors();
+
+            app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=InternetBulletinWeb}/{action=Index}/{id?}");
+
+            app.Run();
+        }
+    }
 }
 
 

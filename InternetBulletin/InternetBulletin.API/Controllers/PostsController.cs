@@ -10,7 +10,8 @@ namespace InternetBulletin.API.Controllers
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-	using Microsoft.AspNetCore.Mvc;
+    using InternetBulletin.Shared.DTOs;
+    using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Posts Controller Class.
@@ -45,7 +46,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-				if (await this.IsAuthorized())
+				if (this.IsAuthorized())
 				{
 					var result = await this._postsService.GetPostAsync(postId);
 					if (result is not null && !(Equals(result.PostId, Guid.Empty)))
@@ -82,7 +83,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
-				if (await this.IsAuthorized())
+				if (this.IsAuthorized())
 				{
 					var result = await this._postsService.GetAllPostsAsync();
 					if (result is not null && result.Count > 0)
@@ -115,12 +116,12 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The action result of JSON response.</returns>
 		[HttpPost]
 		[Route(RouteConstants.NewPost_Route)]
-		public async Task<IActionResult> AddNewPostAsync(Post newPost)
+		public async Task<IActionResult> AddNewPostAsync(AddPostDTO newPost)
 		{
 			try
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostId));
-				if (await this.IsAuthorized())
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
+				if (this.IsAuthorized())
 				{
 					var result = await this._postsService.AddNewPostAsync(newPost);
 					if (result)
@@ -142,7 +143,7 @@ namespace InternetBulletin.API.Controllers
 			}
 			finally
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostId));
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
 			}
 		}
 
@@ -158,7 +159,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
-				if (await this.IsAuthorized())
+				if (this.IsAuthorized())
 				{
 					var result = await this._postsService.UpdatePostAsync(updatePost);
 					if (result is not null && result.PostId != Guid.Empty)
@@ -196,7 +197,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-				if (await this.IsAuthorized())
+				if (this.IsAuthorized())
 				{
 					var result = await this._postsService.DeletePostAsync(postId);
 					if (result)

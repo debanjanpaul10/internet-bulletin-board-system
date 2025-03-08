@@ -5,6 +5,8 @@
 // <summary>The Posts Services Test Class.</summary>
 // *********************************************************************************
 
+using InternetBulletin.Shared.DTOs;
+
 namespace InternetBulletin.UnitTests
 {
 	/// <summary>
@@ -126,7 +128,7 @@ namespace InternetBulletin.UnitTests
 		public async Task AddNewPostAsync_ShouldThrowArgumentNullException_WhenNewPostIsNull()
 		{
 			// Arrange
-			Post newPost = null!;
+			AddPostDTO newPost = null!;
 
 			// Act
 			var result = await Assert.ThrowsAsync<Exception>(() => _postsService.AddNewPostAsync(newPost));
@@ -143,8 +145,8 @@ namespace InternetBulletin.UnitTests
 		public async Task AddNewPostAsync_ShouldReturnTrue_WhenPostIsAddedSuccessfully()
 		{
 			// Arrange
-			var mockPost = TestsHelper.CreateMockPostEntityData();
-			_mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<Post>())).ReturnsAsync(true);
+			var mockPost = TestsHelper.CreateMockPostDtoData();
+			_mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<AddPostDTO>())).ReturnsAsync(true);
 
 			// Act
 			var result = await _postsService.AddNewPostAsync(mockPost);
@@ -160,8 +162,8 @@ namespace InternetBulletin.UnitTests
 		public async Task AddNewPostAsync_ShouldReturnFalse_WhenPostIsNotAdded()
 		{
 			// Arrange
-			var mockPost = TestsHelper.CreateMockPostEntityData();
-			_mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<Post>())).ReturnsAsync(false);
+			var mockPost = TestsHelper.CreateMockPostDtoData();
+			_mockPostsDataService.Setup(x => x.AddNewPostAsync(It.IsAny<AddPostDTO>())).ReturnsAsync(false);
 
 			// Act
 			var result = await _postsService.AddNewPostAsync(mockPost);
@@ -206,7 +208,7 @@ namespace InternetBulletin.UnitTests
 
 			// Assert
 			Assert.NotNull(result);
-			Assert.Equal(mockPost.PostId, result.PostId);
+			Assert.Equal(mockPost.PostTitle, result.PostTitle);
 		}
 
 		/// <summary>

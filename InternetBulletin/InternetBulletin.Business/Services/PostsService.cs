@@ -11,7 +11,8 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Data.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-	using Microsoft.Extensions.Logging;
+    using InternetBulletin.Shared.DTOs;
+    using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
@@ -78,7 +79,7 @@ namespace InternetBulletin.Business.Services
 		/// <returns>
 		/// The boolean for success or failure.
 		/// </returns>
-		public async Task<bool> AddNewPostAsync(Post newPost)
+		public async Task<bool> AddNewPostAsync(AddPostDTO newPost)
 		{
 			if (newPost is null)
 			{

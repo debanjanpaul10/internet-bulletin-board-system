@@ -11,6 +11,7 @@ import { GetUserDataAsync, UserDataFailure } from "@store/Users/Actions";
 import Spinner from "@components/Common/Spinner";
 import Toaster from "@components/Common/Toaster";
 import FooterComponent from "@components/Common/Footer";
+import UserLoginDtoModel from "@models/UserLoginDto";
 
 /**
  * @component
@@ -49,9 +50,9 @@ function LoginComponent(props) {
 		) {
 			props.history.push(HeaderPageConstants.Headings.Home.Link);
 			Cookies.set(
-				CookiesConstants.CurrentLoggedInUserCookie,
+				CookiesConstants.LoggedInUser.Name,
 				JSON.stringify(UserStoreData),
-				{ expires: 30 }
+				{ expires: CookiesConstants.LoggedInUser.Timeout }
 			);
 		}
 	}, [UserStoreData]);
@@ -90,10 +91,10 @@ function LoginComponent(props) {
 		setErrors({ ...errors });
 
 		if (errors.UserEmail === "" && errors.UserPassword === "") {
-			const loginData = {
-				UserEmail: data.UserEmail,
-				UserPassword: data.UserPassword,
-			};
+			const loginData = new UserLoginDtoModel(
+				data.UserEmail,
+				data.UserPassword
+			);
 
 			dispatch(GetUserDataAsync(loginData));
 		}

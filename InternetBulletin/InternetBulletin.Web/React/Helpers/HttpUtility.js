@@ -1,6 +1,5 @@
 import axios from "axios";
 import { ConfigurationConstants } from "@helpers/Constants";
-import { GetKeyVaultSecret } from "@helpers/KeyVaultHelper";
 
 /**
  * The Http Utility Functions.
@@ -15,11 +14,12 @@ function HttpUtility() {
 	const GetAsync = async (apiUrl) => {
 		try {
 			const url = ConfigurationConstants.GetBaseUrl + apiUrl;
-			const webForgeryToken = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.1kR0l-Q5EUwmAykORxbMjGV9OTQ2UJKvDXMEQduW8o8"
+			const webForgeryToken =
+				ConfigurationConstants.WebAntiForgeryTokenValue;
 
 			const response = await axios.get(url, {
 				headers: {
-					"x-antiforgery-token-web": webForgeryToken,
+					"x-antiforgery-token-ibbs-web": webForgeryToken,
 				},
 			});
 
@@ -29,7 +29,9 @@ function HttpUtility() {
 
 			return "";
 		} catch (error) {
-			return Promise.reject(error.response ? error.response.data : error.message);
+			return Promise.reject(
+				error.response ? error.response.data : error.message
+			);
 		}
 	};
 
@@ -42,11 +44,12 @@ function HttpUtility() {
 	const PostAsync = async (apiUrl, data) => {
 		try {
 			const url = ConfigurationConstants.PostBaseUrl + apiUrl;
-			const webForgeryToken = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.1kR0l-Q5EUwmAykORxbMjGV9OTQ2UJKvDXMEQduW8o8"
+			const webForgeryToken =
+				ConfigurationConstants.WebAntiForgeryTokenValue;
 
 			const response = await axios.post(url, data, {
 				headers: {
-					"x-antiforgery-token-web": webForgeryToken,
+					"x-antiforgery-token-ibbs-web": webForgeryToken,
 				},
 			});
 
@@ -54,7 +57,9 @@ function HttpUtility() {
 				return response.data;
 			}
 		} catch (error) {
-			return Promise.reject(error.response ? error.response.data : error.message);
+			return Promise.reject(
+				error.response ? error.response.data : error.message
+			);
 		}
 	};
 

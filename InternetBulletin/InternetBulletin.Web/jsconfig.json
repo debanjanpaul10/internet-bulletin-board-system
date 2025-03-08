@@ -1,11 +1,12 @@
 {
-    "compilerOptions": {
-        "baseUrl": "./React",
-        "paths": {
-            "@components/*": ["./Components/*"],
-            "@helpers/*": ["./Helpers/*"],
-            "@store/*": ["./Store/*"],
-            "@assets/*": ["./Assets/*"]
-        }
-    }
+	"compilerOptions": {
+		"baseUrl": "./React",
+		"paths": {
+			"@components/*": ["./Components/*"],
+			"@helpers/*": ["./Helpers/*"],
+			"@store/*": ["./Store/*"],
+			"@assets/*": ["./Assets/*"],
+			"@models/*": ["./Models/*"]
+		}
+	}
 }

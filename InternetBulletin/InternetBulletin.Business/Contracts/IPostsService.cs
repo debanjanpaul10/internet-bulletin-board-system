@@ -8,11 +8,12 @@
 namespace InternetBulletin.Business.Contracts
 {
 	using InternetBulletin.Data.Entities;
+    using InternetBulletin.Shared.DTOs;
 
-	/// <summary>
-	/// The Posts BusinessManager Interface Class.
-	/// </summary>
-	public interface IPostsService
+    /// <summary>
+    /// The Posts BusinessManager Interface Class.
+    /// </summary>
+    public interface IPostsService
 	{
 		/// <summary>
 		/// Gets the post asynchronous.
@@ -26,7 +27,7 @@ namespace InternetBulletin.Business.Contracts
 		/// </summary>
 		/// <param name="newPost">The new post.</param>
 		/// <returns>The boolean for success or failure.</returns>
-		Task<bool> AddNewPostAsync(Post newPost);
+		Task<bool> AddNewPostAsync(AddPostDTO newPost);
 
 		/// <summary>
 		/// Updates the post asynchronous.

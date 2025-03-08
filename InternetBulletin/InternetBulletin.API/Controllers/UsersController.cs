@@ -46,7 +46,7 @@ namespace InternetBulletin.API.Controllers
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserAsync), DateTime.UtcNow, userLogin.UserEmail));
-                if (await this.IsAuthorized())
+                if (this.IsAuthorized())
                 {
                     var result = await this._usersService.GetUserAsync(userLogin);
                     if (result is not null && result.UserId > 0)
@@ -83,7 +83,7 @@ namespace InternetBulletin.API.Controllers
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllUsersAsync), DateTime.UtcNow, string.Empty));
-                if (await this.IsAuthorized())
+                if (this.IsAuthorized())
                 {
                     var result = await this._usersService.GetAllUsersAsync();
                     if (result is not null && result.Count > 0)
@@ -121,7 +121,7 @@ namespace InternetBulletin.API.Controllers
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewUserAsync), DateTime.UtcNow, newUser.UserAlias));
-                if (await this.IsAuthorized())
+                if (this.IsAuthorized())
                 {
                     var result = await this._usersService.AddNewUserAsync(newUser);
                     if (result)
@@ -159,7 +159,7 @@ namespace InternetBulletin.API.Controllers
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateUserAsync), DateTime.UtcNow, updateUser.UserAlias));
-                if (await this.IsAuthorized())
+                if (this.IsAuthorized())
                 {
                     var result = await this._usersService.UpdateUserAsync(updateUser);
                     if (result is not null && result.UserId > 0)
@@ -197,7 +197,7 @@ namespace InternetBulletin.API.Controllers
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeleteUserAsync), DateTime.UtcNow, userId));
-                if (await this.IsAuthorized())
+                if (this.IsAuthorized())
                 {
                     var result = await this._usersService.DeleteUserAsync(userId);
                     if (result)

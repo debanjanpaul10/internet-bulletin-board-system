@@ -1,6 +1,6 @@
 import React from "react";
 import Cookies from "js-cookie";
-import AppLogo from "@assets/IBBS_logo.png";
+import AppLogo from "@assets/Images/IBBS_logo.png";
 
 /**
  * @component

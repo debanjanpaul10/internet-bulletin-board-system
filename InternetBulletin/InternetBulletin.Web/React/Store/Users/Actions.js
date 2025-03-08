@@ -15,7 +15,7 @@ import {
 
 /**
  * Saves the loader start status to redux store.
- * @returns {Object} The action type 
+ * @returns {Object} The action type
  */
 export const StartLoader = () => {
 	return {
@@ -25,7 +25,7 @@ export const StartLoader = () => {
 
 /**
  * Saves the loader stop status to redux store.
- * @returns {Object} The action type 
+ * @returns {Object} The action type
  */
 export const StopLoader = () => {
 	return {
@@ -80,7 +80,7 @@ export const GetAllUsersDataAsync = () => {
 			}
 		} catch (error) {
 			console.error(error);
-			if (error.data) toast.error(error.data);
+			dispatch(UserDataFailure(error.data));
 		}
 	};
 };

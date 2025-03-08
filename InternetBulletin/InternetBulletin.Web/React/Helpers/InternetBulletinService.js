@@ -1,4 +1,5 @@
 import { GetAsync, PostAsync } from "@helpers/HttpUtility";
+import mockPostsData from "../Mock/Posts.json";
 
 // #region POSTS
 
@@ -16,6 +17,7 @@ export const GetPostAsync = async (postId) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetAllPostsAsync = async () => {
+	// return mockPostsData;
 	return await GetAsync(`Posts/GetAllPosts`);
 };
 

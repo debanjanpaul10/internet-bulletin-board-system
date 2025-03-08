@@ -7,66 +7,65 @@
 
 namespace InternetBulletin.API.Dependencies
 {
-	using InternetBulletin.API.Helpers;
-	using InternetBulletin.Business.Contracts;
-	using InternetBulletin.Business.Services;
-	using InternetBulletin.Data;
-	using InternetBulletin.Data.Contracts;
-	using InternetBulletin.Data.DataServices;
-	using InternetBulletin.Shared.Constants;
-	using Microsoft.EntityFrameworkCore;
+    using InternetBulletin.Business.Contracts;
+    using InternetBulletin.Business.Services;
+    using InternetBulletin.Data;
+    using InternetBulletin.Data.Contracts;
+    using InternetBulletin.Data.DataServices;
+    using InternetBulletin.Shared.Constants;
+    using Microsoft.EntityFrameworkCore;
 
-	/// <summary>
-	/// The Dependency Injection Container Class.
-	/// </summary>
-	public static class DIContainer
-	{
-		/// <summary>
-		/// Configures the application dependencies.
-		/// </summary>
-		/// <param name="configuration">The configuration.</param>
-		/// <param name="services">The services.</param>
-		public static void ConfigureApplicationDependencies(ConfigurationManager configuration, IServiceCollection services)
-		{
-			var cosmosConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, ConfigurationConstants.CosmosConnectionStringConstant);
-			var containerName = configuration.GetValue<string>(ConfigurationConstants.CosmosDatabaseNameConstant);
-			if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(containerName))
-			{
-				services.AddDbContext<CosmosDbContext>(options =>
-				{
-					options.UseCosmos(cosmosConnectionString, containerName);
-				});
-			}
+    /// <summary>
+    /// The Dependency Injection Container Class.
+    /// </summary>
+    public static class DIContainer
+    {
+        /// <summary>
+        /// Configures the application dependencies.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="services">The services.</param>
+        public static void ConfigureApplicationDependencies(this WebApplicationBuilder builder)
+        {
+            var cosmosConnectionString = builder.Configuration[ConfigurationConstants.CosmosConnectionStringConstant];
+            var containerName = builder.Configuration[ConfigurationConstants.CosmosDatabaseNameConstant];
+            if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(containerName))
+            {
+                builder.Services.AddDbContext<CosmosDbContext>(options =>
+                {
+                    options.UseCosmos(cosmosConnectionString, containerName);
+                });
+            }
 
-			var sqlConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, ConfigurationConstants.SqlConnectionStringConstant);
-			if (!string.IsNullOrEmpty(sqlConnectionString))
-			{
-				services.AddDbContext<SqlDbContext>(options =>
-				{
-					options.UseSqlServer(connectionString: sqlConnectionString);
-				} );
-			}
-		}
+            var sqlConnectionString = builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
+            if (!string.IsNullOrEmpty(sqlConnectionString))
+            {
+                builder.Services.AddDbContext<SqlDbContext>(options =>
+                {
+                    options.UseSqlServer(connectionString: sqlConnectionString);
+                });
+            }
+        }
 
-		/// <summary>
-		/// Configures the business manager dependencies.
-		/// </summary>
-		/// <param name="services">The services.</param>
-		public static void ConfigureBusinessManagerDependencies(IServiceCollection services)
-		{
-			services.AddScoped<IPostsService, PostsService>();
-			services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<IConfigurationService, ConfigurationService>();
-		}
+        /// <summary>
+        /// Configures business manager dependencies.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IPostsService, PostsService>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+        }
 
-		/// <summary>
-		/// Configures the data manager dependencies.
-		/// </summary>
-		/// <param name="services">The services.</param>
-		public static void ConfigureDataManagerDependencies(IServiceCollection services)
-		{
-			services.AddScoped<IPostsDataService, PostsDataService>();
-			services.AddScoped<IUsersDataService, UsersDataService>();
-		}
-	}
+        /// <summary>
+        /// Configures data manager dependencies.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        public static void ConfigureDataManagerDependencies(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IPostsDataService, PostsDataService>();
+            builder.Services.AddScoped<IUsersDataService, UsersDataService>();
+        }
+    }
 }

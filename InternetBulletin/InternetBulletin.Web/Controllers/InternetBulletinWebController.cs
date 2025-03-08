@@ -49,7 +49,7 @@ namespace InternetBulletin.Web.Controllers
 				this._logger.LogInformation(string.Format(
 					CultureInfo.InvariantCulture, LoggingConstants.LogHelperMethodStart, nameof(GetResourceDataAsync), DateTime.UtcNow, resourceUrl));
 
-				if (await this.IsAuthorized())
+				if (this.IsAuthorized())
 				{
 					var response = await this._httpClientHelper.GetAsync(resourceUrl);
 					if (response.IsSuccessStatusCode)
@@ -93,7 +93,7 @@ namespace InternetBulletin.Web.Controllers
 				this._logger.LogInformation(string.Format(
 					CultureInfo.InvariantCulture, LoggingConstants.LogHelperMethodStart, nameof(PostResourceDataAsync), DateTime.UtcNow, resourceUrl));
 
-				if (await this.IsAuthorized())
+				if (this.IsAuthorized())
 				{
 					var bodyString = string.Empty;
 					var request = this.HttpContext.Request;

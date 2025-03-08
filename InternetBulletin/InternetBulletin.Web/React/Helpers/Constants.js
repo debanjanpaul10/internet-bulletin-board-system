@@ -3,9 +3,8 @@ export const ConfigurationConstants = {
 		"https://localhost:44315/InternetBulletinWeb/PostResourceUrl?resourceUrl=",
 	GetBaseUrl:
 		"https://localhost:44315/InternetBulletinWeb/GetResourceUrl?resourceUrl=",
-	KeyVaultName: "https://kyv-internet-bulletin.vault.azure.net",
-	WebAntiforgeryKeyVault: "x-antiforgery-token-web-kv",
-	ClientId: "20b4f56e-754c-4788-b79f-829b8ee00c11",
+	WebAntiForgeryTokenValue:
+		"eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.l7ZFAR6EIk0fFk2j3tH5ZP0w8BRmSRDQ9A6_O3kHgEo",
 };
 
 export const HeaderPageConstants = {
@@ -22,6 +21,13 @@ export const HeaderPageConstants = {
 			Name: "Home",
 			Link: "/",
 		},
+		Logout: {
+			Name: "Logout",
+		},
+		CreatePost: {
+			Name: "Create",
+			Link: "/create",
+		},
 	},
 	ButtonTitles: {
 		HomeButton: "Where the fun starts!",
@@ -29,7 +35,8 @@ export const HeaderPageConstants = {
 		Register: "This place is a fit for me",
 		TurnOnLight: "Turn on the light!",
 		TurnOnDark: "I am the dark!",
-        Login: "I am back!"
+		Login: "I am back!",
+		Create: "I have something to share ...",
 	},
 };
 
@@ -69,11 +76,30 @@ export const ErrorPageConstants = {
 export const HomePageConstants = {
 	Headings: {
 		WelcomeMessage:
-			"Welcome to the Internet Bulletin Board System, where ideas blossom and wisdom's the rhythm!",
+			"Welcome to the Internet Bulletin Board, where sharing ideas is your reward.",
+		IBBS: "Internet Bulletin Board",
 	},
 };
 
 export const CookiesConstants = {
-	IsDarkModeCookie: "darkMode",
-	CurrentLoggedInUserCookie: "currentLoggedIn",
+	DarkMode: {
+		Name: "darkMode",
+		Timeout: 30,
+	},
+	LoggedInUser: {
+		Name: "currentLoggedIn",
+		Timeout: 30,
+	},
+};
+
+export const CreatePostPageConstants = {
+	Headings: {
+		Header: "Share your story, no need for glory, just a bit of wit, and maybe some allegory.",
+		TitleBarPlaceholder: "How can you summarize your adventure?",
+		ContentBoxPlaceholder: "Go on. Tell us. Stop the suspense now.",
+	},
+	validations: {
+		TitleRequired: "Dude! You need a title for your adventure.",
+		ContentRequired: "Elaborate your idea please!",
+	},
 };

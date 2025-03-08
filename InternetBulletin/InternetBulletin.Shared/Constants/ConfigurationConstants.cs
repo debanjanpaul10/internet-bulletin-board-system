@@ -5,6 +5,8 @@
 // <summary>The Configuration Constants Class.</summary>
 // *********************************************************************************
 
+using Microsoft.Identity.Client;
+
 namespace InternetBulletin.Shared.Constants
 {
     /// <summary>
@@ -12,98 +14,79 @@ namespace InternetBulletin.Shared.Constants
     /// </summary>
     public static class ConfigurationConstants
     {
-        #region Key Vault Keys Constants
-
         /// <summary>
-        /// The application configuration connection string
+        /// The app configuration endpoint key constant.
         /// </summary>
-        public static readonly string AppConfigurationConnectionString = "AppConfig-Connection-kv";
+        public const string AppConfigurationEndpointKeyConstant = "AppConfigurationEndpoint";
 
         /// <summary>
         /// The web antiforgery token value
         /// </summary>
-        public static readonly string WebAntiforgeryTokenValue = "x-antiforgery-token-web-kv";
+        public const string WebAntiforgeryTokenConstant = "x-antiforgery-token-ibbs-web";
+
+        /// <summary>
+        /// The web antiforgery token value
+        /// </summary>
+        public const string WebAntiforgeryTokenValue = "WebAntiforgeryToken";
 
         /// <summary>
         /// The API antiforgery token value
         /// </summary>
-        public static readonly string APIAntiforgeryTokenValue = "x-antiforgery-token-api-kv";
+        public const string APIAntiforgeryTokenConstant = "x-antiforgery-token-ibbs-api";
+
+        /// <summary>
+        /// The api antiforgery token value.
+        /// </summary>
+        public const string APIAntiforgeryTokenValue = "APIAntiforgeryToken";
 
         /// <summary>
         /// The application insights instrumentation keykv
         /// </summary>
-        public static readonly string AppInsightsInstrumentationKeykv = "AppInsights-InstrumentationKey-kv";
+        public const string AppInsightsInstrumentationKeykv = "AppInsights-InstrumentationKey";
 
         /// <summary>
         /// The cosmos db connection string constant
         /// </summary>
-        public static readonly string CosmosConnectionStringConstant = "CosmosConnectionString-kv";
+        public const string CosmosConnectionStringConstant = "CosmosConnectionString";
 
         /// <summary>
         /// The SQL connection string constant
         /// </summary>
-        public static readonly string SqlConnectionStringConstant = "SqlConnectionString-kv";
-
-        #endregion
-
-        /// <summary>
-        /// The application configuration endpoint constant
-        /// </summary>
-        public static readonly string AppConfigEndpointConstant = "AppConfigEndpoint";
-
-        /// <summary>
-        /// The application configuration connection string constant
-        /// </summary>
-        public static readonly string AppConfigConnectionStringConstant = "AppConfigConnectionString";
+        public const string SqlConnectionStringConstant = "SqlConnectionString";
 
         /// <summary>
         /// The base address constant
         /// </summary>
-        public static readonly string WebApiBaseAddressConstant = "WebApiBaseAddress";
+        public const string WebApiBaseAddressConstant = "WebApiBaseAddress";
 
         /// <summary>
         /// The bulletin HTTP client constant
         /// </summary>
-        public static readonly string BulletinHttpClientConstant = "bulletinClient";
-
-        /// <summary>
-        /// The web antiforgery token constant
-        /// </summary>
-        public static readonly string WebAntiforgeryTokenConstant = "x-antiforgery-token-web";
-
-        /// <summary>
-        /// The API antiforgery token constant
-        /// </summary>
-        public static readonly string APIAntiforgeryTokenConstant = "x-antiforgery-token-api";
-
-        /// <summary>
-        /// The key vault endpoint constant
-        /// </summary>
-        public static readonly string KeyVaultEndpointConstant = "KeyVaultUrl";
+        public const string BulletinHttpClientConstant = "bulletinClient";
 
         /// <summary>
         /// The user assigned client identifier constant
         /// </summary>
-        public static readonly string UserAssignedClientIdConstant = "UserAssignedClientId";
+        public const string ManagedIdentityClientIdConstant = "ManagedIdentityClientId";
 
         /// <summary>
         /// The is development mode constant
         /// </summary>
-        public static readonly string IsDevelopmentModeConstant = "IsDevelopmentMode";
+        public const string IsDevelopmentModeConstant = "IsDevelopmentMode";
 
         /// <summary>
         /// The application json constant
         /// </summary>
-        public static readonly string ApplicationJsonConstant = "application/json";
+        public const string ApplicationJsonConstant = "application/json";
 
         /// <summary>
         /// The cosmos database name constant.
         /// </summary>
-        public static readonly string CosmosDatabaseNameConstant = "CosmosDatabaseName";
+        public const string CosmosDatabaseNameConstant = "CosmosDatabaseName";
 
         /// <summary>
         /// The posts container name constant.
         /// </summary>
-        public static readonly string PostsContainerConstant = "posts";
+        public const string PostsContainerConstant = "posts";
     }
 }

@@ -28,7 +28,7 @@ namespace InternetBulletin.Web.Helpers
 		/// <typeparam name="T"></typeparam>
 		/// <param name="url">The URL.</param>
 		/// <param name="data">The data.</param>
-		/// <returns></returns>
+		/// <returns>The response message.</returns>
 		Task<HttpResponseMessage> PostAsync(string url, string data);
 	}
 

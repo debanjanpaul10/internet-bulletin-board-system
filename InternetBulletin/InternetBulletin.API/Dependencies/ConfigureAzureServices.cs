@@ -7,47 +7,40 @@
 
 namespace InternetBulletin.API.Dependencies
 {
-	using Azure.Identity;
-	using InternetBulletin.API.Helpers;
-	using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-	using static InternetBulletin.Shared.Constants.ConfigurationConstants;
+    using Azure.Identity;
+    using InternetBulletin.API.Helpers;
+    using InternetBulletin.Shared.Constants;
+    using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+    using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+    using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
-	/// <summary>
-	/// Configures Azure Services.
-	/// </summary>
-	public static class ConfigureAzureServices
-	{
-		/// <summary>
-		/// Configures the azure application configuration.
-		/// </summary>
-		/// <param name="configuration">The configuration.</param>
-		public static void ConfigureAzureAppConfiguration(ConfigurationManager configuration)
-		{
-			var appConfigConnectionString = KeyVaultHelper.GetSecretDataAsync(configuration, AppConfigurationConnectionString);
-			if (!string.IsNullOrEmpty(appConfigConnectionString))
-			{
-				var tokenCredential = new DefaultAzureCredential();
-				configuration.AddAzureAppConfiguration(options =>
-				{
-					options.Connect(connectionString: appConfigConnectionString);
-					options.ConfigureKeyVault(option =>
-					{
-						option.SetCredential(tokenCredential);
-					});
-				});
-			}
-		}
+    /// <summary>
+    /// Configures Azure Services.
+    /// </summary>
+    public static class ConfigureAzureServices
+    {
+        /// <summary>
+        /// Configures azure app configuration.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="credentials">The credentials.</param>
+        /// <exception cref="InvalidOperationException">InvalidOperationException error.</exception>
+        public static void ConfigureAzureAppConfiguration(this WebApplicationBuilder builder, DefaultAzureCredential credentials)
+        {
+            var appConfigurationEndpoint = builder.Configuration[AppConfigurationEndpointKeyConstant];
+            if (string.IsNullOrEmpty(appConfigurationEndpoint))
+            {
+                throw new InvalidOperationException(ExceptionConstants.ConfigurationValueIsEmptyMessageConstant);
+            }
 
-		/// <summary>
-		/// Configures the azure application insights.
-		/// </summary>
-		/// <param name="configuration">The configuration.</param>
-		/// <param name="services">The services.</param>
-		public static void ConfigureAzureApplicationInsights(ConfigurationManager configuration, IServiceCollection services)
-		{
-			var appInsightsTelemetryConnection = KeyVaultHelper.GetSecretDataAsync(configuration, AppInsightsInstrumentationKeykv);
-			var options = new ApplicationInsightsServiceOptions { ConnectionString = appInsightsTelemetryConnection };
-			services.AddApplicationInsightsTelemetry(options);
-		}
-	}
+            builder.Configuration.AddAzureAppConfiguration(options =>
+            {
+                options.Connect(new Uri(appConfigurationEndpoint), credentials)
+                .Select(KeyFilter.Any).ConfigureKeyVault(configure =>
+                {
+                    configure.SetCredential(credentials);
+                });
+            });
+        }
+    }
 }

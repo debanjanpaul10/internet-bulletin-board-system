@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 
-import { CookiesConstants, HeaderPageConstants } from "@helpers/Constants";
-import AppLogo from "@assets/IBBS_logo.png";
+import {
+	CookiesConstants,
+	HeaderPageConstants,
+	HomePageConstants,
+} from "@helpers/Constants";
+import AppLogo from "@assets/Images/IBBS_logo.png";
 import { RemoveCurrentLoggedInUserData } from "@store/Users/Actions";
 
 /**
@@ -15,6 +19,7 @@ import { RemoveCurrentLoggedInUserData } from "@store/Users/Actions";
  */
 function Header() {
 	const dispatch = useDispatch();
+	const location = useLocation();
 
 	const activeStyle = { color: "#F15B2A" };
 	const { Headings } = HeaderPageConstants;
@@ -27,12 +32,12 @@ function Header() {
 
 	useEffect(() => {
 		const savedDarkModeSettings =
-			Cookies.get(CookiesConstants.IsDarkModeCookie) === "true";
+			Cookies.get(CookiesConstants.DarkMode.Name) === "true";
 		setIsDarkMode(savedDarkModeSettings);
 		document.body.classList.toggle("dark-mode", savedDarkModeSettings);
 
 		const currentLoggedInUserCookies = Cookies.get(
-			CookiesConstants.CurrentLoggedInUserCookie
+			CookiesConstants.LoggedInUser.Name
 		);
 		if (
 			currentLoggedInUserCookies !== "" &&
@@ -59,8 +64,8 @@ function Header() {
 		const newDarkMode = !isDarkMode;
 		setIsDarkMode(newDarkMode);
 		document.body.classList.toggle("dark-mode", newDarkMode);
-		Cookies.set(CookiesConstants.IsDarkModeCookie, newDarkMode, {
-			expires: 120,
+		Cookies.set(CookiesConstants.DarkMode.Name, newDarkMode, {
+			expires: CookiesConstants.DarkMode.Timeout,
 		});
 	};
 
@@ -81,59 +86,90 @@ function Header() {
 	 */
 	const handleLogout = () => {
 		dispatch(RemoveCurrentLoggedInUserData());
-		Cookies.remove(CookiesConstants.CurrentLoggedInUserCookie);
+		Cookies.remove(CookiesConstants.LoggedInUser.Name);
 		setCurrentLoggedInUser({});
 	};
 
+	/**
+	 * Checks if user logged in.
+	 * @returns {boolean} The boolean value of user login.
+	 */
+	const isUserLoggedIn = () => {
+		return Object.keys(currentLoggedInUser).length > 0;
+	};
+
 	return (
-		<nav className="navbar navbar-expand-lg navbar-dark bg-dark p-2">
-			<div className="navbar-nav">
-				<NavLink
-					to={Headings.Home.Link}
-					className="nav-link"
-					title={ButtonTitles.HomeButton}
-				>
-					<img src={AppLogo} height={"30px"} />
-				</NavLink>
-			</div>
-			<div className="navbar-nav ml-right">
-				{Object.keys(currentLoggedInUser).length === 0 ? (
+		<nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div className="d-flex w-100">
+				<div className="navbar-nav mr-auto">
 					<NavLink
-						to={Headings.Login.Link}
+						to={Headings.Home.Link}
+						className="nav-link"
+						title={ButtonTitles.HomeButton}
+					>
+						<img src={AppLogo} height={"30px"} />
+						&nbsp; {HomePageConstants.Headings.IBBS}
+					</NavLink>
+				</div>
+
+				<div className="navbar-nav mx-auto">
+					{isUserLoggedIn() &&
+						location.pathname !== Headings.CreatePost.Link && (
+							<NavLink
+								to={Headings.CreatePost.Link}
+								activeStyle={activeStyle}
+								className="nav-link create-link"
+								title={ButtonTitles.Create}
+							>
+								<i className="fa fa-plus-circle icon-large"></i>{" "}
+								&nbsp;
+								<span className="create-text">
+									{ButtonTitles.Create}
+								</span>
+							</NavLink>
+						)}
+				</div>
+
+				<div className="navbar-nav ml-auto">
+					{!isUserLoggedIn() ? (
+						<NavLink
+							to={Headings.Login.Link}
+							activeStyle={activeStyle}
+							className="nav-link buttonStyle"
+							title={ButtonTitles.Login}
+						>
+							{Headings.Login.Name}
+						</NavLink>
+					) : (
+						<NavLink
+							className="nav-link buttonStyle"
+							onClick={handleLogout}
+							title={ButtonTitles.Logout}
+							to={"/"}
+						>
+							{Headings.Logout.Name}
+						</NavLink>
+					)}
+
+					<NavLink
+						to={Headings.Register.Link}
 						activeStyle={activeStyle}
 						className="nav-link"
-						title={ButtonTitles.Login}
+						title={ButtonTitles.Register}
 					>
-						{Headings.Login.Name}
+						{Headings.Register.Name}
 					</NavLink>
-				) : (
-					<button
-						className="nav-link buttonStyle mt-0"
-						onClick={handleLogout}
-						title={ButtonTitles.Logout}
-					>
-						Logout
-					</button>
-				)}
 
-				<NavLink
-					to={Headings.Register.Link}
-					activeStyle={activeStyle}
-					className="nav-link"
-					title={ButtonTitles.Register}
-				>
-					{Headings.Register.Name}
-				</NavLink>
-
-				<i
-					onClick={toggleDarkMode}
-					className={handleShowIcon(isDarkMode)}
-					title={
-						isDarkMode
-							? ButtonTitles.TurnOnLight
-							: ButtonTitles.TurnOnDark
-					}
-				></i>
+					<i
+						onClick={toggleDarkMode}
+						className={handleShowIcon(isDarkMode)}
+						title={
+							isDarkMode
+								? ButtonTitles.TurnOnLight
+								: ButtonTitles.TurnOnDark
+						}
+					></i>
+				</div>
 			</div>
 		</nav>
 	);

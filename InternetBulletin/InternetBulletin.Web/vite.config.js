@@ -39,14 +39,15 @@ export default defineConfig(() => {
 				"@helpers": path.resolve("./React/Helpers"),
 				"@store": path.resolve("./React/Store"),
 				"@assets": path.resolve("./React/Assets"),
+				"@models": path.resolve("./React/Models"),
 			},
 		},
 		server: {
 			https: true,
 			port: 6970,
 		},
-        define: {
-            'global': "window"
-        }
+		define: {
+			global: "window",
+		},
 	};
 });

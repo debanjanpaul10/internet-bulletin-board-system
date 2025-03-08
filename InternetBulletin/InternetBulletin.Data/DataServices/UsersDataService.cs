@@ -46,7 +46,17 @@ namespace InternetBulletin.Data.DataServices
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserDetailsAsync), DateTime.UtcNow, userLogin.UserEmail));
 
                 var user = await this._sqlDbContext.Users.FirstOrDefaultAsync(x => x.UserEmail == userLogin.UserEmail && x.UserPassword == userLogin.UserPassword && x.IsActive);
-                return user ?? new User();
+                if (user is not null)
+                {
+                    return new User()
+                    {
+                        Name = user.Name,
+                        UserId = user.UserId,
+                        UserAlias = user.UserAlias,
+                        UserEmail = user.UserEmail,
+                    };
+                }
+                return new User();
             }
             catch (Exception ex)
             {
@@ -69,7 +79,15 @@ namespace InternetBulletin.Data.DataServices
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllUsersDataAsync), DateTime.UtcNow, string.Empty));
 
-                var users = await this._sqlDbContext.Users.Where(x => x.IsActive).ToListAsync();
+                var users = await this._sqlDbContext.Users.Where(x => x.IsActive).Select(x => new User
+                {
+                    Name = x.Name,
+                    UserId = x.UserId,
+                    UserAlias = x.UserAlias,
+                    UserEmail = x.UserEmail,
+
+                }).ToListAsync();
+                users.ForEach(x => x.UserPassword = string.Empty);
                 return users;
             }
             catch (Exception ex)
@@ -158,7 +176,13 @@ namespace InternetBulletin.Data.DataServices
                     dbUserData.UserPassword = updateUser.UserPassword;
                     await this._sqlDbContext.SaveChangesAsync();
 
-                    return dbUserData;
+                    return new User()
+                    {
+                        Name = dbUserData.Name,
+                        UserId = dbUserData.UserId,
+                        UserAlias = dbUserData.UserAlias,
+                        UserEmail = dbUserData.UserEmail,
+                    };
                 }
                 else
                 {
