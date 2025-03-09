@@ -69,7 +69,7 @@ stages:
       
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/InternetBulletin.Web/dist'
+        sourceFolder: '$(Build.SourcesDirectory)/dist'
         targetFolder: '$(artifactStagingDirectory)/node'
 
     - task: PublishBuildArtifacts@1
