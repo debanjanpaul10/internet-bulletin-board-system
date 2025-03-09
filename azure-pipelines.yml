@@ -7,8 +7,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  appName: 'Internet Bulletin Board'
+  appName: 'InternetBulletin'
   artifactStagingDirectory: '$(Build.SourcesDirectory)/artifacts'
+  system.debug: 'true'
 
 stages:
 # - stage: DotNetBuild
