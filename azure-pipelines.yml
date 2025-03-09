@@ -1,77 +1,77 @@
 trigger:
-- main
-- dev
+    - main
+    - dev
 
 pool:
-  vmImage: 'windows-latest'
+    vmImage: "windows-latest"
 
 variables:
-  buildConfiguration: 'Release'
-  appName: 'InternetBulletin'
-  artifactStagingDirectory: '$(Build.SourcesDirectory)/artifacts'
-  system.debug: 'true'
+    buildConfiguration: "Release"
+    appName: "InternetBulletin"
+    artifactStagingDirectory: "$(Build.SourcesDirectory)/artifacts"
+    system.debug: "true"
 
 stages:
-# - stage: DotNetBuild
-#   jobs:
-#   - job: Build
-#     steps:
-#     - task: UseDotNet@2
-#       displayName: 'Dotnet SDK'
-#       inputs:
-#         packageType: 'sdk'
-#         version: '9.0.x'
-#         installationPath: $(Agent.ToolsDirectory)/dotnet
+    - stage: DotNetBuild
+      jobs:
+          - job: Build
+            steps:
+                - task: UseDotNet@2
+                  displayName: "Dotnet SDK"
+                  inputs:
+                      packageType: "sdk"
+                      version: "9.0.x"
+                      installationPath: $(Agent.ToolsDirectory)/dotnet
 
-#     - task: DotNetCoreCLI@2
-#       displayName: 'Dotnet Restore'
-#       inputs:
-#         command: 'restore'
-#         projects: '**/*.csproj'
+                - task: DotNetCoreCLI@2
+                  displayName: "Dotnet Restore"
+                  inputs:
+                      command: "restore"
+                      projects: "**/*.csproj"
 
-#     - task: DotNetCoreCLI@2
-#       displayName: 'Dotnet Build'
-#       inputs:
-#         command: 'build'
-#         projects: '**/*.csproj'
-#         arguments: '--configuration $(buildConfiguration)'
+                - task: DotNetCoreCLI@2
+                  displayName: "Dotnet Build"
+                  inputs:
+                      command: "build"
+                      projects: "**/*.csproj"
+                      arguments: "--configuration $(buildConfiguration)"
 
-#     - task: DotNetCoreCLI@2
-#       displayName: 'Dotnet Publish'
-#       inputs:
-#         command: 'publish'
-#         projects: '**/*.csproj'
-#         arguments: '--configuration $(buildConfiguration) --output $(artifactStagingDirectory)'
+                - task: DotNetCoreCLI@2
+                  displayName: "Dotnet Publish"
+                  inputs:
+                      command: "publish"
+                      projects: "**/*.csproj"
+                      arguments: "--configuration $(buildConfiguration) --output $(artifactStagingDirectory)"
 
-#     - task: PublishBuildArtifacts@1
-#       displayName: 'Publish Artifacts'
-#       inputs:
-#         PathToPublish: '$(artifactStagingDirectory)'
-#         ArtifactName: 'drop'
-#         publishLocation: 'Container'
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish Artifacts"
+                  inputs:
+                      PathToPublish: "$(artifactStagingDirectory)"
+                      ArtifactName: "drop"
+                      publishLocation: "Container"
 
-- stage: NpmBuild
-  jobs:
-  - job: Build
-    steps:
-    - task: NodeTool@0
-      displayName: 'Install Node.js'
-      inputs:
-        versionSource: 'spec'
-        versionSpec: '22.x'
-        checkLatest: true
+    - stage: NpmBuild
+      jobs:
+          - job: Build
+            steps:
+                - task: NodeTool@0
+                  displayName: "Install Node.js"
+                  inputs:
+                      versionSource: "spec"
+                      versionSpec: "22.x"
+                      checkLatest: true
 
-    - script: npm install --force
-      displayName: 'NPM Install'
-      workingDirectory: 'InternetBulletin.Web'
-    
-    - script: npm run build
-      displayName: 'NPM Build'
-      workingDirectory: 'InternetBulletin.Web'
+                - script: npm install --force
+                  displayName: "NPM Install"
+                  workingDirectory: "InternetBulletin.Web"
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish NPM Artifacts'
-      inputs:
-        PathToPublish: '$InternetBulletin.Web/dist'
-        ArtifactName: 'npm-drop'
-        publishLocation: 'Container'
+                - script: npm run build
+                  displayName: "NPM Build"
+                  workingDirectory: "InternetBulletin.Web"
+
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish NPM Artifacts"
+                  inputs:
+                      PathToPublish: "InternetBulletin.Web/dist"
+                      ArtifactName: "npm-drop"
+                      publishLocation: "Container"
