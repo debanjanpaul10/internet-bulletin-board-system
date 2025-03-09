@@ -61,7 +61,7 @@ stages:
         versionSpec: '22.x'
         checkLatest: true
 
-    - script: npm install
+    - script: npm install --legacy-peer-deps
       displayName: 'NPM Install'
       workingDirectory: 'InternetBulletin.Web'
     
