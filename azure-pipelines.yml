@@ -68,15 +68,10 @@ stages:
     - script: npm run build
       displayName: 'NPM Build'
       workingDirectory: 'InternetBulletin.Web'
-      
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: '$InternetBulletin.Web/dist'
-        targetFolder: '$(artifactStagingDirectory)/node'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish NPM Artifacts'
       inputs:
-        PathToPublish: '$(artifactStagingDirectory)/node'
+        PathToPublish: '$InternetBulletin.Web/dist'
         ArtifactName: 'npm-drop'
         publishLocation: 'Container'
