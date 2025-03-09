@@ -61,7 +61,7 @@ stages:
         versionSpec: '22.x'
         checkLatest: true
 
-    - script: npm install --legacy-peer-deps
+    - script: npm install --force
       displayName: 'NPM Install'
       workingDirectory: 'InternetBulletin.Web'
     
@@ -71,7 +71,7 @@ stages:
       
     - task: CopyFiles@2
       inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/dist'
+        sourceFolder: '$InternetBulletin.Web/dist'
         targetFolder: '$(artifactStagingDirectory)/node'
 
     - task: PublishBuildArtifacts@1
