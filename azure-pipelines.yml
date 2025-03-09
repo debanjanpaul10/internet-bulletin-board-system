@@ -14,7 +14,7 @@ variables:
 stages:
     - stage: DotNetBuild
       jobs:
-          - job: Build
+          - job: .NET_Build
             steps:
                 - task: UseDotNet@2
                   displayName: "Dotnet SDK"
@@ -52,7 +52,7 @@ stages:
 
     - stage: NpmBuild
       jobs:
-          - job: Build
+          - job: React_Build
             steps:
                 - task: NodeTool@0
                   displayName: "Install Node.js"
