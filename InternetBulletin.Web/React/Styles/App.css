@@ -82,7 +82,7 @@ code {
 
 .ql-toolbar .ql-formats .ql-aiRewrite {
 	margin-top: 15px;
-	background: url("/React/Assets/Images/ai-icon.svg") no-repeat center center;
+	background: url("../../Images/ai-icon.svg") no-repeat center center;
 	background-size: contain;
     display: inline-block;
     position: relative;

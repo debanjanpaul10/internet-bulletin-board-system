@@ -36,7 +36,8 @@ namespace InternetBulletin.API.Dependencies
             builder.Configuration.AddAzureAppConfiguration(options =>
             {
                 options.Connect(new Uri(appConfigurationEndpoint), credentials)
-                .Select(KeyFilter.Any).ConfigureKeyVault(configure =>
+                .Select(KeyFilter.Any).Select(KeyFilter.Any, BaseConfigurationAppConfigKeyConstant).Select(KeyFilter.Any, IbbsAPIAppConfigKeyConstant)
+                .ConfigureKeyVault(configure =>
                 {
                     configure.SetCredential(credentials);
                 });

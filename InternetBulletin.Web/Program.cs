@@ -13,6 +13,7 @@ namespace InternetBulletin.Web
     using Polly;
     using Polly.Extensions.Http;
     using Azure.Identity;
+    using Microsoft.Extensions.FileProviders;
 
     /// <summary>
     /// Program class from where the execution starts
@@ -51,7 +52,7 @@ namespace InternetBulletin.Web
         public static void ConfigureServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddAuthentication();
-            builder.Services.AddControllers();
+            builder.Services.AddControllersWithViews();
 
             var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
@@ -60,6 +61,7 @@ namespace InternetBulletin.Web
             var webApiAntiforgeryToken = builder.Configuration[APIAntiforgeryTokenValue];
             if (!string.IsNullOrEmpty(webApiUrl) && !string.IsNullOrEmpty(webApiAntiforgeryToken))
             {
+                builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
                 builder.Services.AddHttpClient(BulletinHttpClientConstant, client =>
                 {
                     client.BaseAddress = new Uri(webApiUrl);
@@ -78,7 +80,7 @@ namespace InternetBulletin.Web
                 });
             });
 
-            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
+            
         }
 
         /// <summary>
@@ -94,7 +96,12 @@ namespace InternetBulletin.Web
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(app.Environment.ContentRootPath, "dist")
+                ), RequestPath = "/dist"
+            });
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

@@ -11,3 +11,4 @@
 **node_modules
 appsettings.development.json
 appsettings.Development.json
+**dist/
