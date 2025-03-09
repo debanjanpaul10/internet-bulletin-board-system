@@ -5,8 +5,6 @@
 // <summary>The Configuration Constants Class.</summary>
 // *********************************************************************************
 
-using Microsoft.Identity.Client;
-
 namespace InternetBulletin.Shared.Constants
 {
     /// <summary>
