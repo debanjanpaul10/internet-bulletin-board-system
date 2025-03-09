@@ -9,12 +9,12 @@ variables:
     buildConfiguration: "Release"
     appName: "InternetBulletin"
     artifactStagingDirectory: "$(Build.SourcesDirectory)/artifacts"
-    system.debug: "true"
+    webFolderName: "InternetBulletin.Web"
 
 stages:
     - stage: DotNetBuild
       jobs:
-          - job: .NET_Build
+          - job: API_Build
             steps:
                 - task: UseDotNet@2
                   displayName: "Dotnet SDK"
@@ -52,7 +52,7 @@ stages:
 
     - stage: NpmBuild
       jobs:
-          - job: React_Build
+          - job: WEB_Build
             steps:
                 - task: NodeTool@0
                   displayName: "Install Node.js"
@@ -63,15 +63,15 @@ stages:
 
                 - script: npm install --force
                   displayName: "NPM Install"
-                  workingDirectory: "InternetBulletin.Web"
+                  workingDirectory: "$(webFolderName)"
 
                 - script: npm run build
                   displayName: "NPM Build"
-                  workingDirectory: "InternetBulletin.Web"
+                  workingDirectory: "$(webFolderName)"
 
                 - task: PublishBuildArtifacts@1
                   displayName: "Publish NPM Artifacts"
                   inputs:
-                      PathToPublish: "InternetBulletin.Web/dist"
+                      PathToPublish: "$(webFolderName)/dist"
                       ArtifactName: "npm-drop"
                       publishLocation: "Container"
