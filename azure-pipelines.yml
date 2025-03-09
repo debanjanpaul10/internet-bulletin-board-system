@@ -1,0 +1,73 @@
+trigger:
+- main
+- dev
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  appName: 'Internet Bulletin Board'
+  artifactStagingDirectory: '$(Build.SourcesDirectory)/artifacts'
+
+stages:
+- stage: DotNetBuild
+  jobs:
+  - job: Build
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Dotnet SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.x'
+      installationPath: $(Agent.ToolsDirectory)/dotnet
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Dotnet Restore'
+    inputs:
+      command: 'restore'
+      projects: '**/*.csproj'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Dotnet Build'
+    inputs:
+      command: 'build'
+      projects: '**/*.csproj'
+      arguments: '--configuration $(buildConfiguration)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Dotnet Publish'
+    inputs:
+      command: 'publish'
+      projects: '**/*.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(artifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifacts'
+    inputs:
+      PathToPublish: '$(artifactStagingDirectory)'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
+
+- stage: NpmBuild
+  jobs:
+  - job: Build
+    steps:
+    - task: NodeTool@0
+      displayName: 'Install Node.js'
+      inputs:
+        versionSpec: '14.x'
+        checkLatest: true
+
+    - script: npm install
+      displayName: 'npm install'
+    
+    - script: npm run build
+      displayName: 'Npm Build'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish NPM Artifacts'
+      inputs:
+        PathToPublish: '$(Build.SourcesDirectory)/dist'
+        ArtifactName: 'npm-drop'
+        publishLocation: 'Container'
