@@ -1,0 +1,77 @@
+trigger:
+    - main
+    - dev
+
+pool:
+    vmImage: "windows-latest"
+
+variables:
+    buildConfiguration: "Release"
+    appName: "InternetBulletin"
+    artifactStagingDirectory: "$(Build.SourcesDirectory)/artifacts"
+    webFolderName: "InternetBulletin.Web"
+
+stages:
+    - stage: DotNetBuild
+      jobs:
+          - job: API_Build
+            steps:
+                - task: UseDotNet@2
+                  displayName: "Dotnet SDK"
+                  inputs:
+                      packageType: "sdk"
+                      version: "9.0.x"
+                      installationPath: $(Agent.ToolsDirectory)/dotnet
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Dotnet Restore"
+                  inputs:
+                      command: "restore"
+                      projects: "**/*.csproj"
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Dotnet Build"
+                  inputs:
+                      command: "build"
+                      projects: "**/*.csproj"
+                      arguments: "--configuration $(buildConfiguration)"
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Dotnet Publish"
+                  inputs:
+                      command: "publish"
+                      projects: "**/*.csproj"
+                      arguments: "--configuration $(buildConfiguration) --output $(artifactStagingDirectory)"
+
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish Artifacts"
+                  inputs:
+                      PathToPublish: "$(artifactStagingDirectory)"
+                      ArtifactName: "drop"
+                      publishLocation: "Container"
+
+    - stage: NpmBuild
+      jobs:
+          - job: WEB_Build
+            steps:
+                - task: NodeTool@0
+                  displayName: "Install Node.js"
+                  inputs:
+                      versionSource: "spec"
+                      versionSpec: "22.x"
+                      checkLatest: true
+
+                - script: npm install --force
+                  displayName: "NPM Install"
+                  workingDirectory: "$(webFolderName)"
+
+                - script: npm run build
+                  displayName: "NPM Build"
+                  workingDirectory: "$(webFolderName)"
+
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish NPM Artifacts"
+                  inputs:
+                      PathToPublish: "$(webFolderName)/dist"
+                      ArtifactName: "npm-drop"
+                      publishLocation: "Container"
