@@ -61,9 +61,11 @@ stages:
 
     - script: npm install
       displayName: 'npm install'
+      workingDirectory: 'InternetBulletin.Web'
     
     - script: npm run build
       displayName: 'Npm Build'
+      workingDirectory: 'InternetBulletin.Web'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish NPM Artifacts'
