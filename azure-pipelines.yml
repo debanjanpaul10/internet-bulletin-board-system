@@ -14,40 +14,40 @@ stages:
 - stage: DotNetBuild
   jobs:
   - job: Build
-  steps:
-  - task: UseDotNet@2
-    displayName: 'Dotnet SDK'
-    inputs:
-      packageType: 'sdk'
-      version: '9.0.x'
-      installationPath: $(Agent.ToolsDirectory)/dotnet
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Dotnet SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '9.0.x'
+        installationPath: $(Agent.ToolsDirectory)/dotnet
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Dotnet Restore'
-    inputs:
-      command: 'restore'
-      projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'Dotnet Restore'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Dotnet Build'
-    inputs:
-      command: 'build'
-      projects: '**/*.csproj'
-      arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Dotnet Build'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Dotnet Publish'
-    inputs:
-      command: 'publish'
-      projects: '**/*.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(artifactStagingDirectory)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Dotnet Publish'
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(artifactStagingDirectory)'
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifacts'
-    inputs:
-      PathToPublish: '$(artifactStagingDirectory)'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifacts'
+      inputs:
+        PathToPublish: '$(artifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
 - stage: NpmBuild
   jobs:
