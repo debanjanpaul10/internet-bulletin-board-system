@@ -1,5 +1,0 @@
-### WEB
-@baseUrl https://localhost:44315
-
-GET {{baseUrl}}/InternetBulletinWeb/GetResourceUrl?resourceUrl=Posts/GetPost?postId=19191912
-x-antiforgery-token-web: token

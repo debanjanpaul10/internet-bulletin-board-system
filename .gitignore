@@ -3,3 +3,12 @@
 ################################################################################
 
 /InternetBulletin/InternetBulletin.Data/Migrations
+**.vscode
+**.vs
+**obj
+**wwwroot
+**bin
+**node_modules
+**dist
+appsettings.development.json
+appsettings.Development.json
