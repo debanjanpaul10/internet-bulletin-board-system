@@ -9,6 +9,7 @@
 **wwwroot
 **bin
 **node_modules
+**package-lock.json
 appsettings.development.json
 appsettings.Development.json
 **dist/
