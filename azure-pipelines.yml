@@ -52,11 +52,12 @@ stages:
 
     - stage: NpmBuild
       jobs:
-          - job: WEB_Build_Deploy
+          - job: JsBundles
             pool:
                 vmImage: "ubuntu-latest"
             steps:
                 - task: AzureStaticWebApp@0
+                  displayName: "React Build + Deploy"
                   inputs:
                       app_location: "$(webFolderName)"
                       app_build_command: "npm run build"
