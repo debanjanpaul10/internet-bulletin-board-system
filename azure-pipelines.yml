@@ -53,6 +53,8 @@ stages:
     - stage: NpmBuild
       jobs:
           - job: WEB_Build
+            pool:
+                vmImage: "ubuntu-latest"
             steps:
                 - task: NodeTool@0
                   displayName: "Install Node.js"
@@ -77,6 +79,8 @@ stages:
                       publishLocation: "Container"
 
           - job: WEB_Deploy
+            pool:
+                vmImage: "ubuntu-latest"
             steps:
                 - task: AzureStaticWebApp@0
                   inputs:
