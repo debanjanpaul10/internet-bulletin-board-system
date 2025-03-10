@@ -86,5 +86,15 @@ namespace InternetBulletin.Shared.Constants
         /// The posts container name constant.
         /// </summary>
         public const string PostsContainerConstant = "posts";
+
+        /// <summary>
+        /// The base configuration app config key constant.
+        /// </summary>
+        public const string BaseConfigurationAppConfigKeyConstant = "BaseConfiguration";
+
+        /// <summary>
+        /// The ibbs api app config key constant.
+        /// </summary>
+        public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
     }
 }

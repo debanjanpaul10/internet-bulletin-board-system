@@ -103,3 +103,7 @@ export const CreatePostPageConstants = {
 		ContentRequired: "Elaborate your idea please!",
 	},
 };
+
+export const NoPostsMessageConstant = {
+    Heading: "Oops! We do not have anything for you right now."
+}

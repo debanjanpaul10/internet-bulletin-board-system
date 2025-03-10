@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import PostBody from "@components/Posts/PostBody";
+import NoPostsContainer from "@components/Posts/NoPostsContainer";
 
 /**
  * @component
@@ -27,13 +28,15 @@ function PostsContainer() {
 	}, [AllPostsStoreData]);
 
 	return (
-		Object.keys(allPosts).length > 0 && (
-			<div className="container">
-				{allPosts.map((post) => (
+		<div className="container">
+			{allPosts.length > 0 ? (
+				allPosts.map((post) => (
 					<PostBody key={post.PostId} post={post} />
-				))}
-			</div>
-		)
+				))
+			) : (
+				<NoPostsContainer />
+			)}
+		</div>
 	);
 }
 

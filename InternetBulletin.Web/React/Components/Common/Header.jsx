@@ -8,7 +8,7 @@ import {
 	HeaderPageConstants,
 	HomePageConstants,
 } from "@helpers/Constants";
-import AppLogo from "@assets/Images/IBBS_logo.png";
+import AppLogo from "../../../Images/IBBS_logo.png";
 import { RemoveCurrentLoggedInUserData } from "@store/Users/Actions";
 
 /**

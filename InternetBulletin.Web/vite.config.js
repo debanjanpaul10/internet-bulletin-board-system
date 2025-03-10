@@ -2,10 +2,11 @@
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import mkcert from "vite-plugin-mkcert";
 
 export default defineConfig(() => {
 	return {
-		plugins: [react(), basicSsl()],
+		plugins: [react(), basicSsl(), mkcert()],
 		build: {
 			target: "esnext",
 			minify: "terser",
@@ -14,7 +15,11 @@ export default defineConfig(() => {
 				formats: ["es"],
 			},
 			rollupOptions: {
-				external: ["react", "react-dom"],
+				input: {
+					main: path.resolve(__dirname, "index.html"),
+					app: path.resolve(__dirname, "React/index.jsx"),
+				},
+				external: [],
 				output: {
 					globals: {
 						react: "React",
@@ -38,7 +43,7 @@ export default defineConfig(() => {
 				"@components": path.resolve("./React/Components"),
 				"@helpers": path.resolve("./React/Helpers"),
 				"@store": path.resolve("./React/Store"),
-				"@assets": path.resolve("./React/Assets"),
+				"@styles": path.resolve("./React/Styles"),
 				"@models": path.resolve("./React/Models"),
 			},
 		},
@@ -48,6 +53,7 @@ export default defineConfig(() => {
 		},
 		define: {
 			global: "window",
+			"process.env": {},
 		},
 	};
 });

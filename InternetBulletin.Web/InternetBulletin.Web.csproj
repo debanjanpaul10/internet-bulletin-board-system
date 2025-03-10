@@ -30,9 +30,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="React\Assets\" />
     <Folder Include="React\Helpers\" />
     <Folder Include="React\Store\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="wwwroot\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
