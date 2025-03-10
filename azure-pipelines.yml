@@ -13,7 +13,6 @@ variables:
 
 stages:
     - stage: DotNetBuild
-      dependsOn: none
       jobs:
           - job: API_Build
             steps:
