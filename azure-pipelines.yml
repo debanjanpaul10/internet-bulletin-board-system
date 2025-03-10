@@ -75,3 +75,11 @@ stages:
                       PathToPublish: "$(webFolderName)/dist"
                       ArtifactName: "npm-drop"
                       publishLocation: "Container"
+
+          - job: WEB_Deply
+            steps:
+                - task: AzureStaticWebApp@0
+                  inputs:
+                      app_location: "$(webFolderName)"
+                      output_location: "$(webFolderName)/dist"
+                      azure_static_web_apps_api_token: "$(deployment_token)"
