@@ -51,7 +51,6 @@ stages:
                       publishLocation: "Container"
 
     - stage: NpmBuild
-      dependsOn: none
       jobs:
           - job: WEB_Build
             pool:
