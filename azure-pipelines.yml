@@ -78,6 +78,8 @@ stages:
                       ArtifactName: "npm-drop"
                       publishLocation: "Container"
 
+    - stage: NpmPublish
+      jobs:
           - job: WEB_Deploy
             pool:
                 vmImage: "ubuntu-latest"
