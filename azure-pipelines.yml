@@ -52,36 +52,7 @@ stages:
 
     - stage: NpmBuild
       jobs:
-          - job: WEB_Build
-            pool:
-                vmImage: "ubuntu-latest"
-            steps:
-                - task: NodeTool@0
-                  displayName: "Install Node.js"
-                  inputs:
-                      versionSource: "spec"
-                      versionSpec: "22.x"
-                      checkLatest: true
-
-                - script: npm install --force
-                  displayName: "NPM Install"
-                  workingDirectory: "$(webFolderName)"
-
-                - script: npm run build
-                  displayName: "NPM Build"
-                  workingDirectory: "$(webFolderName)"
-
-                - task: PublishBuildArtifacts@1
-                  displayName: "Publish NPM Artifacts"
-                  inputs:
-                      PathToPublish: "$(webFolderName)/dist"
-                      ArtifactName: "npm-drop"
-                      publishLocation: "Container"
-
-    - stage: NpmPublish
-      dependsOn: NpmBuild
-      jobs:
-          - job: WEB_Deploy
+          - job: WEB_Build_Deploy
             pool:
                 vmImage: "ubuntu-latest"
             steps:
@@ -89,7 +60,7 @@ stages:
                   inputs:
                       app_location: "$(webFolderName)"
                       app_build_command: "npm run build"
-                      output_location: "$(webFolderName)/dist"
+                      output_location: "/dist"
                       azure_static_web_apps_api_token: "$(deployment_token)"
                   env:
                       NPM_CONFIG_FORCE: true
