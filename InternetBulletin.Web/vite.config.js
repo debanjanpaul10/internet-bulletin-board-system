@@ -7,18 +7,19 @@ import mkcert from "vite-plugin-mkcert";
 export default defineConfig(() => {
 	return {
 		plugins: [react(), basicSsl(), mkcert()],
-        publicDir: "Public",
 		build: {
 			target: "esnext",
 			minify: "terser",
-			outDir: "dist",
-			emptyOutDir: true,
+			lib: {
+				entry: "React/index.jsx",
+				formats: ["es"],
+			},
 			rollupOptions: {
 				input: {
 					main: path.resolve(__dirname, "index.html"),
 					app: path.resolve(__dirname, "React/index.jsx"),
 				},
-				external: ["react", "react-dom"],
+				external: [],
 				output: {
 					globals: {
 						react: "React",
@@ -43,7 +44,7 @@ export default defineConfig(() => {
 				"@helpers": path.resolve("./React/Helpers"),
 				"@store": path.resolve("./React/Store"),
 				"@styles": path.resolve("./React/Styles"),
-				"@models": path.resolve("./React/Models")
+				"@models": path.resolve("./React/Models"),
 			},
 		},
 		server: {
@@ -52,6 +53,7 @@ export default defineConfig(() => {
 		},
 		define: {
 			global: "window",
+			"process.env": {},
 		},
 	};
 });
