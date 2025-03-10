@@ -76,7 +76,7 @@ stages:
                       ArtifactName: "npm-drop"
                       publishLocation: "Container"
 
-          - job: WEB_Deply
+          - job: WEB_Deploy
             steps:
                 - task: AzureStaticWebApp@0
                   inputs:
