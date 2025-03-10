@@ -87,6 +87,6 @@ stages:
             steps:
                 - task: AzureStaticWebApp@0
                   inputs:
-                      app_location: "$(webFolderName)/React"
+                      app_location: "$(webFolderName)"
                       output_location: "$(webFolderName)/dist"
                       azure_static_web_apps_api_token: "$(deployment_token)"
