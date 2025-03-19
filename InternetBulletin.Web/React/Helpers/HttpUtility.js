@@ -13,9 +13,11 @@ function HttpUtility() {
 	 */
 	const GetAsync = async (apiUrl) => {
 		try {
-			const url = ConfigurationConstants.GetBaseUrl + apiUrl;
-			const webForgeryToken =
-				ConfigurationConstants.WebAntiForgeryTokenValue;
+			const url =
+				import.meta.env.VITE_WEB_ENDPOINT +
+				ConfigurationConstants.GetBaseUrl +
+				apiUrl;
+			const webForgeryToken = import.meta.env.VITE_ANTIFORGERY_TOKEN;
 
 			const response = await axios.get(url, {
 				headers: {
@@ -43,9 +45,11 @@ function HttpUtility() {
 	 */
 	const PostAsync = async (apiUrl, data) => {
 		try {
-			const url = ConfigurationConstants.PostBaseUrl + apiUrl;
-			const webForgeryToken =
-				ConfigurationConstants.WebAntiForgeryTokenValue;
+			const url =
+				import.meta.env.VITE_WEB_ENDPOINT +
+				ConfigurationConstants.PostBaseUrl +
+				apiUrl;
+			const webForgeryToken = import.meta.env.VITE_ANTIFORGERY_TOKEN;
 
 			const response = await axios.post(url, data, {
 				headers: {
@@ -63,7 +67,34 @@ function HttpUtility() {
 		}
 	};
 
-	return { GetAsync, PostAsync };
+	/**
+	 * The Post AI data function.
+	 * @param {Object} data The post data object.
+	 * @returns {Promise} The promise of the api response.
+	 */
+	const PostAIAsync = async (data) => {
+		try {
+			const url =
+				import.meta.env.VITE_WEB_ENDPOINT +
+				ConfigurationConstants.AiRewriteUrl;
+			const webForgeryToken = import.meta.env.VITE_ANTIFORGERY_TOKEN;
+
+			const response = await axios.post(url, data, {
+				headers: {
+					"x-antiforgery-token-ibbs-web": webForgeryToken,
+				},
+			});
+			if (response !== null || response.data !== "") {
+				return response.data;
+			}
+		} catch (error) {
+			return Promise.reject(
+				error.response ? error.response.data : error.message
+			);
+		}
+	};
+
+	return { GetAsync, PostAsync, PostAIAsync };
 }
 
-export const { GetAsync, PostAsync } = HttpUtility();
+export const { GetAsync, PostAsync, PostAIAsync } = HttpUtility();

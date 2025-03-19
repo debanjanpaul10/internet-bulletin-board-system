@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import { Button } from "@mui/material";
 
 import {
 	CookiesConstants,
 	HeaderPageConstants,
 	LoginPageConstants,
 } from "@helpers/Constants";
-import { GetUserDataAsync, UserDataFailure } from "@store/Users/Actions";
+import { GetUserAsync, UserDataFailure } from "@store/Users/Actions";
 import Spinner from "@components/Common/Spinner";
 import Toaster from "@components/Common/Toaster";
 import FooterComponent from "@components/Common/Footer";
@@ -96,7 +97,7 @@ function LoginComponent(props) {
 				data.UserPassword
 			);
 
-			dispatch(GetUserDataAsync(loginData));
+			dispatch(GetUserAsync(loginData));
 		}
 	};
 
@@ -121,7 +122,7 @@ function LoginComponent(props) {
 					</h1>
 				</div>
 
-				<form onSubmit={handleSubmit} className="loginuser">
+				<form className="loginuser">
 					<div className="form-group row">
 						<div className="col-sm-6 mb-3 mb-sm-0">
 							<div className="row"></div>
@@ -176,9 +177,13 @@ function LoginComponent(props) {
 					</div>
 
 					<div className="text-center">
-						<button className="btn btn-block btn-success">
+						<Button
+							variant="contained"
+							className="mt-3"
+							onClick={handleSubmit}
+						>
 							{LoginPageConstants.Headings.LoginButton}
-						</button>
+						</Button>
 					</div>
 				</form>
 			</div>

@@ -7,11 +7,12 @@
 
 namespace InternetBulletin.Web.Controllers
 {
-	using InternetBulletin.Shared.Constants;
-	using InternetBulletin.Web.Helpers;
-	using Microsoft.AspNetCore.Mvc;
 	using System.Globalization;
 	using System.Text;
+	using InternetBulletin.Shared.Constants;
+	using InternetBulletin.Shared.DTOs;
+	using InternetBulletin.Web.Helpers;
+	using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Internet Bulletin Web Controller Class.
@@ -19,11 +20,9 @@ namespace InternetBulletin.Web.Controllers
 	/// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
 	/// <param name="httpClientHelper">The HTTP client helper</param>
 	/// <param name="configuration">The Configuration parameter.</param>
-	[Route("[controller]")]
+	[Route(RouteConstants.WebControllerUrl_RoutePrefix)]
 	public class InternetBulletinWebController(
-		IHttpClientHelper httpClientHelper,
-		IConfiguration configuration,
-		ILogger<InternetBulletinWebController> logger) : BaseController(configuration)
+		IHttpClientHelper httpClientHelper, IConfiguration configuration, ILogger<InternetBulletinWebController> logger) : BaseController(configuration)
 	{
 		/// <summary>
 		/// The HTTP client helper
@@ -127,6 +126,60 @@ namespace InternetBulletin.Web.Controllers
 			{
 				this._logger.LogInformation(string.Format(
 					CultureInfo.InvariantCulture, LoggingConstants.LogHelperMethodEnded, nameof(PostResourceDataAsync), DateTime.UtcNow, resourceUrl));
+			}
+		}
+
+		/// <summary>
+		/// Rewrites the story with AI.
+		/// </summary>
+		/// <returns>The action result of JSON response.</returns>
+		[HttpPost]
+		[Route(RouteConstants.RewriteStoryWithAiUrl_Route)]
+		public async Task<IActionResult> RewriteStoryWithAiAsync()
+		{
+			try
+			{
+				this._logger.LogInformation(string.Format(
+					CultureInfo.InvariantCulture, LoggingConstants.LogHelperMethodStart, nameof(RewriteStoryWithAiAsync), DateTime.UtcNow, string.Empty));
+
+				if (this.IsAuthorized())
+				{
+					var storyString = string.Empty;
+					var request = this.HttpContext.Request;
+					using (var reader = new StreamReader(request.Body, Encoding.UTF8))
+					{
+						storyString = await reader.ReadToEndAsync();
+					}
+					var rewriteRequestDTO = new RewriteRequestDTO()
+					{
+						Story = storyString
+					};
+
+					var response = await this._httpClientHelper.PostAiAsync(RouteConstants.RewriteTextApi_Route, rewriteRequestDTO);
+					if (response.IsSuccessStatusCode)
+					{
+						var responseBody = await response.Content.ReadAsStringAsync();
+						return this.Ok(responseBody);
+					}
+					else
+					{
+						var responseBody = await response.Content.ReadAsStringAsync();
+						return this.StatusCode((int)response.StatusCode, responseBody);
+					}
+				}
+
+				return this.Unauthorized();
+			}
+			catch (Exception ex)
+			{
+				this._logger.LogError(ex, string.Format(
+					CultureInfo.InvariantCulture, LoggingConstants.LogHelperMethodFailed, nameof(RewriteStoryWithAiAsync), DateTime.UtcNow, ex.Message));
+				throw;
+			}
+			finally
+			{
+				this._logger.LogInformation(string.Format(
+					CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(RewriteStoryWithAiAsync), DateTime.UtcNow, string.Empty));
 			}
 		}
 	}

@@ -33,6 +33,11 @@ namespace InternetBulletin.Shared.Constants
         public const string APIAntiforgeryTokenConstant = "x-antiforgery-token-ibbs-api";
 
         /// <summary>
+        /// The ai antiforgery token constant.
+        /// </summary>
+        public const string AIAntiforgeryTokenConstant = "x-antiforgery-token-bulletin-ai";
+
+        /// <summary>
         /// The api antiforgery token value.
         /// </summary>
         public const string APIAntiforgeryTokenValue = "APIAntiforgeryToken";
@@ -58,9 +63,19 @@ namespace InternetBulletin.Shared.Constants
         public const string WebApiBaseAddressConstant = "WebApiBaseAddress";
 
         /// <summary>
+        /// The local web api base address constant.
+        /// </summary>
+        public const string LocalWebApiBaseAddressConstant = "LocalWebApiBaseAddress";
+
+        /// <summary>
         /// The bulletin HTTP client constant
         /// </summary>
         public const string BulletinHttpClientConstant = "bulletinClient";
+
+        /// <summary>
+        /// The bulletin ai http client constant.
+        /// </summary>
+        public const string BulletinAiHttpClientConstant = "bulletinAiClient";
 
         /// <summary>
         /// The user assigned client identifier constant
@@ -96,5 +111,20 @@ namespace InternetBulletin.Shared.Constants
         /// The ibbs api app config key constant.
         /// </summary>
         public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
+
+        /// <summary>
+        /// The bulletin ai api endpoint constant.
+        /// </summary>
+        public const string BulletinAIApiEndpointConstant = "BulletinAiApiUrl";
+
+        /// <summary>
+        /// The bulletin ai token constant.
+        /// </summary>
+        public const string BulletinAiTokenConstant = "BulletinAiToken";
+
+        /// <summary>
+        /// The ibbs ai app config key constant.
+        /// </summary>
+        public const string IBBSAIAppConfigKeyConstant = "IBBS.AI";
     }
 }

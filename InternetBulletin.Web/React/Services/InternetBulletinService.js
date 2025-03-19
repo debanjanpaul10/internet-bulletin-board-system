@@ -1,4 +1,4 @@
-import { GetAsync, PostAsync } from "@helpers/HttpUtility";
+import { GetAsync, PostAIAsync, PostAsync } from "@helpers/HttpUtility";
 import mockPostsData from "../Mock/Posts.json";
 
 // #region POSTS
@@ -8,7 +8,7 @@ import mockPostsData from "../Mock/Posts.json";
  * @param {string} postId The post id.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetPostAsync = async (postId) => {
+export const GetPostApiAsync = async (postId) => {
 	return await GetAsync(`Posts/GetPost?postId=${postId}`);
 };
 
@@ -16,7 +16,7 @@ export const GetPostAsync = async (postId) => {
  * Gets all the posts data from api.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetAllPostsAsync = async () => {
+export const GetAllPostsApiAsync = async () => {
 	// return mockPostsData;
 	return await GetAsync(`Posts/GetAllPosts`);
 };
@@ -26,7 +26,7 @@ export const GetAllPostsAsync = async () => {
  * @param {Object} newPostData The new post data.
  * @returns {Promise} The promise of the response from api.
  */
-export const AddNewPostAsync = async (newPostData) => {
+export const AddNewPostApiAsync = async (newPostData) => {
 	return await PostAsync(`Posts/AddPost`, newPostData);
 };
 
@@ -35,7 +35,7 @@ export const AddNewPostAsync = async (newPostData) => {
  * @param {Object} updatedPostData The updated post data.
  * @returns {Promise} The promise of the response from api.
  */
-export const UpdatePostAsync = async (updatedPostData) => {
+export const UpdatePostApiAsync = async (updatedPostData) => {
 	return await PostAsync(`Posts/UpdatePost`, updatedPostData);
 };
 
@@ -44,7 +44,7 @@ export const UpdatePostAsync = async (updatedPostData) => {
  * @param {string} postId The post id.
  * @returns {Promise} The promise of the response from api.
  */
-export const DeletePostAsync = async (postId) => {
+export const DeletePostApiAsync = async (postId) => {
 	return await PostAsync(`Posts/DeletePost`, postId);
 };
 
@@ -57,7 +57,7 @@ export const DeletePostAsync = async (postId) => {
  * @param {Object} userData The user id.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetUserAsync = (userData) => {
+export const GetUserApiAsync = (userData) => {
 	return PostAsync(`Users/GetUser`, userData);
 };
 
@@ -65,7 +65,7 @@ export const GetUserAsync = (userData) => {
  * Gets all the users data from api.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetAllUsersAsync = async () => {
+export const GetAllUsersApiAsync = async () => {
 	return await GetAsync(`Users/GetAllUsers`);
 };
 
@@ -74,9 +74,18 @@ export const GetAllUsersAsync = async () => {
  * @param {Object} userData The new user data.
  * @returns {Promise} The promise of the response from api.
  */
-export const AddNewUserAsync = async (userData) => {
+export const AddNewUserApiAsync = async (userData) => {
 	return await PostAsync(`Users/NewUser`, userData);
 };
+
+/**
+ * Gets the user profile data from api.
+ * @param {number} userId The user id.
+ * @returns {Promise} The promise of the response from api.
+ */
+export const GetUserProfileDataApiAsync = async (userId) => {
+    return await GetAsync(`Profiles/GetUserProfileData?userid=${userId}`);
+}
 
 // #endregion
 
@@ -87,8 +96,16 @@ export const AddNewUserAsync = async (userData) => {
  * @param {string} keyName The configuration key name.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetConfigurationAsync = async (keyName) => {
+export const GetConfigurationApiAsync = async (keyName) => {
 	return await GetAsync(`Configuration/GetConfiguration?keyName=${keyName}`);
+};
+
+// #endregion
+
+// #region AI
+
+export const PostRewriteStoryWithAiApiAsync = async (storyText) => {
+	return await PostAIAsync(storyText);
 };
 
 // #endregion

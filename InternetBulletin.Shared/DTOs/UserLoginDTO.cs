@@ -7,25 +7,25 @@
 
 namespace InternetBulletin.Shared.DTOs
 {
-    /// <summary>
-    /// User login DTO.
-    /// </summary>
-    public class UserLoginDTO
-    {
-        /// <summary>
+	/// <summary>
+	/// User login DTO.
+	/// </summary>
+	public class UserLoginDTO
+	{
+		/// <summary>
 		/// Gets or sets the user email.
 		/// </summary>
 		/// <value>
 		/// The user email.
 		/// </value>
-        public string UserEmail { get; set; }
+		public string UserEmail { get; set; }
 
-        /// <summary>
+		/// <summary>
 		/// Gets or sets the user password.
 		/// </summary>
 		/// <value>
 		/// The user password.
 		/// </value>
 		public string UserPassword { get; set; }
-    }
+	}
 }

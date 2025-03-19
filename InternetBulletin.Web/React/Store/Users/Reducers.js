@@ -6,6 +6,7 @@ import {
 	START_SPINNER,
 	STOP_SPINNER,
 	USER_DATA_FAIL,
+	GET_USER_PROFILE_DATA,
 } from "@store/Users/ActionTypes";
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
 	updatedUserData: {},
 	userDataError: null,
 	isUserDataLoading: false,
+	userProfileData: {},
 };
 
 const UsersReducer = (state = initialState, action) => {
@@ -59,6 +61,12 @@ const UsersReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isUserDataLoading: false,
+			};
+		}
+		case GET_USER_PROFILE_DATA: {
+			return {
+				...state,
+				userProfileData: action.payload,
 			};
 		}
 		default: {

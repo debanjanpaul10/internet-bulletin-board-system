@@ -28,12 +28,12 @@ namespace InternetBulletin.API.Dependencies
         public static void ConfigureApplicationDependencies(this WebApplicationBuilder builder)
         {
             var cosmosConnectionString = builder.Configuration[ConfigurationConstants.CosmosConnectionStringConstant];
-            var containerName = builder.Configuration[ConfigurationConstants.CosmosDatabaseNameConstant];
-            if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(containerName))
+            var databaseName = builder.Configuration[ConfigurationConstants.CosmosDatabaseNameConstant];
+            if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(databaseName))
             {
                 builder.Services.AddDbContext<CosmosDbContext>(options =>
                 {
-                    options.UseCosmos(cosmosConnectionString, containerName);
+                    options.UseCosmos(cosmosConnectionString, databaseName);
                 });
             }
 
@@ -56,6 +56,7 @@ namespace InternetBulletin.API.Dependencies
             builder.Services.AddScoped<IPostsService, PostsService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+            builder.Services.AddScoped<IProfilesService, ProfilesService>();
         }
 
         /// <summary>
@@ -66,6 +67,7 @@ namespace InternetBulletin.API.Dependencies
         {
             builder.Services.AddScoped<IPostsDataService, PostsDataService>();
             builder.Services.AddScoped<IUsersDataService, UsersDataService>();
+            builder.Services.AddScoped<IProfilesDataService, ProfilesDataService>();
         }
     }
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Button } from "@mui/material";
 
 import { HeaderPageConstants, RegisterPageConstants } from "@helpers/Constants";
-import { AddNewUserDataAsync, UserDataFailure } from "@store/Users/Actions";
+import { AddNewUserAsync, UserDataFailure } from "@store/Users/Actions";
 import Toaster from "@components/Common/Toaster";
 import Spinner from "@components/Common/Spinner";
 import FooterComponent from "@components/Common/Footer";
@@ -86,7 +87,7 @@ function RegisterComponent(props) {
 				UserPassword: data.UserPassword,
 			};
 
-			dispatch(AddNewUserDataAsync(newData));
+			dispatch(AddNewUserAsync(newData));
 		}
 	};
 
@@ -123,7 +124,7 @@ function RegisterComponent(props) {
 						{RegisterPageConstants.Headings.RegisterNewUser}
 					</h1>
 				</div>
-				<form onSubmit={handleSubmit} className="newuser">
+				<form className="newuser">
 					<div className="form-group row">
 						<div className="col-sm-6 mb-3 mb-sm-0">
 							<div className="row p-2 ">
@@ -226,12 +227,14 @@ function RegisterComponent(props) {
 					</div>
 
 					<div className="text-center">
-						<button
+						<Button
+							variant="contained"
 							type="submit"
-							className="btn btn-block btn-success"
+							className="mt-3"
+                            onClick={handleSubmit}
 						>
 							{RegisterPageConstants.Headings.AddButton}
-						</button>
+						</Button>
 					</div>
 				</form>
 			</div>

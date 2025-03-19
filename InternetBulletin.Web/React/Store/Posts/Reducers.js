@@ -3,12 +3,16 @@ import {
 	GET_POST_DATA,
 	START_SPINNER,
 	STOP_SPINNER,
+	REWRITE_STORY_AI,
+	IS_CREATE_POST_LOADING,
 } from "@store/Posts/ActionTypes";
 
 const initialState = {
 	postData: {},
 	allPostsData: [],
 	isPostsDataLoading: false,
+	aiRewrittenStory: "",
+	isCreatePostLoading: false,
 };
 
 const PostsReducer = (state = initialState, action) => {
@@ -22,7 +26,7 @@ const PostsReducer = (state = initialState, action) => {
 		case GET_ALL_POSTS_DATA: {
 			return {
 				...state,
-				allPostsData: action.payload,
+				allPostsData: [...action.payload],
 			};
 		}
 		case START_SPINNER: {
@@ -35,6 +39,18 @@ const PostsReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isPostsDataLoading: false,
+			};
+		}
+		case REWRITE_STORY_AI: {
+			return {
+				...state,
+				aiRewrittenStory: action.payload,
+			};
+		}
+		case IS_CREATE_POST_LOADING: {
+			return {
+				...state,
+				isCreatePostLoading: action.payload,
 			};
 		}
 		default: {

@@ -14,6 +14,7 @@ import App from "./App";
 import PostsReducer from "@store/Posts/Reducers";
 import UsersReducer from "@store/Users/Reducers";
 import CommonReducer from "@store/Common/Reducers";
+import { ConsoleMessage } from "@helpers/Constants";
 
 const store = configureStore({
 	reducer: {
@@ -24,10 +25,17 @@ const store = configureStore({
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const customConsoleMessage = console.log(
+	"%c %s",
+	"color:red; font-size: 22pt; font-family: 'Source Code Pro'",
+	ConsoleMessage
+);
+
 root.render(
 	<Router>
 		<Provider store={store}>
 			<App />
+			{customConsoleMessage}
 		</Provider>
 	</Router>
 );

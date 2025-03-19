@@ -1,4 +1,4 @@
-import { GetConfigurationAsync } from "@helpers/InternetBulletinService";
+import { GetConfigurationAsync } from "@services/InternetBulletinService";
 import { GET_CONFIGURATION_VALUE } from "@store/Common/ActionTypes";
 
 /**

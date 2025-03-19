@@ -85,5 +85,10 @@ namespace InternetBulletin.Shared.Constants
         /// The configuration value not exists message constant.
         /// </summary>
         public static readonly string ConfigurationValueNotExistsMessageConstant = "The configuration value is missing!";
+
+        /// <summary>
+        /// The user id cannot be null message constant.
+        /// </summary>
+        public const string UserIdCannotBeNullMessageConstant = "The user id passed must be a valid integer boss!";
     }
 }

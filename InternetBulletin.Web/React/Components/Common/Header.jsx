@@ -10,6 +10,7 @@ import {
 } from "@helpers/Constants";
 import AppLogo from "../../../Images/IBBS_logo.png";
 import { RemoveCurrentLoggedInUserData } from "@store/Users/Actions";
+import { CustomDarkModeToggleSwitch } from "@helpers/CommonUtility";
 
 /**
  * @component
@@ -67,18 +68,6 @@ function Header() {
 		Cookies.set(CookiesConstants.DarkMode.Name, newDarkMode, {
 			expires: CookiesConstants.DarkMode.Timeout,
 		});
-	};
-
-	/**
-	 * Handles the icon rendering.
-	 * @param {bool} isDarkMode The boolean flag for dark mode.
-	 * @returns {string} The icon props classes.
-	 */
-	const handleShowIcon = (isDarkMode) => {
-		var extraIcon = isDarkMode
-			? "fa fa-sun-o lightgrey"
-			: "fa fa-moon-o lightgrey";
-		return `buttonStyle ${extraIcon} p-2 mt-2`;
 	};
 
 	/**
@@ -151,24 +140,36 @@ function Header() {
 						</NavLink>
 					)}
 
-					<NavLink
-						to={Headings.Register.Link}
-						activeStyle={activeStyle}
-						className="nav-link"
-						title={ButtonTitles.Register}
-					>
-						{Headings.Register.Name}
-					</NavLink>
+					{!isUserLoggedIn() ? (
+						<NavLink
+							to={Headings.Register.Link}
+							activeStyle={activeStyle}
+							className="nav-link"
+							title={ButtonTitles.Register}
+						>
+							{Headings.Register.Name}
+						</NavLink>
+					) : (
+						<NavLink
+							to={Headings.MyProfile.Link}
+							className="nav-link buttonStyle"
+							activeStyle={activeStyle}
+							title={ButtonTitles.MyProfile}
+						>
+							{Headings.MyProfile.Name}
+						</NavLink>
+					)}
 
-					<i
-						onClick={toggleDarkMode}
-						className={handleShowIcon(isDarkMode)}
-						title={
-							isDarkMode
-								? ButtonTitles.TurnOnLight
-								: ButtonTitles.TurnOnDark
-						}
-					></i>
+					<div
+						className="mt-1 mr-3 pr-2"
+						style={{ marginRight: "10px" }}
+					>
+						<CustomDarkModeToggleSwitch
+							onChange={toggleDarkMode}
+							checked={!isDarkMode}
+                            title={isDarkMode ? ButtonTitles.TurnOnLight : ButtonTitles.TurnOnDark}
+						/>
+					</div>
 				</div>
 			</div>
 		</nav>

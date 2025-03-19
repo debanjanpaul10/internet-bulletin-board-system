@@ -54,21 +54,8 @@ namespace InternetBulletin.Web
             builder.Services.AddAuthentication();
             builder.Services.AddControllersWithViews();
 
-            var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
-                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
-
-            var webApiUrl = builder.Configuration[WebApiBaseAddressConstant];
-            var webApiAntiforgeryToken = builder.Configuration[APIAntiforgeryTokenValue];
-            if (!string.IsNullOrEmpty(webApiUrl) && !string.IsNullOrEmpty(webApiAntiforgeryToken))
-            {
-                builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
-                builder.Services.AddHttpClient(BulletinHttpClientConstant, client =>
-                {
-                    client.BaseAddress = new Uri(webApiUrl);
-                    client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, webApiAntiforgeryToken);
-                    client.Timeout = TimeSpan.FromMinutes(3);
-                }).AddPolicyHandler(retryPolicy);
-            }
+            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
+            builder.ConfigureHttpClientServices();
 
             builder.Services.AddCors(options =>
             {
@@ -79,15 +66,50 @@ namespace InternetBulletin.Web
                     .AllowAnyMethod();
                 });
             });
+        }
 
-            
+        /// <summary>
+        /// Configures http client services.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        private static void ConfigureHttpClientServices(this WebApplicationBuilder builder)
+        {
+            var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
+
+            var webApiUrl = builder.Environment.IsDevelopment()
+                ? builder.Configuration[LocalWebApiBaseAddressConstant]
+                : builder.Configuration[WebApiBaseAddressConstant];
+
+            var webApiAntiforgeryToken = builder.Configuration[APIAntiforgeryTokenValue];
+            if (!string.IsNullOrEmpty(webApiUrl) && !string.IsNullOrEmpty(webApiAntiforgeryToken))
+            {
+                builder.Services.AddHttpClient(BulletinHttpClientConstant, client =>
+                {
+                    client.BaseAddress = new Uri(webApiUrl);
+                    client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, webApiAntiforgeryToken);
+                    client.Timeout = TimeSpan.FromMinutes(3);
+                }).AddPolicyHandler(retryPolicy);
+            }
+
+            var aiApiUrl = builder.Configuration[BulletinAIApiEndpointConstant];
+            var bulletinAiToken = builder.Configuration[BulletinAiTokenConstant];
+            if (!string.IsNullOrEmpty(aiApiUrl) && !string.IsNullOrEmpty(bulletinAiToken))
+            {
+                builder.Services.AddHttpClient(BulletinAiHttpClientConstant, client =>
+                {
+                    client.BaseAddress = new Uri(aiApiUrl);
+                    client.DefaultRequestHeaders.Add(AIAntiforgeryTokenConstant, bulletinAiToken);
+                    client.Timeout = TimeSpan.FromMinutes(3);
+                }).AddPolicyHandler(retryPolicy);
+            }
         }
 
         /// <summary>
         /// Configures the specified application.
         /// </summary>
         /// <param name="app">The application.</param>
-        private static void ConfigureApplication(WebApplication app)
+        public static void ConfigureApplication(WebApplication app)
         {
             if (!app.Environment.IsDevelopment())
             {
@@ -100,7 +122,8 @@ namespace InternetBulletin.Web
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(app.Environment.ContentRootPath, "dist")
-                ), RequestPath = "/dist"
+                ),
+                RequestPath = "/dist"
             });
             app.UseRouting();
             app.UseAuthentication();
@@ -113,6 +136,7 @@ namespace InternetBulletin.Web
 
             app.Run();
         }
+
     }
 }
 

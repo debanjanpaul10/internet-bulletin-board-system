@@ -1,10 +1,7 @@
 export const ConfigurationConstants = {
-	PostBaseUrl:
-		"https://localhost:44315/InternetBulletinWeb/PostResourceUrl?resourceUrl=",
-	GetBaseUrl:
-		"https://localhost:44315/InternetBulletinWeb/GetResourceUrl?resourceUrl=",
-	WebAntiForgeryTokenValue:
-		"eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.l7ZFAR6EIk0fFk2j3tH5ZP0w8BRmSRDQ9A6_O3kHgEo",
+	PostBaseUrl: "InternetBulletinWeb/PostResourceUrl?resourceUrl=",
+	GetBaseUrl: "InternetBulletinWeb/GetResourceUrl?resourceUrl=",
+	AiRewriteUrl: "InternetBulletinWeb/RewriteStoryWithAi",
 };
 
 export const HeaderPageConstants = {
@@ -28,6 +25,10 @@ export const HeaderPageConstants = {
 			Name: "Create",
 			Link: "/create",
 		},
+		MyProfile: {
+			Name: "My Profile",
+			Link: "/myprofile",
+		},
 	},
 	ButtonTitles: {
 		HomeButton: "Where the fun starts!",
@@ -37,6 +38,7 @@ export const HeaderPageConstants = {
 		TurnOnDark: "I am the dark!",
 		Login: "I am back!",
 		Create: "I have something to share ...",
+        MyProfile: "I wanna check myself out..."
 	},
 };
 
@@ -105,5 +107,7 @@ export const CreatePostPageConstants = {
 };
 
 export const NoPostsMessageConstant = {
-    Heading: "Oops! We do not have anything for you right now."
-}
+	Heading: "Oops! We do not have anything for you right now.",
+};
+
+export const ConsoleMessage = "Developed from scratch by Debanjan Paul!";

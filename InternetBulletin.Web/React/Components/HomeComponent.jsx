@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HomePageConstants } from "@helpers/Constants";
 import Spinner from "@components/Common/Spinner";
 import PostsContainer from "@components/Posts/PostsContainer";
-import { GetAllPostsDataAsync } from "@store/Posts/Actions";
+import { GetAllPostsAsync } from "@store/Posts/Actions";
 
 /**
  * @component
@@ -12,14 +12,14 @@ import { GetAllPostsDataAsync } from "@store/Posts/Actions";
  * @returns {JSX.Element} The home component JSX element.
  */
 function HomeComponent() {
-    const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
 	const IsPostsDataLoading = useSelector(
 		(state) => state.PostsReducer.isPostsDataLoading
 	);
 
-    useEffect(() => {
-		dispatch(GetAllPostsDataAsync());
+	useEffect(() => {
+		dispatch(GetAllPostsAsync());
 	}, []);
 
 	return (

@@ -1,13 +1,16 @@
 import {
-	AddNewPostAsync,
-	GetAllPostsAsync,
-	GetPostAsync,
-} from "@helpers/InternetBulletinService";
+	AddNewPostApiAsync,
+	GetAllPostsApiAsync,
+	GetPostApiAsync,
+	PostRewriteStoryWithAiApiAsync,
+} from "@services/InternetBulletinService";
 import {
 	ADD_NEW_POST_DATA,
 	GET_ALL_POSTS_DATA,
 	GET_POST_DATA,
+	IS_CREATE_POST_LOADING,
 	POST_DATA_FAIL,
+	REWRITE_STORY_AI,
 	START_SPINNER,
 	STOP_SPINNER,
 } from "@store/Posts/ActionTypes";
@@ -37,13 +40,13 @@ export const StopLoader = () => {
  * @param {string} postId The user data.
  * @returns {Promise} The promise from the api response.
  */
-export const GetPostDataAsync = (postId) => {
+export const GetPostAsync = (postId) => {
 	return async (dispatch) => {
 		try {
 			dispatch(StartLoader());
-			const response = await GetPostAsync(postId);
+			const response = await GetPostApiAsync(postId);
 			if (response?.statusCode === 200) {
-				dispatch(GetPostDataSuccess(response.data));
+				dispatch(GetPostSuccess(response.data));
 			}
 		} catch (error) {
 			console.error(error);
@@ -59,7 +62,7 @@ export const GetPostDataAsync = (postId) => {
  * @param {Object} data The api response.
  * @returns {Object} The action type and payload data.
  */
-const GetPostDataSuccess = (data) => {
+const GetPostSuccess = (data) => {
 	return {
 		type: GET_POST_DATA,
 		payload: data,
@@ -70,13 +73,13 @@ const GetPostDataSuccess = (data) => {
  * Gets all posts data.
  * @returns {Promise} The promise from the api response.
  */
-export const GetAllPostsDataAsync = () => {
+export const GetAllPostsAsync = () => {
 	return async (dispatch) => {
 		try {
 			dispatch(StartLoader());
-			const response = await GetAllPostsAsync();
+			const response = await GetAllPostsApiAsync();
 			if (response?.statusCode === 200) {
-				dispatch(GetAllPostsDataSuccess(response.data));
+				dispatch(GetAllPostsSuccess(response.data));
 			}
 		} catch (error) {
 			console.error(error);
@@ -92,7 +95,7 @@ export const GetAllPostsDataAsync = () => {
  * @param {Object} data The api response.
  * @returns {Object} The action type and payload data.
  */
-const GetAllPostsDataSuccess = (data) => {
+const GetAllPostsSuccess = (data) => {
 	return {
 		type: GET_ALL_POSTS_DATA,
 		payload: data,
@@ -104,16 +107,16 @@ const GetAllPostsDataSuccess = (data) => {
  * @param {Object} userData The user data object.
  * @returns {Promise} The promise from the api response.
  */
-export const AddNewPostDataAsync = (postData) => {
+export const AddNewPostAsync = (postData) => {
 	return async (dispatch) => {
 		try {
 			dispatch(StartLoader());
-			const response = await AddNewPostAsync(postData);
+			const response = await AddNewPostApiAsync(postData);
 			if (response?.statusCode === 200) {
-				dispatch(AddNewPostDataSuccess(response?.data));
+				dispatch(AddNewPostSuccess(response?.data));
 			}
 		} catch (error) {
-			console.error();
+			console.error(error);
 		}
 	};
 };
@@ -123,7 +126,7 @@ export const AddNewPostDataAsync = (postData) => {
  * @param {Object} data The api response.
  * @returns {Object} The action type and payload data.
  */
-const AddNewPostDataSuccess = (data) => {
+const AddNewPostSuccess = (data) => {
 	return {
 		type: ADD_NEW_POST_DATA,
 		payload: data,
@@ -139,5 +142,45 @@ export const PostDataFailure = (data) => {
 	return {
 		type: POST_DATA_FAIL,
 		payload: data,
+	};
+};
+
+/**
+ * Rewrites the story with AI.
+ * @param {string} story The story string.
+ * @returns {Promise} The promise from the api response.
+ */
+export const RewriteStoryWithAiAsync = (story) => {
+	return async (dispatch) => {
+		try {
+			dispatch(HandleCreatePostPageLoader(true));
+			const response = await PostRewriteStoryWithAiApiAsync(story);
+			if (response?.statusCode === 200) {
+				dispatch(RewriteStoryWithAiSuccess(response?.data));
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			dispatch(HandleCreatePostPageLoader(false));
+		}
+	};
+};
+
+/**
+ * Saves the AI response data to redux store.
+ * @param {Object} data The api response.
+ * @returns {Object} The action type and payload data.
+ */
+export const RewriteStoryWithAiSuccess = (data) => {
+	return {
+		type: REWRITE_STORY_AI,
+		payload: data,
+	};
+};
+
+export const HandleCreatePostPageLoader = (isLoading) => {
+	return {
+		type: IS_CREATE_POST_LOADING,
+		payload: isLoading,
 	};
 };
