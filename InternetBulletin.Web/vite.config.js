@@ -45,7 +45,8 @@ export default defineConfig(() => {
 				"@store": path.resolve("./React/Store"),
 				"@styles": path.resolve("./React/Styles"),
 				"@models": path.resolve("./React/Models"),
-                "@services": path.resolve("./React/Services"),
+				"@services": path.resolve("./React/Services"),
+				"@context": path.resolve("./React/Context"),
 			},
 		},
 		server: {

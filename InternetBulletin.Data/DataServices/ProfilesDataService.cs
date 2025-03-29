@@ -48,10 +48,11 @@ namespace InternetBulletin.Data.DataServices
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userId));
 
                 var result = new UserProfileDto();
-                var userData = await this._sqlDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var userData = await this._sqlDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId).ConfigureAwait(false);
                 if (userData is not null)
                 {
-                    var userPosts = await this._cosmosDbContext.Posts.Where(x => x.IsActive && x.PostCreatedBy == userData.UserAlias).ToListAsync();
+                    var userPosts = await this._cosmosDbContext.Posts.Where(x => x.IsActive && x.PostCreatedBy == userData.UserAlias)
+                        .ToListAsync().ConfigureAwait(false);
                     result = new UserProfileDto()
                     {
                         Name = userData.Name,

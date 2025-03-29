@@ -1,4 +1,5 @@
-import { Switch, styled, Button } from "@mui/material";
+import { ConsoleMessage } from "@helpers/Constants";
+import { Switch, styled } from "@mui/material";
 
 /**
  * Custom Switch using custom icons for dark mode and light mode
@@ -59,3 +60,8 @@ export const CustomDarkModeToggleSwitch = styled(Switch)(({ theme }) => ({
 	},
 }));
 
+export const ConsoleLogMessage = console.log(
+	"%c %s",
+	"color:red; font-size: 22pt; font-family: 'Source Code Pro'",
+	ConsoleMessage
+);

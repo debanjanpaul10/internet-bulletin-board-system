@@ -8,11 +8,11 @@ import {
 	HeaderPageConstants,
 	LoginPageConstants,
 } from "@helpers/Constants";
-import { GetUserAsync, UserDataFailure } from "@store/Users/Actions";
+import { GetUserAsync } from "@store/Users/Actions";
 import Spinner from "@components/Common/Spinner";
-import Toaster from "@components/Common/Toaster";
 import FooterComponent from "@components/Common/Footer";
 import UserLoginDtoModel from "@models/UserLoginDto";
+import Toaster from "@components/Common/Toaster";
 
 /**
  * @component
@@ -101,20 +101,9 @@ function LoginComponent(props) {
 		}
 	};
 
-	/**
-	 * Clears the error message.
-	 */
-	const clearErrorMessage = () => {
-		dispatch(UserDataFailure(""));
-	};
-
 	return (
 		<div className="container">
 			<Spinner isLoading={IsDataLoading} />
-			<Toaster
-				errorMessage={errorState}
-				clearErrorMessage={clearErrorMessage}
-			/>
 			<div className="row">
 				<div className="col-sm-12 mt-5">
 					<h1 className="architectDaughterfont text-center">

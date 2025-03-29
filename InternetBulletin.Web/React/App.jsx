@@ -9,6 +9,7 @@ import LoginComponent from "@components/Users/Login";
 import RegisterComponent from "@components/Users/Register";
 import CreatePostComponent from "@components/Posts/CreatePost";
 import MyProfileContainer from "@components/Users/MyProfile/MyProfileContainer";
+import Toaster from "@components/Common/Toaster";
 
 /**
  * @component
@@ -18,9 +19,11 @@ import MyProfileContainer from "@components/Users/MyProfile/MyProfileContainer";
  */
 function App() {
 	const { Headings } = HeaderPageConstants;
+
 	return (
 		<>
 			<Header />
+            <Toaster />
 			<Switch>
 				<Route
 					path={Headings.Home.Link}

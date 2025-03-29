@@ -42,7 +42,7 @@ namespace InternetBulletin.Web
             builder.ConfigureServices();
 
             var app = builder.Build();
-            ConfigureApplication(app);
+            app.ConfigureApplication();
         }
 
         /// <summary>
@@ -55,6 +55,7 @@ namespace InternetBulletin.Web
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
+            builder.Services.AddTransient<TokenHelper>();
             builder.ConfigureHttpClientServices();
 
             builder.Services.AddCors(options =>
@@ -81,25 +82,21 @@ namespace InternetBulletin.Web
                 ? builder.Configuration[LocalWebApiBaseAddressConstant]
                 : builder.Configuration[WebApiBaseAddressConstant];
 
-            var webApiAntiforgeryToken = builder.Configuration[APIAntiforgeryTokenValue];
-            if (!string.IsNullOrEmpty(webApiUrl) && !string.IsNullOrEmpty(webApiAntiforgeryToken))
+            if (!string.IsNullOrEmpty(webApiUrl))
             {
                 builder.Services.AddHttpClient(BulletinHttpClientConstant, client =>
                 {
                     client.BaseAddress = new Uri(webApiUrl);
-                    client.DefaultRequestHeaders.Add(APIAntiforgeryTokenConstant, webApiAntiforgeryToken);
                     client.Timeout = TimeSpan.FromMinutes(3);
                 }).AddPolicyHandler(retryPolicy);
             }
 
             var aiApiUrl = builder.Configuration[BulletinAIApiEndpointConstant];
-            var bulletinAiToken = builder.Configuration[BulletinAiTokenConstant];
-            if (!string.IsNullOrEmpty(aiApiUrl) && !string.IsNullOrEmpty(bulletinAiToken))
+            if (!string.IsNullOrEmpty(aiApiUrl))
             {
                 builder.Services.AddHttpClient(BulletinAiHttpClientConstant, client =>
                 {
                     client.BaseAddress = new Uri(aiApiUrl);
-                    client.DefaultRequestHeaders.Add(AIAntiforgeryTokenConstant, bulletinAiToken);
                     client.Timeout = TimeSpan.FromMinutes(3);
                 }).AddPolicyHandler(retryPolicy);
             }
@@ -109,7 +106,7 @@ namespace InternetBulletin.Web
         /// Configures the specified application.
         /// </summary>
         /// <param name="app">The application.</param>
-        public static void ConfigureApplication(WebApplication app)
+        public static void ConfigureApplication(this WebApplication app)
         {
             if (!app.Environment.IsDevelopment())
             {

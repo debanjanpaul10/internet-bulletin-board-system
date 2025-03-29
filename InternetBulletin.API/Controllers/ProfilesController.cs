@@ -20,7 +20,7 @@ namespace InternetBulletin.API.Controllers
     /// <param name="logger">The Logger</param>
     [ApiController]
     [Route(RouteConstants.ProfilesBase_RoutePrefix)]
-    public class ProfilesController(IConfiguration configuration, IProfilesService profilesService, ILogger<ProfilesController> logger) : BaseController(configuration)
+    public class ProfilesController(IConfiguration configuration, IProfilesService profilesService, ILogger<ProfilesController> logger) : BaseController(configuration, logger)
     {
         /// <summary>
         /// The profiles service.

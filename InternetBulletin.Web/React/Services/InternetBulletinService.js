@@ -104,6 +104,11 @@ export const GetConfigurationApiAsync = async (keyName) => {
 
 // #region AI
 
+/**
+ * Posts the rewrite story with ai api.
+ * @param {string} storyText The story text.
+ * @returns {Promise} The promise of the response from api.
+ */
 export const PostRewriteStoryWithAiApiAsync = async (storyText) => {
 	return await PostAIAsync(storyText);
 };

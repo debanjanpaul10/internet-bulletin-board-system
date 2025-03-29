@@ -5,8 +5,6 @@
 // <summary>The Posts Services Test Class.</summary>
 // *********************************************************************************
 
-using InternetBulletin.Shared.DTOs;
-
 namespace InternetBulletin.UnitTests
 {
 	/// <summary>

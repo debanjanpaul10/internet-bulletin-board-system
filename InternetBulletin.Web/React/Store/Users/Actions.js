@@ -5,6 +5,10 @@ import {
 	GetUserProfileDataApiAsync,
 } from "@services/InternetBulletinService";
 import {
+	ToggleErrorToaster,
+	ToggleSuccessToaster,
+} from "@store/Common/Actions";
+import {
 	ADD_NEW_USER_DATA,
 	GET_ALL_USERS_DATA,
 	GET_USER_DATA,
@@ -47,10 +51,16 @@ export const GetUserAsync = (userData) => {
 			const response = await GetUserApiAsync(userData);
 			if (response?.statusCode === 200) {
 				dispatch(GetUserSuccess(response?.data));
+				dispatch(ToggleSuccessToaster("Welcome back fam!"));
 			}
 		} catch (error) {
 			console.error(error);
-			dispatch(UserDataFailure(error.data));
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error.data,
+				})
+			);
 		} finally {
 			dispatch(StopLoader());
 		}
@@ -78,6 +88,7 @@ export const GetAllUsersAsync = () => {
 		try {
 			const response = await GetAllUsersApiAsync();
 			if (response?.statusCode === 200) {
+				dispatch();
 				dispatch(GetAllUsersSuccess(response?.data));
 			}
 		} catch (error) {
@@ -155,6 +166,11 @@ export const RemoveCurrentLoggedInUserData = () => {
 	};
 };
 
+/**
+ * Gets the user profile data from api.
+ * @param {string} userId The user id.
+ * @returns {Promise} The promise from the API response.
+ */
 export const GetUserProfileAsync = (userId) => {
 	return async (dispatch) => {
 		try {
@@ -172,6 +188,11 @@ export const GetUserProfileAsync = (userId) => {
 	};
 };
 
+/**
+ * Saves the user profile data to redux store.
+ * @param {Object} data The api response.
+ * @returns {Object} The action type and payload data.
+ */
 const GetUserProfileSuccess = (data) => {
 	return {
 		type: GET_USER_PROFILE_DATA,

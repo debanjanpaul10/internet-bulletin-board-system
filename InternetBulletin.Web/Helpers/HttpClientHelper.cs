@@ -9,6 +9,7 @@ namespace InternetBulletin.Web.Helpers
 {
     using InternetBulletin.Shared.Constants;
     using Newtonsoft.Json;
+    using System.Net.Http.Headers;
     using System.Text;
 
     /// <summary>
@@ -46,7 +47,7 @@ namespace InternetBulletin.Web.Helpers
     /// <seealso cref="InternetBulletin.Web.Helpers.IHttpClientHelper" />
     /// <param name="httpClientFactory">The HTTP client factory.</param>
     /// <param name="logger">The Logger.</param>
-    public class HttpClientHelper(IHttpClientFactory httpClientFactory, ILogger<HttpClientHelper> logger) : IHttpClientHelper
+    public class HttpClientHelper(IHttpClientFactory httpClientFactory, ILogger<HttpClientHelper> logger, TokenHelper tokenHelper) : IHttpClientHelper
     {
         /// <summary>
         /// The HTTP client factory
@@ -58,6 +59,8 @@ namespace InternetBulletin.Web.Helpers
         /// </summary>
         private readonly ILogger<HttpClientHelper> _logger = logger;
 
+        private readonly TokenHelper _tokenHelper = tokenHelper;
+
         /// <summary>
         /// Gets the API response asynchronous.
         /// </summary>
@@ -68,6 +71,9 @@ namespace InternetBulletin.Web.Helpers
             using var httpClient = this._httpClientFactory.CreateClient(ConfigurationConstants.BulletinHttpClientConstant);
             try
             {
+                var token = await this._tokenHelper.GetAzureAdTokenAsync();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(ConfigurationConstants.BearerConstant, token);
+                
                 var response = await httpClient.GetAsync(url).ConfigureAwait(false);
                 return response;
             }
@@ -89,6 +95,9 @@ namespace InternetBulletin.Web.Helpers
             using var httpClient = this._httpClientFactory.CreateClient(ConfigurationConstants.BulletinHttpClientConstant);
             try
             {
+                var token = await this._tokenHelper.GetAzureAdTokenAsync();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(ConfigurationConstants.BearerConstant, token);
+
                 var content = new StringContent(data, Encoding.UTF8, ConfigurationConstants.ApplicationJsonConstant);
                 var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);
                 return response;
@@ -110,6 +119,9 @@ namespace InternetBulletin.Web.Helpers
             using var httpClient = this._httpClientFactory.CreateClient(ConfigurationConstants.BulletinAiHttpClientConstant);
             try
             {
+                var token = await this._tokenHelper.GetAzureAdTokenAsync();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(ConfigurationConstants.BearerConstant, token);
+                
                 var jsonData = JsonConvert.SerializeObject(data);
                 var content = new StringContent(jsonData, Encoding.UTF8, ConfigurationConstants.ApplicationJsonConstant);
                 var response = await httpClient.PostAsync(url, content).ConfigureAwait(false);

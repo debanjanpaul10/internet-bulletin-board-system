@@ -178,6 +178,11 @@ export const RewriteStoryWithAiSuccess = (data) => {
 	};
 };
 
+/**
+ * Saves the create post page loader status to redux store.
+ * @param {boolean} isLoading The loader boolean flag.
+ * @returns {Object} The action type and payload data.
+ */
 export const HandleCreatePostPageLoader = (isLoading) => {
 	return {
 		type: IS_CREATE_POST_LOADING,

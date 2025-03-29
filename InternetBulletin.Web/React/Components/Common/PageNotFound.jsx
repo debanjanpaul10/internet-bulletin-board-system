@@ -1,6 +1,5 @@
 import React from "react";
 import { ErrorPageConstants } from "@helpers/Constants";
-import Spinner from "@components/Common/Spinner";
 
 /**
  * @component

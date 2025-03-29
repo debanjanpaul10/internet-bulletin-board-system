@@ -14,6 +14,7 @@ import PageNotFound from "@components/Common/PageNotFound";
 import AiButton from "../../../Images/ai-icon.svg";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
+import Toaster from "@components/Common/Toaster";
 
 /**
  * @component

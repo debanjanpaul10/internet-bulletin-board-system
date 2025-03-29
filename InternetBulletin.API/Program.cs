@@ -9,6 +9,8 @@ namespace InternetBulletin.API
 {
     using Azure.Identity;
     using InternetBulletin.API.Dependencies;
+    using InternetBulletin.API.Middleware;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.OpenApi.Models;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
@@ -30,10 +32,10 @@ namespace InternetBulletin.API
 
             var miCredentials = builder.Configuration[ManagedIdentityClientIdConstant];
             var credentials = builder.Environment.IsDevelopment()
-            ? new DefaultAzureCredential() : new DefaultAzureCredential(new DefaultAzureCredentialOptions
-            {
-                ManagedIdentityClientId = miCredentials
-            });
+                ? new DefaultAzureCredential() : new DefaultAzureCredential(new DefaultAzureCredentialOptions
+                {
+                    ManagedIdentityClientId = miCredentials
+                });
 
             builder.ConfigureAzureAppConfiguration(credentials);
             builder.ConfigureServices();
@@ -42,7 +44,7 @@ namespace InternetBulletin.API
             builder.ConfigureDataManagerDependencies();
 
             var app = builder.Build();
-            ConfigureApplication(app);
+            app.ConfigureApplication();
         }
 
         /// <summary>
@@ -51,7 +53,14 @@ namespace InternetBulletin.API
         /// <param name="services">The services.</param>
         public static void ConfigureServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddAuthentication();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateLifetime = true
+                    };
+                });
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
             builder.Services.AddCors(options =>
@@ -78,13 +87,15 @@ namespace InternetBulletin.API
                     }
                 });
             });
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
         }
 
         /// <summary>
         /// Configures the application.
         /// </summary>
         /// <param name="app">The application.</param>
-        public static void ConfigureApplication(WebApplication app)
+        public static void ConfigureApplication(this WebApplication app)
         {
             if (app.Environment.IsDevelopment())
             {
@@ -98,6 +109,7 @@ namespace InternetBulletin.API
                 });
             }
 
+            app.UseExceptionHandler();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();

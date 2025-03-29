@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -7,10 +7,12 @@ import {
 	CookiesConstants,
 	HeaderPageConstants,
 	HomePageConstants,
+	PageConstants,
 } from "@helpers/Constants";
 import AppLogo from "../../../Images/IBBS_logo.png";
 import { RemoveCurrentLoggedInUserData } from "@store/Users/Actions";
 import { CustomDarkModeToggleSwitch } from "@helpers/CommonUtility";
+import ThemeContext from "@context/ThemeContext";
 
 /**
  * @component
@@ -21,6 +23,7 @@ import { CustomDarkModeToggleSwitch } from "@helpers/CommonUtility";
 function Header() {
 	const dispatch = useDispatch();
 	const location = useLocation();
+	const { themeMode, toggleThemeMode } = useContext(ThemeContext);
 
 	const activeStyle = { color: "#F15B2A" };
 	const { Headings } = HeaderPageConstants;
@@ -28,15 +31,9 @@ function Header() {
 
 	const UserStoreData = useSelector((state) => state.UsersReducer.userData);
 
-	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [currentLoggedInUser, setCurrentLoggedInUser] = useState({});
 
 	useEffect(() => {
-		const savedDarkModeSettings =
-			Cookies.get(CookiesConstants.DarkMode.Name) === "true";
-		setIsDarkMode(savedDarkModeSettings);
-		document.body.classList.toggle("dark-mode", savedDarkModeSettings);
-
 		const currentLoggedInUserCookies = Cookies.get(
 			CookiesConstants.LoggedInUser.Name
 		);
@@ -57,18 +54,6 @@ function Header() {
 			setCurrentLoggedInUser(UserStoreData);
 		}
 	}, [UserStoreData, currentLoggedInUser]);
-
-	/**
-	 * Handles the dark mode - light moddle toggle.
-	 */
-	const toggleDarkMode = () => {
-		const newDarkMode = !isDarkMode;
-		setIsDarkMode(newDarkMode);
-		document.body.classList.toggle("dark-mode", newDarkMode);
-		Cookies.set(CookiesConstants.DarkMode.Name, newDarkMode, {
-			expires: CookiesConstants.DarkMode.Timeout,
-		});
-	};
 
 	/**
 	 * Handles the user logout event.
@@ -165,9 +150,13 @@ function Header() {
 						style={{ marginRight: "10px" }}
 					>
 						<CustomDarkModeToggleSwitch
-							onChange={toggleDarkMode}
-							checked={!isDarkMode}
-                            title={isDarkMode ? ButtonTitles.TurnOnLight : ButtonTitles.TurnOnDark}
+							onChange={toggleThemeMode}
+							checked={themeMode === PageConstants.DarkConstant}
+							title={
+								themeMode === PageConstants.DarkConstant
+									? ButtonTitles.TurnOnLight
+									: ButtonTitles.TurnOnDark
+							}
 						/>
 					</div>
 				</div>

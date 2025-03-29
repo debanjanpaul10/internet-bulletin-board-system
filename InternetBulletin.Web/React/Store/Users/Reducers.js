@@ -12,13 +12,19 @@ import {
 const initialState = {
 	userData: {},
 	allUsersData: [],
-	newUserData: {},
+	newUserData: false,
 	updatedUserData: {},
 	userDataError: null,
 	isUserDataLoading: false,
 	userProfileData: {},
 };
 
+/**
+ * The Users Reducer.
+ * @param {object} state The state.
+ * @param {object} action The action data.
+ * @returns {Object} The updated store.
+ */
 const UsersReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case GET_USER_DATA: {
@@ -31,6 +37,7 @@ const UsersReducer = (state = initialState, action) => {
 			return {
 				...state,
 				userData: {},
+				newUserData: false,
 			};
 		}
 		case GET_ALL_USERS_DATA: {

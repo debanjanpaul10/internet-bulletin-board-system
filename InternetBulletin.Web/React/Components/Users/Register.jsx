@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@mui/material";
 
 import { HeaderPageConstants, RegisterPageConstants } from "@helpers/Constants";
-import { AddNewUserAsync, UserDataFailure } from "@store/Users/Actions";
-import Toaster from "@components/Common/Toaster";
+import { AddNewUserAsync } from "@store/Users/Actions";
 import Spinner from "@components/Common/Spinner";
 import FooterComponent from "@components/Common/Footer";
 
@@ -45,7 +44,7 @@ function RegisterComponent(props) {
 		if (
 			NewUserStoreData !== null &&
 			NewUserStoreData !== undefined &&
-			Object.values(NewUserStoreData).length > 0
+			NewUserStoreData === true
 		) {
 			props.history.push(HeaderPageConstants.Headings.Login.Link);
 		}
@@ -104,20 +103,9 @@ function RegisterComponent(props) {
 		});
 	};
 
-	/**
-	 * Clears the error message.
-	 */
-	const clearErrorMessage = () => {
-		dispatch(UserDataFailure(""));
-	};
-
 	return (
 		<div className="container d-flex flex-column">
 			<Spinner isLoading={IsDataLoading} />
-			<Toaster
-				errorMessage={errorState}
-				clearErrorMessage={clearErrorMessage}
-			/>
 			<div className="row">
 				<div className="col-sm-12 mt-5">
 					<h1 className="architectDaughterfont text-center">
@@ -231,7 +219,7 @@ function RegisterComponent(props) {
 							variant="contained"
 							type="submit"
 							className="mt-3"
-                            onClick={handleSubmit}
+							onClick={handleSubmit}
 						>
 							{RegisterPageConstants.Headings.AddButton}
 						</Button>

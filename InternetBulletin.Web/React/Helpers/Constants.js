@@ -4,6 +4,12 @@ export const ConfigurationConstants = {
 	AiRewriteUrl: "InternetBulletinWeb/RewriteStoryWithAi",
 };
 
+export const PageConstants = {
+	DarkModeConstant: "dark-mode",
+	DarkConstant: "dark",
+	LightConstant: "light",
+};
+
 export const HeaderPageConstants = {
 	Headings: {
 		Login: {
@@ -38,7 +44,7 @@ export const HeaderPageConstants = {
 		TurnOnDark: "I am the dark!",
 		Login: "I am back!",
 		Create: "I have something to share ...",
-        MyProfile: "I wanna check myself out..."
+		MyProfile: "I wanna check myself out...",
 	},
 };
 

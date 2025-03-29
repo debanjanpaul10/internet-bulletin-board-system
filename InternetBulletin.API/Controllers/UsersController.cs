@@ -22,7 +22,7 @@ namespace InternetBulletin.API.Controllers
     /// <param name="logger">The Logger</param>
     [ApiController]
     [Route(RouteConstants.UsersBase_RoutePrefx)]
-    public class UsersController(IConfiguration configuration, IUsersService usersService, ILogger<UsersController> logger) : BaseController(configuration)
+    public class UsersController(IConfiguration configuration, IUsersService usersService, ILogger<UsersController> logger) : BaseController(configuration, logger)
     {
         /// <summary>
         /// The users service

@@ -18,7 +18,7 @@ namespace InternetBulletin.API.Controllers
 	/// <param name="logger">The Logger</param>
 	[ApiController]
 	[Route(RouteConstants.ConfigurationBase_RoutePrefix)]
-	public class ConfigurationController(IConfiguration configuration, ILogger<ConfigurationController> logger) : BaseController(configuration)
+	public class ConfigurationController(IConfiguration configuration, ILogger<ConfigurationController> logger) : BaseController(configuration, logger)
 	{
 		/// <summary>
 		/// The logger.

@@ -15,6 +15,12 @@ const initialState = {
 	isCreatePostLoading: false,
 };
 
+/**
+ * The Posts Reducer.
+ * @param {Object} state The state.
+ * @param {Object} action The action.
+ * @returns {Object} The updated state.
+ */
 const PostsReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case GET_POST_DATA: {
