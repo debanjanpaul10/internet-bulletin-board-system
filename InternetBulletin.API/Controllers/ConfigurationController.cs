@@ -44,7 +44,8 @@ namespace InternetBulletin.API.Controllers
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetConfigurationValue), DateTime.UtcNow, keyName));
 				if (string.IsNullOrEmpty(keyName))
 				{
-					this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetConfigurationValue), DateTime.UtcNow, "Key name is null or empty"));
+					this._logger.LogInformation(string.Format(
+						LoggingConstants.LogHelperMethodFailed, nameof(GetConfigurationValue), DateTime.UtcNow, ExceptionConstants.KeyNameIsNullMessageConstant));
 					return this.BadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
 				}
 

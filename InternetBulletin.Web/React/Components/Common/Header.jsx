@@ -10,7 +10,11 @@ import {
 	PageConstants,
 } from "@helpers/Constants";
 import AppLogo from "../../../Images/IBBS_logo.png";
-import { RemoveCurrentLoggedInUserData } from "@store/Users/Actions";
+import {
+	RemoveCurrentLoggedInUserData,
+	ToggleLoginModal,
+	ToggleRegisterModal,
+} from "@store/Users/Actions";
 import { CustomDarkModeToggleSwitch } from "@helpers/CommonUtility";
 import ThemeContext from "@context/ThemeContext";
 
@@ -72,6 +76,20 @@ function Header() {
 		return Object.keys(currentLoggedInUser).length > 0;
 	};
 
+    /**
+     * Handles the login event.
+     */
+	const handleLoginEvent = () => {
+		dispatch(ToggleLoginModal(true));
+	};
+
+    /**
+     * Handles the register event.
+     */
+	const handleRegisterEvent = () => {
+		dispatch(ToggleRegisterModal(true));
+	};
+
 	return (
 		<nav className="navbar navbar-expand-lg navbar-dark bg-dark">
 			<div className="d-flex w-100">
@@ -107,8 +125,8 @@ function Header() {
 				<div className="navbar-nav ml-auto">
 					{!isUserLoggedIn() ? (
 						<NavLink
-							to={Headings.Login.Link}
-							activeStyle={activeStyle}
+							to={"/"}
+							onClick={handleLoginEvent}
 							className="nav-link buttonStyle"
 							title={ButtonTitles.Login}
 						>
@@ -127,9 +145,9 @@ function Header() {
 
 					{!isUserLoggedIn() ? (
 						<NavLink
-							to={Headings.Register.Link}
-							activeStyle={activeStyle}
-							className="nav-link"
+							to={"/"}
+							onClick={handleRegisterEvent}
+							className="nav-link buttonStyle"
 							title={ButtonTitles.Register}
 						>
 							{Headings.Register.Name}
@@ -138,7 +156,6 @@ function Header() {
 						<NavLink
 							to={Headings.MyProfile.Link}
 							className="nav-link buttonStyle"
-							activeStyle={activeStyle}
 							title={ButtonTitles.MyProfile}
 						>
 							{Headings.MyProfile.Name}

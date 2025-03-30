@@ -21,31 +21,6 @@ function Toaster() {
 		(state) => state.CommonReducer.errorToaster
 	);
 
-	useEffect(() => {
-		if (SuccessToasterStoreData.shouldShow) {
-			const timer = setTimeout(() => {
-				dispatch(
-					ToggleSuccessToaster({
-						shouldShow: false,
-						successMessage: "",
-					})
-				);
-			}, 3000);
-			return () => clearTimeout(timer);
-		}
-	}, [SuccessToasterStoreData, dispatch]);
-
-	useEffect(() => {
-		if (ErrorToasterStoreData.shouldShow) {
-			const timer = setTimeout(() => {
-				dispatch(
-					ToggleErrorToaster({ shouldShow: false, errorMessage: "" })
-				);
-			}, 3000);
-			return () => clearTimeout(timer);
-		}
-	}, [ErrorToasterStoreData, dispatch]);
-
 	if (
 		!SuccessToasterStoreData.shouldShow &&
 		!ErrorToasterStoreData.shouldShow

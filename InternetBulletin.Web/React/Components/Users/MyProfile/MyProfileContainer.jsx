@@ -44,7 +44,7 @@ function MyProfileContainer() {
 	}, [UserProfileStoreData]);
 
 	return (
-		<div className="container">
+		<div className="container mt-4">
 			<Spinner isLoading={IsUserDataLoading} />
 			<MyProfileDetailsComponent myProfileDetails={profileDetails} />
 		</div>

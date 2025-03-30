@@ -7,6 +7,8 @@ import {
 	STOP_SPINNER,
 	USER_DATA_FAIL,
 	GET_USER_PROFILE_DATA,
+	TOGGLE_LOGIN_MODAL,
+	TOGGLE_REGISTER_MODAL,
 } from "@store/Users/ActionTypes";
 
 const initialState = {
@@ -17,6 +19,8 @@ const initialState = {
 	userDataError: null,
 	isUserDataLoading: false,
 	userProfileData: {},
+	isLoginModalOpen: false,
+	isRegisterModalOpen: false,
 };
 
 /**
@@ -74,6 +78,18 @@ const UsersReducer = (state = initialState, action) => {
 			return {
 				...state,
 				userProfileData: action.payload,
+			};
+		}
+		case TOGGLE_LOGIN_MODAL: {
+			return {
+				...state,
+				isLoginModalOpen: action.payload,
+			};
+		}
+		case TOGGLE_REGISTER_MODAL: {
+			return {
+				...state,
+				isRegisterModalOpen: action.payload,
 			};
 		}
 		default: {

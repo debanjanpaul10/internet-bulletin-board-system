@@ -61,7 +61,7 @@ namespace InternetBulletin.API.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var jwtToken = tokenHandler.ReadJwtToken(tokenValue);
 
-                var applicationId = jwtToken.Claims.FirstOrDefault(c => c.Type == "appid")?.Value;
+                var applicationId = jwtToken.Claims.FirstOrDefault(c => c.Type == ApplicationIdTokenConstant)?.Value;
                 var clientId = _configuration[ClientIdConstant];
                 if (!string.Equals(applicationId, clientId, StringComparison.Ordinal))
                 {
@@ -69,7 +69,7 @@ namespace InternetBulletin.API.Controllers
                     return false;
                 }
 
-                var tokenExpiryTime = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+                var tokenExpiryTime = jwtToken.Claims.FirstOrDefault(c => c.Type == TokenExpiryConstant)?.Value;
                 if (string.IsNullOrEmpty(tokenExpiryTime) || !double.TryParse(tokenExpiryTime, out var expiryTimestamp))
                 {
                     this._logger.LogError(LoggingConstants.TokenExpiryMissingMessage);

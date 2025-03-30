@@ -51,7 +51,6 @@ export default defineConfig(() => {
 		},
 		server: {
 			https: true,
-			port: 6970,
 		},
 		define: {
 			global: "window",

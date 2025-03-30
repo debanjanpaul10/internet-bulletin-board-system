@@ -61,6 +61,7 @@ export const RegisterPageConstants = {
 		RegisterNewUser:
 			"Register yourself, and join the bulletin board's wealth!",
 		AddButton: "Register",
+		CancelButton: "Cancel",
 	},
 };
 
@@ -73,6 +74,7 @@ export const LoginPageConstants = {
 	Headings: {
 		LoginUser: "Log back in, let the fun begin !",
 		LoginButton: "Login",
+		CancelButton: "Cancel",
 	},
 };
 
@@ -117,3 +119,20 @@ export const NoPostsMessageConstant = {
 };
 
 export const ConsoleMessage = "Developed from scratch by Debanjan Paul!";
+
+export const modalStyle = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	width: "auto",
+	border: "2px solid #000",
+	boxShadow: 24,
+	p: 4,
+};
+
+export const MyProfilePageConstants = {
+	Headings: {
+		Header: "My Profile",
+	},
+};

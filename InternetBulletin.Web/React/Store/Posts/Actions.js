@@ -4,6 +4,7 @@ import {
 	GetPostApiAsync,
 	PostRewriteStoryWithAiApiAsync,
 } from "@services/InternetBulletinService";
+import { ToggleErrorToaster } from "@store/Common/Actions";
 import {
 	ADD_NEW_POST_DATA,
 	GET_ALL_POSTS_DATA,
@@ -160,6 +161,12 @@ export const RewriteStoryWithAiAsync = (story) => {
 			}
 		} catch (error) {
 			console.error(error);
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error,
+				})
+			);
 		} finally {
 			dispatch(HandleCreatePostPageLoader(false));
 		}

@@ -16,6 +16,8 @@ import {
 	REMOVE_USER_DATA,
 	START_SPINNER,
 	STOP_SPINNER,
+	TOGGLE_LOGIN_MODAL,
+	TOGGLE_REGISTER_MODAL,
 	USER_DATA_FAIL,
 } from "@store/Users/ActionTypes";
 
@@ -197,5 +199,29 @@ const GetUserProfileSuccess = (data) => {
 	return {
 		type: GET_USER_PROFILE_DATA,
 		payload: data,
+	};
+};
+
+/**
+ * Saves the login modal state to redux store.
+ * @param {boolean} isOpen The is open boolean state.
+ * @returns {Object} The action type and payload data.
+ */
+export const ToggleLoginModal = (isOpen) => {
+	return {
+		type: TOGGLE_LOGIN_MODAL,
+		payload: isOpen,
+	};
+};
+
+/**
+ * Saves the register modal state to redux store.
+ * @param {boolean} isOpen The is open boolean state.
+ * @returns {Object} The action type and payload data.
+ */
+export const ToggleRegisterModal = (isOpen) => {
+	return {
+		type: TOGGLE_REGISTER_MODAL,
+		payload: isOpen,
 	};
 };

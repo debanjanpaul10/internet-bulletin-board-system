@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import { Button } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
 
 import {
 	CookiesConstants,
-	HeaderPageConstants,
 	LoginPageConstants,
+	modalStyle,
 } from "@helpers/Constants";
-import { GetUserAsync } from "@store/Users/Actions";
+import { GetUserAsync, ToggleLoginModal } from "@store/Users/Actions";
 import Spinner from "@components/Common/Spinner";
-import FooterComponent from "@components/Common/Footer";
 import UserLoginDtoModel from "@models/UserLoginDto";
-import Toaster from "@components/Common/Toaster";
 
 /**
  * @component
@@ -32,6 +30,9 @@ function LoginComponent(props) {
 	const IsDataLoading = useSelector(
 		(state) => state.UsersReducer.isUserDataLoading
 	);
+	const IsLoginModalOpen = useSelector(
+		(state) => state.UsersReducer.isLoginModalOpen
+	);
 
 	const [data, setData] = useState({
 		UserEmail: "",
@@ -42,6 +43,7 @@ function LoginComponent(props) {
 		UserPassword: "",
 	});
 	const [errorState, setErrorState] = useState("");
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	useEffect(() => {
 		if (
@@ -49,7 +51,7 @@ function LoginComponent(props) {
 			UserStoreData !== undefined &&
 			Object.keys(UserStoreData).length > 0
 		) {
-			props.history.push(HeaderPageConstants.Headings.Home.Link);
+			handleModalCloseEvent();
 			Cookies.set(
 				CookiesConstants.LoggedInUser.Name,
 				JSON.stringify(UserStoreData),
@@ -63,6 +65,12 @@ function LoginComponent(props) {
 			setErrorState(UserErrorStoreData);
 		}
 	}, [UserErrorStoreData]);
+
+	useEffect(() => {
+		if (IsLoginModalOpen !== isModalOpen) {
+			setIsModalOpen(IsLoginModalOpen);
+		}
+	}, [IsLoginModalOpen]);
 
 	/**
 	 * Handles the form change event.
@@ -101,87 +109,131 @@ function LoginComponent(props) {
 		}
 	};
 
+	/**
+	 * Handle the modal close event
+	 */
+	const handleModalCloseEvent = () => {
+		dispatch(ToggleLoginModal(false));
+	};
+
 	return (
 		<div className="container">
 			<Spinner isLoading={IsDataLoading} />
-			<div className="row">
-				<div className="col-sm-12 mt-5">
-					<h1 className="architectDaughterfont text-center">
-						{LoginPageConstants.Headings.LoginUser}
-					</h1>
-				</div>
-
-				<form className="loginuser">
-					<div className="form-group row">
-						<div className="col-sm-6 mb-3 mb-sm-0">
-							<div className="row"></div>
-							<div className="row p-2">
-								<label
-									htmlFor="UserEmail"
-									className="form-label"
-								>
-									Email <span className="red">*</span>
-								</label>
-								<input
-									type="email"
-									name="UserEmail"
-									onChange={handleFormChange}
-									value={data.UserEmail}
-									className="form-control mt-0 ml-10"
-									id="UserEmail"
-									placeholder="Email"
-								/>
-								{errors.UserEmail && (
-									<span className="alert alert-danger ml-10 mt-2">
-										{errors.UserEmail}
-									</span>
-								)}
-							</div>
-						</div>
-
-						<div className="col-sm-6 mb-3 mb-sm-0">
-							<div className="row p-2 ">
-								<label
-									htmlFor="UserPassword"
-									className="form-label"
-								>
-									Password <span className="red">*</span>
-								</label>
-								<input
-									type="password"
-									name="UserPassword"
-									onChange={handleFormChange}
-									value={data.UserPassword}
-									className="form-control mt-0 ml-10"
-									id="UserPassword"
-									placeholder="Password"
-								/>
-								{errors.UserPassword && (
-									<span className="alert alert-danger ml-10 mt-2">
-										{errors.UserPassword}
-									</span>
-								)}
-							</div>
-						</div>
-					</div>
-
-					<div className="text-center">
-						<Button
-							variant="contained"
-							className="mt-3"
-							onClick={handleSubmit}
+			<Modal open={isModalOpen} onClose={handleModalCloseEvent}>
+				<Box sx={modalStyle} className="custom-modal">
+					<Typography
+						id="modal-modal-title"
+						variant="h6"
+						component="h2"
+					>
+						<h1 className="architectDaughterfont text-center">
+							{LoginPageConstants.Headings.LoginUser}
+						</h1>
+					</Typography>
+					<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+						<form
+							className="loginuser"
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
+							}}
 						>
-							{LoginPageConstants.Headings.LoginButton}
-						</Button>
-					</div>
-				</form>
-			</div>
+							<div
+								className="form-group row"
+								style={{ width: "100%" }}
+							>
+								<div className="mb-3 mb-sm-0">
+									<div className="row"></div>
+									<div className="row p-2">
+										<label
+											htmlFor="UserEmail"
+											className="form-label"
+										>
+											Email <span className="red">*</span>
+										</label>
+										<input
+											type="email"
+											name="UserEmail"
+											onChange={handleFormChange}
+											value={data.UserEmail}
+											className="form-control mt-0 ml-10"
+											id="UserEmail"
+											placeholder="Email"
+											style={{
+												border: errors.UserEmail
+													? "1px solid red"
+													: "",
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+							<div
+								className="form-group row"
+								style={{ width: "100%" }}
+							>
+								<div className="mb-3 mb-sm-0">
+									<div className="row p-2 ">
+										<label
+											htmlFor="UserPassword"
+											className="form-label"
+										>
+											Password{" "}
+											<span className="red">*</span>
+										</label>
+										<input
+											type="password"
+											name="UserPassword"
+											onChange={handleFormChange}
+											value={data.UserPassword}
+											className="form-control mt-0 ml-10"
+											id="UserPassword"
+											placeholder="Password"
+											style={{
+												border: errors.UserPassword
+													? "1px solid red"
+													: "",
+											}}
+										/>
+									</div>
+								</div>
+							</div>
 
-			<FooterComponent />
+							<div
+								className="text-center"
+								style={{
+									display: "flex",
+									justifyContent: "center",
+									gap: "10px",
+								}}
+							>
+								<Button
+									variant="contained"
+									className="mt-3"
+									onClick={handleSubmit}
+								>
+									{LoginPageConstants.Headings.LoginButton}
+								</Button>
+								&nbsp;
+								<Button
+									variant="contained"
+									className="mt-3"
+									color="error"
+									onClick={handleModalCloseEvent}
+								>
+									{LoginPageConstants.Headings.CancelButton}
+								</Button>
+							</div>
+						</form>
+					</Typography>
+				</Box>
+			</Modal>
+			<div className="row">
+				<div className="col-sm-12 mt-5"></div>
+			</div>
 		</div>
 	);
 }
-function Login() {
-	return <></>;
-}
+
 export default LoginComponent;

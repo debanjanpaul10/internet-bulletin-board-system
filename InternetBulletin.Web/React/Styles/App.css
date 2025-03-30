@@ -122,7 +122,7 @@ button {
 	padding: 10px;
 }
 .nav-link:hover {
-	color: #0000ff;
+	color: #bbbbbb;
 }
 
 .ml-right {
@@ -136,6 +136,7 @@ button {
 .buttonStyle {
 	cursor: pointer;
 	margin-right: 1em;
+	color: #e9ecef;
 }
 
 .architectDaughterfont {
@@ -220,7 +221,21 @@ button {
 }
 
 .rewritebtn {
-    font-size: 1rem; 
-    padding: 0.25rem 0.5rem; 
-    margin-top: 10px; 
+	font-size: 1rem;
+	padding: 0.25rem 0.5rem;
+	margin-top: 10px;
+}
+
+.custom-modal {
+	background-color: #e9ecef;
+	align-items: center;
+}
+
+.label-with-gap {
+	margin-right: 30px;
+	width: auto;
+}
+
+.form-control-plaintext {
+	padding: 10px;
 }

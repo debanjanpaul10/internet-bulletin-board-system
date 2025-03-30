@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
 
-import { HeaderPageConstants, RegisterPageConstants } from "@helpers/Constants";
-import { AddNewUserAsync } from "@store/Users/Actions";
+import {
+	HeaderPageConstants,
+	modalStyle,
+	RegisterPageConstants,
+} from "@helpers/Constants";
+import { AddNewUserAsync, ToggleRegisterModal } from "@store/Users/Actions";
 import Spinner from "@components/Common/Spinner";
-import FooterComponent from "@components/Common/Footer";
 
 /**
  * @component
@@ -25,6 +28,9 @@ function RegisterComponent(props) {
 	const IsDataLoading = useSelector(
 		(state) => state.UsersReducer.isUserDataLoading
 	);
+	const IsRegisterModalOpen = useSelector(
+		(state) => state.UsersReducer.isRegisterModalOpen
+	);
 
 	const [errorState, setErrorState] = useState("");
 	const [data, setData] = useState({
@@ -39,6 +45,7 @@ function RegisterComponent(props) {
 		UserAlias: "",
 		UserPassword: "",
 	});
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	useEffect(() => {
 		if (
@@ -46,7 +53,7 @@ function RegisterComponent(props) {
 			NewUserStoreData !== undefined &&
 			NewUserStoreData === true
 		) {
-			props.history.push(HeaderPageConstants.Headings.Login.Link);
+			handleModalCloseEvent();
 		}
 	}, [NewUserStoreData]);
 
@@ -55,6 +62,12 @@ function RegisterComponent(props) {
 			setErrorState(UserErrorStoreData);
 		}
 	}, [UserErrorStoreData]);
+
+	useEffect(() => {
+		if (isModalOpen !== IsRegisterModalOpen) {
+			setIsModalOpen(IsRegisterModalOpen);
+		}
+	}, [IsRegisterModalOpen]);
 
 	/**
 	 * Handles the form submit event.
@@ -103,130 +116,187 @@ function RegisterComponent(props) {
 		});
 	};
 
+	/**
+	 * Handle the modal close event
+	 */
+	const handleModalCloseEvent = () => {
+		dispatch(ToggleRegisterModal(false));
+	};
+
 	return (
 		<div className="container d-flex flex-column">
 			<Spinner isLoading={IsDataLoading} />
-			<div className="row">
-				<div className="col-sm-12 mt-5">
-					<h1 className="architectDaughterfont text-center">
-						{RegisterPageConstants.Headings.RegisterNewUser}
-					</h1>
-				</div>
-				<form className="newuser">
-					<div className="form-group row">
-						<div className="col-sm-6 mb-3 mb-sm-0">
-							<div className="row p-2 ">
-								<label htmlFor="Name" className="form-label">
-									Name <span className="red">*</span>
-								</label>
-								<input
-									type="text"
-									name="Name"
-									onChange={handleFormChange}
-									value={data.Name}
-									className="form-control mt-0 ml-10"
-									id="Name"
-									placeholder="Name"
-								/>
-								{errors.Name && (
-									<span className="alert alert-danger ml-10 mt-3">
-										{errors.Name}
-									</span>
-								)}
-							</div>
-						</div>
-
-						<div className="col-sm-6 mb-3 mb-sm-0">
-							<div className="row p-2 ">
-								<label
-									htmlFor="UserEmail"
-									className="form-label"
-								>
-									Email <span className="red">*</span>
-								</label>
-								<input
-									type="email"
-									name="UserEmail"
-									onChange={handleFormChange}
-									value={data.UserEmail}
-									className="form-control mt-0 ml-10"
-									id="UserEmail"
-									placeholder="Email"
-								/>
-								{errors.UserEmail && (
-									<span className="alert alert-danger ml-10 mt-3">
-										{errors.UserEmail}
-									</span>
-								)}
-							</div>
-						</div>
-					</div>
-
-					<div className="form-group row">
-						<div className="col-sm-6 mb-3 mb-sm-0">
-							<div className="row p-2 ">
-								<label
-									htmlFor="UserAlias"
-									className="form-label"
-								>
-									Alias <span className="red">*</span>
-								</label>
-								<input
-									type="text"
-									name="UserAlias"
-									onChange={handleFormChange}
-									value={data.UserAlias}
-									className="form-control mt-0 ml-10"
-									id="UserAlias"
-									placeholder="Alias"
-								/>
-								{errors.Name && (
-									<span className="alert alert-danger ml-10 mt-3">
-										{errors.UserAlias}
-									</span>
-								)}
-							</div>
-						</div>
-
-						<div className="col-sm-6 mb-3 mb-sm-0">
-							<div className="row p-2 ">
-								<label
-									htmlFor="UserPassword"
-									className="form-label"
-								>
-									Password <span className="red">*</span>
-								</label>
-								<input
-									type="password"
-									name="UserPassword"
-									onChange={handleFormChange}
-									value={data.UserPassword}
-									className="form-control mt-0 ml-10"
-									id="UserPassword"
-									placeholder="Password"
-								/>
-								{errors.UserPassword && (
-									<span className="alert alert-danger ml-10 mt-3">
-										{errors.UserPassword}
-									</span>
-								)}
-							</div>
-						</div>
-					</div>
-
-					<div className="text-center">
-						<Button
-							variant="contained"
-							type="submit"
-							className="mt-3"
-							onClick={handleSubmit}
+			<Modal open={isModalOpen} onClose={handleModalCloseEvent}>
+				<Box sx={modalStyle} className="custom-modal">
+					<Typography
+						id="modal-modal-title"
+						variant="h6"
+						component="h2"
+					>
+						<h1 className="architectDaughterfont text-center">
+							{RegisterPageConstants.Headings.RegisterNewUser}
+						</h1>
+					</Typography>
+					<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+						<form
+							className="newuser"
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
+							}}
 						>
-							{RegisterPageConstants.Headings.AddButton}
-						</Button>
-					</div>
-				</form>
-			</div>
-			<FooterComponent />
+							<div
+								className="form-group row"
+								style={{ width: "100%" }}
+							>
+								<div className="mb-3 mb-sm-0">
+									<div className="row p-2 ">
+										<label
+											htmlFor="Name"
+											className="form-label"
+										>
+											Name <span className="red">*</span>
+										</label>
+										<input
+											type="text"
+											name="Name"
+											onChange={handleFormChange}
+											value={data.Name}
+											className="form-control mt-0 ml-10"
+											id="Name"
+											placeholder="Name"
+											style={{
+												border: errors.Name
+													? "1px solid red"
+													: "",
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+							<div
+								className="form-group row"
+								style={{ width: "100%" }}
+							>
+								<div className="mb-3 mb-sm-0">
+									<div className="row p-2 ">
+										<label
+											htmlFor="UserEmail"
+											className="form-label"
+										>
+											Email <span className="red">*</span>
+										</label>
+										<input
+											type="email"
+											name="UserEmail"
+											onChange={handleFormChange}
+											value={data.UserEmail}
+											className="form-control mt-0 ml-10"
+											id="UserEmail"
+											placeholder="Email"
+											style={{
+												border: errors.UserEmail
+													? "1px solid red"
+													: "",
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div
+								className="form-group row"
+								style={{ width: "100%" }}
+							>
+								<div className="mb-3 mb-sm-0">
+									<div className="row p-2 ">
+										<label
+											htmlFor="UserAlias"
+											className="form-label"
+										>
+											Alias <span className="red">*</span>
+										</label>
+										<input
+											type="text"
+											name="UserAlias"
+											onChange={handleFormChange}
+											value={data.UserAlias}
+											className="form-control mt-0 ml-10"
+											id="UserAlias"
+											placeholder="Alias"
+											style={{
+												border: errors.UserAlias
+													? "1px solid red"
+													: "",
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+							<div
+								className="form-group row"
+								style={{ width: "100%" }}
+							>
+								<div className="mb-3 mb-sm-0">
+									<div className="row p-2 ">
+										<label
+											htmlFor="UserPassword"
+											className="form-label"
+										>
+											Password{" "}
+											<span className="red">*</span>
+										</label>
+										<input
+											type="password"
+											name="UserPassword"
+											onChange={handleFormChange}
+											value={data.UserPassword}
+											className="form-control mt-0 ml-10"
+											id="UserPassword"
+											placeholder="Password"
+											style={{
+												border: errors.UserPassword
+													? "1px solid red"
+													: "",
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+							<div
+								className="text-center"
+								style={{
+									display: "flex",
+									justifyContent: "center",
+									gap: "10px",
+								}}
+							>
+								<Button
+									variant="contained"
+									type="submit"
+									className="mt-3"
+									onClick={handleSubmit}
+								>
+									{RegisterPageConstants.Headings.AddButton}
+								</Button>
+								&nbsp;
+								<Button
+									variant="contained"
+									className="mt-3"
+									color="error"
+									onClick={handleModalCloseEvent}
+								>
+									{
+										RegisterPageConstants.Headings
+											.CancelButton
+									}
+								</Button>
+							</div>
+						</form>
+					</Typography>
+				</Box>
+			</Modal>
 		</div>
 	);
 }

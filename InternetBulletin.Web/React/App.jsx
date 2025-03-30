@@ -31,16 +31,6 @@ function App() {
 					exact
 				/>
 				<Route
-					path={Headings.Login.Link}
-					component={LoginComponent}
-					exact
-				/>
-				<Route
-					path={Headings.Register.Link}
-					component={RegisterComponent}
-					exact
-				/>
-				<Route
 					path={Headings.CreatePost.Link}
 					component={CreatePostComponent}
 					exact
