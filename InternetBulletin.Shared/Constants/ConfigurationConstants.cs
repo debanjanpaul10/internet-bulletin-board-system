@@ -153,5 +153,10 @@ namespace InternetBulletin.Shared.Constants
         /// The apim base url constant.
         /// </summary>
         public const string ApimBaseUrlConstant = "ApimBaseUrl";
+
+        /// <summary>
+        /// The local appsettings file constant.
+        /// </summary>
+        public const string LocalAppsettingsFileConstant = "appsettings.development.json";
     }
 }

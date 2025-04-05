@@ -2,6 +2,11 @@ export const ConfigurationConstants = {
 	PostBaseUrl: "InternetBulletinWeb/PostResourceUrl?resourceUrl=",
 	GetBaseUrl: "InternetBulletinWeb/GetResourceUrl?resourceUrl=",
 	AiRewriteUrl: "InternetBulletinWeb/RewriteStoryWithAi",
+	LocalHostUrl: "https://localhost:44315/",
+	AppWebUrl:
+		"https://app-internet-bulletin-web-bcezbgajcjcufnd3.centralindia-01.azurewebsites.net/",
+	WebAntiforgeryToken:
+		"eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.l7ZFAR6EIk0fFk2j3tH5ZP0w8BRmSRDQ9A6_O3kHgEo",
 };
 
 export const PageConstants = {

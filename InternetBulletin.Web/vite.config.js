@@ -55,12 +55,6 @@ export default defineConfig(() => {
 		define: {
 			global: "window",
 			"process.env": process.env,
-			"import.meta.env.VITE_WEB_ENDPOINT": JSON.stringify(
-				process.env.VITE_WEB_ENDPOINT
-			),
-			"import.meta.env.VITE_ANTIFORGERY_TOKEN": JSON.stringify(
-				process.env.VITE_ANTIFORGERY_TOKEN
-			),
 		},
 	};
 });

@@ -13,19 +13,13 @@ function HttpUtility() {
 	 */
 	const GetAsync = async (apiUrl) => {
 		try {
-			if (!import.meta.env.VITE_WEB_ENDPOINT) {
-				console.error("VITE_WEB_ENDPOINT is undefined");
-			}
-
-			if (!import.meta.env.VITE_ANTIFORGERY_TOKEN) {
-				console.error("VITE_ANTIFORGERY_TOKEN is undefined");
-			}
-
+			var webEndpoint =
+				process.env.NODE_ENV == "development"
+					? ConfigurationConstants.LocalHostUrl
+					: ConfigurationConstants.AppWebUrl;
 			const url =
-				import.meta.env.VITE_WEB_ENDPOINT +
-				ConfigurationConstants.GetBaseUrl +
-				apiUrl;
-			const webForgeryToken = import.meta.env.VITE_ANTIFORGERY_TOKEN;
+				webEndpoint + ConfigurationConstants.GetBaseUrl + apiUrl;
+			const webForgeryToken = ConfigurationConstants.WebAntiforgeryToken;
 
 			const response = await axios.get(url, {
 				headers: {
@@ -54,19 +48,14 @@ function HttpUtility() {
 	 */
 	const PostAsync = async (apiUrl, data) => {
 		try {
-			if (!import.meta.env.VITE_WEB_ENDPOINT) {
-				console.error("VITE_WEB_ENDPOINT is undefined");
-			}
-
-			if (!import.meta.env.VITE_ANTIFORGERY_TOKEN) {
-				console.error("VITE_ANTIFORGERY_TOKEN is undefined");
-			}
+			var webEndpoint =
+				process.env.NODE_ENV == "development"
+					? ConfigurationConstants.LocalHostUrl
+					: ConfigurationConstants.AppWebUrl;
 
 			const url =
-				import.meta.env.VITE_WEB_ENDPOINT +
-				ConfigurationConstants.PostBaseUrl +
-				apiUrl;
-			const webForgeryToken = import.meta.env.VITE_ANTIFORGERY_TOKEN;
+				webEndpoint + ConfigurationConstants.PostBaseUrl + apiUrl;
+			const webForgeryToken = ConfigurationConstants.WebAntiforgeryToken;
 
 			const response = await axios.post(url, data, {
 				headers: {
@@ -92,18 +81,13 @@ function HttpUtility() {
 	 */
 	const PostAIAsync = async (data) => {
 		try {
-			if (!import.meta.env.VITE_WEB_ENDPOINT) {
-				console.error("VITE_WEB_ENDPOINT is undefined");
-			}
+			var webEndpoint =
+				process.env.NODE_ENV == "development"
+					? ConfigurationConstants.LocalHostUrl
+					: ConfigurationConstants.AppWebUrl;
 
-			if (!import.meta.env.VITE_ANTIFORGERY_TOKEN) {
-				console.error("VITE_ANTIFORGERY_TOKEN is undefined");
-			}
-
-			const url =
-				import.meta.env.VITE_WEB_ENDPOINT +
-				ConfigurationConstants.AiRewriteUrl;
-			const webForgeryToken = import.meta.env.VITE_ANTIFORGERY_TOKEN;
+			const url = webEndpoint + ConfigurationConstants.AiRewriteUrl;
+			const webForgeryToken = ConfigurationConstants.WebAntiforgeryToken;
 
 			const response = await axios.post(url, data, {
 				headers: {

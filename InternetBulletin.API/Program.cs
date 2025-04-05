@@ -27,7 +27,7 @@ namespace InternetBulletin.API
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.development.json", optional: true)
+                .AddJsonFile(LocalAppsettingsFileConstant, optional: true)
                 .AddEnvironmentVariables();
 
             var miCredentials = builder.Configuration[ManagedIdentityClientIdConstant];

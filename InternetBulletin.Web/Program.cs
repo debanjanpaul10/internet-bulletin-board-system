@@ -30,7 +30,7 @@ namespace InternetBulletin.Web
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.development.json", optional: true).AddEnvironmentVariables();
+                .AddJsonFile(LocalAppsettingsFileConstant, optional: true).AddEnvironmentVariables();
 
             var miCredentials = builder.Configuration[ManagedIdentityClientIdConstant];
             var credentials = builder.Environment.IsDevelopment()
