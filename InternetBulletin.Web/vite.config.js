@@ -55,6 +55,7 @@ export default defineConfig(() => {
 		define: {
 			global: "window",
 			"process.env": process.env,
+            "VITE_ANTIFORGERY_TOKEN": process.env.VITE_ANTIFORGERY_TOKEN
 		},
 	};
 });
