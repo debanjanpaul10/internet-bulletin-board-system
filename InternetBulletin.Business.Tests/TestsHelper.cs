@@ -5,8 +5,6 @@
 // <summary>The Tests Helper Class.</summary>
 // *********************************************************************************
 
-using InternetBulletin.Shared.DTOs;
-
 namespace InternetBulletin.UnitTests
 {
     /// <summary>
@@ -151,6 +149,29 @@ namespace InternetBulletin.UnitTests
                     UserEmail = "user5@email.com",
                     UserPassword = "password5",
                 },
+            };
+        }
+
+        /// <summary>
+        /// Creates mock user profile dto.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        public static UserProfileDto CreateMockUserProfileDto(int userId)
+        {
+            return new UserProfileDto()
+            {
+                UserId = userId,
+                Name = "User",
+                UserAlias = "userAlias",
+                UserEmail = "user@mail.com",
+                UserPassword = "userPassword",
+                UserPosts = new List<UserPostsDto>()
+                {
+                    new UserPostsDto()
+                    {
+                        PostTitle = "Sample post"
+                    }
+                }
             };
         }
     }

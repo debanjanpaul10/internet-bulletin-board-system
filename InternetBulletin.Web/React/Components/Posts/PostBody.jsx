@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * @component
@@ -14,7 +14,11 @@ import React, { useEffect, useState } from "react";
  * @returns {JSX.Element} The post jsx element.
  */
 function PostBody({ post }) {
+	const contentRef = useRef(null);
+
 	const [postData, setPostData] = useState({});
+	const [showFullText, setShowFullText] = useState(false);
+	const [isTextOverflowing, setIsTextOverflowing] = useState(false);
 
 	useEffect(() => {
 		if (postData !== post) {
@@ -22,13 +26,29 @@ function PostBody({ post }) {
 		}
 	}, [post]);
 
-    /**
-     * Formats the date.
-     * @param {String} date The date.
-     * @returns {string} The formatted date.
-     */
+	useEffect(() => {
+		if (contentRef.current) {
+			const isOverflowing =
+				contentRef.current.scrollHeight >
+				contentRef.current.clientHeight;
+			setIsTextOverflowing(isOverflowing);
+		}
+	}, [postData, showFullText]);
+
+	/**
+	 * Formats the date.
+	 * @param {String} date The date.
+	 * @returns {string} The formatted date.
+	 */
 	const formatDate = (date) => {
 		return new Date(date).toDateString();
+	};
+
+    /**
+     * Handles the text toggle.
+     */
+	const handleToggleText = () => {
+		setShowFullText(!showFullText);
 	};
 
 	return (
@@ -41,6 +61,10 @@ function PostBody({ post }) {
 						{formatDate(postData.postCreatedDate)}
 					</h6>
 					<p
+						ref={contentRef}
+						className={`post-content ${
+							showFullText ? "full-text" : ""
+						}`}
 						dangerouslySetInnerHTML={{
 							__html: postData.postContent.replace(
 								/\n/g,
@@ -48,6 +72,22 @@ function PostBody({ post }) {
 							),
 						}}
 					></p>
+					{isTextOverflowing && !showFullText && (
+						<button
+							className="btn btn-link"
+							onClick={handleToggleText}
+						>
+							Show More
+						</button>
+					)}
+					{showFullText && (
+						<button
+							className="btn btn-link"
+							onClick={handleToggleText}
+						>
+							Show Less
+						</button>
+					)}
 				</div>
 				<br />
 			</>

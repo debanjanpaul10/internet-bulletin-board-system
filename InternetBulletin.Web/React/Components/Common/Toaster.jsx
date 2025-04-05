@@ -1,55 +1,98 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import {
+	ToggleErrorToaster,
+	ToggleSuccessToaster,
+} from "@store/Common/Actions";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 /**
  * @component
- * Toaster component to display error messages.
+ * Toaster component to display error and success messages.
  *
- * @param {Object} props - The component props.
- * @param {string} props.errorMessage - The error message to display.
- * @param {Function} props.clearErrorMessage - Function to clear the error message.
- * 
  * @returns {JSX.Element} The rendered component.
  */
-function Toaster({ errorMessage, clearErrorMessage }) {
-	const [shouldShow, setShouldShow] = useState(false);
+function Toaster() {
+	const dispatch = useDispatch();
 
-	useEffect(() => {
-		if (errorMessage) {
-			setShouldShow(true);
-		} else {
-			setShouldShow(false);
-		}
-	}, [errorMessage]);
+	const SuccessToasterStoreData = useSelector(
+		(state) => state.CommonReducer.successToaster
+	);
+	const ErrorToasterStoreData = useSelector(
+		(state) => state.CommonReducer.errorToaster
+	);
 
-	/**
-	 * Handles the close button click event.
-	 */
-	const handleClose = () => {
-		setShouldShow(false);
-		clearErrorMessage();
-	};
+	if (
+		!SuccessToasterStoreData.shouldShow &&
+		!ErrorToasterStoreData.shouldShow
+	)
+		return null;
 
 	return (
-		shouldShow && (
-			<div className="toaster-container position-absolute top-0 end-0">
-				<div
-					className="toast show text-white bg-danger border-0"
-					role="alert"
-					aria-live="assertive"
-					aria-atomic="true"
-				>
-					<div className="d-flex top-0 end-0">
-						<div className="toast-body">{errorMessage}</div>
-						<button
-							type="button"
-							className="btn-close"
-							onClick={handleClose}
-							aria-label="Close"
-						></button>
+		<>
+			{ErrorToasterStoreData.shouldShow && (
+				<div className="toaster-container position-absolute top-0 end-0">
+					<div
+						className="toast show text-white bg-danger border-0"
+						role="alert"
+						aria-live="assertive"
+						aria-atomic="true"
+					>
+						<div
+							className="toast-header bg-danger border-0"
+							style={{ height: 0 }}
+						>
+							<button
+								type="button"
+								className="btn-close ms-auto"
+								onClick={() =>
+									dispatch(
+										ToggleErrorToaster({
+											shouldShow: false,
+											errorMessage: "",
+										})
+									)
+								}
+								aria-label="Close"
+							></button>
+						</div>
+						<div className="toast-body p-2">
+							{ErrorToasterStoreData.errorMessage}
+						</div>
 					</div>
 				</div>
-			</div>
-		)
+			)}
+
+			{SuccessToasterStoreData.shouldShow && (
+				<div className="toaster-container position-absolute top-0 end-0">
+					<div
+						className="toast show text-white bg-success border-0"
+						role="alert"
+						aria-live="assertive"
+						aria-atomic="true"
+					>
+						<div
+							className="toast-header bg-success border-0"
+							style={{ height: 0 }}
+						>
+							<button
+								type="button"
+								className="btn-close ms-auto"
+								onClick={dispatch(
+									ToggleSuccessToaster({
+										shouldShow: false,
+										successMessage: "",
+									})
+								)}
+								aria-label="Close"
+							></button>
+						</div>
+						<div className="toast-body p-2">
+							{SuccessToasterStoreData.successMessage}
+						</div>
+					</div>
+				</div>
+			)}
+		</>
 	);
 }
 

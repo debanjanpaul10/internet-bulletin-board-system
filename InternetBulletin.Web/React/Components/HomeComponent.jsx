@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { HomePageConstants } from "@helpers/Constants";
 import Spinner from "@components/Common/Spinner";
 import PostsContainer from "@components/Posts/PostsContainer";
-import { GetAllPostsDataAsync } from "@store/Posts/Actions";
+import { GetAllPostsAsync } from "@store/Posts/Actions";
+import LoginComponent from "@components/Users/Login";
+import RegisterComponent from "@components/Users/Register";
 
 /**
  * @component
@@ -12,15 +14,36 @@ import { GetAllPostsDataAsync } from "@store/Posts/Actions";
  * @returns {JSX.Element} The home component JSX element.
  */
 function HomeComponent() {
-    const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
 	const IsPostsDataLoading = useSelector(
 		(state) => state.PostsReducer.isPostsDataLoading
 	);
+	const IsLoginModalOpen = useSelector(
+		(state) => state.UsersReducer.isLoginModalOpen
+	);
+	const IsRegisterModalOpen = useSelector(
+		(state) => state.UsersReducer.isRegisterModalOpen
+	);
 
-    useEffect(() => {
-		dispatch(GetAllPostsDataAsync());
+	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+	const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+	useEffect(() => {
+		dispatch(GetAllPostsAsync());
 	}, []);
+
+	useEffect(() => {
+		if (isLoginModalOpen !== IsLoginModalOpen) {
+			setIsLoginModalOpen(IsLoginModalOpen);
+		}
+	}, [IsLoginModalOpen]);
+
+	useEffect(() => {
+		if (isRegisterModalOpen !== IsRegisterModalOpen) {
+			setIsRegisterModalOpen(IsRegisterModalOpen);
+		}
+	}, [IsRegisterModalOpen]);
 
 	return (
 		<div className="container">
@@ -34,6 +57,8 @@ function HomeComponent() {
 			</div>
 			<div className="row">
 				<PostsContainer />
+				{isLoginModalOpen && <LoginComponent />}
+				{isRegisterModalOpen && <RegisterComponent />}
 			</div>
 		</div>
 	);

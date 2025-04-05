@@ -45,15 +45,17 @@ export default defineConfig(() => {
 				"@store": path.resolve("./React/Store"),
 				"@styles": path.resolve("./React/Styles"),
 				"@models": path.resolve("./React/Models"),
+				"@services": path.resolve("./React/Services"),
+				"@context": path.resolve("./React/Context"),
 			},
 		},
 		server: {
 			https: true,
-			port: 6970,
 		},
 		define: {
 			global: "window",
-			"process.env": {},
+			"process.env": process.env,
+            "VITE_ANTIFORGERY_TOKEN": process.env.VITE_ANTIFORGERY_TOKEN
 		},
 	};
 });

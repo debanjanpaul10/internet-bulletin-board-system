@@ -10,8 +10,8 @@ namespace InternetBulletin.API.Controllers
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-    using InternetBulletin.Shared.DTOs;
-    using Microsoft.AspNetCore.Mvc;
+	using InternetBulletin.Shared.DTOs;
+	using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Posts Controller Class.
@@ -22,7 +22,7 @@ namespace InternetBulletin.API.Controllers
 	/// <param name="postsService">The Posts Service.</param>
 	[ApiController]
 	[Route(RouteConstants.PostsBase_RoutePrefix)]
-	public class PostsController(IConfiguration configuration, IPostsService postsService, ILogger<PostsController> logger) : BaseController(configuration)
+	public class PostsController(IConfiguration configuration, IPostsService postsService, ILogger<PostsController> logger) : BaseController(configuration, logger)
 	{
 		/// <summary>
 		/// The posts service

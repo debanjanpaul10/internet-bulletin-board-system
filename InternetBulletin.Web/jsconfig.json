@@ -6,7 +6,9 @@
 			"@helpers/*": ["./Helpers/*"],
 			"@store/*": ["./Store/*"],
 			"@styles/*": ["./Styles/*"],
-			"@models/*": ["./Models/*"]
+			"@models/*": ["./Models/*"],
+			"@services/*": ["./Services/*"],
+			"@context/*": ["./Context/*"]
 		}
 	}
 }

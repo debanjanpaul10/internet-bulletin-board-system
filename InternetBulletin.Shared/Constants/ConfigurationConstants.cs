@@ -27,15 +27,6 @@ namespace InternetBulletin.Shared.Constants
         /// </summary>
         public const string WebAntiforgeryTokenValue = "WebAntiforgeryToken";
 
-        /// <summary>
-        /// The API antiforgery token value
-        /// </summary>
-        public const string APIAntiforgeryTokenConstant = "x-antiforgery-token-ibbs-api";
-
-        /// <summary>
-        /// The api antiforgery token value.
-        /// </summary>
-        public const string APIAntiforgeryTokenValue = "APIAntiforgeryToken";
 
         /// <summary>
         /// The application insights instrumentation keykv
@@ -58,9 +49,19 @@ namespace InternetBulletin.Shared.Constants
         public const string WebApiBaseAddressConstant = "WebApiBaseAddress";
 
         /// <summary>
+        /// The local web api base address constant.
+        /// </summary>
+        public const string LocalWebApiBaseAddressConstant = "LocalWebApiBaseAddress";
+
+        /// <summary>
         /// The bulletin HTTP client constant
         /// </summary>
         public const string BulletinHttpClientConstant = "bulletinClient";
+
+        /// <summary>
+        /// The bulletin ai http client constant.
+        /// </summary>
+        public const string BulletinAiHttpClientConstant = "bulletinAiClient";
 
         /// <summary>
         /// The user assigned client identifier constant
@@ -96,5 +97,66 @@ namespace InternetBulletin.Shared.Constants
         /// The ibbs api app config key constant.
         /// </summary>
         public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
+
+        /// <summary>
+        /// The bulletin ai api endpoint constant.
+        /// </summary>
+        public const string BulletinAIApiEndpointConstant = "BulletinAiApiUrl";
+
+
+        /// <summary>
+        /// The ibbs ai app config key constant.
+        /// </summary>
+        public const string IBBSAIAppConfigKeyConstant = "IBBS.AI";
+
+        // <summary>
+        /// The tenant id constant.
+        /// </summary>
+        public const string TenantIdConstant = "TenantId";
+
+        /// <summary>
+        /// The client id constant.
+        /// </summary>
+        public const string ClientIdConstant = "ClientId";
+
+        /// <summary>
+        /// The client secret constant.
+        /// </summary>
+        public const string ClientSecretConstant = "ClientSecret";
+
+        /// <summary>
+        /// The azure ad token request url constant.
+        /// </summary>
+        public const string AzureAdTokenRequestUrlConstant = "AzureAdUrl";
+
+        /// <summary>
+        /// The resource constant.
+        /// </summary>
+        public const string ResourceConstant = "api://{0}/.default";
+
+        /// <summary>
+        /// The bearer constant.
+        /// </summary>
+        public const string BearerConstant = "Bearer";
+
+        /// <summary>
+        /// The application identifier token constant
+        /// </summary>
+        public const string ApplicationIdTokenConstant = "appid";
+
+        /// <summary>
+        /// The token expiry constant
+        /// </summary>
+        public const string TokenExpiryConstant = "exp";
+
+        /// <summary>
+        /// The apim base url constant.
+        /// </summary>
+        public const string ApimBaseUrlConstant = "ApimBaseUrl";
+
+        /// <summary>
+        /// The local appsettings file constant.
+        /// </summary>
+        public const string LocalAppsettingsFileConstant = "appsettings.development.json";
     }
 }

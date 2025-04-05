@@ -80,27 +80,19 @@ code {
 
 /* TEXT EDITOR START */
 
-.ql-toolbar .ql-formats .ql-aiRewrite {
-	margin-top: 15px;
-	background: url("../../Images/ai-icon.svg") no-repeat center center;
-	background-size: contain;
-    display: inline-block;
-    position: relative;
-}
-
 .ql-toolbar .ql-aiRewrite:hover::after {
-    content: "AI Rewrite";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 5px;
-    border-radius: 3px;
-    white-space: nowrap;
-    font-size: 12px;
-    z-index: 10;
+	content: "AI Rewrite";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #333;
+	color: #fff;
+	padding: 5px;
+	border-radius: 3px;
+	white-space: nowrap;
+	font-size: 12px;
+	z-index: 10;
 }
 
 /* TEXT EDITOR END */
@@ -130,7 +122,7 @@ button {
 	padding: 10px;
 }
 .nav-link:hover {
-	color: #0000ff;
+	color: #bbbbbb;
 }
 
 .ml-right {
@@ -144,6 +136,7 @@ button {
 .buttonStyle {
 	cursor: pointer;
 	margin-right: 1em;
+	color: #e9ecef;
 }
 
 .architectDaughterfont {
@@ -208,4 +201,41 @@ button {
 
 .create-link {
 	text-align: center;
+}
+
+.post-content {
+	display: -webkit-box;
+	-webkit-line-clamp: 10;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-wrap;
+	line-clamp: 10;
+}
+
+.post-content.full-text {
+	display: block;
+	-webkit-line-clamp: unset;
+	line-clamp: unset;
+	overflow: visible;
+	text-overflow: unset;
+}
+
+.rewritebtn {
+	font-size: 1rem;
+	padding: 0.25rem 0.5rem;
+	margin-top: 10px;
+}
+
+.custom-modal {
+	background-color: #e9ecef;
+	align-items: center;
+}
+
+.label-with-gap {
+	margin-right: 30px;
+	width: auto;
+}
+
+.form-control-plaintext {
+	padding: 10px;
 }

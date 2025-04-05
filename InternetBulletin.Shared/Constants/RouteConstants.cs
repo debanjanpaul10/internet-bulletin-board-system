@@ -15,6 +15,11 @@ namespace InternetBulletin.Shared.Constants
         #region WEB
 
         /// <summary>
+        /// The web controller URL route prefix
+        /// </summary>
+        public const string WebControllerUrl_RoutePrefix = "InternetBulletinWeb";
+
+        /// <summary>
         /// The get resource URL route prefix
         /// </summary>
         public const string GetResourceUrl_RoutePrefix = "GetResourceUrl";
@@ -23,6 +28,11 @@ namespace InternetBulletin.Shared.Constants
         /// The post resource URL route prefix
         /// </summary>
         public const string PostResourceUrl_RoutePrefix = "PostResourceUrl";
+
+        /// <summary>
+        /// The rewrite story with ai url route.
+        /// </summary>
+        public const string RewriteStoryWithAiUrl_Route = "RewriteStoryWithAi";
 
         #endregion
 
@@ -102,13 +112,41 @@ namespace InternetBulletin.Shared.Constants
         /// The configuration base_ route prefix.
         /// </summary>
         public const string ConfigurationBase_RoutePrefix = "Configuration";
-        
+
         /// <summary>
         /// The get configuration_ route.
         /// </summary>
         public const string GetConfiguration_Route = "GetConfiguration";
 
         #endregion
+
+        #region Profiles
+
+        /// <summary>
+        /// The profiles base_ route prefix.
+        /// </summary>
+        public const string ProfilesBase_RoutePrefix = "Profiles";
+
+        /// <summary>
+        /// The get user profile data route.
+        /// </summary>
+        public const string GetUserProfileData_Route = "GetUserProfileData";
+
+        #endregion
+
+        #endregion
+
+        #region External
+
+        /// <summary>
+        /// The rewrite text api route.
+        /// </summary>
+        public const string RewriteTextApi_Route = "BulletinAI/RewriteText";
+
+        /// <summary>
+        /// The ai apim url.
+        /// </summary>
+        public const string AiApimUrl = "{0}/aiapi/";
 
         #endregion
     }

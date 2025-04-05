@@ -14,12 +14,15 @@ function PostsContainer() {
 	const AllPostsStoreData = useSelector(
 		(state) => state.PostsReducer.allPostsData
 	);
+	const IsPostsDataLoading = useSelector(
+		(state) => state.PostsReducer.isPostsDataLoading
+	);
 
 	const [allPosts, setAllPosts] = useState([]);
 
 	useEffect(() => {
 		if (allPosts !== AllPostsStoreData) {
-			let sortedData = AllPostsStoreData.sort(
+			let sortedData = [...AllPostsStoreData].sort(
 				(a, b) =>
 					new Date(b.postCreatedDate) - new Date(a.postCreatedDate)
 			);
@@ -27,11 +30,15 @@ function PostsContainer() {
 		}
 	}, [AllPostsStoreData]);
 
+	if (IsPostsDataLoading) {
+		return <div className="container"></div>;
+	}
+
 	return (
 		<div className="container">
 			{allPosts.length > 0 ? (
-				allPosts.map((post) => (
-					<PostBody key={post.PostId} post={post} />
+				allPosts.map((post, index) => (
+					<PostBody key={index} post={post} />
 				))
 			) : (
 				<NoPostsContainer />

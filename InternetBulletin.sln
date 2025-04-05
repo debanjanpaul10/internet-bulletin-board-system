@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{A6A63F47-635D-459A-AD51-2E3BAC8ED38D}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		apicalls.rest = apicalls.rest
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.API", "InternetBulletin.API\InternetBulletin.API.csproj", "{D49102BE-FD5F-4A07-B7C8-4B49B46EFE9D}"

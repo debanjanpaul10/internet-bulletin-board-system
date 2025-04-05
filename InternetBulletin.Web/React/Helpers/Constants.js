@@ -1,10 +1,18 @@
 export const ConfigurationConstants = {
-	PostBaseUrl:
-		"https://localhost:44315/InternetBulletinWeb/PostResourceUrl?resourceUrl=",
-	GetBaseUrl:
-		"https://localhost:44315/InternetBulletinWeb/GetResourceUrl?resourceUrl=",
-	WebAntiForgeryTokenValue:
+	PostBaseUrl: "InternetBulletinWeb/PostResourceUrl?resourceUrl=",
+	GetBaseUrl: "InternetBulletinWeb/GetResourceUrl?resourceUrl=",
+	AiRewriteUrl: "InternetBulletinWeb/RewriteStoryWithAi",
+	LocalHostUrl: "https://localhost:44315/",
+	AppWebUrl:
+		"https://app-internet-bulletin-web-bcezbgajcjcufnd3.centralindia-01.azurewebsites.net/",
+	WebAntiforgeryToken:
 		"eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiVXNlciIsIklzc3VlciI6IkludGVybmV0LUJ1bGxldGluLVdlYiJ9.l7ZFAR6EIk0fFk2j3tH5ZP0w8BRmSRDQ9A6_O3kHgEo",
+};
+
+export const PageConstants = {
+	DarkModeConstant: "dark-mode",
+	DarkConstant: "dark",
+	LightConstant: "light",
 };
 
 export const HeaderPageConstants = {
@@ -28,6 +36,10 @@ export const HeaderPageConstants = {
 			Name: "Create",
 			Link: "/create",
 		},
+		MyProfile: {
+			Name: "My Profile",
+			Link: "/myprofile",
+		},
 	},
 	ButtonTitles: {
 		HomeButton: "Where the fun starts!",
@@ -37,6 +49,7 @@ export const HeaderPageConstants = {
 		TurnOnDark: "I am the dark!",
 		Login: "I am back!",
 		Create: "I have something to share ...",
+		MyProfile: "I wanna check myself out...",
 	},
 };
 
@@ -53,6 +66,7 @@ export const RegisterPageConstants = {
 		RegisterNewUser:
 			"Register yourself, and join the bulletin board's wealth!",
 		AddButton: "Register",
+		CancelButton: "Cancel",
 	},
 };
 
@@ -65,6 +79,7 @@ export const LoginPageConstants = {
 	Headings: {
 		LoginUser: "Log back in, let the fun begin !",
 		LoginButton: "Login",
+		CancelButton: "Cancel",
 	},
 };
 
@@ -105,5 +120,24 @@ export const CreatePostPageConstants = {
 };
 
 export const NoPostsMessageConstant = {
-    Heading: "Oops! We do not have anything for you right now."
-}
+	Heading: "Oops! We do not have anything for you right now.",
+};
+
+export const ConsoleMessage = "Developed from scratch by Debanjan Paul!";
+
+export const modalStyle = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	width: "auto",
+	border: "2px solid #000",
+	boxShadow: 24,
+	p: 4,
+};
+
+export const MyProfilePageConstants = {
+	Headings: {
+		Header: "My Profile",
+	},
+};

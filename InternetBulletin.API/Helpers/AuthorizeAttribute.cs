@@ -26,11 +26,12 @@ namespace InternetBulletin.API.Helpers
 		/// <param name="context">The authentication context.</param>
 		public void OnAuthorization(AuthorizationFilterContext context)
 		{
-			var antiForgeryToken = context.HttpContext.Request.Headers[ConfigurationConstants.APIAntiforgeryTokenConstant];
-			if (string.IsNullOrEmpty(antiForgeryToken))
+			var authenticationToken = context.HttpContext.Request.Headers.Authorization.ToString();
+			if (string.IsNullOrEmpty(authenticationToken))
 			{
-				context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+				context.Result = new JsonResult(new { message = ExceptionConstants.UnAuthorizedConstant }) { StatusCode = StatusCodes.Status401Unauthorized };
 			}
+
 		}
 	}
 }

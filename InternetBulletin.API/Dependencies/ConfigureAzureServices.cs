@@ -8,9 +8,7 @@
 namespace InternetBulletin.API.Dependencies
 {
     using Azure.Identity;
-    using InternetBulletin.API.Helpers;
     using InternetBulletin.Shared.Constants;
-    using Microsoft.ApplicationInsights.AspNetCore.Extensions;
     using Microsoft.Extensions.Configuration.AzureAppConfiguration;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 

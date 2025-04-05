@@ -1,6 +1,12 @@
 import React from "react";
 import { NoPostsMessageConstant } from "@helpers/Constants";
 
+/**
+ * @component
+ * Displays a message when there are no posts.
+ * 
+ * @returns {JSX.Element} The No Posts container JSX element.
+ */
 function NoPostsContainer() {
 	return (
 		<div className="text-center" style={{ marginTop: "200px" }}>

@@ -5,12 +5,12 @@
       {
         "Path": "InternetBulletin.Web\\InternetBulletin.Web.csproj",
         "Action": "Start",
-        "DebugTarget": "IIS Express"
+        "DebugTarget": "IBBS Web"
       },
       {
         "Path": "InternetBulletin.API\\InternetBulletin.API.csproj",
         "Action": "Start",
-        "DebugTarget": "IIS Express"
+        "DebugTarget": "IBBS API"
       }
     ]
   }

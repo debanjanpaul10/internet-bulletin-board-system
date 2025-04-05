@@ -11,6 +11,7 @@ namespace InternetBulletin.Data
 	using InternetBulletin.Shared.Constants;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
+	using static InternetBulletin.Shared.Constants.DatabaseConstants;
 
 	/// <summary>
 	/// The SQL DB Context Class.
@@ -99,16 +100,16 @@ namespace InternetBulletin.Data
 		{
 			modelBuilder.Entity<User>(entity =>
 			{
-				entity.ToTable("Users");
-				entity.HasKey(e => e.UserId).HasName("PK_Users");
-				entity.Property(e => e.UserId).HasColumnName("UserId").HasColumnType("int").ValueGeneratedOnAdd();
+				entity.ToTable(UsersTableConstant);
+				entity.HasKey(e => e.UserId).HasName(PrimaryKeyUsersConstant);
+				entity.Property(e => e.UserId).HasColumnName(UserIdConstant).HasColumnType(IntegerDataTypeConstant).ValueGeneratedOnAdd();
 
-				entity.Property(p => p.Name).HasColumnName("Name").HasColumnType("nvarchar(max)").IsRequired();
-				entity.Property(p => p.UserEmail).HasColumnName("UserEmail").HasColumnType("nvarchar(max)").IsRequired();
-				entity.Property(p => p.UserAlias).HasColumnName("UserAlias").HasColumnType("nvarchar(max)").IsRequired();
-				entity.Property(p => p.UserPassword).HasColumnName("UserPassword").HasColumnType("nvarchar(max)").IsRequired();
-				entity.Property(p => p.IsActive).HasColumnName("IsActive").HasColumnType("bit").HasDefaultValue(1).IsRequired();
-				entity.Property(p => p.IsAdmin).HasColumnName("IsAdmin").HasColumnType("bit").HasDefaultValue(0).IsRequired();
+				entity.Property(p => p.Name).HasColumnName(NameConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.UserEmail).HasColumnName(UserEmailConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.UserAlias).HasColumnName(UserAliasConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.UserPassword).HasColumnName(UserPasswordConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.IsActive).HasColumnName(IsActiveConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+				entity.Property(p => p.IsAdmin).HasColumnName(IsAdminConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(0).IsRequired();
 			});
 		}
 	}
