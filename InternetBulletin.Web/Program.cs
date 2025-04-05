@@ -127,9 +127,9 @@ namespace InternetBulletin.Web
                 RequestPath = "/dist"
             });
             app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors();
 
             app.MapControllerRoute(
             name: "default",
