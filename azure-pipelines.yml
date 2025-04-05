@@ -1,6 +1,6 @@
-trigger:
-    - main
-    - dev
+# trigger:
+#     - main
+#     - dev
 
 pool:
     vmImage: "windows-latest"
