@@ -111,10 +111,10 @@ namespace InternetBulletin.API
 
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors();
             app.MapControllers();
             app.Run();
         }
