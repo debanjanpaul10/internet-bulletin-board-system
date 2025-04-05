@@ -13,6 +13,14 @@ function HttpUtility() {
 	 */
 	const GetAsync = async (apiUrl) => {
 		try {
+			if (!import.meta.env.VITE_WEB_ENDPOINT) {
+				console.error("VITE_WEB_ENDPOINT is undefined");
+			}
+
+			if (!import.meta.env.VITE_ANTIFORGERY_TOKEN) {
+				console.error("VITE_ANTIFORGERY_TOKEN is undefined");
+			}
+
 			const url =
 				import.meta.env.VITE_WEB_ENDPOINT +
 				ConfigurationConstants.GetBaseUrl +
@@ -31,6 +39,7 @@ function HttpUtility() {
 
 			return "";
 		} catch (error) {
+			console.error(error);
 			return Promise.reject(
 				error.response ? error.response.data : error.message
 			);
@@ -45,6 +54,14 @@ function HttpUtility() {
 	 */
 	const PostAsync = async (apiUrl, data) => {
 		try {
+			if (!import.meta.env.VITE_WEB_ENDPOINT) {
+				console.error("VITE_WEB_ENDPOINT is undefined");
+			}
+
+			if (!import.meta.env.VITE_ANTIFORGERY_TOKEN) {
+				console.error("VITE_ANTIFORGERY_TOKEN is undefined");
+			}
+
 			const url =
 				import.meta.env.VITE_WEB_ENDPOINT +
 				ConfigurationConstants.PostBaseUrl +
@@ -61,6 +78,7 @@ function HttpUtility() {
 				return response.data;
 			}
 		} catch (error) {
+			console.error(error);
 			return Promise.reject(
 				error.response ? error.response.data : error.message
 			);
@@ -74,6 +92,14 @@ function HttpUtility() {
 	 */
 	const PostAIAsync = async (data) => {
 		try {
+			if (!import.meta.env.VITE_WEB_ENDPOINT) {
+				console.error("VITE_WEB_ENDPOINT is undefined");
+			}
+
+			if (!import.meta.env.VITE_ANTIFORGERY_TOKEN) {
+				console.error("VITE_ANTIFORGERY_TOKEN is undefined");
+			}
+
 			const url =
 				import.meta.env.VITE_WEB_ENDPOINT +
 				ConfigurationConstants.AiRewriteUrl;
@@ -88,6 +114,7 @@ function HttpUtility() {
 				return response.data;
 			}
 		} catch (error) {
+			console.error(error);
 			return Promise.reject(
 				error.response ? error.response.data : error.message
 			);

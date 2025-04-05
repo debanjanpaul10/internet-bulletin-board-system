@@ -40,7 +40,7 @@ namespace InternetBulletin.API.Controllers
         /// <returns>
         ///   <c>true</c> if this instance is authorized; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsAuthorized()
+        protected bool IsAuthorized()
         {
             try
             {
@@ -96,7 +96,7 @@ namespace InternetBulletin.API.Controllers
         /// Handles the bad request.
         /// </summary>
         /// <returns>The unauthorized object result</returns>
-        public UnauthorizedObjectResult HandleUnAuthorizedRequest()
+        protected UnauthorizedObjectResult HandleUnAuthorizedRequest()
         {
             var responseData = new ResponseDTO()
             {
@@ -112,7 +112,7 @@ namespace InternetBulletin.API.Controllers
         /// </summary>
         /// <param name="response">The response.</param>
         /// <returns>The ok object result</returns>
-        public OkObjectResult HandleSuccessResult(object response)
+        protected OkObjectResult HandleSuccessResult(object response)
         {
             var responseData = new ResponseDTO()
             {
@@ -128,7 +128,7 @@ namespace InternetBulletin.API.Controllers
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>The bad request result.</returns>
-        public BadRequestObjectResult HandleBadRequest(string message)
+        protected BadRequestObjectResult HandleBadRequest(string message)
         {
             var responseData = new ResponseDTO()
             {

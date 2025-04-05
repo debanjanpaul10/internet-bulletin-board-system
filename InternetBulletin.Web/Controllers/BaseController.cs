@@ -30,7 +30,7 @@ namespace InternetBulletin.Web.Controllers
         /// <returns>
         ///   <c>true</c> if this instance is authorized; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsAuthorized()
+        protected bool IsAuthorized()
         {
             var requestHeaders = this.HttpContext.Request.Headers;
             var acceptableToken = this._configuration[WebAntiforgeryTokenValue];

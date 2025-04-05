@@ -14,6 +14,8 @@ namespace InternetBulletin.Web
     using Polly.Extensions.Http;
     using Azure.Identity;
     using Microsoft.Extensions.FileProviders;
+    using System.Globalization;
+    using InternetBulletin.Shared.Constants;
 
     /// <summary>
     /// Program class from where the execution starts
@@ -78,9 +80,11 @@ namespace InternetBulletin.Web
             var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 
+            var apimUrl = builder.Configuration[ApimBaseUrlConstant];
+
             var webApiUrl = builder.Environment.IsDevelopment()
                 ? builder.Configuration[LocalWebApiBaseAddressConstant]
-                : builder.Configuration[WebApiBaseAddressConstant];
+                : apimUrl;
 
             if (!string.IsNullOrEmpty(webApiUrl))
             {
@@ -91,12 +95,12 @@ namespace InternetBulletin.Web
                 }).AddPolicyHandler(retryPolicy);
             }
 
-            var aiApiUrl = builder.Configuration[BulletinAIApiEndpointConstant];
-            if (!string.IsNullOrEmpty(aiApiUrl))
+            var aiApimUrl = string.Format(CultureInfo.CurrentCulture, RouteConstants.AiApimUrl, apimUrl);
+            if (!string.IsNullOrEmpty(aiApimUrl))
             {
                 builder.Services.AddHttpClient(BulletinAiHttpClientConstant, client =>
                 {
-                    client.BaseAddress = new Uri(aiApiUrl);
+                    client.BaseAddress = new Uri(string.Format(aiApimUrl));
                     client.Timeout = TimeSpan.FromMinutes(3);
                 }).AddPolicyHandler(retryPolicy);
             }

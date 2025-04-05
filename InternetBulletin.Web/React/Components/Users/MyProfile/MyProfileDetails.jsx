@@ -2,6 +2,19 @@ import { useEffect, useState } from "react";
 
 import { MyProfilePageConstants } from "@helpers/Constants";
 
+/**
+ * @component
+ * This component displays the user's profile details in a tabular format.
+ * It dynamically updates the displayed data when the `myProfileDetails` prop changes.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Object} props.myProfileDetails - The user's profile details.
+ * @param {string} props.myProfileDetails.name - The user's name.
+ * @param {string} props.myProfileDetails.userAlias - The user's alias.
+ * @param {string} props.myProfileDetails.userEmail - The user's email address.
+ * 
+ * @returns {JSX.Element} The rendered component.
+ */
 function MyProfileDetailsComponent({ myProfileDetails }) {
 	const [profileDetails, setProfileDetails] = useState({});
 

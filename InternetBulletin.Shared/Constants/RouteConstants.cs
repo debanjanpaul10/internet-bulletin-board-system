@@ -143,6 +143,11 @@ namespace InternetBulletin.Shared.Constants
         /// </summary>
         public const string RewriteTextApi_Route = "BulletinAI/RewriteText";
 
+        /// <summary>
+        /// The ai apim url.
+        /// </summary>
+        public const string AiApimUrl = "{0}/aiapi/";
+
         #endregion
     }
 }
