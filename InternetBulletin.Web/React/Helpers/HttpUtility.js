@@ -13,7 +13,7 @@ function HttpUtility() {
 	 */
 	const GetAsync = async (apiUrl) => {
 		try {
-            console.log(VITE_ANTIFORGERY_TOKEN);
+            console.log(process.env.VITE_ANTIFORGERY_TOKEN);
 			var webEndpoint =
 				process.env.NODE_ENV == "development"
 					? ConfigurationConstants.LocalHostUrl
@@ -49,7 +49,7 @@ function HttpUtility() {
 	 */
 	const PostAsync = async (apiUrl, data) => {
 		try {
-            console.log(VITE_ANTIFORGERY_TOKEN);
+            console.log(process.env.VITE_ANTIFORGERY_TOKEN);
 			var webEndpoint =
 				process.env.NODE_ENV == "development"
 					? ConfigurationConstants.LocalHostUrl
