@@ -1,0 +1,241 @@
+@import "react-quill-new/dist/quill.snow.css";
+
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+		"Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+		"Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
+}
+
+/* ANIMATIONS START */
+
+@keyframes heartbeat {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+}
+
+.heartbeat {
+	animation: heartbeat 1.5s infinite;
+}
+
+.icon-large {
+	font-size: 1.5em; /* Adjust the size as needed */
+	transition: transform 0.3s ease-in-out;
+}
+
+.create-link {
+	position: relative;
+	display: flex;
+	align-items: center;
+	transition: transform 0.3s ease-in-out;
+}
+
+.create-text {
+	display: none;
+}
+
+.create-link .create-text {
+	opacity: 0;
+	transform: translateX(-10px);
+	transition: opacity 0.3s, transform 0.3s;
+	white-space: nowrap;
+}
+
+.create-link:hover .create-text {
+	opacity: 1;
+	transform: translateX(0);
+	display: block;
+}
+
+.create-link:hover .icon-large {
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.create-link:hover {
+	transform: translateX(-10px);
+}
+
+/* ANIMATIONS END */
+
+/* TEXT EDITOR START */
+
+.ql-toolbar .ql-aiRewrite:hover::after {
+	content: "AI Rewrite";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #333;
+	color: #fff;
+	padding: 5px;
+	border-radius: 3px;
+	white-space: nowrap;
+	font-size: 12px;
+	z-index: 10;
+}
+
+/* TEXT EDITOR END */
+
+/* CUSTOM CSS */
+li {
+	list-style: none;
+}
+a {
+	text-decoration: none;
+}
+input {
+	margin-top: 20px;
+}
+button {
+	margin-top: 20px;
+}
+
+.jumbotron {
+	padding: 2rem 1rem;
+	margin-bottom: 2rem;
+	background-color: #e9ecef;
+	border-radius: 0.3rem;
+}
+
+.nav-link {
+	padding: 10px;
+}
+.nav-link:hover {
+	color: #bbbbbb;
+}
+
+.ml-right {
+	margin-left: auto;
+}
+
+.ml-right > .nav-link {
+	margin-right: 10px;
+}
+
+.buttonStyle {
+	cursor: pointer;
+	margin-right: 1em;
+	color: #e9ecef;
+}
+
+.architectDaughterfont {
+	font-family: "Architects Daughter";
+}
+
+.ml-10 {
+	margin-left: 10px;
+}
+
+.spinner-page {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 9999;
+}
+
+.spinner-page.dark-mode {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.spinner-page.light-mode {
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.red {
+	color: #ff0000;
+}
+
+.footer {
+	bottom: 0;
+	margin: auto;
+	width: 75%;
+	position: fixed;
+	padding: 0px 0px 10px 0px;
+	font-size: large;
+}
+
+.postcontainer {
+	width: 80%;
+	height: auto;
+}
+
+.card {
+	border: 1px solid #0000ff;
+	padding: 10px;
+}
+
+.card-header {
+	padding: 10px;
+}
+
+.navbar-nav .mx-auto {
+	margin-left: auto;
+	margin-right: 10px;
+}
+
+.create-link {
+	text-align: center;
+}
+
+.post-content {
+	display: -webkit-box;
+	-webkit-line-clamp: 10;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-wrap;
+	line-clamp: 10;
+}
+
+.post-content.full-text {
+	display: block;
+	-webkit-line-clamp: unset;
+	line-clamp: unset;
+	overflow: visible;
+	text-overflow: unset;
+}
+
+.rewritebtn {
+	font-size: 1rem;
+	padding: 0.25rem 0.5rem;
+	margin-top: 10px;
+}
+
+.custom-modal {
+	background-color: #e9ecef;
+	align-items: center;
+}
+
+.label-with-gap {
+	margin-right: 30px;
+	width: auto;
+}
+
+.form-control-plaintext {
+	padding: 10px;
+}

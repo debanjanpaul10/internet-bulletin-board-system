@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./React",
+		"paths": {
+			"@components/*": ["./Components/*"],
+			"@helpers/*": ["./Helpers/*"],
+			"@store/*": ["./Store/*"],
+			"@styles/*": ["./Styles/*"],
+			"@models/*": ["./Models/*"],
+			"@services/*": ["./Services/*"],
+			"@context/*": ["./Context/*"]
+		}
+	}
+}

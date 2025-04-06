@@ -1,0 +1,16 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/InternetBulletin/InternetBulletin.Data/Migrations
+**.vscode
+**.vs
+**obj
+**wwwroot
+**bin
+**node_modules
+**package-lock.json
+appsettings.development.json
+appsettings.Development.json
+**dist/
+.env.*
