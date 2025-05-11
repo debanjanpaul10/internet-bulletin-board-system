@@ -32,7 +32,16 @@ namespace InternetBulletin.API.Dependencies
             {
                 builder.Services.AddDbContext<SqlDbContext>(options =>
                 {
-                    options.UseSqlServer(connectionString: sqlConnectionString);
+                    options.UseSqlServer
+                    (
+                        connectionString: sqlConnectionString,
+                        options => options.EnableRetryOnFailure
+                        (
+                            maxRetryCount: 3,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        )
+                    );
                 });
             }
         }

@@ -111,7 +111,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-				var result = await this._postsService.AddNewPostAsync(newPost);
+				var result = await this._postsService.AddNewPostAsync(newPost, this.UserName);
 				if (result)
 				{
 					return this.HandleSuccessResult(result);
@@ -144,7 +144,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
-				var result = await this._postsService.UpdatePostAsync(updatePost);
+				var result = await this._postsService.UpdatePostAsync(updatePost, this.UserName);
 				if (result is not null && result.PostId != Guid.Empty)
 				{
 					return this.HandleSuccessResult(result);

@@ -128,9 +128,9 @@ namespace InternetBulletin.Data
 				entity.Property(e => e.PostId).HasColumnName(PostIdConstant).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
 				entity.Property(e => e.PostTitle).HasColumnName(PostTitleConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
 				entity.Property(e => e.PostContent).HasColumnName(PostContentConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(e => e.PostCreatedDate).HasColumnName(PostCreatedDateConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostCreatedDate).HasColumnName(PostCreatedDateConstant).HasColumnType(DateTimeDataTypeConstant).IsRequired();
 				entity.Property(e => e.PostOwnerUserName).HasColumnName(PostOwnerUserNameConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(e => e.IsActive).HasColumnName(IsActiveConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.IsActive).HasColumnName(IsActiveConstant).HasColumnType(BitDataTypeConstant).IsRequired();
 			});
 		}
 	}

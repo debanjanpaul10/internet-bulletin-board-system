@@ -70,7 +70,7 @@ namespace InternetBulletin.Data.DataServices
         /// <returns>
         /// The boolean for success or failure.
         /// </returns>
-        public async Task<bool> AddNewPostAsync(AddPostDTO newPost)
+        public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace InternetBulletin.Data.DataServices
                         PostTitle = newPost.PostTitle,
                         IsActive = true,
                         PostCreatedDate = DateTime.UtcNow,
-                        PostOwnerUserName = newPost.PostCreatedBy
+                        PostOwnerUserName = userName
                     };
                     await this._dbContext.Posts.AddAsync(dbPostData);
                     await this._dbContext.SaveChangesAsync();
@@ -122,13 +122,13 @@ namespace InternetBulletin.Data.DataServices
         /// </summary>
         /// <param name="updatedPost">The updated post.</param>
         /// <returns>The post data</returns>
-        public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost)
+        public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, updatedPost.PostId));
 
-                var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == updatedPost.PostOwnerUserName);
+                var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName);
                 if (dbPostData is not null)
                 {
                     dbPostData.PostTitle = updatedPost.PostTitle;

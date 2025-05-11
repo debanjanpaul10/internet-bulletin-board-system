@@ -7,9 +7,9 @@
 
 namespace InternetBulletin.API.Controllers
 {
-    using InternetBulletin.API.Helpers;
     using InternetBulletin.Shared.Constants;
     using InternetBulletin.Shared.DTOs;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Net;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;

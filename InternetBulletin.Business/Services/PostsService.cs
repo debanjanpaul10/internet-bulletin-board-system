@@ -81,7 +81,7 @@ namespace InternetBulletin.Business.Services
 		/// <returns>
 		/// The boolean for success or failure.
 		/// </returns>
-		public async Task<bool> AddNewPostAsync(AddPostDTO newPost)
+		public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
 		{
 			if (newPost is null)
 			{
@@ -91,7 +91,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._postsDataService.AddNewPostAsync(newPost);
+			var result = await this._postsDataService.AddNewPostAsync(newPost, userName);
 			return result;
 		}
 
@@ -100,7 +100,7 @@ namespace InternetBulletin.Business.Services
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
 		/// <returns>The updated post data.</returns>
-		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost)
+		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
 		{
 			if (updatedPost is null)
 			{
@@ -110,7 +110,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._postsDataService.UpdatePostAsync(updatedPost);
+			var result = await this._postsDataService.UpdatePostAsync(updatedPost, userName);
 			if (result is not null && !Equals(result.PostId, Guid.Empty))
 			{
 				return result;

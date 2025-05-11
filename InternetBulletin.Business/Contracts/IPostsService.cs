@@ -28,15 +28,17 @@ namespace InternetBulletin.Business.Contracts
 		/// Adds the new post asynchronous.
 		/// </summary>
 		/// <param name="newPost">The new post.</param>
+		/// <param name="userName">The User name.</param>
 		/// <returns>The boolean for success or failure.</returns>
-		Task<bool> AddNewPostAsync(AddPostDTO newPost);
+		Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName);
 
 		/// <summary>
 		/// Updates the post asynchronous.
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
+		/// <param name="userName">The user name.</param>
 		/// <returns>The updated post data.</returns>
-		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost);
+		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName);
 
 		/// <summary>
 		/// Deletes the post asynchronous.

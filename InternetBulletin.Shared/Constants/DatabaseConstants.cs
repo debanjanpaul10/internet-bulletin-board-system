@@ -34,6 +34,11 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string UniqueIdentifierDataTypeConstant = "uniqueidentifier";
 
+		/// <summary>
+		/// The date time data type constant.
+		/// </summary>
+		public const string DateTimeDataTypeConstant = "datetime";
+
 		#endregion
 
 		#region Users

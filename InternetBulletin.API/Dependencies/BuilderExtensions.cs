@@ -82,9 +82,9 @@ namespace InternetBulletin.API.Dependencies
                         await context.HandleAuthTokenValidationSuccessAsync();
                     },
                     OnAuthenticationFailed = async context =>
-                        {
-                            await context.HandleAuthTokenValidationFailedAsync();
-                        }
+                    {
+                        await context.HandleAuthTokenValidationFailedAsync();
+                    }
                 };
             });
         }
