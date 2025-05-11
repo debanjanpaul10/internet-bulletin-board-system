@@ -16,12 +16,13 @@
 	"style": "dist/internetbulletin.web.css",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"start": "vite",
 		"build": "vite build",
 		"lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@auth0/auth0-react": "^2.3.0",
 		"@azure/app-configuration": "^1.8.0",
 		"@azure/identity": "^4.7.0",
 		"@azure/keyvault-secrets": "^4.9.0",
@@ -36,7 +37,7 @@
 		"@mui/icons-material": "^6.4.8",
 		"@mui/material": "^6.4.8",
 		"@testing-library/jest-dom": "^5.16.2",
-		"@testing-library/react": "^12.1.4",
+		"@testing-library/react": "^16.3.0",
 		"@testing-library/user-event": "^13.5.0",
 		"@vitejs/plugin-react": "^4.3.4",
 		"axios": "^0.26.1",
@@ -47,7 +48,7 @@
 		"js-cookie": "^3.0.5",
 		"react": "^19.0.0",
 		"react-quill-new": "^3.3.3",
-		"react-router-dom": "^5.2.0",
+		"react-router-dom": "^7.6.0",
 		"react-scripts": "5.0.0",
 		"react-toastify": "^8.2.0",
 		"toastr": "^2.1.4",

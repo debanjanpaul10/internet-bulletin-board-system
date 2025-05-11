@@ -39,14 +39,15 @@ export default defineConfig(() => {
 		},
 		resolve: {
 			alias: {
-				"@": path.resolve(__dirname, "./React"),
-				"@components": path.resolve("./React/Components"),
-				"@helpers": path.resolve("./React/Helpers"),
-				"@store": path.resolve("./React/Store"),
-				"@styles": path.resolve("./React/Styles"),
-				"@models": path.resolve("./React/Models"),
-				"@services": path.resolve("./React/Services"),
-				"@context": path.resolve("./React/Context"),
+				"@": path.resolve(__dirname, "./"),
+				"@components": path.resolve("./Components"),
+				"@helpers": path.resolve("./Helpers"),
+				"@store": path.resolve("./Store"),
+				"@styles": path.resolve("./Styles"),
+				"@models": path.resolve("./Models"),
+				"@services": path.resolve("./Services"),
+				"@context": path.resolve("./Context"),
+				"@assets": path.resolve("./assets")
 			},
 		},
 		server: {
@@ -55,7 +56,6 @@ export default defineConfig(() => {
 		define: {
 			global: "window",
 			"process.env": process.env,
-            "VITE_ANTIFORGERY_TOKEN": process.env.VITE_ANTIFORGERY_TOKEN
 		},
 	};
 });
