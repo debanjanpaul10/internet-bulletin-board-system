@@ -78,6 +78,7 @@ namespace InternetBulletin.API
             });
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
+            builder.Services.AddHttpContextAccessor();
         }
 
         /// <summary>
