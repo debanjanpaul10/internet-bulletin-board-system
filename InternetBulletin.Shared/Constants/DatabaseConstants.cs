@@ -29,7 +29,14 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string BitDataTypeConstant = "bit";
 
+		/// <summary>
+		/// The unique identifier data type constant.
+		/// </summary>
+		public const string UniqueIdentifierDataTypeConstant = "uniqueidentifier";
+
 		#endregion
+
+		#region Users
 
 		/// <summary>
 		/// The users table constant
@@ -75,5 +82,46 @@ namespace InternetBulletin.Shared.Constants
 		/// The is admin constant
 		/// </summary>
 		public const string IsAdminConstant = "IsAdmin";
+
+		#endregion
+
+		#region Posts
+
+		/// <summary>
+		/// The posts table constant.
+		/// </summary>
+		public const string PostsTableConstant = "Posts";
+
+		/// <summary>
+		/// The primary key posts constant.
+		/// </summary>
+		public const string PrimaryKeyPostsConstant = "PK_Posts";
+
+		/// <summary>
+		/// The post id constant.
+		/// </summary>
+		public const string PostIdConstant = "PostId";
+
+		/// <summary>
+		/// The post title constant.
+		/// </summary>
+		public const string PostTitleConstant = "PostTitle";
+
+		/// <summary>
+		/// The post content constant.
+		/// </summary>
+		public const string PostContentConstant = "PostContent";
+
+		/// <summary>
+		/// The post created date constant.
+		/// </summary>
+		public const string PostCreatedDateConstant = "PostCreatedDate";
+
+		/// <summary>
+		/// The post owner user name constant.
+		/// </summary>
+		public const string PostOwnerUserNameConstant = "PostOwnerUserName";
+
+		#endregion
 	}
 }

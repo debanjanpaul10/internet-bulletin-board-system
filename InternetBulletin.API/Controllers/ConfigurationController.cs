@@ -16,9 +16,10 @@ namespace InternetBulletin.API.Controllers
 	/// <seealso cref="InternetBulletin.API.Controllers.BaseController" />
 	/// <param name="configuration">The Configuration.</param>
 	/// <param name="logger">The Logger</param>
+	/// <param name="httpContextAccessor">The http context accessor</param>
 	[ApiController]
 	[Route(RouteConstants.ConfigurationBase_RoutePrefix)]
-	public class ConfigurationController(IConfiguration configuration, ILogger<ConfigurationController> logger) : BaseController(configuration, logger)
+	public class ConfigurationController(IConfiguration configuration, ILogger<ConfigurationController> logger, IHttpContextAccessor httpContextAccessor) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The logger.

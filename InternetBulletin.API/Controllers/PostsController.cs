@@ -8,21 +8,21 @@
 namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.Business.Contracts;
-	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
 	using InternetBulletin.Shared.DTOs;
-	using Microsoft.AspNetCore.Mvc;
+    using InternetBulletin.Shared.DTOs.Posts;
+    using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Posts Controller Class.
 	/// </summary>
 	/// <seealso cref="InternetBulletin.API.Controllers.BaseController" />
-	/// <param name="configuration">The Configuration.</param>
+	/// <param name="httpContextAccessor">The http context accessor.</param>
 	/// <param name="logger">The Logger.</param>
 	/// <param name="postsService">The Posts Service.</param>
 	[ApiController]
 	[Route(RouteConstants.PostsBase_RoutePrefix)]
-	public class PostsController(IConfiguration configuration, IPostsService postsService, ILogger<PostsController> logger) : BaseController(configuration, logger)
+	public class PostsController(IPostsService postsService, ILogger<PostsController> logger, IHttpContextAccessor httpContextAccessor) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The posts service
@@ -46,20 +46,15 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-				if (this.IsAuthorized())
+				var result = await this._postsService.GetPostAsync(postId, this.UserName);
+				if (result is not null && !Equals(result.PostId, Guid.Empty))
 				{
-					var result = await this._postsService.GetPostAsync(postId);
-					if (result is not null && !(Equals(result.PostId, Guid.Empty)))
-					{
-						return this.HandleSuccessResult(result);
-					}
-					else
-					{
-						return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
-					}
+					return this.HandleSuccessResult(result);
 				}
-
-				return this.HandleUnAuthorizedRequest();
+				else
+				{
+					return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -83,20 +78,15 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
-				if (this.IsAuthorized())
+				var result = await this._postsService.GetAllPostsAsync();
+				if (result is not null && result.Count > 0)
 				{
-					var result = await this._postsService.GetAllPostsAsync();
-					if (result is not null && result.Count > 0)
-					{
-						return this.HandleSuccessResult(result);
-					}
-					else
-					{
-						return this.HandleBadRequest(ExceptionConstants.PostsNotPresentMessageConstant);
-					}
+					return this.HandleSuccessResult(result);
 				}
-
-				return this.HandleUnAuthorizedRequest();
+				else
+				{
+					return this.HandleBadRequest(ExceptionConstants.PostsNotPresentMessageConstant);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -121,20 +111,15 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-				if (this.IsAuthorized())
+				var result = await this._postsService.AddNewPostAsync(newPost);
+				if (result)
 				{
-					var result = await this._postsService.AddNewPostAsync(newPost);
-					if (result)
-					{
-						return this.HandleSuccessResult(result);
-					}
-					else
-					{
-						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-					}
+					return this.HandleSuccessResult(result);
 				}
-
-				return this.HandleUnAuthorizedRequest();
+				else
+				{
+					return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -154,25 +139,21 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The action result of the JSON response.</returns>
 		[HttpPost]
 		[Route(RouteConstants.UpdatePost_Route)]
-		public async Task<IActionResult> UpdatePostAsync(Post updatePost)
+		public async Task<IActionResult> UpdatePostAsync(UpdatePostDTO updatePost)
 		{
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
-				if (this.IsAuthorized())
+				var result = await this._postsService.UpdatePostAsync(updatePost);
+				if (result is not null && result.PostId != Guid.Empty)
 				{
-					var result = await this._postsService.UpdatePostAsync(updatePost);
-					if (result is not null && result.PostId != Guid.Empty)
-					{
-						return this.HandleSuccessResult(result);
-					}
-					else
-					{
-						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-					}
+					return this.HandleSuccessResult(result);
+				}
+				else
+				{
+					return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
 				}
 
-				return this.HandleUnAuthorizedRequest();
 			}
 			catch (Exception ex)
 			{
@@ -197,20 +178,15 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-				if (this.IsAuthorized())
+				var result = await this._postsService.DeletePostAsync(postId, this.UserName);
+				if (result)
 				{
-					var result = await this._postsService.DeletePostAsync(postId);
-					if (result)
-					{
-						return this.HandleSuccessResult(result);
-					}
-					else
-					{
-						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-					}
+					return this.HandleSuccessResult(result);
 				}
-
-				return this.HandleUnAuthorizedRequest();
+				else
+				{
+					return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+				}
 			}
 			catch (Exception ex)
 			{

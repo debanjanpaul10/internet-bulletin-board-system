@@ -9,6 +9,7 @@ namespace InternetBulletin.Business.Contracts
 {
 	using InternetBulletin.Data.Entities;
     using InternetBulletin.Shared.DTOs;
+    using InternetBulletin.Shared.DTOs.Posts;
 
     /// <summary>
     /// The Posts BusinessManager Interface Class.
@@ -19,8 +20,9 @@ namespace InternetBulletin.Business.Contracts
 		/// Gets the post asynchronous.
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
+		/// <param name="userName"The user name.</param>
 		/// <returns>The specific post.</returns>
-		Task<Post> GetPostAsync(string postId);
+		Task<Post> GetPostAsync(string postId, string userName);
 
 		/// <summary>
 		/// Adds the new post asynchronous.
@@ -34,14 +36,15 @@ namespace InternetBulletin.Business.Contracts
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
 		/// <returns>The updated post data.</returns>
-		Task<Post> UpdatePostAsync(Post updatedPost);
+		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost);
 
 		/// <summary>
 		/// Deletes the post asynchronous.
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
+		/// <param name="userName">The current user name.</param>
 		/// <returns>The boolean for success / failure</returns>
-		Task<bool> DeletePostAsync(string postId);
+		Task<bool> DeletePostAsync(string postId, string userName);
 
 		/// <summary>
 		/// Gets all posts asynchronous.

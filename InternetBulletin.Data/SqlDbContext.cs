@@ -54,6 +54,14 @@ namespace InternetBulletin.Data
 		public DbSet<User> Users { get; set; }
 
 		/// <summary>
+		/// Gets or sets the posts.
+		/// </summary>
+		/// <value>
+		/// The posts.
+		/// </value>
+		public DbSet<Post> Posts { get; set; }
+
+		/// <summary>
 		/// Override this method to configure the database (and other options) to be used for this context.
 		/// This method is called for each instance of the context that is created.
 		/// The base implementation does nothing.
@@ -110,6 +118,19 @@ namespace InternetBulletin.Data
 				entity.Property(p => p.UserPassword).HasColumnName(UserPasswordConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
 				entity.Property(p => p.IsActive).HasColumnName(IsActiveConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
 				entity.Property(p => p.IsAdmin).HasColumnName(IsAdminConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(0).IsRequired();
+			});
+
+			modelBuilder.Entity<Post>(entity =>
+			{
+				entity.ToTable(PostsTableConstant);
+				entity.HasKey(e => e.PostId).HasName(PrimaryKeyPostsConstant);
+
+				entity.Property(e => e.PostId).HasColumnName(PostIdConstant).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostTitle).HasColumnName(PostTitleConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostContent).HasColumnName(PostContentConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostCreatedDate).HasColumnName(PostCreatedDateConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostOwnerUserName).HasColumnName(PostOwnerUserNameConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.IsActive).HasColumnName(IsActiveConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
 			});
 		}
 	}
