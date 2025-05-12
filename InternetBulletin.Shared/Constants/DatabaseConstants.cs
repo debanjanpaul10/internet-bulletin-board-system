@@ -127,6 +127,11 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string PostOwnerUserNameConstant = "PostOwnerUserName";
 
+		/// <summary>
+		/// The rating constant.
+		/// </summary>
+		public const string RatingConstant = "Rating";
+
 		#endregion
 	}
 }

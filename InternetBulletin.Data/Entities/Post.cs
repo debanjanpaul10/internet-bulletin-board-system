@@ -52,6 +52,14 @@ namespace InternetBulletin.Data.Entities
 		public string PostOwnerUserName { get; set; } = string.Empty;
 
 		/// <summary>
+		/// Gets or sets the rating.
+		/// </summary>
+		/// <value>
+		/// The rating.
+		/// </value>
+		public int Rating { get; set; } = 0;
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this instance is active.
 		/// </summary>
 		/// <value>

@@ -70,6 +70,11 @@ namespace InternetBulletin.Shared.Constants
         /// </summary>
         public const string DeletePost_Route = "DeletePost";
 
+        /// <summary>
+        /// The update vote route.
+        /// </summary>
+        public const string UpdateRating_Route = "UpdateRating";
+
         #endregion
 
         #region Users

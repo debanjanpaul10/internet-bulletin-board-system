@@ -87,7 +87,8 @@ namespace InternetBulletin.Data.DataServices
                         PostTitle = newPost.PostTitle,
                         IsActive = true,
                         PostCreatedDate = DateTime.UtcNow,
-                        PostOwnerUserName = userName
+                        PostOwnerUserName = userName,
+                        Rating = 0
                     };
                     await this._dbContext.Posts.AddAsync(dbPostData);
                     await this._dbContext.SaveChangesAsync();
@@ -229,5 +230,42 @@ namespace InternetBulletin.Data.DataServices
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
             }
         }
+
+        /// <summary>
+        /// Updates rating async.
+        /// </summary>
+        /// <param name="postId">The post id.</param>
+        /// <param name="isIncrement">If the rating is increased.</param>
+        public async Task<Post> UpdateRatingAsync(Guid postId, bool isIncrement)
+        {
+            try
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, postId));
+                var post = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == postId && x.IsActive);
+                if (post is not null)
+                {
+                    post.Rating = isIncrement ? post.Rating + 1 : post.Rating == 0 ? 0 : post.Rating - 1;
+                    await this._dbContext.SaveChangesAsync();
+
+                    return post;
+                }
+                else
+                {
+                    var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
+                    this._logger.LogError(exception, exception.Message);
+                    throw exception;
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdateRatingAsync), DateTime.UtcNow, ex.Message));
+                throw;
+            }
+            finally
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdateRatingAsync), DateTime.UtcNow, postId));
+            }
+        }
+
     }
 }

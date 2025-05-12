@@ -5,5 +5,6 @@ CREATE TABLE [dbo].[Posts]
   [PostContent] NVARCHAR(MAX) NOT NULL,
   [PostCreatedDate] DATETIME NOT NULL,
   [PostOwnerUserName] NVARCHAR(MAX) NOT NULL,
-  [IsActive] BIT DEFAULT 1
+  [Ratings] INT NULL DEFAULT 0,
+  [IsActive] BIT NOT NULL DEFAULT 1
 )

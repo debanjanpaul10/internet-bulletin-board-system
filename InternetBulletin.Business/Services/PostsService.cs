@@ -11,9 +11,9 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Data.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-    using InternetBulletin.Shared.DTOs;
-    using InternetBulletin.Shared.DTOs.Posts;
-    using Microsoft.Extensions.Logging;
+	using InternetBulletin.Shared.DTOs;
+	using InternetBulletin.Shared.DTOs.Posts;
+	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
@@ -159,6 +159,33 @@ namespace InternetBulletin.Business.Services
 		public async Task<List<Post>> GetAllPostsAsync()
 		{
 			var result = await this._postsDataService.GetAllPostsAsync();
+			return result;
+		}
+
+		/// <summary>
+		/// Updates rating async.
+		/// </summary>
+		/// <param name="postId">The post id.</param>
+		/// <param name="isIncrement">If the rating is increased.</param>
+		public async Task<Post> UpdateRatingAsync(string postId, bool isIncrement)
+		{
+			if (string.IsNullOrWhiteSpace(postId))
+			{
+				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
+				this._logger.LogError(exception, exception.Message);
+
+				throw exception;
+			}
+
+			if (!Guid.TryParse(postId, out var postIdGuid))
+			{
+				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
+				this._logger.LogError(exception, exception.Message);
+
+				throw exception;
+			}
+
+			var result = await this._postsDataService.UpdateRatingAsync(postId: postIdGuid, isIncrement);
 			return result;
 		}
 	}
