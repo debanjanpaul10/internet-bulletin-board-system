@@ -4,15 +4,17 @@
 }
 
 .dark-mode .navbar {
-	background-color: #333333;
+	background-color: #1f1f1f !important;
+	color: #ffffff
 }
 
 .dark-mode .nav-link {
-	color: #ffffff;
+	color: #ffffff !important;
+	text-decoration: none;
 }
 
 .dark-mode .nav-link:hover {
-	color: #bbbbbb;
+	color: #bbbbbb !important;
 }
 
 .dark-mode .form-control {

@@ -31,12 +31,12 @@ export const CustomDarkModeToggleSwitch = styled(Switch)(({ theme }) => ({
 			"& + .MuiSwitch-track": {
 				opacity: 1,
 				backgroundColor:
-					theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
+					theme.palette.mode === "light" ? "#aab4be" : "#8796A5",
 			},
 		},
 	},
 	"& .MuiSwitch-thumb": {
-		backgroundColor: theme.palette.mode === "dark" ? "#003892" : "#001e3c",
+		backgroundColor: theme.palette.mode === "light" ? "#001e3c" : "#003892",
 		width: 32,
 		height: 32,
 		border: "1px solid white",

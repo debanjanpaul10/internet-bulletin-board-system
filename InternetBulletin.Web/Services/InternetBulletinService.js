@@ -49,7 +49,11 @@ export const UpdatePostApiAsync = async (updatedPostData, getIdTokenClaims) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const DeletePostApiAsync = async (postId, getIdTokenClaims) => {
-	return await PostAsync(`Posts/DeletePost`, postId, getIdTokenClaims);
+	return await PostAsync(
+		`Posts/DeletePost?postId=${postId}`,
+		null,
+		getIdTokenClaims
+	);
 };
 
 // #endregion

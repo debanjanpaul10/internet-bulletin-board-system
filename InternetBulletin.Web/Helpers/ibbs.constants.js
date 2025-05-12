@@ -7,7 +7,7 @@ export const PageConstants = {
 export const HeaderPageConstants = {
 	Headings: {
 		Login: {
-			Name: "Login/Register",
+			Name: "Join our cult!",
 		},
 		Home: {
 			Name: "Home",

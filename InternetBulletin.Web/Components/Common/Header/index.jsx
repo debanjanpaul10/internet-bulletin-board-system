@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { AddCircle32Filled } from "@fluentui/react-icons";
 
 import {
 	HeaderPageConstants,
@@ -10,6 +11,8 @@ import {
 import AppLogo from "@assets/Images/IBBS_logo.png";
 import { CustomDarkModeToggleSwitch } from "@helpers/common.utility";
 import ThemeContext from "@context/ThemeContext";
+import { Button } from "@fluentui/react-components";
+import useStyles from "@components/Common/Header/styles";
 
 /**
  * @component
@@ -22,6 +25,8 @@ function Header() {
 	const { themeMode, toggleThemeMode } = useContext(ThemeContext);
 	const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
 		useAuth0();
+	const navigate = useNavigate();
+	const styles = useStyles();
 
 	const { Headings, ButtonTitles } = HeaderPageConstants;
 
@@ -73,78 +78,102 @@ function Header() {
 		loginWithRedirect();
 	};
 
+	/**
+	 * Handles the profile click redirection.
+	 */
+	const handleProfileRedirect = () => {
+		navigate(Headings.MyProfile.Link);
+	};
+
+	/**
+	 * Handles the home page redirection.
+	 */
+	const handleHomePageRedirect = () => {
+		navigate(Headings.Home.Link);
+	};
+
+	/**
+	 * Handles the Add new post page redirection.
+	 */
+	const handleAddNewPostPageRedirect = () => {
+		navigate(Headings.CreatePost.Link);
+	};
+
 	return (
-		<nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+		<nav className="navbar navbar-expand-lg">
 			<div className="d-flex w-100">
 				<div className="navbar-nav mr-auto">
-					<NavLink
-						to={Headings.Home.Link}
-						className="nav-link"
+					<Button
+						onClick={handleHomePageRedirect}
+						className={styles.homeButton}
 						title={ButtonTitles.HomeButton}
+						appearance="subtle"
 					>
 						<img src={AppLogo} height={"30px"} />
 						&nbsp; {HomePageConstants.Headings.IBBS}
-					</NavLink>
+					</Button>
 				</div>
 
 				<div className="navbar-nav mx-auto">
 					{isUserLoggedIn() &&
 						location.pathname !== Headings.CreatePost.Link && (
-							<NavLink
-								to={Headings.CreatePost.Link}
-								style={({ isActive }) =>
-									isActive ? { color: "#F15B2A" } : undefined
-								}
-								className="nav-link create-link"
+							<Button
+								onClick={handleAddNewPostPageRedirect}
 								title={ButtonTitles.Create}
+								className="create-link"
+								appearance="transparent"
 							>
-								<i className="fa fa-plus-circle icon-large"></i>{" "}
+								<AddCircle32Filled className="icon-large" />
 								&nbsp;
 								<span className="create-text">
 									{ButtonTitles.Create}
 								</span>
-							</NavLink>
+							</Button>
 						)}
 				</div>
 
 				<div className="navbar-nav ml-auto">
 					{!isUserLoggedIn() ? (
-						<NavLink
-							to={"/"}
-							onClick={handleLoginEvent}
-							className="nav-link buttonStyle"
+						<Button
+							className={styles.button}
 							title={ButtonTitles.Login}
+							onClick={handleLoginEvent}
+							shape="circular"
+							appearance="outline"
 						>
 							{Headings.Login.Name}
-						</NavLink>
+						</Button>
 					) : (
-						<NavLink
-							className="nav-link buttonStyle"
+						<Button
+							className={styles.logoutButton}
 							onClick={handleLogout}
 							title={ButtonTitles.Logout}
-							to={"/"}
+							shape="circular"
+							appearance="outline"
 						>
 							{Headings.Logout.Name}
-						</NavLink>
+						</Button>
 					)}
 
 					{isUserLoggedIn() && (
-						<NavLink
-							to={Headings.MyProfile.Link}
-							className="nav-link buttonStyle"
+						<Button
+							className={styles.button}
 							title={ButtonTitles.MyProfile}
+							onClick={handleProfileRedirect}
+							shape="circular"
+							appearance="outline"
 						>
 							{Headings.MyProfile.Name}
-						</NavLink>
+						</Button>
 					)}
 
 					<div
-						className="mt-1 mr-3 pr-2"
-						style={{ marginRight: "10px" }}
+						className="mr-3 pr-2"
+						style={{ marginRight: "10px", marginTop: "5px" }}
 					>
 						<CustomDarkModeToggleSwitch
 							onChange={toggleThemeMode}
-							checked={themeMode === PageConstants.DarkConstant}
+							checked={themeMode === PageConstants.LightConstant}
 							title={
 								themeMode === PageConstants.DarkConstant
 									? ButtonTitles.TurnOnLight

@@ -5,6 +5,7 @@ import {
 	STOP_SPINNER,
 	REWRITE_STORY_AI,
 	IS_CREATE_POST_LOADING,
+	DELETE_POST_DATA,
 } from "@store/Posts/ActionTypes";
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
 	isPostsDataLoading: false,
 	aiRewrittenStory: "",
 	isCreatePostLoading: false,
+	isPostDataDeleted: false,
 };
 
 /**
@@ -57,6 +59,12 @@ const PostsReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isCreatePostLoading: action.payload,
+			};
+		}
+		case DELETE_POST_DATA: {
+			return {
+				...state,
+				isPostDataDeleted: action.payload,
 			};
 		}
 		default: {

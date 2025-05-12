@@ -8,8 +8,16 @@ import {
 	Body2,
 	Button,
 } from "@fluentui/react-components";
+import {
+	Edit28Filled,
+	Delete28Filled,
+	ArrowCircleUp28Regular,
+} from "@fluentui/react-icons";
 
 import { useStyles } from "@components/Posts/PostBody/styles";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useDispatch } from "react-redux";
+import { DeletePostAsync } from "@store/Posts/Actions";
 
 /**
  * @component
@@ -23,10 +31,13 @@ import { useStyles } from "@components/Posts/PostBody/styles";
 function PostBody({ post }) {
 	const contentRef = useRef(null);
 	const styles = useStyles();
+	const { getIdTokenClaims, user, isAuthenticated, isLoading } = useAuth0();
+	const dispatch = useDispatch();
 
 	const [postData, setPostData] = useState({});
 	const [showFullText, setShowFullText] = useState(false);
 	const [isTextOverflowing, setIsTextOverflowing] = useState(false);
+	const [showEditAndDelete, setShowEditAndDelete] = useState(false);
 
 	useEffect(() => {
 		if (postData !== post) {
@@ -42,6 +53,20 @@ function PostBody({ post }) {
 			setIsTextOverflowing(isOverflowing);
 		}
 	}, [postData, showFullText]);
+
+	useEffect(() => {
+		if (
+			user !== null &&
+			user !== undefined &&
+			Object.values(user).length > 0 &&
+			isAuthenticated &&
+			!isLoading
+		) {
+			setShowEditAndDelete(post.postOwnerUserName == user.username);
+		} else {
+			setShowEditAndDelete(false);
+		}
+	}, [user, isAuthenticated, isLoading]);
 
 	/**
 	 * Formats the date to date string format.
@@ -59,15 +84,66 @@ function PostBody({ post }) {
 		setShowFullText(!showFullText);
 	};
 
+	const handleEdit = (postId) => {};
+
+	/**
+	 * Handles the post delete operation.
+	 * @param {string} postId The post id.
+	 */
+	const handleDelete = (postId) => {
+		dispatch(DeletePostAsync(postId, getIdTokenClaims));
+	};
+
+	const handleVoting = (postId) => {};
+
 	return (
 		Object.keys(postData).length > 0 && (
 			<Card className={styles.card} appearance="filled-alternative">
 				<CardHeader
 					className={styles.cardHeader}
 					header={
-						<Body1>
-							<b>{postData.postTitle}</b>
-						</Body1>
+						<div className={styles.headerContainer}>
+							<Body1 className={styles.headerTitle}>
+								<b>{postData.postTitle}</b>
+							</Body1>
+
+							<div className={styles.headerButtons}>
+								{!showEditAndDelete && (
+									<Button
+										className={styles.upVoteButton}
+										appearance="subtle"
+										shape="circular"
+										onClick={handleVoting(postData.postId)}
+									>
+										<ArrowCircleUp28Regular />
+									</Button>
+								)}
+								{showEditAndDelete && (
+									<>
+										<Button
+											className={styles.editButton}
+											appearance="subtle"
+											shape="circular"
+											onClick={() =>
+												handleEdit(postData.postId)
+											}
+										>
+											<Edit28Filled />
+										</Button>
+										<Button
+											className={styles.deleteButton}
+											appearance="subtle"
+											shape="circular"
+											onClick={() =>
+												handleDelete(postData.postId)
+											}
+										>
+											<Delete28Filled />
+										</Button>
+									</>
+								)}
+							</div>
+						</div>
 					}
 					description={
 						<Caption1>
@@ -88,8 +164,8 @@ function PostBody({ post }) {
 							}}
 							dangerouslySetInnerHTML={{
 								__html: postData.postContent
-									.replace(/\n/g, "<br>") // Replace \n with <br>
-									.replace(/<br\s*\/?>/g, "<br>"), // Normalize <br /> to <br>
+									.replace(/\n/g, "<br>")
+									.replace(/<br\s*\/?>/g, "<br>"),
 							}}
 						></p>
 						{isTextOverflowing && !showFullText && (

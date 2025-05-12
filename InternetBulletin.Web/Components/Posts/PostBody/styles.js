@@ -29,6 +29,29 @@ const useStyles = makeStyles({
 		fontSize: "14px",
 		textDecoration: "none",
 	},
+	headerContainer: {
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
+		width: "100%"
+	},
+	headerTitle: {
+		flexGrow: 1,
+	},
+	headerButtons: {
+		display: "flex",
+		gap: "10px",
+		marginLeft: "autoo"
+	},
+	editButton: {
+		color: "#0078d4",
+	},
+	deleteButton: {
+		color: "#d83b01",
+	},
+	upVoteButton: {
+		
+	}
 });
 
 export { useStyles };
