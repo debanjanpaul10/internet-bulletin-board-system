@@ -9,6 +9,6 @@ export const UrlConstants = {
 export const Auth0Constants = {
 	Domain: "debanjans-lab.uk.auth0.com",
 	ClientId: "Tz6visNGgDgv7cic60Bt8l2xDQONKw0W",
-	Audience: "https://debanjans-lab.uk.auth0.com/api/v2/",
+	Audience: "24807da0-9de4-46b0-936a-df19f1a400ab",
 	Scope: "read:current_user update:current_user_metadata",
 };

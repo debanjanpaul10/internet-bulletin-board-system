@@ -3,6 +3,10 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import mkcert from "vite-plugin-mkcert";
+import dotenv from "dotenv";
+
+// Load environment variable from .env file
+dotenv.config();
 
 export default defineConfig(() => {
 	return {
@@ -17,7 +21,7 @@ export default defineConfig(() => {
 			rollupOptions: {
 				input: {
 					main: path.resolve(__dirname, "index.html"),
-					app: path.resolve(__dirname, "React/index.jsx"),
+					app: path.resolve(__dirname, "index.jsx"),
 				},
 				external: [],
 				output: {

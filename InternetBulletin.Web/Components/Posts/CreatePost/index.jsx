@@ -1,9 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactQuill from "react-quill-new";
-import { Button } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import {
+	Card,
+	CardPreview,
+	Button,
+	CardHeader,
+} from "@fluentui/react-components";
 
 import { CreatePostPageConstants } from "@helpers/ibbs.constants";
 import { AddNewPostAsync, RewriteStoryWithAiAsync } from "@store/Posts/Actions";
@@ -12,6 +17,7 @@ import PageNotFound from "@components/Common/PageNotFound";
 import AiButton from "@assets/Images/ai-icon.svg";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
+import { useStyles } from "@components/Posts/CreatePost/styles";
 
 /**
  * @component
@@ -23,6 +29,7 @@ function CreatePostComponent() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { user, isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
+	const styles = useStyles();
 
 	const IsCreatePostLoadingStoreData = useSelector(
 		(state) => state.PostsReducer.isCreatePostLoading
@@ -186,72 +193,81 @@ function CreatePostComponent() {
 					</h1>
 				</div>
 				<form onKeyDown={handleKeyDown} className="addpost">
-					<div className="form-group row card mt-3">
-						<div className="col sm-12 mb-3 mb-sm-0">
-							<div className="row p-2">
-								<input
-									type="text"
-									name="Title"
-									onChange={handleFormChange}
-									value={postData.Title}
-									className="form-control mt-0"
-									id="Title"
-									placeholder={
-										CreatePostPageConstants.Headings
-											.TitleBarPlaceholder
-									}
-								/>
-								{errors.Title && (
-									<span className="alert alert-danger ml-10 mt-3">
-										{errors.Title}
-									</span>
-								)}
+					<Card
+						className={styles.card}
+						appearance="filled-alternative"
+					>
+						<CardHeader
+							className={styles.cardHeader}
+							header={
+								<div className="col sm-12 mb-3 mb-sm-0">
+									<div className="row p-2">
+										<input
+											type="text"
+											name="Title"
+											onChange={handleFormChange}
+											value={postData.Title}
+											className="form-control mt-0"
+											id="Title"
+											placeholder={
+												CreatePostPageConstants.Headings
+													.TitleBarPlaceholder
+											}
+										/>
+										{errors.Title && (
+											<span className="alert alert-danger ml-10 mt-3">
+												{errors.Title}
+											</span>
+										)}
+									</div>
+								</div>
+							}
+						/>
+						<CardPreview className={styles.cardPreview}>
+							<div className="form-group row mt-3">
+								<div className="col sm-12 mb-3 mb-sm-0 p-3">
+									<ReactQuill
+										value={postData.Content}
+										onChange={handleContentChange}
+										id="Content"
+										className="text-editor"
+										placeholder={
+											CreatePostPageConstants.Headings
+												.ContentBoxPlaceholder
+										}
+										modules={modules}
+									/>
+									{errors.Content && (
+										<span className="alert alert-danger ml-10 mt-3">
+											{errors.Content}
+										</span>
+									)}
+									<Button
+										type="button"
+										className={styles.button}
+										onClick={handleAiRewrite}
+									>
+										<img
+											src={AiButton}
+											style={{ height: "20px" }}
+										/>{" "}
+										Rewrite with AI
+									</Button>
+								</div>
+
+								<div className="text-center">
+									<Button
+										appearance="primary"
+										type="submit"
+										onClick={handleCreatePost}
+										className={styles.button}
+									>
+										{"Create"}
+									</Button>
+								</div>
 							</div>
-						</div>
-
-						<div className="col sm-12 mb-3 mb-sm-0 p-3">
-							<ReactQuill
-								value={postData.Content}
-								onChange={handleContentChange}
-								id="Content"
-								className="text-editor"
-								placeholder={
-									CreatePostPageConstants.Headings
-										.ContentBoxPlaceholder
-								}
-								modules={modules}
-							/>
-							{errors.Content && (
-								<span className="alert alert-danger ml-10 mt-3">
-									{errors.Content}
-								</span>
-							)}
-							<Button
-								type="button"
-								className="mt-2 rewritebtn"
-								variant="outlined"
-								onClick={handleAiRewrite}
-							>
-								<img
-									src={AiButton}
-									style={{ height: "20px" }}
-								/>{" "}
-								Rewrite with AI
-							</Button>
-						</div>
-
-						<div className="text-center">
-							<Button
-								type="submit"
-								variant="contained"
-								color="success"
-								className="mt-2"
-								onClick={handleCreatePost}
-							>
-								{"Create"}
-							</Button>
-						</div>
-					</div>
+						</CardPreview>
+					</Card>
 				</form>
 			</div>
 		</div>

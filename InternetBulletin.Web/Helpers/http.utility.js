@@ -1,5 +1,7 @@
 import axios from "axios";
-import { UrlConstants } from "@helpers/config.constants";
+import {
+	UrlConstants,
+} from "@helpers/config.constants";
 
 /**
  * The Http Utility Functions.
@@ -10,6 +12,7 @@ function HttpUtility() {
 	 * The Get API data function.
 	 * @param {string} apiUrl The api url.
 	 * @param {Promise} getIdTokenClaims The token function.
+	 *
 	 * @returns {Promise} The promise of the api response.
 	 */
 	const GetAsync = async (apiUrl, getIdTokenClaims) => {
@@ -17,10 +20,15 @@ function HttpUtility() {
 			const token = await getIdTokenClaims();
 			var webEndpoint = UrlConstants.LocalHostUrl; //: UrlConstants.AppWebUrl;
 			const url = webEndpoint + apiUrl;
+			let bearerToken = "";
+
+			if (token !== null && token !== undefined) {
+				bearerToken = `Bearer ${token.__raw}`;
+			} 
 
 			const response = await axios.get(url, {
 				headers: {
-					Authorization: `Bearer ${token.__raw}`,
+					Authorization: bearerToken,
 				},
 			});
 
@@ -48,7 +56,6 @@ function HttpUtility() {
 		try {
 			const token = await getIdTokenClaims();
 			var webEndpoint = UrlConstants.LocalHostUrl; //: UrlConstants.AppWebUrl;
-
 			const url = webEndpoint + apiUrl;
 
 			const response = await axios.post(url, data, {

@@ -16,10 +16,15 @@ import PostsReducer from "@store/Posts/Reducers";
 import CommonReducer from "@store/Common/Reducers";
 import { CookiesConstants, PageConstants } from "@helpers/ibbs.constants";
 import ThemeContext from "@context/ThemeContext";
-import { ConsoleLogMessage } from "@helpers/CommonUtility";
+import { ConsoleLogMessage } from "@helpers/common.utility";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { Auth0Constants } from "@helpers/config.constants";
 import Spinner from "@components/Common/Spinner";
+import {
+	FluentProvider,
+	webDarkTheme,
+	webLightTheme,
+} from "@fluentui/react-components";
 
 /**
  * Configures the redux store.
@@ -77,7 +82,17 @@ function Main() {
 	return (
 		<ThemeContext.Provider value={{ themeMode, toggleThemeMode }}>
 			<Spinner isLoading={isLoading} />
-			{!isLoading && <App />}
+			{!isLoading && (
+				<FluentProvider
+					theme={
+						themeMode === DarkConstant
+							? webDarkTheme
+							: webLightTheme
+					}
+				>
+					<App />
+				</FluentProvider>
+			)}
 			{ConsoleLogMessage}
 		</ThemeContext.Provider>
 	);

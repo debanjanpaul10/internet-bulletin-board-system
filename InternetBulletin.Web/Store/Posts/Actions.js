@@ -123,6 +123,12 @@ export const AddNewPostAsync = (postData, getIdTokenClaims) => {
 			}
 		} catch (error) {
 			console.error(error);
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error,
+				})
+			);
 		} finally {
 			dispatch(HandleCreatePostPageLoader(false));
 		}

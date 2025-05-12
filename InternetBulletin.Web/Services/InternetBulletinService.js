@@ -1,4 +1,4 @@
-import { GetAsync, PostAIAsync, PostAsync } from "@helpers/HttpUtility";
+import { GetAsync, PostAIAsync, PostAsync } from "@helpers/http.utility";
 
 // #region POSTS
 
@@ -36,7 +36,11 @@ export const AddNewPostApiAsync = async (newPostData, getIdTokenClaims) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const UpdatePostApiAsync = async (updatedPostData, getIdTokenClaims) => {
-	return await PostAsync(`Posts/UpdatePost`, updatedPostData, getIdTokenClaims);
+	return await PostAsync(
+		`Posts/UpdatePost`,
+		updatedPostData,
+		getIdTokenClaims
+	);
 };
 
 /**
@@ -84,8 +88,8 @@ export const AddNewUserApiAsync = async (userData) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetUserProfileDataApiAsync = async (userId) => {
-    return await GetAsync(`Profiles/GetUserProfileData?userid=${userId}`);
-}
+	return await GetAsync(`Profiles/GetUserProfileData?userid=${userId}`);
+};
 
 // #endregion
 

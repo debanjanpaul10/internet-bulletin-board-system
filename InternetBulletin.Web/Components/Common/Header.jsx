@@ -8,7 +8,7 @@ import {
 	PageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
-import { CustomDarkModeToggleSwitch } from "@helpers/CommonUtility";
+import { CustomDarkModeToggleSwitch } from "@helpers/common.utility";
 import ThemeContext from "@context/ThemeContext";
 
 /**
@@ -23,7 +23,6 @@ function Header() {
 	const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
 		useAuth0();
 
-	const activeStyle = { color: "#F15B2A" };
 	const { Headings, ButtonTitles } = HeaderPageConstants;
 
 	const [currentLoggedInUser, setCurrentLoggedInUser] = useState({});

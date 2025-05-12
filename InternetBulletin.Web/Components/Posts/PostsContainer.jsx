@@ -37,9 +37,13 @@ function PostsContainer() {
 	return (
 		<div className="container">
 			{allPosts.length > 0 ? (
-				allPosts.map((post, index) => (
-					<PostBody key={index} post={post} />
-				))
+				<div className="row">
+					{allPosts.map((post, index) => (
+						<div className="col-md-6 mb-4" key={index}>
+							<PostBody post={post} />
+						</div>
+					))}
+				</div>
 			) : (
 				<NoPostsContainer />
 			)}
