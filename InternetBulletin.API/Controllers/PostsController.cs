@@ -10,8 +10,9 @@ namespace InternetBulletin.API.Controllers
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Shared.Constants;
 	using InternetBulletin.Shared.DTOs;
-    using InternetBulletin.Shared.DTOs.Posts;
-    using Microsoft.AspNetCore.Mvc;
+	using InternetBulletin.Shared.DTOs.Posts;
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Posts Controller Class.
@@ -46,15 +47,21 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-				var result = await this._postsService.GetPostAsync(postId, this.UserName);
-				if (result is not null && !Equals(result.PostId, Guid.Empty))
+				if (this.IsAuthorized())
 				{
-					return this.HandleSuccessResult(result);
+					var result = await this._postsService.GetPostAsync(postId, this.UserName);
+					if (result is not null && !Equals(result.PostId, Guid.Empty))
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
+					}
 				}
-				else
-				{
-					return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
-				}
+
+				return this.HandleUnAuthorizedRequest();
+
 			}
 			catch (Exception ex)
 			{
@@ -72,6 +79,7 @@ namespace InternetBulletin.API.Controllers
 		/// </summary>
 		/// <returns>The action result.</returns>
 		[HttpGet]
+		[AllowAnonymous]
 		[Route(RouteConstants.GetAllPosts_Route)]
 		public async Task<IActionResult> GetAllPostsDataAsync()
 		{
@@ -111,15 +119,20 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-				var result = await this._postsService.AddNewPostAsync(newPost, this.UserName);
-				if (result)
+				if (this.IsAuthorized())
 				{
-					return this.HandleSuccessResult(result);
+					var result = await this._postsService.AddNewPostAsync(newPost, this.UserName);
+					if (result)
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+					}
 				}
-				else
-				{
-					return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-				}
+
+				return this.HandleUnAuthorizedRequest();
 			}
 			catch (Exception ex)
 			{
@@ -144,16 +157,20 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
-				var result = await this._postsService.UpdatePostAsync(updatePost, this.UserName);
-				if (result is not null && result.PostId != Guid.Empty)
+				if (this.IsAuthorized())
 				{
-					return this.HandleSuccessResult(result);
-				}
-				else
-				{
-					return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+					var result = await this._postsService.UpdatePostAsync(updatePost, this.UserName);
+					if (result is not null && result.PostId != Guid.Empty)
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+					}
 				}
 
+				return this.HandleUnAuthorizedRequest();
 			}
 			catch (Exception ex)
 			{
@@ -178,15 +195,20 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-				var result = await this._postsService.DeletePostAsync(postId, this.UserName);
-				if (result)
+				if (this.IsAuthorized())
 				{
-					return this.HandleSuccessResult(result);
+					var result = await this._postsService.DeletePostAsync(postId, this.UserName);
+					if (result)
+					{
+						return this.HandleSuccessResult(result);
+					}
+					else
+					{
+						return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+					}
 				}
-				else
-				{
-					return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-				}
+
+				return this.HandleUnAuthorizedRequest();
 			}
 			catch (Exception ex)
 			{

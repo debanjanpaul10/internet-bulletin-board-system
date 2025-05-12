@@ -46,12 +46,19 @@ namespace InternetBulletin.API.Controllers
                 {
                     this.UserName = userName;
                 }
-                else
-                {
-                    var userIdNotFoundException = new InvalidOperationException(ExceptionConstants.UserIdNotPresentExceptionConstant);
-                    throw userIdNotFoundException;
-                }
             }
+        }
+
+        /// <summary>
+        /// Is user authorized.
+        /// </summary>
+        protected bool IsAuthorized()
+        {
+            if (string.IsNullOrEmpty(this.UserName))
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -84,6 +91,21 @@ namespace InternetBulletin.API.Controllers
                 StatusCode = (int)HttpStatusCode.BadRequest
             };
             return this.BadRequest(responseData);
+        }
+
+        /// <summary>
+        /// Handles the bad request.
+        /// </summary>
+        /// <returns>The unauthorized object result</returns>
+        protected UnauthorizedObjectResult HandleUnAuthorizedRequest()
+        {
+            var responseData = new ResponseDTO()
+            {
+                Data = ExceptionConstants.UserUnauthorizedMessageConstant,
+                StatusCode = (int)HttpStatusCode.Unauthorized,
+                IsSuccess = false,
+            };
+            return this.Unauthorized(responseData);
         }
     }
 }

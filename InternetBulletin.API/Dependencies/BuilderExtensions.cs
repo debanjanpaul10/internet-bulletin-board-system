@@ -71,6 +71,7 @@ namespace InternetBulletin.API.Dependencies
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
                 options.Authority = $"https://{configuration[Auth0DomainConstant]}";
@@ -84,7 +85,7 @@ namespace InternetBulletin.API.Dependencies
                     OnAuthenticationFailed = async context =>
                     {
                         await context.HandleAuthTokenValidationFailedAsync();
-                    }
+                    },
                 };
             });
         }
