@@ -11,8 +11,9 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Data.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-    using InternetBulletin.Shared.DTOs;
-    using Microsoft.Extensions.Logging;
+	using InternetBulletin.Shared.DTOs;
+	using InternetBulletin.Shared.DTOs.Posts;
+	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
@@ -37,10 +38,11 @@ namespace InternetBulletin.Business.Services
 		/// Gets the post asynchronous.
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
+		/// <param name="userName">The user name.</param>
 		/// <returns>
 		/// The specific post.
 		/// </returns>
-		public async Task<Post> GetPostAsync(string postId)
+		public async Task<Post> GetPostAsync(string postId, string userName)
 		{
 			if (string.IsNullOrWhiteSpace(postId))
 			{
@@ -58,7 +60,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._postsDataService.GetPostAsync(postGuid);
+			var result = await this._postsDataService.GetPostAsync(postGuid, userName);
 			if (result is not null && result.PostId != Guid.Empty)
 			{
 				return result;
@@ -79,7 +81,7 @@ namespace InternetBulletin.Business.Services
 		/// <returns>
 		/// The boolean for success or failure.
 		/// </returns>
-		public async Task<bool> AddNewPostAsync(AddPostDTO newPost)
+		public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
 		{
 			if (newPost is null)
 			{
@@ -89,7 +91,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._postsDataService.AddNewPostAsync(newPost);
+			var result = await this._postsDataService.AddNewPostAsync(newPost, userName);
 			return result;
 		}
 
@@ -98,7 +100,7 @@ namespace InternetBulletin.Business.Services
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
 		/// <returns>The updated post data.</returns>
-		public async Task<Post> UpdatePostAsync(Post updatedPost)
+		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
 		{
 			if (updatedPost is null)
 			{
@@ -108,7 +110,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._postsDataService.UpdatePostAsync(updatedPost);
+			var result = await this._postsDataService.UpdatePostAsync(updatedPost, userName);
 			if (result is not null && !Equals(result.PostId, Guid.Empty))
 			{
 				return result;
@@ -126,8 +128,9 @@ namespace InternetBulletin.Business.Services
 		/// Deletes the post asynchronous.
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
+		/// <param name="userName">The user name.</param>
 		/// <returns>The boolean for success / failure</returns>
-		public async Task<bool> DeletePostAsync(string postId)
+		public async Task<bool> DeletePostAsync(string postId, string userName)
 		{
 			if (string.IsNullOrWhiteSpace(postId))
 			{
@@ -145,7 +148,7 @@ namespace InternetBulletin.Business.Services
 				throw exception;
 			}
 
-			var result = await this._postsDataService.DeletePostAsync(postIdGuid);
+			var result = await this._postsDataService.DeletePostAsync(postIdGuid, userName);
 			return result;
 		}
 
@@ -156,6 +159,33 @@ namespace InternetBulletin.Business.Services
 		public async Task<List<Post>> GetAllPostsAsync()
 		{
 			var result = await this._postsDataService.GetAllPostsAsync();
+			return result;
+		}
+
+		/// <summary>
+		/// Updates rating async.
+		/// </summary>
+		/// <param name="postId">The post id.</param>
+		/// <param name="isIncrement">If the rating is increased.</param>
+		public async Task<Post> UpdateRatingAsync(string postId, bool isIncrement)
+		{
+			if (string.IsNullOrWhiteSpace(postId))
+			{
+				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
+				this._logger.LogError(exception, exception.Message);
+
+				throw exception;
+			}
+
+			if (!Guid.TryParse(postId, out var postIdGuid))
+			{
+				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
+				this._logger.LogError(exception, exception.Message);
+
+				throw exception;
+			}
+
+			var result = await this._postsDataService.UpdateRatingAsync(postId: postIdGuid, isIncrement);
 			return result;
 		}
 	}

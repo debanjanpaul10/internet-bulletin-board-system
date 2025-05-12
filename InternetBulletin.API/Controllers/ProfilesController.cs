@@ -1,8 +1,8 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="ProfilesController.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>The Profiles Controller.</summary>
+// <summary>The Posts Controller Class.</summary>
 // *********************************************************************************
 
 namespace InternetBulletin.API.Controllers
@@ -15,12 +15,12 @@ namespace InternetBulletin.API.Controllers
     /// The Profiles Controller Class.
     /// </summary>
     /// <seealso cref="InternetBulletin.API.Controllers.BaseController" />
-    /// <param name="configuration">The Configuration.</param>
     /// <param name="profilesService">The Profiles Service.</param>
-    /// <param name="logger">The Logger</param>
+    /// <param name="logger">The Logger.</param>
+    /// <param name="httpContextAccessor">The http context accessor.</param>
     [ApiController]
     [Route(RouteConstants.ProfilesBase_RoutePrefix)]
-    public class ProfilesController(IConfiguration configuration, IProfilesService profilesService, ILogger<ProfilesController> logger) : BaseController(configuration, logger)
+    public class ProfilesController(IProfilesService profilesService, ILogger<ProfilesController> logger, IHttpContextAccessor httpContextAccessor) : BaseController(httpContextAccessor)
     {
         /// <summary>
         /// The profiles service.
@@ -33,41 +33,44 @@ namespace InternetBulletin.API.Controllers
         private readonly ILogger<ProfilesController> _logger = logger;
 
         /// <summary>
-        /// Gets the user profile data.
+        /// Gets the post asynchronous.
         /// </summary>
-        /// <param name="userId">The user id.</param>
-        /// <returns>The action result of the JSON response.</returns>
+        /// <param name="postId">The post identifier.</param>
+        /// <returns>The action result.</returns>
         [HttpGet]
         [Route(RouteConstants.GetUserProfileData_Route)]
-        public async Task<IActionResult> GetUserProfileDataAsync(int userId)
+        public async Task<IActionResult> GetUserProfilesDataAsync()
         {
             try
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userId));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserProfilesDataAsync), DateTime.UtcNow, this.UserName));
                 if (this.IsAuthorized())
                 {
-                    var result = await this._profilesService.GetUserProfileDataAsync(userId).ConfigureAwait(false);
-                    if (result is not null && result.UserId > 0)
+                    var result = await this._profilesService.GetUserProfileDataAsync(this.UserName);
+                    if (result is not null && !string.IsNullOrEmpty(result.UserName))
                     {
                         return this.HandleSuccessResult(result);
                     }
                     else
                     {
-                        return this.HandleBadRequest(ExceptionConstants.UserDoesNotExistsMessageConstant);
+                        return this.HandleBadRequest(ExceptionConstants.PostsNotPresentMessageConstant);
                     }
                 }
 
                 return this.HandleUnAuthorizedRequest();
+
             }
             catch (Exception ex)
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetUserProfileDataAsync), DateTime.UtcNow, ex.Message));
-                return this.HandleBadRequest(ex.Message);
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetUserProfilesDataAsync), DateTime.UtcNow, ex.Message));
+                throw;
             }
             finally
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userId));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetUserProfilesDataAsync), DateTime.UtcNow, this.UserName));
             }
         }
     }
 }
+
+

@@ -18,39 +18,7 @@ namespace InternetBulletin.Shared.DTOs
 		/// <value>
 		/// The user identifier.
 		/// </value>
-		public int UserId { get; set; }
-
-		/// <summary>
-		/// Gets or sets the name.
-		/// </summary>
-		/// <value>
-		/// The name.
-		/// </value>
-		public string Name { get; set; }
-
-		/// <summary>
-		/// Gets or sets the user email.
-		/// </summary>
-		/// <value>
-		/// The user email.
-		/// </value>
-		public string UserEmail { get; set; }
-
-		/// <summary>
-		/// Gets or sets the user alias.
-		/// </summary>
-		/// <value>
-		/// The user alias.
-		/// </value>
-		public string UserAlias { get; set; }
-
-		/// <summary>
-		/// Gets or sets the user password.
-		/// </summary>
-		/// <value>
-		/// The user password.
-		/// </value>
-		public string UserPassword { get; set; }
+		public string UserName { get; set; } = string.Empty;
 
 		/// <summary>
 		/// Gets or sets the user posts.
@@ -58,7 +26,7 @@ namespace InternetBulletin.Shared.DTOs
 		/// <value>
 		/// The user posts.
 		/// </value>
-		public List<UserPostsDto> UserPosts { get; set; }
+		public List<UserPostsDto> UserPosts { get; set; } = [];
 	}
 	
 }

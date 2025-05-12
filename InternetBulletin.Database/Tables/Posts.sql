@@ -1,0 +1,10 @@
+CREATE TABLE [dbo].[Posts]
+(
+  [PostId] UNIQUEIDENTIFIER NOT NULL,
+  [PostTitle] NVARCHAR(MAX) NOT NULL,
+  [PostContent] NVARCHAR(MAX) NOT NULL,
+  [PostCreatedDate] DATETIME NOT NULL,
+  [PostOwnerUserName] NVARCHAR(MAX) NOT NULL,
+  [Ratings] INT NULL DEFAULT 0,
+  [IsActive] BIT NOT NULL DEFAULT 1
+)

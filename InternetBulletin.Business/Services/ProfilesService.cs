@@ -34,18 +34,18 @@ namespace InternetBulletin.Business.Services
         /// <summary>
         /// Gets user profile data async.
         /// </summary>
-        /// <param name="userId">The user id.</param>
-        public async Task<UserProfileDto> GetUserProfileDataAsync(int userId)
+        /// <param name="userName">The user name.</param>
+        public async Task<UserProfileDto> GetUserProfileDataAsync(string userName)
         {
-            if (userId <= 0)
+            if (string.IsNullOrEmpty(userName))
             {
                 var exception = new Exception(ExceptionConstants.UserIdCannotBeNullMessageConstant);
                 this._logger.LogError(exception, exception.Message);
                 throw exception;
             }
 
-            var result = await this._profilesDataService.GetUserProfileDataAsync(userId).ConfigureAwait(false);
-            if (result is not null && result.UserId > 0)
+            var result = await this._profilesDataService.GetUserProfileDataAsync(userName).ConfigureAwait(false);
+            if (result is not null && !string.IsNullOrEmpty(result.UserName))
             {
                 return result;
             }

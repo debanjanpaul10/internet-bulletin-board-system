@@ -1,4 +1,4 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="ProfilesDataService.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
@@ -16,60 +16,43 @@ namespace InternetBulletin.Data.DataServices
     /// <summary>
     /// The Profiles Data Service Class.
     /// </summary>
-    /// <param name="cosmosDbContext">The Cosmos DB Context</param>
-    /// <param name="sqlDbContext">The SQL DB Context</param>
-    /// <param name="logger">The Logger</param>
-    public class ProfilesDataService(CosmosDbContext cosmosDbContext, SqlDbContext sqlDbContext, ILogger<ProfilesDataService> logger) : IProfilesDataService
+    /// <param name="dbContext">The SQL DB Context</param>
+    /// <seealso cref="IProfilesDataService"/>
+    public class ProfilesDataService(SqlDbContext dbContext, ILogger<ProfilesDataService> logger) : IProfilesDataService
     {
         /// <summary>
-        /// The cosmos database context
+        /// The sql db context.
         /// </summary>
-        private readonly CosmosDbContext _cosmosDbContext = cosmosDbContext;
+        private readonly SqlDbContext _dbContext = dbContext;
 
         /// <summary>
-        /// The SQL database context
-        /// </summary>
-        private readonly SqlDbContext _sqlDbContext = sqlDbContext;
-
-        /// <summary>
-        /// The logger
+        /// The logger.
         /// </summary>
         private readonly ILogger<ProfilesDataService> _logger = logger;
 
         /// <summary>
         /// Gets the user profile data asynchronous.
         /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>The User profile DTO.</returns>
-        public async Task<UserProfileDto> GetUserProfileDataAsync(int userId)
+        /// <param name="userName">The user identifier.</param>
+        /// <returns>The user profile data dto.</returns>
+        public async Task<UserProfileDto> GetUserProfileDataAsync(string userName)
         {
             try
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userId));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userName));
+                var userPostsData = await this._dbContext.Posts.Where(x => x.IsActive && x.PostOwnerUserName == userName)
+                    .Select(x => new { x.PostTitle, x.PostCreatedDate, x.PostId }).ToListAsync();
 
-                var result = new UserProfileDto();
-                var userData = await this._sqlDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId).ConfigureAwait(false);
-                if (userData is not null)
+                return new UserProfileDto()
                 {
-                    var userPosts = await this._cosmosDbContext.Posts.Where(x => x.IsActive && x.PostCreatedBy == userData.UserAlias)
-                        .ToListAsync().ConfigureAwait(false);
-                    result = new UserProfileDto()
+                    UserName = userName,
+                    UserPosts = [.. userPostsData.Select(x => new UserPostsDto
                     {
-                        Name = userData.Name,
-                        UserId = userData.UserId,
-                        UserAlias = userData.UserAlias,
-                        UserEmail = userData.UserEmail,
-                        UserPassword = userData.UserPassword,
-                        UserPosts = [.. userPosts.Select(x => new UserPostsDto()
-                        {
-                            PostId = x.PostId,
-                            PostCreatedDate = x.PostCreatedDate,
-                            PostTitle = x.PostTitle
-                        })]
-                    };
-                }
-
-                return result;
+                        PostTitle = x.PostTitle,
+                        PostCreatedDate = x.PostCreatedDate,
+                        PostId = x.PostId
+                    })]
+                };
             }
             catch (Exception ex)
             {
@@ -78,7 +61,7 @@ namespace InternetBulletin.Data.DataServices
             }
             finally
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userId));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetUserProfileDataAsync), DateTime.UtcNow, userName));
             }
         }
     }

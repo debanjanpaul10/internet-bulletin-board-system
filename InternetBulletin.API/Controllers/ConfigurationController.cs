@@ -8,7 +8,8 @@
 namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.Shared.Constants;
-	using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Configurations Controller Class.
@@ -16,9 +17,10 @@ namespace InternetBulletin.API.Controllers
 	/// <seealso cref="InternetBulletin.API.Controllers.BaseController" />
 	/// <param name="configuration">The Configuration.</param>
 	/// <param name="logger">The Logger</param>
+	/// <param name="httpContextAccessor">The http context accessor</param>
 	[ApiController]
 	[Route(RouteConstants.ConfigurationBase_RoutePrefix)]
-	public class ConfigurationController(IConfiguration configuration, ILogger<ConfigurationController> logger) : BaseController(configuration, logger)
+	public class ConfigurationController(IConfiguration configuration, ILogger<ConfigurationController> logger, IHttpContextAccessor httpContextAccessor) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The logger.
@@ -37,6 +39,7 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The action result of the JSON response.</returns>
 		[HttpGet]
 		[Route(RouteConstants.GetConfiguration_Route)]
+		[AllowAnonymous]
 		public IActionResult GetConfigurationValue(string keyName)
 		{
 			try

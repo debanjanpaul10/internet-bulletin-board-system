@@ -25,24 +25,23 @@ namespace InternetBulletin.API.Dependencies
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="services">The services.</param>
-        public static void ConfigureApplicationDependencies(this WebApplicationBuilder builder)
+        public static void ConfigureAzureSqlServer(this WebApplicationBuilder builder)
         {
-            var cosmosConnectionString = builder.Configuration[ConfigurationConstants.CosmosConnectionStringConstant];
-            var databaseName = builder.Configuration[ConfigurationConstants.CosmosDatabaseNameConstant];
-            if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(databaseName))
-            {
-                builder.Services.AddDbContext<CosmosDbContext>(options =>
-                {
-                    options.UseCosmos(cosmosConnectionString, databaseName);
-                });
-            }
-
             var sqlConnectionString = builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
             if (!string.IsNullOrEmpty(sqlConnectionString))
             {
                 builder.Services.AddDbContext<SqlDbContext>(options =>
                 {
-                    options.UseSqlServer(connectionString: sqlConnectionString);
+                    options.UseSqlServer
+                    (
+                        connectionString: sqlConnectionString,
+                        options => options.EnableRetryOnFailure
+                        (
+                            maxRetryCount: 3,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        )
+                    );
                 });
             }
         }

@@ -11,6 +11,8 @@ namespace InternetBulletin.Data.DataServices
     using InternetBulletin.Data.Entities;
     using InternetBulletin.Shared.Constants;
     using InternetBulletin.Shared.DTOs;
+    using InternetBulletin.Shared.DTOs.Posts;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using System.Collections.Generic;
@@ -21,12 +23,12 @@ namespace InternetBulletin.Data.DataServices
     /// </summary>
     /// <param name="cosmosDbContext">The Cosmos DB Context.</param>
     /// <param name="logger">The Logger.</param>
-    public class PostsDataService(CosmosDbContext cosmosDbContext, ILogger<PostsDataService> logger) : IPostsDataService
+    public class PostsDataService(SqlDbContext dbContext, ILogger<PostsDataService> logger) : IPostsDataService
     {
         /// <summary>
         /// The Cosmos database context
         /// </summary>
-        private readonly CosmosDbContext _cosmosDbContext = cosmosDbContext;
+        private readonly SqlDbContext _dbContext = dbContext;
 
         /// <summary>
         /// The logger
@@ -37,16 +39,17 @@ namespace InternetBulletin.Data.DataServices
         /// Gets the post asynchronous.
         /// </summary>
         /// <param name="postId">The post identifier.</param>
+        /// <param name="userName">The user name.</param>
         /// <returns>
         /// The specific post.
         /// </returns>
-        public async Task<Post> GetPostAsync(Guid postId)
+        public async Task<Post> GetPostAsync(Guid postId, string userName)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
 
-                var post = await this._cosmosDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == postId && p.IsActive);
+                var post = await this._dbContext.Posts.FirstOrDefaultAsync(p => p.PostId == postId && p.IsActive && p.PostOwnerUserName == userName);
                 return post ?? new Post();
             }
             catch (Exception ex)
@@ -67,14 +70,14 @@ namespace InternetBulletin.Data.DataServices
         /// <returns>
         /// The boolean for success or failure.
         /// </returns>
-        public async Task<bool> AddNewPostAsync(AddPostDTO newPost)
+        public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
 
                 var postId = Guid.NewGuid();
-                var existingPost = await this._cosmosDbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
+                var existingPost = await this._dbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
                 if (!existingPost)
                 {
                     var dbPostData = new Post()
@@ -83,13 +86,12 @@ namespace InternetBulletin.Data.DataServices
                         PostContent = newPost.PostContent,
                         PostTitle = newPost.PostTitle,
                         IsActive = true,
-                        PostCreatedBy = newPost.PostCreatedBy,
                         PostCreatedDate = DateTime.UtcNow,
-                        PostModifiedBy = newPost.PostCreatedBy,
-                        PostModifiedDate = DateTime.UtcNow
+                        PostOwnerUserName = userName,
+                        Rating = 0
                     };
-                    await this._cosmosDbContext.Posts.AddAsync(dbPostData);
-                    await this._cosmosDbContext.SaveChangesAsync();
+                    await this._dbContext.Posts.AddAsync(dbPostData);
+                    await this._dbContext.SaveChangesAsync();
                     return true;
                 }
                 else
@@ -120,22 +122,20 @@ namespace InternetBulletin.Data.DataServices
         /// Updates the post asynchronous.
         /// </summary>
         /// <param name="updatedPost">The updated post.</param>
-        /// <returns></returns>
-        public async Task<Post> UpdatePostAsync(Post updatedPost)
+        /// <returns>The post data</returns>
+        public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, updatedPost.PostId));
 
-                var dbPostData = await this._cosmosDbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive);
+                var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName);
                 if (dbPostData is not null)
                 {
                     dbPostData.PostTitle = updatedPost.PostTitle;
                     dbPostData.PostContent = updatedPost.PostContent;
-                    dbPostData.PostModifiedDate = DateTime.UtcNow;
-                    dbPostData.PostModifiedBy = updatedPost.PostModifiedBy;
 
-                    await this._cosmosDbContext.SaveChangesAsync();
+                    await this._dbContext.SaveChangesAsync();
 
                     return dbPostData;
                 }
@@ -166,19 +166,20 @@ namespace InternetBulletin.Data.DataServices
         /// Deletes the post asynchronous.
         /// </summary>
         /// <param name="postId">The post identifier.</param>
+        /// <param name="userName">The user name.</param>
         /// <returns>
         /// The boolean for success / failure
         /// </returns>
-        public async Task<bool> DeletePostAsync(Guid postId)
+        public async Task<bool> DeletePostAsync(Guid postId, string userName)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-                var dbPostData = await this._cosmosDbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId && post.IsActive);
+                var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId && post.IsActive && post.PostOwnerUserName == userName);
                 if (dbPostData is not null)
                 {
                     dbPostData.IsActive = false;
-                    await this._cosmosDbContext.SaveChangesAsync();
+                    await this._dbContext.SaveChangesAsync();
 
                     return true;
                 }
@@ -216,7 +217,7 @@ namespace InternetBulletin.Data.DataServices
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
 
-                var result = await this._cosmosDbContext.Posts.Where(x => x.IsActive).ToListAsync();
+                var result = await this._dbContext.Posts.Where(x => x.IsActive).ToListAsync();
                 return result;
             }
             catch (Exception ex)
@@ -229,5 +230,42 @@ namespace InternetBulletin.Data.DataServices
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
             }
         }
+
+        /// <summary>
+        /// Updates rating async.
+        /// </summary>
+        /// <param name="postId">The post id.</param>
+        /// <param name="isIncrement">If the rating is increased.</param>
+        public async Task<Post> UpdateRatingAsync(Guid postId, bool isIncrement)
+        {
+            try
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, postId));
+                var post = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == postId && x.IsActive);
+                if (post is not null)
+                {
+                    post.Rating = isIncrement ? post.Rating + 1 : post.Rating == 0 ? 0 : post.Rating - 1;
+                    await this._dbContext.SaveChangesAsync();
+
+                    return post;
+                }
+                else
+                {
+                    var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
+                    this._logger.LogError(exception, exception.Message);
+                    throw exception;
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdateRatingAsync), DateTime.UtcNow, ex.Message));
+                throw;
+            }
+            finally
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdateRatingAsync), DateTime.UtcNow, postId));
+            }
+        }
+
     }
 }

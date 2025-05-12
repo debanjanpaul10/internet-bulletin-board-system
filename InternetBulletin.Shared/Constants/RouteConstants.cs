@@ -70,6 +70,11 @@ namespace InternetBulletin.Shared.Constants
         /// </summary>
         public const string DeletePost_Route = "DeletePost";
 
+        /// <summary>
+        /// The update vote route.
+        /// </summary>
+        public const string UpdateRating_Route = "UpdateRating";
+
         #endregion
 
         #region Users
@@ -142,11 +147,6 @@ namespace InternetBulletin.Shared.Constants
         /// The rewrite text api route.
         /// </summary>
         public const string RewriteTextApi_Route = "BulletinAI/RewriteText";
-
-        /// <summary>
-        /// The ai apim url.
-        /// </summary>
-        public const string AiApimUrl = "{0}/aiapi/";
 
         #endregion
     }
