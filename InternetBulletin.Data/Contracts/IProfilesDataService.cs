@@ -17,8 +17,8 @@ namespace InternetBulletin.Data.Contracts
 		/// <summary>
 		/// Gets the user profile data asynchronous.
 		/// </summary>
-		/// <param name="userId">The user identifier.</param>
+		/// <param name="userName">The user identifier.</param>
 		/// <returns>The user profile data dto.</returns>
-		Task<UserProfileDto> GetUserProfileDataAsync(int userId);
+		Task<UserProfileDto> GetUserProfileDataAsync(string userName);
 	}
 }

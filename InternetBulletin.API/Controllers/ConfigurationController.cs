@@ -8,7 +8,8 @@
 namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.Shared.Constants;
-	using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
 	/// The Configurations Controller Class.
@@ -38,6 +39,7 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The action result of the JSON response.</returns>
 		[HttpGet]
 		[Route(RouteConstants.GetConfiguration_Route)]
+		[AllowAnonymous]
 		public IActionResult GetConfigurationValue(string keyName)
 		{
 			try
