@@ -51,7 +51,7 @@ namespace InternetBulletin.Business.Services
 		public async Task<Post> GetPostAsync(string postId, string userName)
 		{
 			var postGuid = ValidateAndParsePostId(postId);
-			var result = await _postsDataService.GetPostAsync(postGuid, userName);
+			var result = await _postsDataService.GetPostAsync(postGuid, userName, true);
 			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
@@ -137,7 +137,7 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The tupple containing post and post rating.</returns>
 		private async Task<(Post post, PostRating postRating)> GetPostAndRatingAsync(Guid postIdGuid, string userName)
 		{
-			var postTask = this._postsDataService.GetPostAsync(postIdGuid, userName);
+			var postTask = this._postsDataService.GetPostAsync(postIdGuid, userName, false);
 			var postRatingTask = this._postRatingsDataService.GetPostRatingAsync(postIdGuid, userName);
 			await Task.WhenAll(postTask, postRatingTask).ConfigureAwait(false);
 			return (postTask.Result, postRatingTask.Result);
@@ -160,7 +160,7 @@ namespace InternetBulletin.Business.Services
 					PreviousRatingValue = 1
 
 				};
-				
+
 				await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
 				await this._postRatingsDataService.AddPostRatingAsync(newRating);
 				return new UpdateRatingDto { HasAlreadyUpdated = false, IsUpdateSuccess = true };

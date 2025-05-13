@@ -35,21 +35,30 @@ namespace InternetBulletin.Data.DataServices
         private readonly ILogger<PostsDataService> _logger = logger;
 
         /// <summary>
-        /// Gets the post asynchronous.
+        /// Gets the post asynchronous. 
         /// </summary>
         /// <param name="postId">The post identifier.</param>
         /// <param name="userName">The user name.</param>
+        /// <param name="isForCurrentUser">
+        ///     If the flag is true, then the post must belong to the current user
+        ///     else if it is false, then the post must not belong to the current user
+        /// </param>
         /// <returns>
         /// The specific post.
         /// </returns>
-        public async Task<Post> GetPostAsync(Guid postId, string userName)
+        public async Task<Post> GetPostAsync(Guid postId, string userName, bool isForCurrentUser)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
+                
+                var query = _dbContext.Posts.Where(p => p.PostId == postId && p.IsActive);
+                query = isForCurrentUser
+                    ? query.Where(p => p.PostOwnerUserName == userName)
+                    : query.Where(p => p.PostOwnerUserName != userName);
 
-                var post = await this._dbContext.Posts.FirstOrDefaultAsync(p => p.PostId == postId && p.IsActive && p.PostOwnerUserName == userName);
-                return post ?? new Post();
+                var result = await query.FirstOrDefaultAsync() ?? new Post();
+                return result;
             }
             catch (Exception ex)
             {

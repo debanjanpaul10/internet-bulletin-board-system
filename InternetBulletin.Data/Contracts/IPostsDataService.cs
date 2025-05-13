@@ -21,8 +21,9 @@ namespace InternetBulletin.Data.Contracts
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
 		/// <param name="userName">The user name.</param>
+		/// <param name="isForCurrentUser">Checks if requested for the current user</param>
 		/// <returns>The specific post.</returns>
-		Task<Post> GetPostAsync(Guid postId, string userName);
+		Task<Post> GetPostAsync(Guid postId, string userName, bool isForCurrentUser);
 
 		/// <summary>
 		/// Adds the new post asynchronous.
