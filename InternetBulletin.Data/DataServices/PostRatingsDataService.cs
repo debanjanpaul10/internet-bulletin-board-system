@@ -43,7 +43,7 @@ namespace InternetBulletin.Data.DataServices
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostRatingAsync), DateTime.UtcNow, string.Empty));
 
-                var result = await this._dbContext.PostRatings.FirstOrDefaultAsync(r => r.PostId == postId && r.UserName == userName);
+                var result = await this._dbContext.PostRatings.FirstOrDefaultAsync(r => r.PostId == postId && r.UserName == userName && r.IsActive);
                 if (result is not null)
                 {
                     return result;

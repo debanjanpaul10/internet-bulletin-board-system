@@ -155,15 +155,29 @@ namespace InternetBulletin.Business.Services
 				{
 					PostId = postIdGuid,
 					UserName = userName,
-					RatedOn = DateTime.UtcNow
+					RatedOn = DateTime.UtcNow,
+					IsActive = true,
+					PreviousRatingValue = 1
+
 				};
+				
 				await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
 				await this._postRatingsDataService.AddPostRatingAsync(newRating);
 				return new UpdateRatingDto { HasAlreadyUpdated = false, IsUpdateSuccess = true };
 			}
 			else
 			{
-				post.Ratings = post.Ratings > 0 ? post.Ratings - 1 : 0;
+				if (postRating.PreviousRatingValue == 0)
+				{
+					post.Ratings += 1;
+					postRating.PreviousRatingValue = 1;
+				}
+				else
+				{
+					post.Ratings = Math.Max(0, post.Ratings - 1);
+					postRating.PreviousRatingValue = 0;
+				}
+
 				await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
 				await this._postRatingsDataService.UpdatePostRatingAsync(postRating);
 				return new UpdateRatingDto { HasAlreadyUpdated = true, IsUpdateSuccess = true };
