@@ -6,5 +6,4 @@ CREATE TABLE [dbo].[PostRatings]
   [RatedOn] DATETIME NOT NULL DEFAULT GETDATE(),
   [PreviousRatingValue] INT NOT NULL DEFAULT 0,
   [IsActive] BIT NOT NULL DEFAULT 1
-  CONSTRAINT FK_PostRatings_Posts FOREIGN KEY (PostId) REFERENCES Posts(PostId)
 )
