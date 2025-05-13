@@ -62,6 +62,14 @@ namespace InternetBulletin.Data
 		public DbSet<Post> Posts { get; set; }
 
 		/// <summary>
+		/// Gets or sets the post ratings.
+		/// </summary>
+		/// <value>
+		/// The post ratings.
+		/// </value>
+		public DbSet<PostRating> PostRatings { get; set; }
+
+		/// <summary>
 		/// Override this method to configure the database (and other options) to be used for this context.
 		/// This method is called for each instance of the context that is created.
 		/// The base implementation does nothing.
@@ -130,8 +138,12 @@ namespace InternetBulletin.Data
 				entity.Property(e => e.PostContent).HasColumnName(PostContentConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
 				entity.Property(e => e.PostCreatedDate).HasColumnName(PostCreatedDateConstant).HasColumnType(DateTimeDataTypeConstant).IsRequired();
 				entity.Property(e => e.PostOwnerUserName).HasColumnName(PostOwnerUserNameConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(e => e.Rating).HasColumnName(RatingConstant).HasColumnType(IntegerDataTypeConstant).HasDefaultValue(0).IsRequired();
+				entity.Property(e => e.Ratings).HasColumnName(RatingConstant).HasColumnType(IntegerDataTypeConstant).HasDefaultValue(0).IsRequired();
 				entity.Property(e => e.IsActive).HasColumnName(IsActiveConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+			});
+
+			modelBuilder.Entity<PostRating>(entity => {
+				entity.ToTable(PostRatingsTableNameConstant);
 			});
 		}
 	}

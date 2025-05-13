@@ -57,7 +57,7 @@ namespace InternetBulletin.Data.Entities
 		/// <value>
 		/// The rating.
 		/// </value>
-		public int Rating { get; set; } = 0;
+		public int Ratings { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is active.

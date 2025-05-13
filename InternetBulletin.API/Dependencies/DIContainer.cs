@@ -13,6 +13,7 @@ namespace InternetBulletin.API.Dependencies
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Data.DataServices;
     using InternetBulletin.Shared.Constants;
+    using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -67,6 +68,7 @@ namespace InternetBulletin.API.Dependencies
             builder.Services.AddScoped<IPostsDataService, PostsDataService>();
             builder.Services.AddScoped<IUsersDataService, UsersDataService>();
             builder.Services.AddScoped<IProfilesDataService, ProfilesDataService>();
+            builder.Services.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
         }
     }
 }

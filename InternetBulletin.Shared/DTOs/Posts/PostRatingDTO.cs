@@ -21,7 +21,7 @@ namespace InternetBulletin.Shared.DTOs.Posts
         public string PostId { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the is increment.
+        /// Gets or sets the incremented or decremented value
         /// </summary>
         /// <value>
         /// The incremented or decremented value.

@@ -130,7 +130,16 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The rating constant.
 		/// </summary>
-		public const string RatingConstant = "Rating";
+		public const string RatingConstant = "Ratings";
+
+		#endregion
+
+		#region PostRatings
+
+		/// <summary>
+		/// The post ratings table name constant.
+		/// </summary>
+		public const string PostRatingsTableNameConstant = "PostRatings";
 
 		#endregion
 	}

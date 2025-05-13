@@ -84,8 +84,8 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, postRating.PostId));
-				var result = await this._postsService.UpdateRatingAsync(postId: postRating.PostId, isIncrement: postRating.IsIncrement);
-				if (result is not null && !string.IsNullOrEmpty(Convert.ToString(result.PostId, CultureInfo.CurrentCulture)))
+				var result = await this._postsService.UpdateRatingAsync(postId: postRating.PostId, isIncrement: postRating.IsIncrement, userName: this.UserName);
+				if (result is not null)
 				{
 					return this.HandleSuccessResult(result);
 				}

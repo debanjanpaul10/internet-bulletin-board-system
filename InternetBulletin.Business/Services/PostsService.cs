@@ -13,6 +13,7 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Shared.Constants;
 	using InternetBulletin.Shared.DTOs;
 	using InternetBulletin.Shared.DTOs.Posts;
+	using InternetBulletin.Shared.Helpers;
 	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
@@ -22,12 +23,17 @@ namespace InternetBulletin.Business.Services
 	/// </summary>
 	/// <param name="postsDataService">The Posts Data Service.</param>
 	/// <param name="logger">The logger.</param>
-	public class PostsService(IPostsDataService postsDataService, ILogger<PostsService> logger) : IPostsService
+	public class PostsService(IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService, ILogger<PostsService> logger) : IPostsService
 	{
 		/// <summary>
 		/// The posts data service
 		/// </summary>
 		private readonly IPostsDataService _postsDataService = postsDataService;
+
+		/// <summary>
+		/// The post ratings data service.
+		/// </summary>
+		private readonly IPostRatingsDataService _postRatingsDataService = postRatingsDataService;
 
 		/// <summary>
 		/// The logger
@@ -44,34 +50,9 @@ namespace InternetBulletin.Business.Services
 		/// </returns>
 		public async Task<Post> GetPostAsync(string postId, string userName)
 		{
-			if (string.IsNullOrWhiteSpace(postId))
-			{
-				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			if (!Guid.TryParse(postId, out var postGuid))
-			{
-				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.GetPostAsync(postGuid, userName);
-			if (result is not null && result.PostId != Guid.Empty)
-			{
-				return result;
-			}
-			else
-			{
-				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
+			var postGuid = ValidateAndParsePostId(postId);
+			var result = await _postsDataService.GetPostAsync(postGuid, userName);
+			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
 		/// <summary>
@@ -83,15 +64,8 @@ namespace InternetBulletin.Business.Services
 		/// </returns>
 		public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
 		{
-			if (newPost is null)
-			{
-				var exception = new Exception(ExceptionConstants.NullPostMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.AddNewPostAsync(newPost, userName);
+			CommonUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, this._logger);
+			var result = await _postsDataService.AddNewPostAsync(newPost, userName);
 			return result;
 		}
 
@@ -102,26 +76,9 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The updated post data.</returns>
 		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
 		{
-			if (updatedPost is null)
-			{
-				var exception = new Exception(ExceptionConstants.NullPostMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.UpdatePostAsync(updatedPost, userName);
-			if (result is not null && !Equals(result.PostId, Guid.Empty))
-			{
-				return result;
-			}
-			else
-			{
-				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
+			CommonUtilities.ThrowIfNull(updatedPost, ExceptionConstants.NullPostMessageConstant, this._logger);
+			var result = await _postsDataService.UpdatePostAsync(updatedPost, userName);
+			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
 		/// <summary>
@@ -132,24 +89,9 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The boolean for success / failure</returns>
 		public async Task<bool> DeletePostAsync(string postId, string userName)
 		{
-			if (string.IsNullOrWhiteSpace(postId))
-			{
-				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			if (!Guid.TryParse(postId, out var postIdGuid))
-			{
-				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.DeletePostAsync(postIdGuid, userName);
-			return result;
+			var postGuid = ValidateAndParsePostId(postId);
+			var response = await _postsDataService.DeletePostAsync(postGuid, userName);
+			return response;
 		}
 
 		/// <summary>
@@ -158,7 +100,7 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The list of <see cref="Post"/></returns>
 		public async Task<List<Post>> GetAllPostsAsync()
 		{
-			var result = await this._postsDataService.GetAllPostsAsync();
+			var result = await _postsDataService.GetAllPostsAsync();
 			return result;
 		}
 
@@ -167,26 +109,101 @@ namespace InternetBulletin.Business.Services
 		/// </summary>
 		/// <param name="postId">The post id.</param>
 		/// <param name="isIncrement">If the rating is increased.</param>
-		public async Task<Post> UpdateRatingAsync(string postId, bool isIncrement)
+		/// <param name="userName">The current user name</param>
+		/// <returns>The update rating data dto.</returns>
+		public async Task<UpdateRatingDto> UpdateRatingAsync(string postId, bool isIncrement, string userName)
+		{
+			var postIdGuid = ValidateAndParsePostId(postId);
+			var (post, postRating) = await GetPostAndRatingAsync(postIdGuid, userName);
+			CommonUtilities.ThrowIfNull(post, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
+
+			if (postRating is null)
+			{
+				return await HandleRatingAsync(post, postIdGuid, userName, isFirstTime: true);
+			}
+			else
+			{
+				return await HandleRatingAsync(post, postIdGuid, userName, isFirstTime: false, postRating);
+			}
+		}
+
+		#region PRIVATE Methods
+
+		/// <summary>
+		/// Gets post and rating async.
+		/// </summary>
+		/// <param name="postIdGuid">The post id guid.</param>
+		/// <param name="userName">The user name.</param>
+		/// <returns>The tupple containing post and post rating.</returns>
+		private async Task<(Post post, PostRating postRating)> GetPostAndRatingAsync(Guid postIdGuid, string userName)
+		{
+			var postTask = this._postsDataService.GetPostAsync(postIdGuid, userName);
+			var postRatingTask = this._postRatingsDataService.GetPostRatingAsync(postIdGuid, userName);
+			await Task.WhenAll(postTask, postRatingTask).ConfigureAwait(false);
+			return (postTask.Result, postRatingTask.Result);
+		}
+
+		/// <summary>
+		/// Handles both first time and already rated logic.
+		/// </summary>
+		private async Task<UpdateRatingDto> HandleRatingAsync(Post post, Guid postIdGuid, string userName, bool isFirstTime, PostRating postRating = null)
+		{
+			if (isFirstTime)
+			{
+				post.Ratings += 1;
+				var newRating = new PostRating
+				{
+					PostId = postIdGuid,
+					UserName = userName,
+					RatedOn = DateTime.UtcNow
+				};
+				await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
+				await this._postRatingsDataService.AddPostRatingAsync(newRating);
+				return new UpdateRatingDto { HasAlreadyUpdated = false, IsUpdateSuccess = true };
+			}
+			else
+			{
+				post.Ratings = post.Ratings > 0 ? post.Ratings - 1 : 0;
+				await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
+				await this._postRatingsDataService.UpdatePostRatingAsync(postRating);
+				return new UpdateRatingDto { HasAlreadyUpdated = true, IsUpdateSuccess = true };
+			}
+		}
+
+		/// <summary>
+		/// Creates update post dto.
+		/// </summary>
+		/// <param name="post">The post.</param>
+		private static UpdatePostDTO CreateUpdatePostDTO(Post post)
+		{
+			return new UpdatePostDTO
+			{
+				PostContent = post.PostContent,
+				PostRating = post.Ratings,
+				PostId = post.PostId,
+				PostTitle = post.PostTitle
+			};
+		}
+
+		/// <summary>
+		/// Validates and parse post id.
+		/// </summary>
+		/// <param name="postId">The post id.</param>
+		private Guid ValidateAndParsePostId(string postId)
 		{
 			if (string.IsNullOrWhiteSpace(postId))
 			{
-				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
+				CommonUtilities.ThrowLoggedException(ExceptionConstants.PostIdNotPresentMessageConstant, this._logger);
 			}
 
-			if (!Guid.TryParse(postId, out var postIdGuid))
+			if (!Guid.TryParse(postId, out var postGuid))
 			{
-				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
+				CommonUtilities.ThrowLoggedException(ExceptionConstants.PostGuidNotValidMessageConstant, this._logger);
 			}
 
-			var result = await this._postsDataService.UpdateRatingAsync(postId: postIdGuid, isIncrement);
-			return result;
+			return postGuid;
 		}
+
+		#endregion
 	}
 }

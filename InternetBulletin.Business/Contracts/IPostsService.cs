@@ -59,6 +59,7 @@ namespace InternetBulletin.Business.Contracts
 		/// </summary>
 		/// <param name="postId">The post id.</param>
 		/// <param name="isIncrement">If the rating is increased.</param>
-		Task<Post> UpdateRatingAsync(string postId, bool isIncrement);
+		/// <returns>The update rating data dto.</returns>
+		Task<UpdateRatingDto> UpdateRatingAsync(string postId, bool isIncrement, string userName);
 	}
 }
