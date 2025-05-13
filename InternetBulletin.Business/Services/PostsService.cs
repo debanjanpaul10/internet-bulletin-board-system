@@ -113,17 +113,17 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The update rating data dto.</returns>
 		public async Task<UpdateRatingDto> UpdateRatingAsync(string postId, bool isIncrement, string userName)
 		{
-			var postIdGuid = ValidateAndParsePostId(postId);
-			var (post, postRating) = await GetPostAndRatingAsync(postIdGuid, userName);
+			var postIdGuid = this.ValidateAndParsePostId(postId);
+			var (post, postRating) = await this.GetPostAndRatingAsync(postIdGuid, userName);
 			CommonUtilities.ThrowIfNull(post, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 
 			if (postRating is null)
 			{
-				return await HandleRatingAsync(post, postIdGuid, userName, isFirstTime: true);
+				return await this.HandleRatingAsync(post, postIdGuid, userName, isFirstTime: true);
 			}
 			else
 			{
-				return await HandleRatingAsync(post, postIdGuid, userName, isFirstTime: false, postRating);
+				return await this.HandleRatingAsync(post, postIdGuid, userName, isFirstTime: false, postRating);
 			}
 		}
 
