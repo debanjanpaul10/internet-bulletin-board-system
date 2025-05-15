@@ -7,6 +7,7 @@
 
 namespace InternetBulletin.Shared.Helpers
 {
+    using InternetBulletin.Shared.Constants;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -42,6 +43,27 @@ namespace InternetBulletin.Shared.Helpers
             var exception = new Exception(message);
             commonLogger.LogError(exception, exception.Message);
             throw exception;
+        }
+
+        /// <summary>
+        /// Validates and parse post id.
+        /// </summary>
+        /// <param name="postId">The post id.</param>
+        /// <param name="logger">The logger.</param>
+        /// <typeparam name="T">The logger type.</typeparam>
+        public static Guid ValidateAndParsePostId<T>(string postId, ILogger<T> logger)
+        {
+            if (string.IsNullOrWhiteSpace(postId))
+            {
+                ThrowLoggedException(ExceptionConstants.PostIdNotPresentMessageConstant, logger);
+            }
+
+            if (!Guid.TryParse(postId, out var postGuid))
+            {
+                ThrowLoggedException(ExceptionConstants.PostGuidNotValidMessageConstant, logger);
+            }
+
+            return postGuid;
         }
 
     }

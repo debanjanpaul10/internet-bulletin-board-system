@@ -46,6 +46,11 @@ namespace InternetBulletin.Shared.Constants
         public const string PostsBase_RoutePrefix = "Posts";
 
         /// <summary>
+        /// The post ratings base_ route prefix.
+        /// </summary>
+        public const string PostRatingsBase_RoutePrefix = "PostRatings";
+
+        /// <summary>
         /// The get post route
         /// </summary>
         public const string GetPost_Route = "GetPost";

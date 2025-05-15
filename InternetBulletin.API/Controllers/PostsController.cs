@@ -7,7 +7,6 @@
 
 namespace InternetBulletin.API.Controllers
 {
-	using System.Globalization;
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Shared.Constants;
 	using InternetBulletin.Shared.DTOs;
@@ -24,7 +23,8 @@ namespace InternetBulletin.API.Controllers
 	/// <param name="postsService">The Posts Service.</param>
 	[ApiController]
 	[Route(RouteConstants.PostsBase_RoutePrefix)]
-	public class PostsController(IPostsService postsService, ILogger<PostsController> logger, IHttpContextAccessor httpContextAccessor) : BaseController(httpContextAccessor)
+	public class PostsController(
+		ILogger<PostsController> logger, IHttpContextAccessor httpContextAccessor, IPostsService postsService) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The posts service
@@ -35,8 +35,6 @@ namespace InternetBulletin.API.Controllers
 		/// The logger
 		/// </summary>
 		private readonly ILogger<PostsController> _logger = logger;
-
-		#region Anonymous HTTP Requests
 
 		/// <summary>
 		/// Gets all posts data asynchronous.
@@ -71,40 +69,6 @@ namespace InternetBulletin.API.Controllers
 			}
 		}
 
-		/// <summary>
-		/// Updates the rating of the post asynchronously.
-		/// </summary>
-		/// <param name="postRating">The post rating.</param>
-		/// <returns>The action result.</returns>
-		[HttpPost]
-		[Route(RouteConstants.UpdateRating_Route)]
-		public async Task<IActionResult> UpdateRatingAsync(PostRatingDTO postRating)
-		{
-			try
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, postRating.PostId));
-				var result = await this._postsService.UpdateRatingAsync(postId: postRating.PostId, isIncrement: postRating.IsIncrement, userName: this.UserName);
-				if (result is not null)
-				{
-					return this.HandleSuccessResult(result);
-				}
-				else
-				{
-					return this.HandleBadRequest(ExceptionConstants.PostGuidNotValidMessageConstant);
-				}
-			}
-			catch (Exception ex)
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdateRatingAsync), DateTime.UtcNow, ex.Message));
-				throw;
-			}
-			finally
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdateRatingAsync), DateTime.UtcNow, postRating.PostId));
-			}
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Gets the post asynchronous.

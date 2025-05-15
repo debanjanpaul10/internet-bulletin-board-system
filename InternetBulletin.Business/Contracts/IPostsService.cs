@@ -53,13 +53,5 @@ namespace InternetBulletin.Business.Contracts
 		/// </summary>
 		/// <returns>The list of <see cref="Post"/></returns>
 		Task<List<Post>> GetAllPostsAsync();
-
-		/// <summary>
-		/// Updates rating async.
-		/// </summary>
-		/// <param name="postId">The post id.</param>
-		/// <param name="isIncrement">If the rating is increased.</param>
-		/// <returns>The update rating data dto.</returns>
-		Task<UpdateRatingDto> UpdateRatingAsync(string postId, bool isIncrement, string userName);
 	}
 }
