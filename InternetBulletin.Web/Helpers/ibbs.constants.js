@@ -65,6 +65,7 @@ export const LoginPageConstants = {
 		LoginButton: "Login",
 		CancelButton: "Cancel",
 	},
+	Success: "User logged in successfully!",
 };
 
 export const ErrorPageConstants = {

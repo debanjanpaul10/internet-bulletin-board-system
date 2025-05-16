@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactQuill from "react-quill-new";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import {
 	Card,
@@ -18,6 +17,8 @@ import AiButton from "@assets/Images/ai-icon.svg";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/CreatePost/styles";
+import { useMsal } from "@azure/msal-react";
+import { loginRequests } from "@services/auth.config";
 
 /**
  * @component
@@ -28,8 +29,8 @@ import { useStyles } from "@components/Posts/CreatePost/styles";
 function CreatePostComponent() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { user, isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
 	const styles = useStyles();
+	const { instance, accounts } = useMsal();
 
 	const IsCreatePostLoadingStoreData = useSelector(
 		(state) => state.PostsReducer.isCreatePostLoading
@@ -50,14 +51,13 @@ function CreatePostComponent() {
 	const [currentLoggedInUser, setCurrentLoggedInUser] = useState({});
 
 	useEffect(() => {
-		if (
-			isAuthenticated &&
-			Object.keys(user).length > 0 &&
-			user !== currentLoggedInUser
-		) {
-			setCurrentLoggedInUser(user);
+		if (accounts.length > 0) {
+			const userName = accounts[0].idTokenClaims?.extension_UserName;
+			setCurrentLoggedInUser(userName);
+		} else {
+			setCurrentLoggedInUser();
 		}
-	}, [isAuthenticated, user, currentLoggedInUser, isLoading]);
+	}, [instance, accounts]);
 
 	useEffect(() => {
 		if (
@@ -71,6 +71,19 @@ function CreatePostComponent() {
 			});
 		}
 	}, [AiRewrittenStoryStoreData]);
+
+	/**
+	 * Gets the access token silently using msal.
+	 * @returns {string} The access token.
+	 */
+	const getAccessToken = async () => {
+		const tokenResponse = await instance.acquireTokenSilent({
+			...loginRequests,
+			account: accounts[0],
+		});
+
+		return tokenResponse.accessToken;
+	};
 
 	/**
 	 * Checks if user logged in.
@@ -104,7 +117,7 @@ function CreatePostComponent() {
 				postData.CreatedBy
 			);
 
-			dispatch(AddNewPostAsync(addPostData, getIdTokenClaims))
+			dispatch(AddNewPostAsync(addPostData, getAccessToken))
 				.then(() => {
 					navigate("/");
 				})

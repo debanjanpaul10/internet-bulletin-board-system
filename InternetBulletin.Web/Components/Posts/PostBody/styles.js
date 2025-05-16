@@ -1,4 +1,8 @@
-import { makeStyles } from "@fluentui/react-components";
+import {
+	makeStyles,
+	tokens,
+	buttonClassNames,
+} from "@fluentui/react-components";
 
 const useStyles = makeStyles({
 	card: {
@@ -33,7 +37,7 @@ const useStyles = makeStyles({
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
-		width: "100%"
+		width: "100%",
 	},
 	headerTitle: {
 		flexGrow: 1,
@@ -41,7 +45,7 @@ const useStyles = makeStyles({
 	headerButtons: {
 		display: "flex",
 		gap: "10px",
-		marginLeft: "autoo"
+		marginLeft: "autoo",
 	},
 	editButton: {
 		color: "#0078d4",
@@ -49,9 +53,17 @@ const useStyles = makeStyles({
 	deleteButton: {
 		color: "#d83b01",
 	},
-	upVoteButton: {
-		
-	}
+	buttonNonInteractive: {
+		backgroundColor: tokens.colorNeutralBackground1,
+		border: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke1}`,
+		color: tokens.colorNeutralForeground1,
+		cursor: "default",
+		pointerEvents: "none",
+
+		[`& .${buttonClassNames.icon}`]: {
+			color: tokens.colorStatusSuccessForeground1,
+		},
+	},
 });
 
 export { useStyles };

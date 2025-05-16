@@ -8,23 +8,24 @@ import "react-toastify/dist/ReactToastify.css";
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fontsource/architects-daughter";
-
-import "@styles/App.css";
-import "@styles/App_Dark.css";
-import App from "./App";
-import PostsReducer from "@store/Posts/Reducers";
-import CommonReducer from "@store/Common/Reducers";
-import { CookiesConstants, PageConstants } from "@helpers/ibbs.constants";
-import ThemeContext from "@context/ThemeContext";
-import { ConsoleLogMessage } from "@helpers/common.utility";
-import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { Auth0Constants } from "@helpers/config.constants";
-import Spinner from "@components/Common/Spinner";
+import { MsalProvider } from "@azure/msal-react";
+import { PublicClientApplication } from "@azure/msal-browser";
 import {
 	FluentProvider,
 	webDarkTheme,
 	webLightTheme,
 } from "@fluentui/react-components";
+
+import "@styles/App.css";
+import "@styles/App_Dark.css";
+import App from "./App";
+import { PostsReducer } from "@store/Posts/Reducers";
+import { CommonReducer } from "@store/Common/Reducers";
+import { CookiesConstants, PageConstants } from "@helpers/ibbs.constants";
+import ThemeContext from "@context/ThemeContext";
+import { ConsoleLogMessage } from "@helpers/common.utility";
+import { msalConfig } from "@services/auth.config";
+import Spinner from "@components/Common/Spinner";
 
 /**
  * Configures the redux store.
@@ -38,6 +39,8 @@ const store = configureStore({
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const msalInstance = new PublicClientApplication(msalConfig);
+
 /**
  * @component
  * The Main entry component
@@ -46,9 +49,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
  */
 function Main() {
 	const { DarkModeConstant, LightConstant, DarkConstant } = PageConstants;
-	const { isLoading } = useAuth0();
-
 	const [themeMode, setThemeMode] = useState(LightConstant);
+	const [initialized, setInitialized] = useState(false);
 
 	useEffect(() => {
 		const savedDarkModeSettings =
@@ -56,6 +58,8 @@ function Main() {
 		setThemeMode(savedDarkModeSettings ? DarkConstant : LightConstant);
 
 		document.body.classList.toggle(DarkModeConstant, savedDarkModeSettings);
+
+		msalInstance.initialize().then(() => setInitialized(true));
 	}, []);
 
 	/**
@@ -81,8 +85,8 @@ function Main() {
 
 	return (
 		<ThemeContext.Provider value={{ themeMode, toggleThemeMode }}>
-			<Spinner isLoading={isLoading} />
-			{!isLoading && (
+			<Spinner isLoading={!initialized} />
+			{initialized && (
 				<FluentProvider
 					theme={
 						themeMode === DarkConstant
@@ -99,19 +103,11 @@ function Main() {
 }
 
 root.render(
-	<Auth0Provider
-		domain={Auth0Constants.Domain}
-		clientId={Auth0Constants.ClientId}
-		authorizationParams={{
-			redirect_uri: window.location.origin,
-			audience: Auth0Constants.Audience,
-			scope: Auth0Constants.Scope,
-		}}
-	>
+	<MsalProvider instance={msalInstance}>
 		<Router>
 			<Provider store={store}>
 				<Main />
 			</Provider>
 		</Router>
-	</Auth0Provider>
+	</MsalProvider>
 );

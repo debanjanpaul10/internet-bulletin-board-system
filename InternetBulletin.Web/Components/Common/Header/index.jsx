@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import { AddCircle32Filled } from "@fluentui/react-icons";
+import { useMsal } from "@azure/msal-react";
+import { useDispatch } from "react-redux";
 
 import {
 	HeaderPageConstants,
 	HomePageConstants,
+	LoginPageConstants,
 	PageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
@@ -13,6 +15,11 @@ import { CustomDarkModeToggleSwitch } from "@helpers/common.utility";
 import ThemeContext from "@context/ThemeContext";
 import { Button } from "@fluentui/react-components";
 import useStyles from "@components/Common/Header/styles";
+import { loginRequests } from "@services/auth.config";
+import {
+	ToggleErrorToaster,
+	ToggleSuccessToaster,
+} from "@store/Common/Actions";
 
 /**
  * @component
@@ -23,8 +30,8 @@ import useStyles from "@components/Common/Header/styles";
 function Header() {
 	const location = useLocation();
 	const { themeMode, toggleThemeMode } = useContext(ThemeContext);
-	const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
-		useAuth0();
+	const dispatch = useDispatch();
+	const { instance, accounts } = useMsal();
 	const navigate = useNavigate();
 	const styles = useStyles();
 
@@ -33,29 +40,20 @@ function Header() {
 	const [currentLoggedInUser, setCurrentLoggedInUser] = useState({});
 
 	useEffect(() => {
-		if (isAuthenticated) {
-			setCurrentLoggedInUser(user);
+		if (accounts.length > 0) {
+			const userName = accounts[0].idTokenClaims?.extension_UserName;
+			setCurrentLoggedInUser(userName);
+		} else {
+			setCurrentLoggedInUser();
 		}
-
-		setCurrentLoggedInUser();
-	}, []);
-
-	useEffect(() => {
-		if (
-			isAuthenticated &&
-			Object.keys(user).length > 0 &&
-			user !== currentLoggedInUser
-		) {
-			setCurrentLoggedInUser(user);
-		}
-	}, [isAuthenticated, user, currentLoggedInUser, isLoading]);
+	}, [instance, accounts]);
 
 	/**
 	 * Handles the user logout event.
 	 */
 	const handleLogout = () => {
-		logout({
-			logoutParams: window.location.origin,
+		instance.logoutRedirect({
+			postLogoutRedirectUri: window.location.origin,
 		});
 	};
 
@@ -75,7 +73,24 @@ function Header() {
 	 * Handles the login event.
 	 */
 	const handleLoginEvent = () => {
-		loginWithRedirect();
+		instance
+			.loginRedirect(loginRequests)
+			.then(() => {
+				dispatch(
+					ToggleSuccessToaster({
+						shouldShow: true,
+						successMessage: LoginPageConstants.Success,
+					})
+				);
+			})
+			.catch((error) => {
+				dispatch(
+					ToggleErrorToaster({
+						shouldShow: true,
+						errorMessage: error,
+					})
+				);
+			});
 	};
 
 	/**

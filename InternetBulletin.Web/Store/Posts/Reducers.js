@@ -6,6 +6,8 @@ import {
 	REWRITE_STORY_AI,
 	IS_CREATE_POST_LOADING,
 	DELETE_POST_DATA,
+	UPDATE_POST_RATING,
+	TOGGLE_VOTING_LOADER,
 } from "@store/Posts/ActionTypes";
 
 const initialState = {
@@ -15,6 +17,8 @@ const initialState = {
 	aiRewrittenStory: "",
 	isCreatePostLoading: false,
 	isPostDataDeleted: false,
+	updatedRatingData: {},
+	isVotingLoaderOn: false,
 };
 
 /**
@@ -67,10 +71,22 @@ const PostsReducer = (state = initialState, action) => {
 				isPostDataDeleted: action.payload,
 			};
 		}
+		case UPDATE_POST_RATING: {
+			return {
+				...state,
+				updatedRatingData: action.payload,
+			};
+		}
+		case TOGGLE_VOTING_LOADER: {
+			return {
+				...state,
+				isVotingLoaderOn: action.payload,
+			};
+		}
 		default: {
 			return state;
 		}
 	}
 };
 
-export default PostsReducer;
+export { PostsReducer };

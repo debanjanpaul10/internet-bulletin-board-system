@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	Body1,
 	Caption1,
@@ -7,6 +8,7 @@ import {
 	CardPreview,
 	Body2,
 	Button,
+	Spinner,
 } from "@fluentui/react-components";
 import {
 	Edit28Filled,
@@ -15,9 +17,9 @@ import {
 } from "@fluentui/react-icons";
 
 import { useStyles } from "@components/Posts/PostBody/styles";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useDispatch } from "react-redux";
-import { DeletePostAsync } from "@store/Posts/Actions";
+import { DeletePostAsync, UpdateRatingAsync } from "@store/Posts/Actions";
+import PostRatingDtoModel from "@models/PostRatingDto";
+import { useMsal } from "@azure/msal-react";
 
 /**
  * @component
@@ -31,13 +33,24 @@ import { DeletePostAsync } from "@store/Posts/Actions";
 function PostBody({ post }) {
 	const contentRef = useRef(null);
 	const styles = useStyles();
-	const { getIdTokenClaims, user, isAuthenticated, isLoading } = useAuth0();
 	const dispatch = useDispatch();
+	const { instance, accounts } = useMsal();
+
+	const UpdatedRatingData = useSelector(
+		(state) => state.PostsReducer.updatedRatingData
+	);
+	const IsVotingLoaderOn = useSelector(
+		(state) => state.PostsReducer.isVotingLoaderOn
+	);
 
 	const [postData, setPostData] = useState({});
 	const [showFullText, setShowFullText] = useState(false);
 	const [isTextOverflowing, setIsTextOverflowing] = useState(false);
 	const [showEditAndDelete, setShowEditAndDelete] = useState(false);
+	const [isRatingButtonClicked, setIsRatingClicked] = useState(false);
+	const [postRatingLoader, setPostRatingLoader] = useState(false);
+	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+	const [postUpdatedRatingData, setPostUpdatedRatingData] = useState(false);
 
 	useEffect(() => {
 		if (postData !== post) {
@@ -55,18 +68,32 @@ function PostBody({ post }) {
 	}, [postData, showFullText]);
 
 	useEffect(() => {
-		if (
-			user !== null &&
-			user !== undefined &&
-			Object.values(user).length > 0 &&
-			isAuthenticated &&
-			!isLoading
-		) {
-			setShowEditAndDelete(post.postOwnerUserName == user.username);
+		if (accounts.length > 0) {
+			setShowEditAndDelete(
+				post.postOwnerUserName ==
+					accounts[0].idTokenClaims?.extension_UserName
+			);
+			setIsUserLoggedIn(true);
 		} else {
 			setShowEditAndDelete(false);
+			setIsUserLoggedIn(false);
 		}
-	}, [user, isAuthenticated, isLoading]);
+	}, [instance, accounts]);
+
+	useEffect(() => {
+		if (IsVotingLoaderOn !== postRatingLoader) {
+			setPostRatingLoader(IsVotingLoaderOn);
+		}
+	}, [IsVotingLoaderOn]);
+
+	useEffect(() => {
+		if (
+			Object.values(UpdatedRatingData).length > 0 &&
+			UpdatedRatingData !== postUpdatedRatingData
+		) {
+			setPostUpdatedRatingData(UpdatedRatingData);
+		}
+	}, [UpdatedRatingData]);
 
 	/**
 	 * Formats the date to date string format.
@@ -94,7 +121,14 @@ function PostBody({ post }) {
 		dispatch(DeletePostAsync(postId, getIdTokenClaims));
 	};
 
-	const handleVoting = (postId) => {};
+	const handleVoting = (postId) => {
+		const postRatingDtoModel = new PostRatingDtoModel(postId, false);
+		dispatch(UpdateRatingAsync(postRatingDtoModel, getIdTokenClaims));
+	};
+
+	const renderRatingButtonIcons = (button) => {
+		return postRatingLoader ? <Spinner size="tiny" /> : <>{button}</>;
+	};
 
 	return (
 		Object.keys(postData).length > 0 && (
@@ -108,14 +142,18 @@ function PostBody({ post }) {
 							</Body1>
 
 							<div className={styles.headerButtons}>
-								{!showEditAndDelete && (
+								{!showEditAndDelete && accounts.length > 0 && (
 									<Button
-										className={styles.upVoteButton}
+										disabled={postRatingLoader}
 										appearance="subtle"
 										shape="circular"
-										onClick={handleVoting(postData.postId)}
+										onClick={() =>
+											handleVoting(postData.postId)
+										}
 									>
-										<ArrowCircleUp28Regular />
+										{renderRatingButtonIcons(
+											<ArrowCircleUp28Regular />
+										)}
 									</Button>
 								)}
 								{showEditAndDelete && (

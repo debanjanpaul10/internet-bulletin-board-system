@@ -30,7 +30,7 @@ function Toaster() {
 	return (
 		<>
 			{ErrorToasterStoreData.shouldShow && (
-				<div className="toaster-container position-absolute top-0 end-0">
+				<div className="toaster-container position-absolute bottom-0 end-0">
 					<div
 						className="toast show text-white bg-danger border-0"
 						role="alert"

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth0 } from "@auth0/auth0-react";
 
 import { HomePageConstants } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
 import PostsContainer from "@components/Posts/PostsContainer";
 import { GetAllPostsAsync } from "@store/Posts/Actions";
+import { useMsal } from "@azure/msal-react";
+import { loginRequests } from "@services/auth.config";
 
 /**
  * @component
@@ -14,15 +15,39 @@ import { GetAllPostsAsync } from "@store/Posts/Actions";
  */
 function HomeComponent() {
 	const dispatch = useDispatch();
-	const { getIdTokenClaims } = useAuth0();
+	const { instance, accounts } = useMsal();
 
 	const IsPostsDataLoading = useSelector(
 		(state) => state.PostsReducer.isPostsDataLoading
 	);
 
 	useEffect(() => {
-		dispatch(GetAllPostsAsync(getIdTokenClaims));
+		/**
+		 * Gets all posts data at init.
+		 */
+		async function getAllPostsData() {
+			let token = "";
+			if (accounts.length > 0) {
+				token = await getAccessToken();
+			}
+			dispatch(GetAllPostsAsync(token));
+		}
+
+		getAllPostsData();
 	}, []);
+
+	/**
+	 * Gets the access token silently using msal.
+	 * @returns {string} The access token.
+	 */
+	const getAccessToken = async () => {
+		const tokenData = await instance.acquireTokenSilent({
+			...loginRequests,
+			account: accounts[0],
+		});
+
+		return tokenData.accessToken;
+	};
 
 	return (
 		<div className="container">

@@ -42,4 +42,4 @@ const CommonReducer = (state = initialState, action) => {
 	}
 };
 
-export default CommonReducer;
+export { CommonReducer };

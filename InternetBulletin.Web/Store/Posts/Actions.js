@@ -1,10 +1,12 @@
+import PostRatingDtoModel from "@models/PostRatingDto";
 import {
 	AddNewPostApiAsync,
 	DeletePostApiAsync,
 	GetAllPostsApiAsync,
 	GetPostApiAsync,
 	PostRewriteStoryWithAiApiAsync,
-} from "@services/InternetBulletinService";
+	UpdateRatingApiAsync,
+} from "@services/ibbs.apiservice";
 import { ToggleErrorToaster } from "@store/Common/Actions";
 import {
 	ADD_NEW_POST_DATA,
@@ -16,6 +18,8 @@ import {
 	REWRITE_STORY_AI,
 	START_SPINNER,
 	STOP_SPINNER,
+	TOGGLE_VOTING_LOADER,
+	UPDATE_POST_RATING,
 } from "@store/Posts/ActionTypes";
 
 /**
@@ -41,14 +45,14 @@ export const StopLoader = () => {
 /**
  * Gets the post data from api.
  * @param {string} postId The user data.
- * @param {Promise} getIdTokenClaims Gets the access token.
+ * @param {string} accessToken The access token.
  * @returns {Promise} The promise from the api response.
  */
-export const GetPostAsync = (postId, getIdTokenClaims) => {
+export const GetPostAsync = (postId, accessToken) => {
 	return async (dispatch) => {
 		try {
 			dispatch(StartLoader());
-			const response = await GetPostApiAsync(postId, getIdTokenClaims);
+			const response = await GetPostApiAsync(postId, accessToken);
 			if (response?.statusCode === 200) {
 				dispatch(GetPostSuccess(response.data));
 			}
@@ -81,14 +85,13 @@ const GetPostSuccess = (data) => {
 
 /**
  * Gets all posts data.
- * @param {Promise} getIdTokenClaims Gets the access token.
  * @returns {Promise} The promise from the api response.
  */
-export const GetAllPostsAsync = (getIdTokenClaims) => {
+export const GetAllPostsAsync = (accessToken) => {
 	return async (dispatch) => {
 		try {
 			dispatch(StartLoader());
-			const response = await GetAllPostsApiAsync(getIdTokenClaims);
+			const response = await GetAllPostsApiAsync(accessToken);
 			if (response?.statusCode === 200) {
 				dispatch(GetAllPostsSuccess(response.data));
 			}
@@ -122,17 +125,14 @@ const GetAllPostsSuccess = (data) => {
 /**
  * Adds an new post data.
  * @param {Object} userData The user data object.
- * @param {Promise} getIdTokenClaims Gets the access token.
+ * @param {string} accessToken The access token.
  * @returns {Promise} The promise from the api response.
  */
-export const AddNewPostAsync = (postData, getIdTokenClaims) => {
+export const AddNewPostAsync = (postData, accessToken) => {
 	return async (dispatch) => {
 		try {
 			dispatch(HandleCreatePostPageLoader(true));
-			const response = await AddNewPostApiAsync(
-				postData,
-				getIdTokenClaims
-			);
+			const response = await AddNewPostApiAsync(postData, accessToken);
 			if (response?.statusCode === 200) {
 				dispatch(AddNewPostSuccess(response?.data));
 			}
@@ -228,17 +228,17 @@ export const HandleCreatePostPageLoader = (isLoading) => {
 /**
  * Deletes a post data asynchronously.
  * @param {string} postId The post id.
- * @param {Promise} getIdTokenClaims Gets the access token.
+ * @param {string} accessToken The access token.
  * @returns {Promise} Gets the API response.
  */
-export const DeletePostAsync = (postId, getIdTokenClaims) => {
+export const DeletePostAsync = (postId, accessToken) => {
 	return async (dispatch) => {
 		try {
 			dispatch(StartLoader());
-			const response = await DeletePostApiAsync(postId, getIdTokenClaims);
+			const response = await DeletePostApiAsync(postId, accessToken);
 			if (response?.statusCode === 200) {
 				dispatch(DeletePostAsyncSuccess(response?.data));
-				dispatch(GetAllPostsAsync(getIdTokenClaims));
+				dispatch(GetAllPostsAsync(accessToken));
 			}
 		} catch (error) {
 			console.error(error);
@@ -263,6 +263,64 @@ export const DeletePostAsync = (postId, getIdTokenClaims) => {
 const DeletePostAsyncSuccess = (data) => {
 	return {
 		type: DELETE_POST_DATA,
+		payload: data,
+	};
+};
+
+/**
+ * Updates the rating of post asynchronously.
+ * @param {PostRatingDtoModel} postRatingDtoModel The post rating dto model.
+ * @param {string} accessToken The function to get id token claims.
+ *
+ * @returns {Promise} The promise of the api response.
+ */
+export const UpdateRatingAsync = (postRatingDtoModel, accessToken) => {
+	return async (dispatch) => {
+		try {
+			dispatch(ToggleRatingLoader(true));
+			await new Promise((resolve) => setTimeout(resolve, 5000));
+			const response = await UpdateRatingApiAsync(
+				postRatingDtoModel,
+				accessToken
+			);
+			if (response?.statusCode === 200) {
+				dispatch(UpdateRatingAsyncSuccess(response?.data));
+			}
+		} catch (error) {
+			console.error(error);
+			dispatch(PostDataFailure(error.data));
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error,
+				})
+			);
+		} finally {
+			dispatch(ToggleRatingLoader(false));
+		}
+	};
+};
+
+/**
+ * Saves the rating loader toggle event data to redux store.
+ * @param {boolean} isLooading The boolean value for loading status.
+ * @returns {Object} The action type and payload data.
+ */
+const ToggleRatingLoader = (isLoading) => {
+	return {
+		type: TOGGLE_VOTING_LOADER,
+		payload: isLoading,
+	};
+};
+
+/**
+ * Saves the rating update data to redux store.
+ * @param {Object} data The post rating update data dto.
+ * @returns {Object} The action type and payload data.
+ */
+const UpdateRatingAsyncSuccess = (data) => {
+	return {
+		type: UPDATE_POST_RATING,
 		payload: data,
 	};
 };

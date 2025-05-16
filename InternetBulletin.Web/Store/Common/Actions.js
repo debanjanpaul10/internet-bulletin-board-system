@@ -1,4 +1,4 @@
-import { GetConfigurationApiAsync } from "@services/InternetBulletinService";
+import { GetConfigurationApiAsync } from "@services/ibbs.apiservice";
 import {
 	GET_CONFIGURATION_VALUE,
 	TOGGLE_ERROR_TOASTER,

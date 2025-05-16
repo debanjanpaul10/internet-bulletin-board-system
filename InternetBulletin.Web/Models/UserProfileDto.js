@@ -2,20 +2,27 @@
  * UserProfileDtoModel class to represent the user profile dto model.
  */
 class UserProfileDtoModel {
+
+	/**
+	 * Gets or sets the user identifier.
+	 * @type {string}
+	 */
+	userName = "";
+
+	/**
+	 * Gets or sets the user posts.
+	 * @type {Array<Object>}
+	 */
+	userPosts = [];
+
 	/**
 	 * Creates an instance of UserProfileDtoModel
-	 * @param {number} userId The user id.
-	 * @param {string} userEmail The user email.
-	 * @param {string} userAlias The user alias.
-	 * @param {string} userPassword The user password.
-	 * @param {Array<Object>} userPosts The user posts.
+	 * @param {string} UserName The user identifier.
+	 * @param {Array<Object>} UserPosts The user posts.
 	 */
-	constructor(userId, userEmail, userAlias, userPassword, userPosts) {
-		this.userId = userId;
-		this.userEmail = userEmail;
-		this.userAlias = userAlias;
-		this.userPassword = userPassword;
-		this.userPosts = userPosts;
+	constructor(UserName, UserPosts) {
+		this.userName = UserName;
+		this.userPosts = UserPosts;
 	}
 }
 
