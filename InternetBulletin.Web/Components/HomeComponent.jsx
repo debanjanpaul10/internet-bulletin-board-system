@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useMsal } from "@azure/msal-react";
 
 import { HomePageConstants } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
 import PostsContainer from "@components/Posts/PostsContainer";
 import { GetAllPostsAsync } from "@store/Posts/Actions";
-import { useMsal } from "@azure/msal-react";
 import { loginRequests } from "@services/auth.config";
 import EditPostComponent from "@components/Posts/EditPost";
 
