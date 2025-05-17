@@ -15,13 +15,15 @@ import {
 	Edit28Filled,
 	Delete28Filled,
 	ArrowCircleUp28Regular,
+	ArrowCircleUp28Filled,
 } from "@fluentui/react-icons";
 import { useMsal } from "@azure/msal-react";
 
 import { useStyles } from "@components/Posts/PostBody/styles";
 import { DeletePostAsync, UpdateRatingAsync } from "@store/Posts/Actions";
 import PostRatingDtoModel from "@models/PostRatingDto";
-import { HomePageConstants } from "@helpers/ibbs.constants";
+import { PostBodyConstants } from "@helpers/ibbs.constants";
+import { loginRequests } from "@services/auth.config";
 
 /**
  * @component
@@ -38,6 +40,8 @@ function PostBody({ post }) {
 	const dispatch = useDispatch();
 	const { instance, accounts } = useMsal();
 
+	const { ButtonText } = PostBodyConstants;
+
 	const UpdatedRatingData = useSelector(
 		(state) => state.PostsReducer.updatedRatingData
 	);
@@ -49,7 +53,6 @@ function PostBody({ post }) {
 	const [showFullText, setShowFullText] = useState(false);
 	const [isTextOverflowing, setIsTextOverflowing] = useState(false);
 	const [showEditAndDelete, setShowEditAndDelete] = useState(false);
-	const [isRatingButtonClicked, setIsRatingClicked] = useState(false);
 	const [postRatingLoader, setPostRatingLoader] = useState(false);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [postUpdatedRatingData, setPostUpdatedRatingData] = useState(false);
@@ -132,13 +135,15 @@ function PostBody({ post }) {
 	 * Handles the post delete operation.
 	 * @param {string} postId The post id.
 	 */
-	const handleDelete = (postId) => {
-		dispatch(DeletePostAsync(postId));
+	const handleDelete = async (postId) => {
+		const accessToken = await getAccessToken();
+		dispatch(DeletePostAsync(postId, accessToken));
 	};
 
-	const handleVoting = (postId) => {
+	const handleVoting = async (postId) => {
+		const accessToken = await getAccessToken();
 		const postRatingDtoModel = new PostRatingDtoModel(postId, false);
-		dispatch(UpdateRatingAsync(postRatingDtoModel, getAccessToken));
+		dispatch(UpdateRatingAsync(postRatingDtoModel, accessToken));
 	};
 
 	const renderRatingButtonIcons = (button) => {
@@ -157,11 +162,12 @@ function PostBody({ post }) {
 							</Body1>
 
 							<div className={styles.headerButtons}>
-								{!showEditAndDelete && accounts.length > 0 && (
+								{!showEditAndDelete && isUserLoggedIn && (
 									<Tooltip
 										content={
-											HomePageConstants.ButtonText
-												.RatingsButtonTooltipText
+											postData.previousRatingValue === 1
+												? ButtonText.AlreadyRatedButtonTooltipText
+												: ButtonText.RatingsButtonTooltipText
 										}
 										relationship="label"
 									>
@@ -174,7 +180,12 @@ function PostBody({ post }) {
 											}
 										>
 											{renderRatingButtonIcons(
-												<ArrowCircleUp28Regular />
+												postData.previousRatingValue ===
+													1 ? (
+													<ArrowCircleUp28Filled />
+												) : (
+													<ArrowCircleUp28Regular />
+												)
 											)}
 										</Button>
 									</Tooltip>
@@ -183,8 +194,7 @@ function PostBody({ post }) {
 									<>
 										<Tooltip
 											content={
-												HomePageConstants.ButtonText
-													.EditButtonTooltipText
+												ButtonText.EditButtonTooltipText
 											}
 											relationship="label"
 										>
@@ -201,8 +211,7 @@ function PostBody({ post }) {
 										</Tooltip>
 										<Tooltip
 											content={
-												HomePageConstants.ButtonText
-													.DeleteButtonTooltipText
+												ButtonText.DeleteButtonTooltipText
 											}
 											relationship="label"
 										>

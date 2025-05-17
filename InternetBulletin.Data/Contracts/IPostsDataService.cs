@@ -38,8 +38,9 @@ namespace InternetBulletin.Data.Contracts
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
 		/// <param name="userName">The user name</param>
+		/// <param name="isRatingUpdate">The boolean flag to signify rating update.</param>
 		/// <returns>The updated post data.</returns>
-		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName);
+		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName, bool isRatingUpdate);
 
 		/// <summary>
 		/// Deletes the post asynchronous.

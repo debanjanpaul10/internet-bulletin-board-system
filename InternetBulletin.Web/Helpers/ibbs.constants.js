@@ -80,8 +80,12 @@ export const HomePageConstants = {
 			"Welcome to the Internet Bulletin Board, where sharing ideas is your reward.",
 		IBBS: "Internet Bulletin Board",
 	},
+};
+
+export const PostBodyConstants = {
 	ButtonText: {
 		RatingsButtonTooltipText: "Vote as good one!",
+		AlreadyRatedButtonTooltipText: "Thanks for your vote!",
 		EditButtonTooltipText: "Edit the post!",
 		DeleteButtonTooltipText: "Delete the post!",
 	},

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { HomePageConstants } from "@helpers/ibbs.constants";
@@ -16,25 +16,43 @@ import { loginRequests } from "@services/auth.config";
 function HomeComponent() {
 	const dispatch = useDispatch();
 	const { instance, accounts } = useMsal();
+	const [isTokenRetrieved, setIsTokenRetrieved] = useState(false);
 
 	const IsPostsDataLoading = useSelector(
 		(state) => state.PostsReducer.isPostsDataLoading
 	);
 
+	// Initial load - check if user is logged in
 	useEffect(() => {
-		/**
-		 * Gets all posts data at init.
-		 */
-		async function getAllPostsData() {
-			let token = "";
-			if (accounts.length > 0) {
-				token = await getAccessToken();
-			}
-			dispatch(GetAllPostsAsync(token));
+		if (accounts.length === 0) {
+			dispatch(GetAllPostsAsync(""));
+			setIsTokenRetrieved(true);
 		}
-
-		getAllPostsData();
 	}, []);
+
+	// Handle token retrieval and post fetching when user is logged in
+	useEffect(() => {
+		if (accounts.length > 0) {
+			fetchPostsWithToken();
+		}
+	}, [accounts]);
+
+	/**
+	 * Fetches posts with authentication token
+	 */
+	const fetchPostsWithToken = async () => {
+		try {
+			setIsTokenRetrieved(false);
+			const token = await getAccessToken();
+			setIsTokenRetrieved(true);
+			dispatch(GetAllPostsAsync(token));
+		} catch (error) {
+			console.error("Error getting token:", error);
+			// If token retrieval fails, fall back to unauthenticated access
+			setIsTokenRetrieved(true);
+			dispatch(GetAllPostsAsync(""));
+		}
+	};
 
 	/**
 	 * Gets the access token silently using msal.
@@ -51,7 +69,7 @@ function HomeComponent() {
 
 	return (
 		<div className="container">
-			<Spinner isLoading={IsPostsDataLoading} />
+			<Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
 			<div className="row">
 				<div className="col-sm-12 mt-4">
 					<h1 className="architectDaughterfont text-center">

@@ -81,10 +81,9 @@ namespace InternetBulletin.Business.Services
         /// <returns>The tupple containing post and post rating.</returns>
         private async Task<(Post post, PostRating postRating)> GetPostAndRatingAsync(Guid postIdGuid, string userName)
         {
-            var postTask = this._postsDataService.GetPostAsync(postIdGuid, userName, false);
-            var postRatingTask = this._postRatingsDataService.GetPostRatingAsync(postIdGuid, userName);
-            await Task.WhenAll(postTask, postRatingTask).ConfigureAwait(false);
-            return (postTask.Result, postRatingTask.Result);
+            var posts = await this._postsDataService.GetPostAsync(postIdGuid, userName, false).ConfigureAwait(false);
+            var postRating = await this._postRatingsDataService.GetPostRatingAsync(postIdGuid, userName).ConfigureAwait(false);
+            return (posts, postRating);
         }
 
         /// <summary>
@@ -99,7 +98,7 @@ namespace InternetBulletin.Business.Services
         /// <param name="userName">The user name.</param>
         private async Task<UpdateRatingDto> HandleRatingAsync(Post post, Guid postIdGuid, string userName, PostRating? postRating)
         {
-            if (postRating is not null && !string.IsNullOrEmpty(Convert.ToString(postRating.PostId, CultureInfo.CurrentCulture)))
+            if (postRating is not null && postRating.PostId != Guid.Empty)
             {
                 if (postRating.PreviousRatingValue == 0)
                 {
@@ -112,8 +111,8 @@ namespace InternetBulletin.Business.Services
                     postRating.PreviousRatingValue = 0;
                 }
 
-                await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
-                await this._postRatingsDataService.UpdatePostRatingAsync(postRating);
+                await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName, true).ConfigureAwait(false);
+                await this._postRatingsDataService.UpdatePostRatingAsync(postRating).ConfigureAwait(false);
                 return new UpdateRatingDto { HasAlreadyUpdated = true, IsUpdateSuccess = true };
             }
             else
@@ -125,11 +124,12 @@ namespace InternetBulletin.Business.Services
                     UserName = userName,
                     RatedOn = DateTime.UtcNow,
                     IsActive = true,
-                    PreviousRatingValue = 1
+                    PreviousRatingValue = 1,
+                    CurrentRatingValue = 1
                 };
 
-                await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName);
-                await this._postRatingsDataService.AddPostRatingAsync(newRating);
+                await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName, true).ConfigureAwait(false);
+                await this._postRatingsDataService.AddPostRatingAsync(newRating).ConfigureAwait(false);
                 return new UpdateRatingDto { HasAlreadyUpdated = false, IsUpdateSuccess = true };
             }
         }

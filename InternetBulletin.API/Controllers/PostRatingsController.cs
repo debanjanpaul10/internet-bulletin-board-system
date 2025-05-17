@@ -12,7 +12,7 @@ namespace InternetBulletin.API.Controllers
     using InternetBulletin.Shared.DTOs.Posts;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    
+
     /// <summary>
     /// The Post Ratings Controller Class.
     /// </summary>
@@ -34,27 +34,65 @@ namespace InternetBulletin.API.Controllers
         /// </summary>
         private readonly IPostRatingsService _postRatingsService = postRatingsService;
 
+        [HttpGet]
+        [Route(RouteConstants.GetAllUserRatings_Route)]
+        public async Task<IActionResult> GetAllUserRatingsAsync()
+        {
+            try
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, this.UserFullName ?? string.Empty));
+                if (this.IsAuthorized())
+                {
+                    var result = await this._postRatingsService.GetAllUserPostRatingsAsync(this.UserName);
+                    if (result is not null)
+                    {
+                        return this.HandleSuccessResult(result);
+                    }
+                    else
+                    {
+                        return this.HandleBadRequest(ExceptionConstants.UnableToGetUserPostRatingsMessageConstant);
+                    }
+                }
+
+                return this.HandleUnAuthorizedRequest();
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllUserRatingsAsync), DateTime.UtcNow, ex.Message));
+                throw;
+            }
+            finally
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllUserRatingsAsync), DateTime.UtcNow, this.UserFullName ?? string.Empty));
+            }
+        }
+
         /// <summary>
-		/// Updates the rating of the post asynchronously.
-		/// </summary>
-		/// <param name="postRating">The post rating.</param>
-		/// <returns>The action result.</returns>
-		[HttpPost]
+        /// Updates the rating of the post asynchronously.
+        /// </summary>
+        /// <param name="postRating">The post rating.</param>
+        /// <returns>The action result.</returns>
+        [HttpPost]
         [Route(RouteConstants.UpdateRating_Route)]
         public async Task<IActionResult> UpdateRatingAsync(PostRatingDTO postRating)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, postRating.PostId));
-                var result = await this._postRatingsService.UpdateRatingAsync(postId: postRating.PostId, isIncrement: postRating.IsIncrement, userName: this.UserName);
-                if (result is not null)
+                if (this.IsAuthorized())
                 {
-                    return this.HandleSuccessResult(result);
+                    var result = await this._postRatingsService.UpdateRatingAsync(postId: postRating.PostId, isIncrement: postRating.IsIncrement, userName: this.UserName);
+                    if (result is not null)
+                    {
+                        return this.HandleSuccessResult(result);
+                    }
+                    else
+                    {
+                        return this.HandleBadRequest(ExceptionConstants.PostGuidNotValidMessageConstant);
+                    }
                 }
-                else
-                {
-                    return this.HandleBadRequest(ExceptionConstants.PostGuidNotValidMessageConstant);
-                }
+
+                return this.HandleUnAuthorizedRequest();
             }
             catch (Exception ex)
             {

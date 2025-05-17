@@ -8,6 +8,7 @@
 namespace InternetBulletin.Data.Contracts
 {
     using InternetBulletin.Data.Entities;
+    using InternetBulletin.Shared.DTOs.Posts;
 
     /// <summary>
     /// Post ratings data service interface.
@@ -40,6 +41,13 @@ namespace InternetBulletin.Data.Contracts
         /// <param name="userName">The user name.</param>
         /// <returns>The list of post ratings</returns>
         Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName);
+
+        /// <summary>
+        /// Gets all posts with ratings async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The post with ratings dto.</returns>
+        Task<List<PostWithRatingsDTO>> GetAllPostsWithRatingsAsync(string userName);
 
     }
 }

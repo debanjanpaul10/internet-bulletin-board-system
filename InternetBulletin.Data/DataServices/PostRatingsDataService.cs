@@ -10,6 +10,7 @@ namespace InternetBulletin.Data.DataServices
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Data.Entities;
     using InternetBulletin.Shared.Constants;
+    using InternetBulletin.Shared.DTOs.Posts;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
@@ -77,16 +78,7 @@ namespace InternetBulletin.Data.DataServices
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostRatingAsync), DateTime.UtcNow, string.Empty));
 
                 var result = await this._dbContext.PostRatings.FirstOrDefaultAsync(r => r.PostId == postId && r.UserName == userName && r.IsActive);
-                if (result is not null)
-                {
-                    return result;
-                }
-                else
-                {
-                    var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-                    this._logger.LogError(exception, exception.Message);
-                    throw exception;
-                }
+                return result ?? new PostRating();
             }
             catch (Exception ex)
             {
@@ -155,6 +147,47 @@ namespace InternetBulletin.Data.DataServices
             finally
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdatePostRatingAsync), DateTime.UtcNow, postRating.PostId));
+            }
+        }
+
+        /// <summary>
+        /// Gets all posts with ratings async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        public async Task<List<PostWithRatingsDTO>> GetAllPostsWithRatingsAsync(string userName)
+        {
+            try
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, string.Empty));
+
+                var query = from post in this._dbContext.Posts
+                            where post.IsActive
+                            join rating in this._dbContext.PostRatings.Where(r => r.UserName == userName && r.IsActive)
+                            on post.PostId equals rating.PostId into ratings
+                            from rating in ratings.DefaultIfEmpty()
+                            select new PostWithRatingsDTO
+                            {
+                                PostId = post.PostId,
+                                PostTitle = post.PostTitle,
+                                PostContent = post.PostContent,
+                                PostCreatedDate = post.PostCreatedDate,
+                                PostOwnerUserName = post.PostOwnerUserName,
+                                Ratings = post.Ratings,
+                                IsActive = post.IsActive,
+                                PreviousRatingValue = rating != null ? rating.PreviousRatingValue : 0
+                            };
+
+                var result = await query.ToListAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, ex.Message));
+                throw;
+            }
+            finally
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, string.Empty));
             }
         }
     }

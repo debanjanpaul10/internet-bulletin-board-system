@@ -62,19 +62,27 @@ function Header() {
 	};
 
 	/**
+	 * Gets the access token silently using msal.
+	 * @returns {string} The access token.
+	 */
+	const getAccessToken = async () => {
+		const tokenData = await instance.acquireTokenSilent({
+			...loginRequests,
+			account: accounts[0],
+		});
+
+		return tokenData.accessToken;
+	};
+
+	/**
 	 * Handles the login event.
 	 */
 	const handleLoginEvent = () => {
 		dispatch(StartLoader());
 		instance
 			.loginRedirect(loginRequests)
-			.then(() => {
-				dispatch(
-					ToggleSuccessToaster({
-						shouldShow: true,
-						successMessage: LoginPageConstants.LoginSuccess,
-					})
-				);
+			.then(async () => {
+				await handleLoginSuccess();
 			})
 			.catch((error) => {
 				dispatch(
@@ -89,6 +97,24 @@ function Header() {
 				dispatch(StopLoader());
 			});
 	};
+
+	/**
+	 * Handles the successful login event.
+	 */
+	async function handleLoginSuccess() {
+		dispatch(
+			ToggleSuccessToaster({
+				shouldShow: true,
+				successMessage: LoginPageConstants.LoginSuccess,
+			})
+		);
+
+		let token = "";
+		if (accounts.length > 0) {
+			token = await getAccessToken();
+		}
+		dispatch(GetAllPostsAsync(token));
+	}
 
 	/**
 	 * Handles the user logout event.

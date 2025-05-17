@@ -278,13 +278,13 @@ export const UpdateRatingAsync = (postRatingDtoModel, accessToken) => {
 	return async (dispatch) => {
 		try {
 			dispatch(ToggleRatingLoader(true));
-			await new Promise((resolve) => setTimeout(resolve, 5000));
 			const response = await UpdateRatingApiAsync(
 				postRatingDtoModel,
 				accessToken
 			);
 			if (response?.statusCode === 200) {
 				dispatch(UpdateRatingAsyncSuccess(response?.data));
+				dispatch(GetAllPostsAsync(accessToken));
 			}
 		} catch (error) {
 			console.error(error);

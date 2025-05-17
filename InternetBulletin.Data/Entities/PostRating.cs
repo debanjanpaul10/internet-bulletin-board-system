@@ -53,6 +53,14 @@ namespace InternetBulletin.Data.Entities
         public int PreviousRatingValue { get; set; }
 
         /// <summary>
+        /// Gets or sets the current rating value.
+        /// </summary>
+        /// <value>
+        /// The current rating value.
+        /// </value>
+        public int CurrentRatingValue { get; set; }
+
+        /// <summary>
         /// Gets or sets the is active.
         /// </summary>
         /// <value>
