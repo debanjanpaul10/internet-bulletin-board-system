@@ -7,6 +7,7 @@
 
 namespace InternetBulletin.Business.Contracts
 {
+    using InternetBulletin.Data.Entities;
     using InternetBulletin.Shared.DTOs.Posts;
 
     /// <summary>
@@ -22,6 +23,12 @@ namespace InternetBulletin.Business.Contracts
         /// <param name="userName">The user name.</param>
 		/// <returns>The update rating data dto.</returns>
 		Task<UpdateRatingDto> UpdateRatingAsync(string postId, bool isIncrement, string userName);
-    }
 
+        /// <summary>
+        /// Gets all user post ratings async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The list of post ratings</returns>
+        Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName);
+    }
 }

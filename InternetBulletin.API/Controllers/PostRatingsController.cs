@@ -40,7 +40,6 @@ namespace InternetBulletin.API.Controllers
 		/// <param name="postRating">The post rating.</param>
 		/// <returns>The action result.</returns>
 		[HttpPost]
-        [AllowAnonymous]
         [Route(RouteConstants.UpdateRating_Route)]
         public async Task<IActionResult> UpdateRatingAsync(PostRatingDTO postRating)
         {

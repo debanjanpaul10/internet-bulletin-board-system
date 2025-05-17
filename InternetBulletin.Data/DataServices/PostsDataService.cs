@@ -51,7 +51,7 @@ namespace InternetBulletin.Data.DataServices
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-                
+
                 var query = _dbContext.Posts.Where(p => p.PostId == postId && p.IsActive);
                 query = isForCurrentUser
                     ? query.Where(p => p.PostOwnerUserName == userName)
@@ -219,9 +219,9 @@ namespace InternetBulletin.Data.DataServices
         }
 
         /// <summary>
-        /// Gets all posts asynchronous.
-        /// </summary>
-        /// <returns>The list of <see cref="Post"/></returns>
+		/// Gets all posts async.
+		/// </summary>
+		/// <returns>The list of posts</returns>
         public async Task<List<Post>> GetAllPostsAsync()
         {
             try

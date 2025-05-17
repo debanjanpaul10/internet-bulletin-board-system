@@ -48,7 +48,7 @@ namespace InternetBulletin.API.Controllers
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
-				var result = await this._postsService.GetAllPostsAsync();
+				var result = await this._postsService.GetAllPostsAsync(this.UserName ?? string.Empty);
 				if (result is not null && result.Count > 0)
 				{
 					return this.HandleSuccessResult(result);

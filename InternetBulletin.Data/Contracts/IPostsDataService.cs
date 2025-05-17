@@ -50,9 +50,9 @@ namespace InternetBulletin.Data.Contracts
 		Task<bool> DeletePostAsync(Guid postId, string userName);
 
 		/// <summary>
-		/// Gets all posts asynchronous.
+		/// Gets all posts async.
 		/// </summary>
-		/// <returns>The list of <see cref="Post"/></returns>
+		/// <returns>The list of posts</returns>
 		Task<List<Post>> GetAllPostsAsync();
 	}
 }

@@ -8,6 +8,7 @@
 namespace InternetBulletin.Business.Services
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Threading.Tasks;
     using InternetBulletin.Business.Contracts;
@@ -57,6 +58,17 @@ namespace InternetBulletin.Business.Services
 
             var updatedRating = await this.HandleRatingAsync(post, postIdGuid, userName, postRating);
             return updatedRating;
+        }
+
+        /// <summary>
+        /// Gets all user post ratings async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The list of post ratings</returns>
+        public async Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName)
+        {
+            var userPostRatings = await this._postRatingsDataService.GetAllUserPostRatingsAsync(userName);
+            return userPostRatings;
         }
 
         #region PRIVATE Methods

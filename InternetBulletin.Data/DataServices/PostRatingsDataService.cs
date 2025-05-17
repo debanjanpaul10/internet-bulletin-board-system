@@ -32,6 +32,39 @@ namespace InternetBulletin.Data.DataServices
         private readonly ILogger<PostRatingsDataService> _logger = logger;
 
         /// <summary>
+        /// Gets all user post ratings async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The list of post ratings</returns>
+        public async Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName)
+        {
+            try
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllUserPostRatingsAsync), DateTime.UtcNow, string.Empty));
+                var result = await this._dbContext.PostRatings.Where(r => r.UserName == userName && r.IsActive).ToListAsync();
+                if (result is not null)
+                {
+                    return result;
+                }
+                else
+                {
+                    var exception = new Exception(ExceptionConstants.UnableToGetUserPostRatingsMessageConstant);
+                    this._logger.LogError(exception, exception.Message);
+                    throw exception;
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllUserPostRatingsAsync), DateTime.UtcNow, ex.Message));
+                throw;
+            }
+            finally
+            {
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllUserPostRatingsAsync), DateTime.UtcNow, string.Empty));
+            }
+        }
+
+        /// <summary>
         /// Gets post rating async.
         /// </summary>
         /// <param name="postId">The post id.</param>

@@ -65,7 +65,8 @@ export const LoginPageConstants = {
 		LoginButton: "Login",
 		CancelButton: "Cancel",
 	},
-	Success: "User logged in successfully!",
+	LoginSuccess: "User logged in successfully!",
+	LogoutSuccess: "User logged out successfully!",
 };
 
 export const ErrorPageConstants = {
@@ -78,6 +79,11 @@ export const HomePageConstants = {
 		WelcomeMessage:
 			"Welcome to the Internet Bulletin Board, where sharing ideas is your reward.",
 		IBBS: "Internet Bulletin Board",
+	},
+	ButtonText: {
+		RatingsButtonTooltipText: "Vote as good one!",
+		EditButtonTooltipText: "Edit the post!",
+		DeleteButtonTooltipText: "Delete the post!",
 	},
 };
 

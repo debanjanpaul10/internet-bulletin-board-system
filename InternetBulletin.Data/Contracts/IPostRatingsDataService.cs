@@ -34,6 +34,13 @@ namespace InternetBulletin.Data.Contracts
         /// <param name="postRating">The post rating.</param>
         Task UpdatePostRatingAsync(PostRating postRating);
 
+        /// <summary>
+        /// Gets all user post ratings async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The list of post ratings</returns>
+        Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName);
+
     }
 }
 

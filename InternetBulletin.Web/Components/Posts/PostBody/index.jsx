@@ -9,17 +9,19 @@ import {
 	Body2,
 	Button,
 	Spinner,
+	Tooltip,
 } from "@fluentui/react-components";
 import {
 	Edit28Filled,
 	Delete28Filled,
 	ArrowCircleUp28Regular,
 } from "@fluentui/react-icons";
+import { useMsal } from "@azure/msal-react";
 
 import { useStyles } from "@components/Posts/PostBody/styles";
 import { DeletePostAsync, UpdateRatingAsync } from "@store/Posts/Actions";
 import PostRatingDtoModel from "@models/PostRatingDto";
-import { useMsal } from "@azure/msal-react";
+import { HomePageConstants } from "@helpers/ibbs.constants";
 
 /**
  * @component
@@ -96,6 +98,19 @@ function PostBody({ post }) {
 	}, [UpdatedRatingData]);
 
 	/**
+	 * Gets the access token silently using msal.
+	 * @returns {string} The access token.
+	 */
+	const getAccessToken = async () => {
+		const tokenData = await instance.acquireTokenSilent({
+			...loginRequests,
+			account: accounts[0],
+		});
+
+		return tokenData.accessToken;
+	};
+
+	/**
 	 * Formats the date to date string format.
 	 * @param {Date} date The unformatted date
 	 * @returns {string} The formatted date.
@@ -118,12 +133,12 @@ function PostBody({ post }) {
 	 * @param {string} postId The post id.
 	 */
 	const handleDelete = (postId) => {
-		dispatch(DeletePostAsync(postId, getIdTokenClaims));
+		dispatch(DeletePostAsync(postId));
 	};
 
 	const handleVoting = (postId) => {
 		const postRatingDtoModel = new PostRatingDtoModel(postId, false);
-		dispatch(UpdateRatingAsync(postRatingDtoModel, getIdTokenClaims));
+		dispatch(UpdateRatingAsync(postRatingDtoModel, getAccessToken));
 	};
 
 	const renderRatingButtonIcons = (button) => {
@@ -143,41 +158,67 @@ function PostBody({ post }) {
 
 							<div className={styles.headerButtons}>
 								{!showEditAndDelete && accounts.length > 0 && (
-									<Button
-										disabled={postRatingLoader}
-										appearance="subtle"
-										shape="circular"
-										onClick={() =>
-											handleVoting(postData.postId)
+									<Tooltip
+										content={
+											HomePageConstants.ButtonText
+												.RatingsButtonTooltipText
 										}
+										relationship="label"
 									>
-										{renderRatingButtonIcons(
-											<ArrowCircleUp28Regular />
-										)}
-									</Button>
+										<Button
+											disabled={postRatingLoader}
+											appearance="subtle"
+											shape="circular"
+											onClick={() =>
+												handleVoting(postData.postId)
+											}
+										>
+											{renderRatingButtonIcons(
+												<ArrowCircleUp28Regular />
+											)}
+										</Button>
+									</Tooltip>
 								)}
 								{showEditAndDelete && (
 									<>
-										<Button
-											className={styles.editButton}
-											appearance="subtle"
-											shape="circular"
-											onClick={() =>
-												handleEdit(postData.postId)
+										<Tooltip
+											content={
+												HomePageConstants.ButtonText
+													.EditButtonTooltipText
 											}
+											relationship="label"
 										>
-											<Edit28Filled />
-										</Button>
-										<Button
-											className={styles.deleteButton}
-											appearance="subtle"
-											shape="circular"
-											onClick={() =>
-												handleDelete(postData.postId)
+											<Button
+												className={styles.editButton}
+												appearance="subtle"
+												shape="circular"
+												onClick={() =>
+													handleEdit(postData.postId)
+												}
+											>
+												<Edit28Filled />
+											</Button>
+										</Tooltip>
+										<Tooltip
+											content={
+												HomePageConstants.ButtonText
+													.DeleteButtonTooltipText
 											}
+											relationship="label"
 										>
-											<Delete28Filled />
-										</Button>
+											<Button
+												className={styles.deleteButton}
+												appearance="subtle"
+												shape="circular"
+												onClick={() =>
+													handleDelete(
+														postData.postId
+													)
+												}
+											>
+												<Delete28Filled />
+											</Button>
+										</Tooltip>
 									</>
 								)}
 							</div>

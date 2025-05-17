@@ -22,6 +22,11 @@ namespace InternetBulletin.Shared.Constants
 		public static readonly string PostNotFoundMessageConstant = "It seems the post you are looking for does not exists anymore!";
 
 		/// <summary>
+		/// The unable to get user post ratings message constant.
+		/// </summary>
+		public const string UnableToGetUserPostRatingsMessageConstant = "Unable to retrieve user's post ratings as of this moment!";
+
+		/// <summary>
 		/// Something went wrong message constant
 		/// </summary>
 		public static readonly string SomethingWentWrongMessageConstant = "Oops! Something went wrong. Please try again after sometime.";

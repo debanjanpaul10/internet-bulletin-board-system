@@ -51,7 +51,8 @@ namespace InternetBulletin.Business.Contracts
 		/// <summary>
 		/// Gets all posts asynchronous.
 		/// </summary>
-		/// <returns>The list of <see cref="Post"/></returns>
-		Task<List<Post>> GetAllPostsAsync();
+		/// <param name="userName">The user name</param>
+		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
+		Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName);
 	}
 }

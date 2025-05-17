@@ -16,7 +16,7 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Shared.Helpers;
 	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
-    using System.Threading.Tasks;
+	using System.Threading.Tasks;
 
 	/// <summary>
 	/// The Posts BusinessManager Class.
@@ -24,17 +24,22 @@ namespace InternetBulletin.Business.Services
 	/// <param name="logger">The logger.</param>
 	/// <param name="postsDataService">The Posts Data Service.</param>
 	/// <seealso cref="IPostsService"/>
-	public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService) : IPostsService
+	public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsService postRatingsService) : IPostsService
 	{
+		/// <summary>
+		/// The logger
+		/// </summary>
+		private readonly ILogger<PostsService> _logger = logger;
+
 		/// <summary>
 		/// The posts data service
 		/// </summary>
 		private readonly IPostsDataService _postsDataService = postsDataService;
 
 		/// <summary>
-		/// The logger
+		/// The post ratings service.
 		/// </summary>
-		private readonly ILogger<PostsService> _logger = logger;
+		private readonly IPostRatingsService _postRatingsService = postRatingsService;
 
 		/// <summary>
 		/// Gets the post asynchronous.
@@ -47,7 +52,7 @@ namespace InternetBulletin.Business.Services
 		public async Task<Post> GetPostAsync(string postId, string userName)
 		{
 			var postGuid = CommonUtilities.ValidateAndParsePostId(postId, this._logger);
-			var result = await _postsDataService.GetPostAsync(postGuid, userName, true);
+			var result = await this._postsDataService.GetPostAsync(postGuid, userName, true);
 			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
@@ -61,7 +66,7 @@ namespace InternetBulletin.Business.Services
 		public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
 		{
 			CommonUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, this._logger);
-			var result = await _postsDataService.AddNewPostAsync(newPost, userName);
+			var result = await this._postsDataService.AddNewPostAsync(newPost, userName);
 			return result;
 		}
 
@@ -73,7 +78,7 @@ namespace InternetBulletin.Business.Services
 		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
 		{
 			CommonUtilities.ThrowIfNull(updatedPost, ExceptionConstants.NullPostMessageConstant, this._logger);
-			var result = await _postsDataService.UpdatePostAsync(updatedPost, userName);
+			var result = await this._postsDataService.UpdatePostAsync(updatedPost, userName);
 			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
@@ -86,18 +91,50 @@ namespace InternetBulletin.Business.Services
 		public async Task<bool> DeletePostAsync(string postId, string userName)
 		{
 			var postGuid = CommonUtilities.ValidateAndParsePostId(postId, this._logger);
-			var response = await _postsDataService.DeletePostAsync(postGuid, userName);
+			var response = await this._postsDataService.DeletePostAsync(postGuid, userName);
 			return response;
 		}
 
 		/// <summary>
 		/// Gets all posts asynchronous.
 		/// </summary>
-		/// <returns>The list of <see cref="Post"/></returns>
-		public async Task<List<Post>> GetAllPostsAsync()
+		/// <param name="userName">The user name</param>
+		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
+		public async Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName)
 		{
-			var result = await _postsDataService.GetAllPostsAsync();
-			return result;
+			var result = await this._postsDataService.GetAllPostsAsync();
+			if (string.IsNullOrEmpty(userName))
+			{
+				return [.. result.Select(post => new PostWithRatingsDTO
+				{
+					PostId = post.PostId,
+					PostTitle = post.PostTitle,
+					PostContent = post.PostContent,
+					PostCreatedDate = post.PostCreatedDate,
+					PostOwnerUserName = post.PostOwnerUserName,
+					Ratings = post.Ratings,
+					IsActive = post.IsActive,
+				})];
+			}
+			else
+			{
+				var userPostRatings = await this._postRatingsService.GetAllUserPostRatingsAsync(userName);
+				var postsNotOfUser = result.Where(x => x.PostOwnerUserName != userName);
+
+				// Map posts to DTOs with HasUserRated based on user's ratings
+				return [.. result.Select(post => new PostWithRatingsDTO
+				{
+					PostId = post.PostId,
+					PostTitle = post.PostTitle,
+					PostContent = post.PostContent,
+					PostCreatedDate = post.PostCreatedDate,
+					PostOwnerUserName = post.PostOwnerUserName,
+					Ratings = post.Ratings,
+					IsActive = post.IsActive,
+					PreviousRatingValue = userPostRatings.FirstOrDefault(rating => rating.PostId == post.PostId && rating.IsActive)?.PreviousRatingValue ?? 0,
+				})];
+
+			}
 		}
 	}
 }
