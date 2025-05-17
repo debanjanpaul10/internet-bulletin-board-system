@@ -8,6 +8,9 @@ import {
 	DELETE_POST_DATA,
 	UPDATE_POST_RATING,
 	TOGGLE_VOTING_LOADER,
+	TOGGLE_EDIT_POST_DIALOG,
+	GET_EDIT_POST_DATA,
+	TOGGLE_EDIT_POST_LOADER,
 } from "@store/Posts/ActionTypes";
 
 const initialState = {
@@ -19,6 +22,9 @@ const initialState = {
 	isPostDataDeleted: false,
 	updatedRatingData: {},
 	isVotingLoaderOn: false,
+	isEditModalOpen: false,
+	editPostData: {},
+	isEditPostDataLoading: false,
 };
 
 /**
@@ -81,6 +87,24 @@ const PostsReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isVotingLoaderOn: action.payload,
+			};
+		}
+		case TOGGLE_EDIT_POST_DIALOG: {
+			return {
+				...state,
+				isEditModalOpen: action.payload,
+			};
+		}
+		case GET_EDIT_POST_DATA: {
+			return {
+				...state,
+				editPostData: action.payload,
+			};
+		}
+		case TOGGLE_EDIT_POST_LOADER: {
+			return {
+				...state,
+				isEditPostDataLoading: action.payload,
 			};
 		}
 		default: {

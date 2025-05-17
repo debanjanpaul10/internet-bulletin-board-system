@@ -7,6 +7,7 @@ import PostsContainer from "@components/Posts/PostsContainer";
 import { GetAllPostsAsync } from "@store/Posts/Actions";
 import { useMsal } from "@azure/msal-react";
 import { loginRequests } from "@services/auth.config";
+import EditPostComponent from "@components/Posts/EditPost";
 
 /**
  * @component
@@ -79,6 +80,7 @@ function HomeComponent() {
 			</div>
 			<div className="row">
 				<PostsContainer />
+				<EditPostComponent />
 			</div>
 		</div>
 	);

@@ -1,7 +1,7 @@
-import React from "react";
-import Cookies from "js-cookie";
+import React, { useContext } from "react";
+
 import AppLogo from "@assets/Images/IBBS_logo.png";
-import { CookiesConstants } from "@helpers/ibbs.constants";
+import ThemeContext from "@context/ThemeContext";
 
 /**
  * @component
@@ -13,7 +13,8 @@ import { CookiesConstants } from "@helpers/ibbs.constants";
  * @returns {JSX.Element}
  */
 function Spinner({ isLoading }) {
-	const isDarkMode = Cookies.get(CookiesConstants.DarkMode.Name) === "true";
+	const { themeMode } = useContext(ThemeContext);
+	const isDarkMode = themeMode === "dark";
 	const spinnerClass = isDarkMode
 		? "spinner-page dark-mode"
 		: "spinner-page light-mode";

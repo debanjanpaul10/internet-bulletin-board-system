@@ -20,7 +20,12 @@ import {
 import { useMsal } from "@azure/msal-react";
 
 import { useStyles } from "@components/Posts/PostBody/styles";
-import { DeletePostAsync, UpdateRatingAsync } from "@store/Posts/Actions";
+import {
+	DeletePostAsync,
+	GetEditPostData,
+	ToggleEditPostDialog,
+	UpdateRatingAsync,
+} from "@store/Posts/Actions";
 import PostRatingDtoModel from "@models/PostRatingDto";
 import { PostBodyConstants } from "@helpers/ibbs.constants";
 import { loginRequests } from "@services/auth.config";
@@ -57,6 +62,8 @@ function PostBody({ post }) {
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [postUpdatedRatingData, setPostUpdatedRatingData] = useState(false);
 
+	// #region SIDE EFFECTS
+
 	useEffect(() => {
 		if (postData !== post) {
 			setPostData(post);
@@ -83,7 +90,7 @@ function PostBody({ post }) {
 			setShowEditAndDelete(false);
 			setIsUserLoggedIn(false);
 		}
-	}, [instance, accounts]);
+	}, [instance, accounts, post]);
 
 	useEffect(() => {
 		if (IsVotingLoaderOn !== postRatingLoader) {
@@ -99,6 +106,8 @@ function PostBody({ post }) {
 			setPostUpdatedRatingData(UpdatedRatingData);
 		}
 	}, [UpdatedRatingData]);
+
+	// #endregion
 
 	/**
 	 * Gets the access token silently using msal.
@@ -129,7 +138,10 @@ function PostBody({ post }) {
 		setShowFullText(!showFullText);
 	};
 
-	const handleEdit = (postId) => {};
+	const handleEdit = (postData) => {
+		dispatch(ToggleEditPostDialog(true));
+		dispatch(GetEditPostData(postData));
+	};
 
 	/**
 	 * Handles the post delete operation.
@@ -140,142 +152,160 @@ function PostBody({ post }) {
 		dispatch(DeletePostAsync(postId, accessToken));
 	};
 
+	/**
+	 * Handles the post voting event.
+	 * @param {string} postId The post id.
+	 */
 	const handleVoting = async (postId) => {
 		const accessToken = await getAccessToken();
 		const postRatingDtoModel = new PostRatingDtoModel(postId, false);
 		dispatch(UpdateRatingAsync(postRatingDtoModel, accessToken));
 	};
 
+	/**
+	 * Handles the rating button icons rendering.
+	 * @param {JSX.Element} button The button variant.
+	 * @returns {JSX.Element} The post rating button element.
+	 */
 	const renderRatingButtonIcons = (button) => {
 		return postRatingLoader ? <Spinner size="tiny" /> : <>{button}</>;
 	};
 
 	return (
-		Object.keys(postData).length > 0 && (
-			<Card className={styles.card} appearance="filled-alternative">
-				<CardHeader
-					className={styles.cardHeader}
-					header={
-						<div className={styles.headerContainer}>
-							<Body1 className={styles.headerTitle}>
-								<b>{postData.postTitle}</b>
-							</Body1>
+		<>
+			{Object.keys(postData).length > 0 && (
+				<Card className={styles.card} appearance="filled-alternative">
+					<CardHeader
+						className={styles.cardHeader}
+						header={
+							<div className={styles.headerContainer}>
+								<Body1 className={styles.headerTitle}>
+									<b>{postData.postTitle}</b>
+								</Body1>
 
-							<div className={styles.headerButtons}>
-								{!showEditAndDelete && isUserLoggedIn && (
-									<Tooltip
-										content={
-											postData.previousRatingValue === 1
-												? ButtonText.AlreadyRatedButtonTooltipText
-												: ButtonText.RatingsButtonTooltipText
-										}
-										relationship="label"
-									>
-										<Button
-											disabled={postRatingLoader}
-											appearance="subtle"
-											shape="circular"
-											onClick={() =>
-												handleVoting(postData.postId)
-											}
-										>
-											{renderRatingButtonIcons(
+								<div className={styles.headerButtons}>
+									{!showEditAndDelete && isUserLoggedIn && (
+										<Tooltip
+											content={
 												postData.previousRatingValue ===
-													1 ? (
-													<ArrowCircleUp28Filled />
-												) : (
-													<ArrowCircleUp28Regular />
-												)
-											)}
-										</Button>
-									</Tooltip>
-								)}
-								{showEditAndDelete && (
-									<>
-										<Tooltip
-											content={
-												ButtonText.EditButtonTooltipText
+												1
+													? ButtonText.AlreadyRatedButtonTooltipText
+													: ButtonText.RatingsButtonTooltipText
 											}
 											relationship="label"
 										>
 											<Button
-												className={styles.editButton}
+												disabled={postRatingLoader}
 												appearance="subtle"
 												shape="circular"
 												onClick={() =>
-													handleEdit(postData.postId)
-												}
-											>
-												<Edit28Filled />
-											</Button>
-										</Tooltip>
-										<Tooltip
-											content={
-												ButtonText.DeleteButtonTooltipText
-											}
-											relationship="label"
-										>
-											<Button
-												className={styles.deleteButton}
-												appearance="subtle"
-												shape="circular"
-												onClick={() =>
-													handleDelete(
+													handleVoting(
 														postData.postId
 													)
 												}
 											>
-												<Delete28Filled />
+												{renderRatingButtonIcons(
+													postData.previousRatingValue ===
+														1 ? (
+														<ArrowCircleUp28Filled />
+													) : (
+														<ArrowCircleUp28Regular />
+													)
+												)}
 											</Button>
 										</Tooltip>
-									</>
-								)}
+									)}
+									{showEditAndDelete && isUserLoggedIn && (
+										<>
+											<Tooltip
+												content={
+													ButtonText.EditButtonTooltipText
+												}
+												relationship="label"
+											>
+												<Button
+													className={
+														styles.editButton
+													}
+													appearance="subtle"
+													shape="circular"
+													onClick={() =>
+														handleEdit(postData)
+													}
+												>
+													<Edit28Filled />
+												</Button>
+											</Tooltip>
+											<Tooltip
+												content={
+													ButtonText.DeleteButtonTooltipText
+												}
+												relationship="label"
+											>
+												<Button
+													className={
+														styles.deleteButton
+													}
+													appearance="subtle"
+													shape="circular"
+													onClick={() =>
+														handleDelete(
+															postData.postId
+														)
+													}
+												>
+													<Delete28Filled />
+												</Button>
+											</Tooltip>
+										</>
+									)}
+								</div>
 							</div>
-						</div>
-					}
-					description={
-						<Caption1>
-							By {postData.postOwnerUserName} on{" "}
-							{formatDate(postData.postCreatedDate)}
-						</Caption1>
-					}
-				/>
-				<CardPreview className={styles.cardPreview}>
-					<Body2>
-						<p
-							ref={contentRef}
-							className={`${styles.postContent} ${
-								showFullText ? "full-text" : ""
-							}`}
-							style={{
-								maxHeight: showFullText ? "none" : "100px",
-							}}
-							dangerouslySetInnerHTML={{
-								__html: postData.postContent
-									.replace(/\n/g, "<br>")
-									.replace(/<br\s*\/?>/g, "<br>"),
-							}}
-						></p>
-						{isTextOverflowing && !showFullText && (
-							<Button
-								className={styles.button}
-								onClick={handleToggleText}
-							>
-								Show More
-							</Button>
-						)}
-						{showFullText && (
-							<Button
-								className={styles.button}
-								onClick={handleToggleText}
-							>
-								Show Less
-							</Button>
-						)}
-					</Body2>
-				</CardPreview>
-			</Card>
-		)
+						}
+						description={
+							<Caption1>
+								By {postData.postOwnerUserName} on{" "}
+								{formatDate(postData.postCreatedDate)}
+							</Caption1>
+						}
+					/>
+					<CardPreview className={styles.cardPreview}>
+						<Body2>
+							<p
+								ref={contentRef}
+								className={`${styles.postContent} ${
+									showFullText ? "full-text" : ""
+								}`}
+								style={{
+									maxHeight: showFullText ? "none" : "100px",
+								}}
+								dangerouslySetInnerHTML={{
+									__html: postData.postContent
+										.replace(/\n/g, "<br>")
+										.replace(/<br\s*\/?>/g, "<br>"),
+								}}
+							></p>
+							{isTextOverflowing && !showFullText && (
+								<Button
+									className={styles.button}
+									onClick={handleToggleText}
+								>
+									Show More
+								</Button>
+							)}
+							{showFullText && (
+								<Button
+									className={styles.button}
+									onClick={handleToggleText}
+								>
+									Show Less
+								</Button>
+							)}
+						</Body2>
+					</CardPreview>
+				</Card>
+			)}
+		</>
 	);
 }
 

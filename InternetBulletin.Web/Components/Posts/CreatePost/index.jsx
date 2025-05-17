@@ -101,7 +101,7 @@ function CreatePostComponent() {
 	 * Handles the form submit event.
 	 * @param {Event} event The submit event.
 	 */
-	const handleCreatePost = (event) => {
+	const handleCreatePost = async (event) => {
 		event.preventDefault();
 
 		const validations = CreatePostPageConstants.validations;
@@ -117,7 +117,8 @@ function CreatePostComponent() {
 				postData.CreatedBy
 			);
 
-			dispatch(AddNewPostAsync(addPostData, getAccessToken))
+			const accessToken = await getAccessToken();
+			dispatch(AddNewPostAsync(addPostData, accessToken))
 				.then(() => {
 					navigate("/");
 				})

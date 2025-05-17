@@ -1,10 +1,12 @@
 import PostRatingDtoModel from "@models/PostRatingDto";
+import UpdatePostDtoModel from "@models/UpdatePostDto";
 import {
 	AddNewPostApiAsync,
 	DeletePostApiAsync,
 	GetAllPostsApiAsync,
 	GetPostApiAsync,
 	PostRewriteStoryWithAiApiAsync,
+	UpdatePostApiAsync,
 	UpdateRatingApiAsync,
 } from "@services/ibbs.apiservice";
 import { ToggleErrorToaster } from "@store/Common/Actions";
@@ -12,12 +14,15 @@ import {
 	ADD_NEW_POST_DATA,
 	DELETE_POST_DATA,
 	GET_ALL_POSTS_DATA,
+	GET_EDIT_POST_DATA,
 	GET_POST_DATA,
 	IS_CREATE_POST_LOADING,
 	POST_DATA_FAIL,
 	REWRITE_STORY_AI,
 	START_SPINNER,
 	STOP_SPINNER,
+	TOGGLE_EDIT_POST_DIALOG,
+	TOGGLE_EDIT_POST_LOADER,
 	TOGGLE_VOTING_LOADER,
 	UPDATE_POST_RATING,
 } from "@store/Posts/ActionTypes";
@@ -268,6 +273,39 @@ const DeletePostAsyncSuccess = (data) => {
 };
 
 /**
+ * Updates an existing post asynchronously.
+ * @param {UpdatePostDtoModel} updatePostData The update post data model.
+ * @param {string} accessToken The access token.
+ * @returns {Promise} The promise of the api response.
+ */
+export const UpdatePostAsync = (updatePostData, accessToken) => {
+	return async (dispatch) => {
+		try {
+			dispatch(ToggleEditPostSpinner(true));
+			const response = await UpdatePostApiAsync(
+				updatePostData,
+				accessToken
+			);
+			if (response?.statusCode === 200) {
+				dispatch(GetAllPostsAsync(accessToken));
+			}
+		} catch (error) {
+			console.error(error);
+			dispatch(PostDataFailure(error.data));
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error,
+				})
+			);
+		} finally {
+			dispatch(ToggleEditPostSpinner(false));
+			dispatch(ToggleEditPostDialog(false));
+		}
+	};
+};
+
+/**
  * Updates the rating of post asynchronously.
  * @param {PostRatingDtoModel} postRatingDtoModel The post rating dto model.
  * @param {string} accessToken The function to get id token claims.
@@ -322,5 +360,41 @@ const UpdateRatingAsyncSuccess = (data) => {
 	return {
 		type: UPDATE_POST_RATING,
 		payload: data,
+	};
+};
+
+/**
+ * Stores the edit post dialog toggle state to redux store.
+ * @param {boolean} isOpen The is open boolean flag.
+ * @returns {Object} The action type and payload data.
+ */
+export const ToggleEditPostDialog = (isOpen) => {
+	return {
+		type: TOGGLE_EDIT_POST_DIALOG,
+		payload: isOpen,
+	};
+};
+
+/**
+ * Saves the edit post data to redux store.
+ * @param {Object} data The edit post data.
+ * @returns {Object} The action type and payload data.
+ */
+export const GetEditPostData = (data) => {
+	return {
+		type: GET_EDIT_POST_DATA,
+		payload: data,
+	};
+};
+
+/**
+ * Stores the edit post spinner status to redux store.
+ * @param {boolean} isLoading The is loading boolean flag.
+ * @returns {Object} The action type and payload data.
+ */
+export const ToggleEditPostSpinner = (isLoading) => {
+	return {
+		type: TOGGLE_EDIT_POST_LOADER,
+		payload: isLoading,
 	};
 };
