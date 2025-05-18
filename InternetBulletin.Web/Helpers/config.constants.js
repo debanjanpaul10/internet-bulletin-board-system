@@ -4,7 +4,7 @@ export const UrlConstants = {
 	AiRewriteUrl: "InternetBulletinWeb/RewriteStoryWithAi",
 	LocalHostUrl: "https://localhost:44352/",
 	AppWebUrl:
-		"https://app-internet-bulletin-web-bcezbgajcjcufnd3.centralindia-01.azurewebsites.net/",
+		"https://app-webapi-internet-bulletin-g8c0dba7c9gxgchc.centralindia-01.azurewebsites.net",
 };
 export const Auth0Constants = {
 	Domain: "debanjans-lab.uk.auth0.com",

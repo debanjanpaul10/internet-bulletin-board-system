@@ -15,7 +15,7 @@ class HttpUtility {
 	 */
 	static GetAsync = async (apiUrl, accessToken) => {
 		try {
-			var webEndpoint = UrlConstants.LocalHostUrl; //: UrlConstants.AppWebUrl;
+			var webEndpoint = UrlConstants.AppWebUrl;
 			const url = webEndpoint + apiUrl;
 
 			const response = await axios.get(url, {
@@ -47,7 +47,7 @@ class HttpUtility {
 	 */
 	static PostAsync = async (apiUrl, data, accessToken) => {
 		try {
-			var webEndpoint = UrlConstants.LocalHostUrl; //: UrlConstants.AppWebUrl;
+			var webEndpoint = UrlConstants.AppWebUrl;
 			const url = webEndpoint + apiUrl;
 
 			const response = await axios.post(url, data, {
