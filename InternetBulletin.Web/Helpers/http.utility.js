@@ -20,7 +20,7 @@ class HttpUtility {
 	 */
 	static GetAsync = async (apiUrl, accessToken) => {
 		try {
-			const url = WebApiEndpoint + apiUrl;
+			const url = this.WebApiEndpoint + apiUrl;
 
 			const response = await axios.get(url, {
 				headers: {
@@ -51,7 +51,7 @@ class HttpUtility {
 	 */
 	static PostAsync = async (apiUrl, data, accessToken) => {
 		try {
-			const url = WebApiEndpoint + apiUrl;
+			const url = this.WebApiEndpoint + apiUrl;
 
 			const response = await axios.post(url, data, {
 				headers: {
