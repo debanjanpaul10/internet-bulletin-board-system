@@ -7,6 +7,11 @@ import { UrlConstants } from "@helpers/config.constants";
  */
 class HttpUtility {
 	/**
+	 * The Web api base url endpoint.
+	 */
+	static WebApiEndpoint = UrlConstants.WebApiUrls.AzureWebApiUrl;
+
+	/**
 	 * The Get API data function.
 	 * @param {string} apiUrl The api url.
 	 * @param {string} accessToken The access token.
@@ -15,8 +20,7 @@ class HttpUtility {
 	 */
 	static GetAsync = async (apiUrl, accessToken) => {
 		try {
-			var webEndpoint = UrlConstants.WebApiUrls.AzureWebApiUrl;
-			const url = webEndpoint + apiUrl;
+			const url = WebApiEndpoint + apiUrl;
 
 			const response = await axios.get(url, {
 				headers: {
@@ -47,8 +51,7 @@ class HttpUtility {
 	 */
 	static PostAsync = async (apiUrl, data, accessToken) => {
 		try {
-			var webEndpoint = UrlConstants.WebApiUrls.AzureWebApiUrl;
-			const url = webEndpoint + apiUrl;
+			const url = WebApiEndpoint + apiUrl;
 
 			const response = await axios.post(url, data, {
 				headers: {
