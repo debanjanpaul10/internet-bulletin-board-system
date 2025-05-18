@@ -20,7 +20,11 @@ import {
 	ToggleErrorToaster,
 	ToggleSuccessToaster,
 } from "@store/Common/Actions";
-import { GetAllPostsAsync, StartLoader, StopLoader } from "@store/Posts/Actions";
+import {
+	GetAllPostsAsync,
+	StartLoader,
+	StopLoader,
+} from "@store/Posts/Actions";
 
 /**
  * @component
@@ -186,7 +190,7 @@ function Header() {
 						</Button>
 					</Tooltip>
 				</div>
-
+				{/* CREATE POST LINK */}
 				<div className="navbar-nav mx-auto">
 					{isUserLoggedIn() &&
 						location.pathname !== Headings.CreatePost.Link && (
@@ -210,6 +214,7 @@ function Header() {
 				</div>
 
 				<div className="navbar-nav ml-auto">
+					{/* LOGIN LOGOUT BUTTONS */}
 					{!isUserLoggedIn() ? (
 						<Tooltip
 							content={ButtonTitles.Login}
@@ -240,6 +245,7 @@ function Header() {
 						</Tooltip>
 					)}
 
+					{/* MY PROFILE */}
 					{isUserLoggedIn() && (
 						<Tooltip
 							content={ButtonTitles.MyProfile}
@@ -250,12 +256,14 @@ function Header() {
 								onClick={handleProfileRedirect}
 								shape="circular"
 								appearance="outline"
+								disabled={true}
 							>
 								{Headings.MyProfile.Name}
 							</Button>
 						</Tooltip>
 					)}
 
+					{/* TOGGLE THEME BUTTON */}
 					<div
 						className="mr-3 pr-2"
 						style={{ marginRight: "10px", marginTop: "5px" }}
