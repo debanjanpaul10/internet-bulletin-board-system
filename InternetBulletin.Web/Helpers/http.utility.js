@@ -15,7 +15,7 @@ class HttpUtility {
 	 */
 	static GetAsync = async (apiUrl, accessToken) => {
 		try {
-			var webEndpoint = UrlConstants.AppWebUrl;
+			var webEndpoint = UrlConstants.WebApiUrls.AzureWebApiUrl;
 			const url = webEndpoint + apiUrl;
 
 			const response = await axios.get(url, {
@@ -42,12 +42,12 @@ class HttpUtility {
 	 * @param {string} apiUrl The api url.
 	 * @param {Object} data The post data object.
 	 * @param {string} accessToken The access token.
-	 * 
+	 *
 	 * @returns {Promise} The promise of the api response.
 	 */
 	static PostAsync = async (apiUrl, data, accessToken) => {
 		try {
-			var webEndpoint = UrlConstants.AppWebUrl;
+			var webEndpoint = UrlConstants.WebApiUrls.AzureWebApiUrl;
 			const url = webEndpoint + apiUrl;
 
 			const response = await axios.post(url, data, {

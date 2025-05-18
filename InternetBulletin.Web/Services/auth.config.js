@@ -1,3 +1,5 @@
+import { UrlConstants } from "../Helpers/config.constants";
+
 const b2cPolicies = {
 	names: {
 		signUpSignIn: "B2C_1_susi",
@@ -25,7 +27,7 @@ const msalConfig = {
 	auth: {
 		clientId: "12912858-246d-4231-a73a-00f2242379d3",
 		authority: b2cPolicies.authorities.signUpSignIn.authority,
-		redirectUri: "https://localhost:5173/",
+		redirectUri: UrlConstants.WebUrls.AzureWebUrl,
 		knownAuthorities: [b2cPolicies.authorityDomain],
 	},
 };
