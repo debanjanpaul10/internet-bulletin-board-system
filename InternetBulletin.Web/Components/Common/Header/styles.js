@@ -12,6 +12,10 @@ const useStyles = makeStyles({
 	homeButton: {
 		margin: "0px 5px !important",
 	},
+	themeToggleButton: {
+		width: "50px",
+		minWidth: "50px",
+	},
 });
 
 export default useStyles;

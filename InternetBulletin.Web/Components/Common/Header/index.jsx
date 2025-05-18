@@ -12,7 +12,6 @@ import {
 	PageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
-import { CustomDarkModeToggleSwitch } from "@helpers/common.utility";
 import ThemeContext from "@context/ThemeContext";
 import useStyles from "@components/Common/Header/styles";
 import { loginRequests } from "@services/auth.config";
@@ -25,6 +24,8 @@ import {
 	StartLoader,
 	StopLoader,
 } from "@store/Posts/Actions";
+import LightModeIcon from "@assets/Images/light-bulb-on.png";
+import DarkModeIcon from "@assets/Images/light-bulb-off.png";
 
 /**
  * @component
@@ -276,12 +277,25 @@ function Header() {
 							}
 							relationship="label"
 						>
-							<CustomDarkModeToggleSwitch
-								onChange={toggleThemeMode}
-								checked={
-									themeMode === PageConstants.LightConstant
-								}
-							/>
+							<Button
+								className={styles.themeToggleButton}
+								onClick={toggleThemeMode}
+								appearance="transparent"
+							>
+								{themeMode === PageConstants.LightConstant ? (
+									<img
+										src={DarkModeIcon}
+										width={40}
+										height={35}
+									/>
+								) : (
+									<img
+										src={LightModeIcon}
+										width={40}
+										height={35}
+									/>
+								)}
+							</Button>
 						</Tooltip>
 					</div>
 				</div>
