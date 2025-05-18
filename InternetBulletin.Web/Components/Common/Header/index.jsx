@@ -20,7 +20,7 @@ import {
 	ToggleErrorToaster,
 	ToggleSuccessToaster,
 } from "@store/Common/Actions";
-import { StartLoader, StopLoader } from "@store/Posts/Actions";
+import { GetAllPostsAsync, StartLoader, StopLoader } from "@store/Posts/Actions";
 
 /**
  * @component

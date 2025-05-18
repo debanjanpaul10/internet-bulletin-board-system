@@ -28,8 +28,23 @@ export default defineConfig(() => {
 						react: "React",
 						"react-dom": "ReactDOM",
 					},
+					// Add asset handling configuration
+					assetFileNames: (assetInfo) => {
+						if (
+							assetInfo.name.endsWith(".png") ||
+							assetInfo.name.endsWith(".jpg") ||
+							assetInfo.name.endsWith(".jpeg") ||
+							assetInfo.name.endsWith(".gif") ||
+							assetInfo.name.endsWith(".svg")
+						) {
+							return "assets/[name][extname]";
+						}
+						return "assets/[name]-[hash][extname]";
+					},
 				},
 			},
+			assetsDir: "assets",
+			copyPublicDir: true,
 		},
 		optimizeDeps: {
 			include: ["has-hover"],
@@ -50,7 +65,7 @@ export default defineConfig(() => {
 				"@models": path.resolve("./Models"),
 				"@services": path.resolve("./Services"),
 				"@context": path.resolve("./Context"),
-				"@assets": path.resolve("./assets")
+				"@assets": path.resolve("./assets"),
 			},
 		},
 		server: {
