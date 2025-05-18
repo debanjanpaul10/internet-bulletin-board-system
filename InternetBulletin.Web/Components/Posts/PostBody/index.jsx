@@ -10,6 +10,7 @@ import {
 	Button,
 	Spinner,
 	Tooltip,
+	Badge,
 } from "@fluentui/react-components";
 import {
 	Edit28Filled,
@@ -90,7 +91,7 @@ function PostBody({ post }) {
 			setShowEditAndDelete(false);
 			setIsUserLoggedIn(false);
 		}
-	}, [instance, accounts, post]);
+	}, [instance, accounts, postData]);
 
 	useEffect(() => {
 		if (IsVotingLoaderOn !== postRatingLoader) {
@@ -211,6 +212,12 @@ function PostBody({ post }) {
 													) : (
 														<ArrowCircleUp28Regular />
 													)
+												)}
+												&nbsp;
+												{postData.ratings > 0 && (
+													<Badge appearance="tint" size="large">
+														{postData.ratings}
+													</Badge>
 												)}
 											</Button>
 										</Tooltip>

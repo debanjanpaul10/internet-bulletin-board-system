@@ -6,7 +6,7 @@ import Header from "@components/Common/Header";
 import PageNotFound from "@components/Common/PageNotFound";
 import HomeComponent from "@components/HomeComponent";
 import CreatePostComponent from "@components/Posts/CreatePost";
-import Toaster from "@components/Common/Toaster";
+import ToasterComponent from "@components/Common/Toaster";
 
 /**
  * @component
@@ -20,7 +20,7 @@ function App() {
 	return (
 		<>
 			<Header />
-			<Toaster />
+			<ToasterComponent />
 			<Routes>
 				<Route path={Headings.Home.Link} element={<HomeComponent />} />
 				<Route
