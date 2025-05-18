@@ -94,3 +94,48 @@ jobs:
         action: 'upload'
         app_location: ${{ env.WEB_PROJECT_PATH }}
         output_location: 'dist'
+
+  build-and-deploy-database:
+    name: Build and Deploy InternetBulletin.Database
+    if: ${{ inputs.deploy_database }}
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Azure Login
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_DB_SECRET }}
+
+    # Setup .NET
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    # Build the database project
+    - name: Build Database Project
+      run: |
+        dotnet build ${{ env.DATABASE_PROJECT_PATH }} --configuration Release
+
+    # Install SQLPackage
+    - name: Install SQLPackage
+      run: |
+        wget -qO- https://go.microsoft.com/fwlink/?linkid=2216181 | tar -xz
+        sudo mv sqlpackage /usr/local/bin/
+
+    # Deploy DACPAC to Azure SQL
+    - name: Deploy DACPAC to Azure SQL
+      run: |
+        sqlpackage /Action:Publish \
+          /SourceFile: "${{ env.DATABASE_PROJECT_PATH }}/bin/Release/InternetBulletin.Database.dacpac" \
+          /TargetServerName: "sql-internet-bulletin.database.windows.net" \
+          /TargetDatabaseName: "db-internet-bulletin" \
+          /TargetUser:"${{ secrets.AZURE_SQL_USERNAME }}" \
+          /TargetPassword:"${{ secrets.AZURE_SQL_PASSWORD }}" \
+          /p:BlockOnPossibleDataLoss=false \
+          /p:CreateNewDatabase=true
