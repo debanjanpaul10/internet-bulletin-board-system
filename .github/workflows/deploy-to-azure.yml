@@ -126,7 +126,7 @@ jobs:
     # Publish the project to a folder
     - name: Publish the project
       run:  |
-        dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --output ./publish-db
+        dotnet publish ${{ env.DATABASE_PROJECT_PATH }} --configuration Release --output ./publish-db
 
     # Deploy to Azure SQL Server
     - name: Deploy to Azure SQL Server
