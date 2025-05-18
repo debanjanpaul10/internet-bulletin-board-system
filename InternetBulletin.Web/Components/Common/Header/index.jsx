@@ -12,7 +12,6 @@ import {
 	PageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
-import { CustomDarkModeToggleSwitch } from "@helpers/common.utility";
 import ThemeContext from "@context/ThemeContext";
 import useStyles from "@components/Common/Header/styles";
 import { loginRequests } from "@services/auth.config";
@@ -20,7 +19,13 @@ import {
 	ToggleErrorToaster,
 	ToggleSuccessToaster,
 } from "@store/Common/Actions";
-import { GetAllPostsAsync, StartLoader, StopLoader } from "@store/Posts/Actions";
+import {
+	GetAllPostsAsync,
+	StartLoader,
+	StopLoader,
+} from "@store/Posts/Actions";
+import LightModeIcon from "@assets/Images/light-bulb-on.png";
+import DarkModeIcon from "@assets/Images/light-bulb-off.png";
 
 /**
  * @component
@@ -186,7 +191,7 @@ function Header() {
 						</Button>
 					</Tooltip>
 				</div>
-
+				{/* CREATE POST LINK */}
 				<div className="navbar-nav mx-auto">
 					{isUserLoggedIn() &&
 						location.pathname !== Headings.CreatePost.Link && (
@@ -210,6 +215,7 @@ function Header() {
 				</div>
 
 				<div className="navbar-nav ml-auto">
+					{/* LOGIN LOGOUT BUTTONS */}
 					{!isUserLoggedIn() ? (
 						<Tooltip
 							content={ButtonTitles.Login}
@@ -240,6 +246,7 @@ function Header() {
 						</Tooltip>
 					)}
 
+					{/* MY PROFILE */}
 					{isUserLoggedIn() && (
 						<Tooltip
 							content={ButtonTitles.MyProfile}
@@ -250,12 +257,14 @@ function Header() {
 								onClick={handleProfileRedirect}
 								shape="circular"
 								appearance="outline"
+								disabled={true}
 							>
 								{Headings.MyProfile.Name}
 							</Button>
 						</Tooltip>
 					)}
 
+					{/* TOGGLE THEME BUTTON */}
 					<div
 						className="mr-3 pr-2"
 						style={{ marginRight: "10px", marginTop: "5px" }}
@@ -268,12 +277,25 @@ function Header() {
 							}
 							relationship="label"
 						>
-							<CustomDarkModeToggleSwitch
-								onChange={toggleThemeMode}
-								checked={
-									themeMode === PageConstants.LightConstant
-								}
-							/>
+							<Button
+								className={styles.themeToggleButton}
+								onClick={toggleThemeMode}
+								appearance="transparent"
+							>
+								{themeMode === PageConstants.LightConstant ? (
+									<img
+										src={DarkModeIcon}
+										width={40}
+										height={35}
+									/>
+								) : (
+									<img
+										src={LightModeIcon}
+										width={40}
+										height={35}
+									/>
+								)}
+							</Button>
 						</Tooltip>
 					</div>
 				</div>
