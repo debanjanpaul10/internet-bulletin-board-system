@@ -4,7 +4,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import Cookies from "js-cookie";
-import "react-toastify/dist/ReactToastify.css";
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fontsource/architects-daughter";
