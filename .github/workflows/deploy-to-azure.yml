@@ -125,17 +125,16 @@ jobs:
     # Install SQLPackage
     - name: Install SQLPackage
       run: |
-        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-        curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
-        sudo apt-get update
-        sudo apt-get install -y mssql-tools unixodbc-dev
-        sudo ln -s /opt/mssql-tools/bin/sqlpackage /usr/local/bin/sqlpackage
+        wget -qO- https://aka.ms/sqlpackage-linux | tar -xz
+        sudo mv sqlpackage /usr/local/bin/
+        sudo chmod +x /usr/local/bin/sqlpackage
+        export PATH=$PATH:/usr/local/bin
 
     # Deploy DACPAC to Azure SQL
     - name: Deploy DACPAC to Azure SQL
       run: |
-        sqlpackage /Action:Publish \
-          /SourceFile: "${{ env.DATABASE_PROJECT_PATH }}/bin/Release/InternetBulletin.Database.dacpac" \
+        /usr/local/bin/sqlpackage /Action:Publish \
+          /SourceFile: "${{ github.workspace }}/InternetBulletin.Database/bin/Release/InternetBulletin.Database.dacpac" \
           /TargetServerName: "sql-internet-bulletin.database.windows.net" \
           /TargetDatabaseName: "db-internet-bulletin" \
           /TargetUser:"${{ secrets.AZURE_SQL_USERNAME }}" \
