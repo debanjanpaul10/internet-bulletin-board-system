@@ -1,58 +1,87 @@
-import { GetAsync, PostAIAsync, PostAsync } from "@helpers/http.utility";
-
 // #region POSTS
+
+import HttpUtility from "@helpers/http.utility";
+import PostRatingDtoModel from "@models/PostRatingDto";
 
 /**
  * Gets the post data from api.
  * @param {string} postId The post id.
+ * @param {string} accessToken The access token.
+ *
  * @returns {Promise} The promise of the response from api.
  */
-export const GetPostApiAsync = async (postId, getIdTokenClaims) => {
-	return await GetAsync(`Posts/GetPost?postId=${postId}`, getIdTokenClaims);
+export const GetPostApiAsync = async (postId, accessToken) => {
+	return await HttpUtility.GetAsync(
+		`Posts/GetPost?postId=${postId}`,
+		accessToken
+	);
 };
 
 /**
  * Gets all the posts data from api.
- * @param {Promse} getAccessTokenSilently Gets the access token.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetAllPostsApiAsync = async (getIdTokenClaims) => {
-	// return mockPostsData;
-	return await GetAsync(`Posts/GetAllPosts`, getIdTokenClaims);
+export const GetAllPostsApiAsync = async (accessToken) => {
+	return await HttpUtility.GetAsync(`Posts/GetAllPosts`, accessToken);
 };
 
 /**
  * Adds a new post data to api.
  * @param {Object} newPostData The new post data.
+ * @param {string} accessToken The access token.
+ *
  * @returns {Promise} The promise of the response from api.
  */
-export const AddNewPostApiAsync = async (newPostData, getIdTokenClaims) => {
-	return await PostAsync(`Posts/AddPost`, newPostData, getIdTokenClaims);
+export const AddNewPostApiAsync = async (newPostData, accessToken) => {
+	return await HttpUtility.PostAsync(
+		`Posts/AddPost`,
+		newPostData,
+		accessToken
+	);
 };
 
 /**
  * Updates an existing post data from api.
  * @param {Object} updatedPostData The updated post data.
+ * @param {string} accessToken The access token.
+ *
  * @returns {Promise} The promise of the response from api.
  */
-export const UpdatePostApiAsync = async (updatedPostData, getIdTokenClaims) => {
-	return await PostAsync(
+export const UpdatePostApiAsync = async (updatedPostData, accessToken) => {
+	return await HttpUtility.PostAsync(
 		`Posts/UpdatePost`,
 		updatedPostData,
-		getIdTokenClaims
+		accessToken
 	);
 };
 
 /**
  * Deletes an existing post data from api.
  * @param {string} postId The post id.
+ * @param {string} accessToken The access token.
+ *
  * @returns {Promise} The promise of the response from api.
  */
-export const DeletePostApiAsync = async (postId, getIdTokenClaims) => {
-	return await PostAsync(
+export const DeletePostApiAsync = async (postId, accessToken) => {
+	return await HttpUtility.PostAsync(
 		`Posts/DeletePost?postId=${postId}`,
 		null,
-		getIdTokenClaims
+		accessToken
+	);
+};
+
+/**
+ * Update the post rating data to api.
+ * @param {PostRatingDtoModel} postRatingModel The post rating dto model.
+ * @param {string} accessToken The access token.
+ *
+ * @returns {Promise} The promise of the response from api.
+ */
+export const UpdateRatingApiAsync = async (postRatingModel, accessToken) => {
+	return await HttpUtility.PostAsync(
+		`PostRatings/UpdateRating`,
+		postRatingModel,
+		accessToken
 	);
 };
 
@@ -66,7 +95,7 @@ export const DeletePostApiAsync = async (postId, getIdTokenClaims) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetUserApiAsync = (userData) => {
-	return PostAsync(`Users/GetUser`, userData);
+	return HttpUtility.PostAsync(`Users/GetUser`, userData);
 };
 
 /**
@@ -74,7 +103,7 @@ export const GetUserApiAsync = (userData) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetAllUsersApiAsync = async () => {
-	return await GetAsync(`Users/GetAllUsers`);
+	return await HttpUtility.GetAsync(`Users/GetAllUsers`);
 };
 
 /**
@@ -83,7 +112,7 @@ export const GetAllUsersApiAsync = async () => {
  * @returns {Promise} The promise of the response from api.
  */
 export const AddNewUserApiAsync = async (userData) => {
-	return await PostAsync(`Users/NewUser`, userData);
+	return await HttpUtility.PostAsync(`Users/NewUser`, userData);
 };
 
 /**
@@ -92,7 +121,9 @@ export const AddNewUserApiAsync = async (userData) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetUserProfileDataApiAsync = async (userId) => {
-	return await GetAsync(`Profiles/GetUserProfileData?userid=${userId}`);
+	return await HttpUtility.GetAsync(
+		`Profiles/GetUserProfileData?userid=${userId}`
+	);
 };
 
 // #endregion
@@ -105,7 +136,9 @@ export const GetUserProfileDataApiAsync = async (userId) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetConfigurationApiAsync = async (keyName) => {
-	return await GetAsync(`Configuration/GetConfiguration?keyName=${keyName}`);
+	return await HttpUtility.GetAsync(
+		`Configuration/GetConfiguration?keyName=${keyName}`
+	);
 };
 
 // #endregion
@@ -118,7 +151,7 @@ export const GetConfigurationApiAsync = async (keyName) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const PostRewriteStoryWithAiApiAsync = async (storyText) => {
-	return await PostAIAsync(storyText);
+	return await HttpUtility.PostAIAsync(storyText);
 };
 
 // #endregion

@@ -3,11 +3,10 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import mkcert from "vite-plugin-mkcert";
-import dotenv from "dotenv";
 
-// Load environment variable from .env file
-dotenv.config();
-
+/**
+ * Defines the vite config for React application.
+ */
 export default defineConfig(() => {
 	return {
 		plugins: [react(), basicSsl(), mkcert()],

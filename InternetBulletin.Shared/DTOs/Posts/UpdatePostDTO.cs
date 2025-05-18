@@ -37,11 +37,11 @@ namespace InternetBulletin.Shared.DTOs.Posts
         public string PostContent { get; set; } = string.Empty;
 
         /// <summary>
-		/// Gets or sets the post owner user name.
-		/// </summary>
-		/// <value>
-		/// The post owner user name.
-		/// </value>
-		public string PostOwnerUserName { get; set; } = string.Empty;
+        /// Gets or sets the post rating.
+        /// </summary>
+        /// <value>
+        /// The post rating.
+        /// </value>
+        public int? PostRating { get; set; }
     }
 }

@@ -13,6 +13,11 @@ namespace InternetBulletin.UnitTests
     public class ProfilesServiceTests
     {
         /// <summary>
+        /// The user name.
+        /// </summary>
+        private static readonly string UserName = "user@example.com";
+
+        /// <summary>
         /// The mock profiles data service.
         /// </summary>
         private readonly Mock<IProfilesDataService> _mockProfilesDataService;
@@ -52,15 +57,15 @@ namespace InternetBulletin.UnitTests
         {
             // Arrange
             var userId = new Random().Next(1, 99);
-            var userProfile = TestsHelper.CreateMockUserProfileDto(userId);
-            this._mockProfilesDataService.Setup(x => x.GetUserProfileDataAsync(userId)).ReturnsAsync(userProfile);
+            var userProfile = TestsHelper.CreateMockUserProfileDto(UserName);
+            this._mockProfilesDataService.Setup(x => x.GetUserProfileDataAsync(It.IsAny<string>())).ReturnsAsync(userProfile);
 
             // Act
-            var result = await this._profilesService.GetUserProfileDataAsync(userId);
+            var result = await this._profilesService.GetUserProfileDataAsync(UserName);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(userId, result.UserId);
+            Assert.Equal(UserName, result.UserName);
         }
 
         /// <summary>
@@ -74,7 +79,7 @@ namespace InternetBulletin.UnitTests
             var userId = 0;
 
             // Act
-            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(userId));
+            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(It.IsAny<string>()));
 
             // Assert
             Assert.NotNull(exception);
@@ -91,10 +96,10 @@ namespace InternetBulletin.UnitTests
             // Arrange
             var userId = new Random().Next(1, 99);
             UserProfileDto userData = null!;
-            this._mockProfilesDataService.Setup(x => x.GetUserProfileDataAsync(It.IsAny<int>())).ReturnsAsync(userData);
+            this._mockProfilesDataService.Setup(x => x.GetUserProfileDataAsync(It.IsAny<string>())).ReturnsAsync(userData);
 
             // Act
-            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(userId));
+            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(UserName));
 
             // Assert
             Assert.NotNull(exception);

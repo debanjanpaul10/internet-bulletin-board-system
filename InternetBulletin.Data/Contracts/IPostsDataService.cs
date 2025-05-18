@@ -21,8 +21,9 @@ namespace InternetBulletin.Data.Contracts
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
 		/// <param name="userName">The user name.</param>
+		/// <param name="isForCurrentUser">Checks if requested for the current user</param>
 		/// <returns>The specific post.</returns>
-		Task<Post> GetPostAsync(Guid postId, string userName);
+		Task<Post> GetPostAsync(Guid postId, string userName, bool isForCurrentUser);
 
 		/// <summary>
 		/// Adds the new post asynchronous.
@@ -37,8 +38,9 @@ namespace InternetBulletin.Data.Contracts
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
 		/// <param name="userName">The user name</param>
+		/// <param name="isRatingUpdate">The boolean flag to signify rating update.</param>
 		/// <returns>The updated post data.</returns>
-		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName);
+		Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName, bool isRatingUpdate);
 
 		/// <summary>
 		/// Deletes the post asynchronous.
@@ -49,16 +51,9 @@ namespace InternetBulletin.Data.Contracts
 		Task<bool> DeletePostAsync(Guid postId, string userName);
 
 		/// <summary>
-		/// Gets all posts asynchronous.
+		/// Gets all posts async.
 		/// </summary>
-		/// <returns>The list of <see cref="Post"/></returns>
+		/// <returns>The list of posts</returns>
 		Task<List<Post>> GetAllPostsAsync();
-
-		/// <summary>
-		/// Updates rating async.
-		/// </summary>
-		/// <param name="postId">The post id.</param>
-		/// <param name="isIncrement">If the rating is increased.</param>
-		Task<Post> UpdateRatingAsync(Guid postId, bool isIncrement);
 	}
 }

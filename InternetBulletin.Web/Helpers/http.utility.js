@@ -1,34 +1,26 @@
 import axios from "axios";
-import {
-	UrlConstants,
-} from "@helpers/config.constants";
+import { UrlConstants } from "@helpers/config.constants";
 
 /**
- * The Http Utility Functions.
- * @returns {function} The object of functions
+ * @class
+ * The Http Utility class.
  */
-function HttpUtility() {
+class HttpUtility {
 	/**
 	 * The Get API data function.
 	 * @param {string} apiUrl The api url.
-	 * @param {Promise} getIdTokenClaims The token function.
+	 * @param {string} accessToken The access token.
 	 *
 	 * @returns {Promise} The promise of the api response.
 	 */
-	const GetAsync = async (apiUrl, getIdTokenClaims) => {
+	static GetAsync = async (apiUrl, accessToken) => {
 		try {
-			const token = await getIdTokenClaims();
 			var webEndpoint = UrlConstants.LocalHostUrl; //: UrlConstants.AppWebUrl;
 			const url = webEndpoint + apiUrl;
-			let bearerToken = "";
-
-			if (token !== null && token !== undefined) {
-				bearerToken = `Bearer ${token.__raw}`;
-			} 
 
 			const response = await axios.get(url, {
 				headers: {
-					Authorization: bearerToken,
+					Authorization: `Bearer ${accessToken}`,
 				},
 			});
 
@@ -49,18 +41,18 @@ function HttpUtility() {
 	 * The Post API data function.
 	 * @param {string} apiUrl The api url.
 	 * @param {Object} data The post data object.
-	 * @param {Promise} getIdTokenClaims The token function.
+	 * @param {string} accessToken The access token.
+	 * 
 	 * @returns {Promise} The promise of the api response.
 	 */
-	const PostAsync = async (apiUrl, data, getIdTokenClaims) => {
+	static PostAsync = async (apiUrl, data, accessToken) => {
 		try {
-			const token = await getIdTokenClaims();
 			var webEndpoint = UrlConstants.LocalHostUrl; //: UrlConstants.AppWebUrl;
 			const url = webEndpoint + apiUrl;
 
 			const response = await axios.post(url, data, {
 				headers: {
-					Authorization: `Bearer ${token.__raw}`,
+					Authorization: `Bearer ${accessToken}`,
 				},
 			});
 
@@ -80,7 +72,7 @@ function HttpUtility() {
 	 * @param {Object} data The post data object.
 	 * @returns {Promise} The promise of the api response.
 	 */
-	const PostAIAsync = async (data) => {
+	static PostAIAsync = async (data) => {
 		try {
 			var webEndpoint =
 				process.env.NODE_ENV == "development"
@@ -100,8 +92,6 @@ function HttpUtility() {
 			);
 		}
 	};
-
-	return { GetAsync, PostAsync, PostAIAsync };
 }
 
-export const { GetAsync, PostAsync, PostAIAsync } = HttpUtility();
+export default HttpUtility;

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useMsal } from "@azure/msal-react";
 
 import { HomePageConstants } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
 import PostsContainer from "@components/Posts/PostsContainer";
 import { GetAllPostsAsync } from "@store/Posts/Actions";
+import { loginRequests } from "@services/auth.config";
+import EditPostComponent from "@components/Posts/EditPost";
 
 /**
  * @component
@@ -14,19 +16,61 @@ import { GetAllPostsAsync } from "@store/Posts/Actions";
  */
 function HomeComponent() {
 	const dispatch = useDispatch();
-	const { getIdTokenClaims } = useAuth0();
+	const { instance, accounts } = useMsal();
+	const [isTokenRetrieved, setIsTokenRetrieved] = useState(false);
 
 	const IsPostsDataLoading = useSelector(
 		(state) => state.PostsReducer.isPostsDataLoading
 	);
 
+	// Initial load - check if user is logged in
 	useEffect(() => {
-		dispatch(GetAllPostsAsync(getIdTokenClaims));
+		if (accounts.length === 0) {
+			dispatch(GetAllPostsAsync(""));
+			setIsTokenRetrieved(true);
+		}
 	}, []);
+
+	// Handle token retrieval and post fetching when user is logged in
+	useEffect(() => {
+		if (accounts.length > 0) {
+			fetchPostsWithToken();
+		}
+	}, [accounts]);
+
+	/**
+	 * Fetches posts with authentication token
+	 */
+	const fetchPostsWithToken = async () => {
+		try {
+			setIsTokenRetrieved(false);
+			const token = await getAccessToken();
+			setIsTokenRetrieved(true);
+			dispatch(GetAllPostsAsync(token));
+		} catch (error) {
+			console.error("Error getting token:", error);
+			// If token retrieval fails, fall back to unauthenticated access
+			setIsTokenRetrieved(true);
+			dispatch(GetAllPostsAsync(""));
+		}
+	};
+
+	/**
+	 * Gets the access token silently using msal.
+	 * @returns {string} The access token.
+	 */
+	const getAccessToken = async () => {
+		const tokenData = await instance.acquireTokenSilent({
+			...loginRequests,
+			account: accounts[0],
+		});
+
+		return tokenData.accessToken;
+	};
 
 	return (
 		<div className="container">
-			<Spinner isLoading={IsPostsDataLoading} />
+			<Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
 			<div className="row">
 				<div className="col-sm-12 mt-4">
 					<h1 className="architectDaughterfont text-center">
@@ -36,6 +80,7 @@ function HomeComponent() {
 			</div>
 			<div className="row">
 				<PostsContainer />
+				<EditPostComponent />
 			</div>
 		</div>
 	);

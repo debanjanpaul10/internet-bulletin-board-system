@@ -12,7 +12,6 @@ namespace InternetBulletin.Data.DataServices
     using InternetBulletin.Shared.Constants;
     using InternetBulletin.Shared.DTOs;
     using InternetBulletin.Shared.DTOs.Posts;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using System.Collections.Generic;
@@ -36,21 +35,30 @@ namespace InternetBulletin.Data.DataServices
         private readonly ILogger<PostsDataService> _logger = logger;
 
         /// <summary>
-        /// Gets the post asynchronous.
+        /// Gets the post asynchronous. 
         /// </summary>
         /// <param name="postId">The post identifier.</param>
         /// <param name="userName">The user name.</param>
+        /// <param name="isForCurrentUser">
+        ///     If the flag is true, then the post must belong to the current user
+        ///     else if it is false, then the post must not belong to the current user
+        /// </param>
         /// <returns>
         /// The specific post.
         /// </returns>
-        public async Task<Post> GetPostAsync(Guid postId, string userName)
+        public async Task<Post> GetPostAsync(Guid postId, string userName, bool isForCurrentUser)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
 
-                var post = await this._dbContext.Posts.FirstOrDefaultAsync(p => p.PostId == postId && p.IsActive && p.PostOwnerUserName == userName);
-                return post ?? new Post();
+                var query = _dbContext.Posts.Where(p => p.PostId == postId && p.IsActive);
+                query = isForCurrentUser
+                    ? query.Where(p => p.PostOwnerUserName == userName)
+                    : query.Where(p => p.PostOwnerUserName != userName);
+
+                var result = await query.FirstOrDefaultAsync() ?? new Post();
+                return result;
             }
             catch (Exception ex)
             {
@@ -88,7 +96,7 @@ namespace InternetBulletin.Data.DataServices
                         IsActive = true,
                         PostCreatedDate = DateTime.UtcNow,
                         PostOwnerUserName = userName,
-                        Rating = 0
+                        Ratings = 0
                     };
                     await this._dbContext.Posts.AddAsync(dbPostData);
                     await this._dbContext.SaveChangesAsync();
@@ -119,32 +127,41 @@ namespace InternetBulletin.Data.DataServices
         }
 
         /// <summary>
-        /// Updates the post asynchronous.
-        /// </summary>
-        /// <param name="updatedPost">The updated post.</param>
-        /// <returns>The post data</returns>
-        public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
+		/// Updates the post asynchronous.
+		/// </summary>
+		/// <param name="updatedPost">The updated post.</param>
+		/// <param name="userName">The user name</param>
+		/// <param name="isRatingUpdate">The boolean flag to signify rating update.</param>
+		/// <returns>The updated post data.</returns>
+        public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName, bool isRatingUpdate)
         {
             try
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, updatedPost.PostId));
 
-                var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName);
-                if (dbPostData is not null)
+                if (isRatingUpdate)
                 {
-                    dbPostData.PostTitle = updatedPost.PostTitle;
-                    dbPostData.PostContent = updatedPost.PostContent;
-
-                    await this._dbContext.SaveChangesAsync();
-
-                    return dbPostData;
+                    return await this.HandleRatingUpdateForPostAsync(updatedPost);
                 }
                 else
                 {
-                    var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-                    this._logger.LogError(exception, exception.Message);
-                    throw exception;
+                    var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName);
+                    if (dbPostData is not null)
+                    {
+                        dbPostData.PostTitle = updatedPost.PostTitle;
+                        dbPostData.PostContent = updatedPost.PostContent;
+
+                        await this._dbContext.SaveChangesAsync();
+                        return dbPostData;
+                    }
+                    else
+                    {
+                        var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
+                        this._logger.LogError(exception, exception.Message);
+                        throw exception;
+                    }
                 }
+
             }
             catch (DbUpdateException dbEx)
             {
@@ -208,9 +225,9 @@ namespace InternetBulletin.Data.DataServices
         }
 
         /// <summary>
-        /// Gets all posts asynchronous.
-        /// </summary>
-        /// <returns>The list of <see cref="Post"/></returns>
+		/// Gets all posts async.
+		/// </summary>
+		/// <returns>The list of posts</returns>
         public async Task<List<Post>> GetAllPostsAsync()
         {
             try
@@ -231,41 +248,35 @@ namespace InternetBulletin.Data.DataServices
             }
         }
 
-        /// <summary>
-        /// Updates rating async.
-        /// </summary>
-        /// <param name="postId">The post id.</param>
-        /// <param name="isIncrement">If the rating is increased.</param>
-        public async Task<Post> UpdateRatingAsync(Guid postId, bool isIncrement)
-        {
-            try
-            {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdateRatingAsync), DateTime.UtcNow, postId));
-                var post = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == postId && x.IsActive);
-                if (post is not null)
-                {
-                    post.Rating = isIncrement ? post.Rating + 1 : post.Rating == 0 ? 0 : post.Rating - 1;
-                    await this._dbContext.SaveChangesAsync();
+        #region PRIVATE Methods
 
-                    return post;
-                }
-                else
+        /// <summary>
+        /// Handles rating update for post async.
+        /// </summary>
+        /// <param name="updatedPost">The updated post.</param>
+        /// <returns>The updated post</returns>
+        private async Task<Post> HandleRatingUpdateForPostAsync(UpdatePostDTO updatedPost)
+        {
+            var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive);
+            if (dbPostData is not null)
+            {
+                if (updatedPost.PostRating.HasValue)
                 {
-                    var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-                    this._logger.LogError(exception, exception.Message);
-                    throw exception;
+                    dbPostData.Ratings = updatedPost.PostRating.Value;
                 }
+
+                await this._dbContext.SaveChangesAsync();
+                return dbPostData;
             }
-            catch (Exception ex)
+            else
             {
-                this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdateRatingAsync), DateTime.UtcNow, ex.Message));
-                throw;
-            }
-            finally
-            {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdateRatingAsync), DateTime.UtcNow, postId));
+                var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
+                this._logger.LogError(exception, exception.Message);
+                throw exception;
             }
         }
+
+        #endregion
 
     }
 }

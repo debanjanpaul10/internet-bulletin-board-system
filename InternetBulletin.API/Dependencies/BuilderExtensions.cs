@@ -13,6 +13,7 @@ namespace InternetBulletin.API.Dependencies
     using InternetBulletin.Shared.Constants;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+    using Microsoft.Identity.Web;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
     /// <summary>
@@ -67,27 +68,34 @@ namespace InternetBulletin.API.Dependencies
         private static void ConfigureAuthenticationServices(this WebApplicationBuilder builder)
         {
             var configuration = builder.Configuration;
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = $"https://{configuration[Auth0DomainConstant]}";
-                options.Audience = configuration[Auth0AudienceConstant];
-                options.Events = new JwtBearerEvents
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(options =>
                 {
-                    OnTokenValidated = async context =>
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        await context.HandleAuthTokenValidationSuccessAsync();
-                    },
-                    OnAuthenticationFailed = async context =>
+                        ValidateAudience = true,
+                        ValidAudience = configuration[IBBSApiClientIdConstant],
+                        ValidateLifetime = true,
+                        ValidateIssuer = true,
+                        ValidIssuer = configuration[IBBSApiIssuerConstant]
+                    };
+                    options.Events = new JwtBearerEvents
                     {
-                        await context.HandleAuthTokenValidationFailedAsync();
-                    },
-                };
-            });
+                        OnTokenValidated = async context =>
+                        {
+                            await context.HandleAuthTokenValidationSuccessAsync();
+                        },
+                        OnAuthenticationFailed = async context =>
+                        {
+                            await context.HandleAuthTokenValidationFailedAsync();
+                        }
+                    };
+                },
+                options =>
+                {
+                    configuration.Bind(AzureAdB2CConstant, options);
+                });
+
         }
 
         /// <summary>
@@ -113,9 +121,11 @@ namespace InternetBulletin.API.Dependencies
         /// <param name="context">The auth failed context.</param>
         private static async Task HandleAuthTokenValidationFailedAsync(this AuthenticationFailedContext context)
         {
-            var authenticationFailedException = new UnauthorizedAccessException(ExceptionConstants.InvalidTokenExceptionConstant);
+            var authenticationFailedException = new UnauthorizedAccessException(context.Exception.Message);
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<BaseController>>();
-            logger.LogError(authenticationFailedException, authenticationFailedException.Message);
+            logger.LogError(authenticationFailedException, context.Exception.Message);
+
+            context.Fail(context.Exception.Message);
             await Task.CompletedTask;
         }
 

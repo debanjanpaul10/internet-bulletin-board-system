@@ -62,6 +62,14 @@ namespace InternetBulletin.Data
 		public DbSet<Post> Posts { get; set; }
 
 		/// <summary>
+		/// Gets or sets the post ratings.
+		/// </summary>
+		/// <value>
+		/// The post ratings.
+		/// </value>
+		public DbSet<PostRating> PostRatings { get; set; }
+
+		/// <summary>
 		/// Override this method to configure the database (and other options) to be used for this context.
 		/// This method is called for each instance of the context that is created.
 		/// The base implementation does nothing.
@@ -110,14 +118,14 @@ namespace InternetBulletin.Data
 			{
 				entity.ToTable(UsersTableConstant);
 				entity.HasKey(e => e.UserId).HasName(PrimaryKeyUsersConstant);
-				entity.Property(e => e.UserId).HasColumnName(UserIdConstant).HasColumnType(IntegerDataTypeConstant).ValueGeneratedOnAdd();
+				entity.Property(e => e.UserId).HasColumnType(IntegerDataTypeConstant).ValueGeneratedOnAdd();
 
-				entity.Property(p => p.Name).HasColumnName(NameConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.UserEmail).HasColumnName(UserEmailConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.UserAlias).HasColumnName(UserAliasConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.UserPassword).HasColumnName(UserPasswordConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.IsActive).HasColumnName(IsActiveConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
-				entity.Property(p => p.IsAdmin).HasColumnName(IsAdminConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(0).IsRequired();
+				entity.Property(p => p.Name).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.UserEmail).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.UserAlias).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.UserPassword).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(p => p.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+				entity.Property(p => p.IsAdmin).HasColumnType(BitDataTypeConstant).HasDefaultValue(0).IsRequired();
 			});
 
 			modelBuilder.Entity<Post>(entity =>
@@ -125,13 +133,29 @@ namespace InternetBulletin.Data
 				entity.ToTable(PostsTableConstant);
 				entity.HasKey(e => e.PostId).HasName(PrimaryKeyPostsConstant);
 
-				entity.Property(e => e.PostId).HasColumnName(PostIdConstant).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
-				entity.Property(e => e.PostTitle).HasColumnName(PostTitleConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(e => e.PostContent).HasColumnName(PostContentConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(e => e.PostCreatedDate).HasColumnName(PostCreatedDateConstant).HasColumnType(DateTimeDataTypeConstant).IsRequired();
-				entity.Property(e => e.PostOwnerUserName).HasColumnName(PostOwnerUserNameConstant).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(e => e.Rating).HasColumnName(RatingConstant).HasColumnType(IntegerDataTypeConstant).HasDefaultValue(0).IsRequired();
-				entity.Property(e => e.IsActive).HasColumnName(IsActiveConstant).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+				entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostTitle).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostContent).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostCreatedDate).HasColumnType(DateTimeDataTypeConstant).IsRequired();
+				entity.Property(e => e.PostOwnerUserName).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.Ratings).HasColumnType(IntegerDataTypeConstant).HasDefaultValue(0).IsRequired();
+				entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+			});
+
+			modelBuilder.Entity<PostRating>(entity =>
+			{
+				entity.ToTable(PostRatingsTableNameConstant);
+				entity.HasKey(e => e.PostRatingId);
+				entity.Property(e => e.PostRatingId)
+					.HasColumnType(IntegerDataTypeConstant)
+					.UseIdentityColumn()  // This enables auto-increment
+					.IsRequired();
+				entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
+				entity.Property(e => e.UserName).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
+				entity.Property(e => e.RatedOn).HasColumnType(DateTimeDataTypeConstant).IsRequired();
+				entity.Property(e => e.PreviousRatingValue).HasColumnType(IntegerDataTypeConstant).IsRequired();
+				entity.Property(e => e.CurrentRatingValue).HasColumnType(IntegerDataTypeConstant).IsRequired();
+				entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
 			});
 		}
 	}

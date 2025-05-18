@@ -43,18 +43,28 @@ namespace InternetBulletin.Shared.Constants
         public const string LocalAppsettingsFileConstant = "appsettings.development.json";
 
         /// <summary>
-        /// The auth0 domain constant.
-        /// </summary>
-        public const string Auth0DomainConstant = "Auth0:Domain";
-
-        /// <summary>
-        /// The audience constant.
-        /// </summary>
-        public const string Auth0AudienceConstant = "Auth0:APIAudience";
-
-        /// <summary>
         /// The user name claim constant.
         /// </summary>
-        public const string UserNameClaimConstant = "username";
+        public const string UserNameClaimConstant = "extension_UserName";
+
+        /// <summary>
+        /// The user display name constant.
+        /// </summary>
+        public const string UserDisplayNameConstant = "name";
+
+        /// <summary>
+        /// The azure ad b2 c constant.
+        /// </summary>
+        public const string AzureAdB2CConstant = "AzureAdB2C";
+
+        /// <summary>
+        /// The IBBS api client id constant.
+        /// </summary>
+        public const string IBBSApiClientIdConstant = "AzureAdB2C:ClientId";
+
+        /// <summary>
+        /// The IBBS api issuer constant.
+        /// </summary>
+        public const string IBBSApiIssuerConstant = "AzureAdB2C:Issuer";
     }
 }

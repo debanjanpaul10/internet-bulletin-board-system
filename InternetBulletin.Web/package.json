@@ -22,7 +22,6 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@auth0/auth0-react": "^2.3.0",
 		"@azure/app-configuration": "^1.8.0",
 		"@azure/identity": "^4.7.0",
 		"@azure/keyvault-secrets": "^4.9.0",
@@ -42,7 +41,6 @@
 		"@vitejs/plugin-react": "^4.3.4",
 		"axios": "^0.26.1",
 		"bootstrap": "^5.3.3",
-		"dotenv": "^16.5.0",
 		"font-awesome": "^4.7.0",
 		"formik": "^2.2.9",
 		"js-cookie": "^3.0.5",
@@ -56,6 +54,8 @@
 		"web-vitals": "^2.1.4"
 	},
 	"devDependencies": {
+		"@azure/msal-browser": "^4.12.0",
+		"@azure/msal-react": "^3.0.12",
 		"@fluentui/react-icons": "^2.0.300",
 		"@reduxjs/toolkit": "^2.5.1",
 		"@vitejs/plugin-basic-ssl": "^1.2.0",

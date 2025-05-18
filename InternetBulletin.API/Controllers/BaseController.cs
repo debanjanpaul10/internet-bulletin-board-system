@@ -28,6 +28,11 @@ namespace InternetBulletin.API.Controllers
         protected string UserName = string.Empty;
 
         /// <summary>
+        /// The user full name.
+        /// </summary>
+        protected string UserFullName = string.Empty;
+
+        /// <summary>
         /// The http context accessor.
         /// </summary>
         private readonly IHttpContextAccessor? _httpContextAccessor;
@@ -46,6 +51,12 @@ namespace InternetBulletin.API.Controllers
                 {
                     this.UserName = userName;
                 }
+
+                var userDisplayName = this._httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(UserDisplayNameConstant))?.Value;
+                if (!string.IsNullOrEmpty(userDisplayName))
+                {
+                    this.UserFullName = userDisplayName;
+                }
             }
         }
 
@@ -58,6 +69,7 @@ namespace InternetBulletin.API.Controllers
             {
                 return false;
             }
+
             return true;
         }
 
