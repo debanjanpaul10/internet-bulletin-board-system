@@ -1,4 +1,4 @@
-name: Build and Deploy InternetBulletin.API and InternetBulletin.Web
+name: Build and Deploy InternetBulletin
 
 env:
   API_PROJECT_PATH: InternetBulletin.API/InternetBulletin.API.csproj
@@ -125,8 +125,11 @@ jobs:
     # Install SQLPackage
     - name: Install SQLPackage
       run: |
-        wget -qO- https://go.microsoft.com/fwlink/?linkid=2216181 | tar -xz
-        sudo mv sqlpackage /usr/local/bin/
+        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+        curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+        sudo apt-get update
+        sudo apt-get install -y mssql-tools unixodbc-dev
+        sudo ln -s /opt/mssql-tools/bin/sqlpackage /usr/local/bin/sqlpackage
 
     # Deploy DACPAC to Azure SQL
     - name: Deploy DACPAC to Azure SQL
