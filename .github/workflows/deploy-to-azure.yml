@@ -98,7 +98,7 @@ jobs:
   build-and-deploy-database:
     name: Build and Deploy InternetBulletin.Database
     if: ${{ inputs.deploy_database }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     # Checkout the repository
