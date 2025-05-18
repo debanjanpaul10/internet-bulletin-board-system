@@ -7,12 +7,10 @@
 
 namespace InternetBulletin.API.Controllers
 {
-    using InternetBulletin.API.Helpers;
     using InternetBulletin.Shared.Constants;
     using InternetBulletin.Shared.DTOs;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Globalization;
-    using System.IdentityModel.Tokens.Jwt;
     using System.Net;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
@@ -22,89 +20,57 @@ namespace InternetBulletin.API.Controllers
     /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     /// <param name="configuration">The Configuration.</param>
     [Authorize]
-    public abstract class BaseController(IConfiguration configuration, ILogger<BaseController> logger) : ControllerBase
+    public abstract class BaseController : ControllerBase
     {
         /// <summary>
-        /// The configuration
+        /// The user name.
         /// </summary>
-        private readonly IConfiguration _configuration = configuration;
+        protected string UserName = string.Empty;
 
         /// <summary>
-        /// The logger.
+        /// The user full name.
         /// </summary>
-        private readonly ILogger<BaseController> _logger = logger;
+        protected string UserFullName = string.Empty;
 
         /// <summary>
-        /// Determines whether this instance is authorized.
+        /// The http context accessor.
         /// </summary>
-        /// <returns>
-        ///   <c>true</c> if this instance is authorized; otherwise, <c>false</c>.
-        /// </returns>
-        protected bool IsAuthorized()
+        private readonly IHttpContextAccessor? _httpContextAccessor;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseController"/> class.
+        /// </summary>
+        /// <param name="httpContextAccessor">The http context accessor.</param>
+        public BaseController(IHttpContextAccessor httpContextAccessor)
         {
-            try
+            this._httpContextAccessor = httpContextAccessor;
+            if (this._httpContextAccessor.HttpContext is not null && this._httpContextAccessor.HttpContext?.User is not null)
             {
-                var authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
-                if (string.IsNullOrWhiteSpace(authorizationHeader))
+                var userName = this._httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(UserNameClaimConstant))?.Value;
+                if (!string.IsNullOrEmpty(userName))
                 {
-                    this._logger.LogError(LoggingConstants.AuthorizationMissingMessage);
-                    return false;
+                    this.UserName = userName;
                 }
 
-                var tokenValue = authorizationHeader.Replace(BearerConstant, string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
-                if (string.IsNullOrEmpty(tokenValue))
+                var userDisplayName = this._httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(UserDisplayNameConstant))?.Value;
+                if (!string.IsNullOrEmpty(userDisplayName))
                 {
-                    this._logger.LogError(LoggingConstants.TokenMissingMessage);
-                    return false;
+                    this.UserFullName = userDisplayName;
                 }
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadJwtToken(tokenValue);
-
-                var applicationId = jwtToken.Claims.FirstOrDefault(c => c.Type == ApplicationIdTokenConstant)?.Value;
-                var clientId = _configuration[ClientIdConstant];
-                if (!string.Equals(applicationId, clientId, StringComparison.Ordinal))
-                {
-                    this._logger.LogError(LoggingConstants.ApplicationIdMismatchMessage);
-                    return false;
-                }
-
-                var tokenExpiryTime = jwtToken.Claims.FirstOrDefault(c => c.Type == TokenExpiryConstant)?.Value;
-                if (string.IsNullOrEmpty(tokenExpiryTime) || !double.TryParse(tokenExpiryTime, out var expiryTimestamp))
-                {
-                    this._logger.LogError(LoggingConstants.TokenExpiryMissingMessage);
-                    return false;
-                }
-
-                var expiryTime = DateTime.UnixEpoch.AddSeconds(expiryTimestamp);
-                if (DateTime.UtcNow > expiryTime)
-                {
-                    this._logger.LogError(LoggingConstants.TokenExpiredMessageConstant);
-                    return false;
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                this._logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(IsAuthorized), DateTime.UtcNow, ex.Message));
-                throw;
             }
         }
 
         /// <summary>
-        /// Handles the bad request.
+        /// Is user authorized.
         /// </summary>
-        /// <returns>The unauthorized object result</returns>
-        protected UnauthorizedObjectResult HandleUnAuthorizedRequest()
+        protected bool IsAuthorized()
         {
-            var responseData = new ResponseDTO()
+            if (string.IsNullOrEmpty(this.UserName))
             {
-                Data = ExceptionConstants.UserUnauthorizedMessageConstant,
-                StatusCode = (int)HttpStatusCode.Unauthorized,
-                IsSuccess = false,
-            };
-            return this.Unauthorized(responseData);
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -137,6 +103,21 @@ namespace InternetBulletin.API.Controllers
                 StatusCode = (int)HttpStatusCode.BadRequest
             };
             return this.BadRequest(responseData);
+        }
+
+        /// <summary>
+        /// Handles the bad request.
+        /// </summary>
+        /// <returns>The unauthorized object result</returns>
+        protected UnauthorizedObjectResult HandleUnAuthorizedRequest()
+        {
+            var responseData = new ResponseDTO()
+            {
+                Data = ExceptionConstants.UserUnauthorizedMessageConstant,
+                StatusCode = (int)HttpStatusCode.Unauthorized,
+                IsSuccess = false,
+            };
+            return this.Unauthorized(responseData);
         }
     }
 }

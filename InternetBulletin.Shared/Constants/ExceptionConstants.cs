@@ -22,6 +22,11 @@ namespace InternetBulletin.Shared.Constants
 		public static readonly string PostNotFoundMessageConstant = "It seems the post you are looking for does not exists anymore!";
 
 		/// <summary>
+		/// The unable to get user post ratings message constant.
+		/// </summary>
+		public const string UnableToGetUserPostRatingsMessageConstant = "Unable to retrieve user's post ratings as of this moment!";
+
+		/// <summary>
 		/// Something went wrong message constant
 		/// </summary>
 		public static readonly string SomethingWentWrongMessageConstant = "Oops! Something went wrong. Please try again after sometime.";
@@ -100,6 +105,16 @@ namespace InternetBulletin.Shared.Constants
 		/// The un authorized constant
 		/// </summary>
 		public const string UnAuthorizedConstant = "Unauthorized";
+
+		/// <summary>
+		/// The invalid token exception constant.
+		/// </summary>
+		public const string InvalidTokenExceptionConstant = "Invalid token: Identity is not authenticated.";
+
+		/// <summary>
+		/// The user id not present exception constant.
+		/// </summary>
+		public const string UserIdNotPresentExceptionConstant = "User id is not present in the headers.";
 
 	}
 }

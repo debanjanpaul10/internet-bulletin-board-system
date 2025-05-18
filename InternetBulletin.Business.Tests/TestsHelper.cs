@@ -5,6 +5,8 @@
 // <summary>The Tests Helper Class.</summary>
 // *********************************************************************************
 
+using InternetBulletin.Shared.DTOs.Posts;
+
 namespace InternetBulletin.UnitTests
 {
     /// <summary>
@@ -16,7 +18,7 @@ namespace InternetBulletin.UnitTests
         /// Creates the mock post entity data.
         /// </summary>
         /// <returns>The post data dto.</returns>
-        public static Post CreateMockPostEntityData()
+        public static Post CreateMockPostEntityData(string userName)
         {
             return new Post()
             {
@@ -24,10 +26,8 @@ namespace InternetBulletin.UnitTests
                 PostId = Guid.NewGuid(),
                 PostTitle = "Lorem ipsum",
                 PostContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                PostCreatedBy = "Creation User",
                 PostCreatedDate = DateTime.Now,
-                PostModifiedBy = "Creation User",
-                PostModifiedDate = DateTime.Now,
+                PostOwnerUserName = userName
             };
         }
 
@@ -35,13 +35,13 @@ namespace InternetBulletin.UnitTests
         /// Creates the mock list post entity data.
         /// </summary>
         /// <returns>The list of <see cref="Post"/></returns>
-        public static List<Post> CreateMockListPostEntityData()
+        public static List<Post> CreateMockListPostEntityData(string userName)
         {
             var iterator = new Random().Next(1, 20);
             var allPosts = new List<Post>();
             for (var i = 0; i < iterator; i++)
             {
-                var mockPost = CreateMockPostEntityData();
+                var mockPost = CreateMockPostEntityData(userName);
                 allPosts.Add(mockPost);
             }
 
@@ -156,15 +156,11 @@ namespace InternetBulletin.UnitTests
         /// Creates mock user profile dto.
         /// </summary>
         /// <param name="userId">The user id.</param>
-        public static UserProfileDto CreateMockUserProfileDto(int userId)
+        public static UserProfileDto CreateMockUserProfileDto(string userName)
         {
             return new UserProfileDto()
             {
-                UserId = userId,
-                Name = "User",
-                UserAlias = "userAlias",
-                UserEmail = "user@mail.com",
-                UserPassword = "userPassword",
+                UserName = userName,
                 UserPosts = new List<UserPostsDto>()
                 {
                     new UserPostsDto()
@@ -172,6 +168,17 @@ namespace InternetBulletin.UnitTests
                         PostTitle = "Sample post"
                     }
                 }
+            };
+        }
+
+        public static UpdatePostDTO CreateMockUpdatePostsDto()
+        {
+            return new UpdatePostDTO()
+            {
+                PostTitle = "Lorem ipsum",
+                PostContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                PostId = Guid.NewGuid(),
+                PostRating = new Random().Next(1, 10)
             };
         }
     }

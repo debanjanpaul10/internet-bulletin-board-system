@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Web", "InternetBulletin.Web\InternetBulletin.Web.csproj", "{A84D5CF2-3CA9-40F5-901F-76D6E1D0FF0C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Shared", "InternetBulletin.Shared\InternetBulletin.Shared.csproj", "{22877550-C73C-48E2-BA43-671A3709E20A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{A6A63F47-635D-459A-AD51-2E3BAC8ED38D}"
@@ -26,10 +24,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A84D5CF2-3CA9-40F5-901F-76D6E1D0FF0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A84D5CF2-3CA9-40F5-901F-76D6E1D0FF0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A84D5CF2-3CA9-40F5-901F-76D6E1D0FF0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A84D5CF2-3CA9-40F5-901F-76D6E1D0FF0C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22877550-C73C-48E2-BA43-671A3709E20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22877550-C73C-48E2-BA43-671A3709E20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22877550-C73C-48E2-BA43-671A3709E20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,5 +47,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {40F97A5A-FC0C-45DB-9188-0DF3DA5108C0}
 	EndGlobalSection
 EndGlobal

@@ -13,6 +13,7 @@ namespace InternetBulletin.API.Dependencies
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Data.DataServices;
     using InternetBulletin.Shared.Constants;
+    using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -25,24 +26,23 @@ namespace InternetBulletin.API.Dependencies
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="services">The services.</param>
-        public static void ConfigureApplicationDependencies(this WebApplicationBuilder builder)
+        public static void ConfigureAzureSqlServer(this WebApplicationBuilder builder)
         {
-            var cosmosConnectionString = builder.Configuration[ConfigurationConstants.CosmosConnectionStringConstant];
-            var databaseName = builder.Configuration[ConfigurationConstants.CosmosDatabaseNameConstant];
-            if (!string.IsNullOrEmpty(cosmosConnectionString) && !string.IsNullOrEmpty(databaseName))
-            {
-                builder.Services.AddDbContext<CosmosDbContext>(options =>
-                {
-                    options.UseCosmos(cosmosConnectionString, databaseName);
-                });
-            }
-
             var sqlConnectionString = builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
             if (!string.IsNullOrEmpty(sqlConnectionString))
             {
                 builder.Services.AddDbContext<SqlDbContext>(options =>
                 {
-                    options.UseSqlServer(connectionString: sqlConnectionString);
+                    options.UseSqlServer
+                    (
+                        connectionString: sqlConnectionString,
+                        options => options.EnableRetryOnFailure
+                        (
+                            maxRetryCount: 3,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        )
+                    );
                 });
             }
         }
@@ -54,9 +54,9 @@ namespace InternetBulletin.API.Dependencies
         public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IPostsService, PostsService>();
-            builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
+            builder.Services.AddScoped<IPostRatingsService, PostRatingsService>();
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace InternetBulletin.API.Dependencies
         public static void ConfigureDataManagerDependencies(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IPostsDataService, PostsDataService>();
-            builder.Services.AddScoped<IUsersDataService, UsersDataService>();
             builder.Services.AddScoped<IProfilesDataService, ProfilesDataService>();
+            builder.Services.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
         }
     }
 }
