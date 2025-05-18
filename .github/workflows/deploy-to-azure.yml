@@ -1,0 +1,64 @@
+name: Build and Deploy InternetBulletin.API and InternetBulletin.Web
+
+env:
+  API_PROJECT_PATH: InternetBulletin.API/InternetBulletin.API.csproj
+  WEB_PROJECT_PATH: InternetBulletin.Web
+  DATABASE_PROJECT_PATH: ./InternetBulletin.Database/InternetBulletin.Database.sqlproj
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_api:
+        description: 'InternetBulletin.API'
+        required: false
+        default: true
+        type: boolean
+
+      deploy_web:
+        description: 'InternetBulletin.Web'
+        required: false
+        default: true
+        type: boolean
+
+      deploy_database:
+        description: 'InternetBulletin.Database'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build-and-deploy-api:
+    name: Build and Deploy InternetBulletin.API
+    if: ${{ inputs.deploy_api }}
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Setup .NET
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    # Install dependencies
+    - name: Install dependencies and Build solution
+      run:  |
+        dotnet restore ${{ env.API_PROJECT_PATH }}
+        dotnet build ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore
+
+    # Publish the project to a folder
+    - name: Publish the project
+      run:  |
+        dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --output ./publish-api
+
+    # Deploy to Azure App Service
+    - name: Deploy to Azure App Service
+      uses: Azure/webapps-deploy@v2
+      with:
+        app-name: app-webapi-internet-bulletin
+        slot-name: production
+        publish-profile: ${{ secrets.AZURE_IBBS_API_PUBLISH_PROFILE }}
+        package: ./publish-api
