@@ -49,6 +49,7 @@ namespace InternetBulletin.API.Controllers
                     var result = await this._profilesService.GetUserProfileDataAsync(this.UserName);
                     if (result is not null && !string.IsNullOrEmpty(result.UserName))
                     {
+                        result.DisplayName = this.UserFullName;
                         return this.HandleSuccessResult(result);
                     }
                     else
