@@ -67,7 +67,7 @@ namespace InternetBulletin.API.Controllers
         {
             if (string.IsNullOrEmpty(this.UserName))
             {
-                return false;
+                throw new UnauthorizedAccessException();
             }
 
             return true;

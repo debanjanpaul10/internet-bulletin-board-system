@@ -21,6 +21,14 @@ namespace InternetBulletin.Shared.DTOs
 		public string UserName { get; set; } = string.Empty;
 
 		/// <summary>
+		/// Gets or sets the display name.
+		/// </summary>
+		/// <value>
+		/// The display name.
+		/// </value>
+		public string DisplayName { get; set; } = string.Empty;
+
+		/// <summary>
 		/// Gets or sets the user posts.
 		/// </summary>
 		/// <value>
@@ -28,5 +36,5 @@ namespace InternetBulletin.Shared.DTOs
 		/// </value>
 		public List<UserPostsDto> UserPosts { get; set; } = [];
 	}
-	
+
 }
