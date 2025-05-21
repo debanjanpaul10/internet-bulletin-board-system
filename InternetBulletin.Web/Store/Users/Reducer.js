@@ -5,7 +5,7 @@ import {
 
 const initialState = {
   userProfileData: {},
-  isUserProfileDataLoading: false,
+  isUserProfileDataLoading: true,
 };
 
 /**

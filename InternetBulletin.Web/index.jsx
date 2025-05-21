@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { StrictMode, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
@@ -34,7 +34,7 @@ const store = configureStore({
   reducer: {
     PostsReducer: PostsReducer,
     CommonReducer: CommonReducer,
-    UserReducer: UserReducer
+    UserReducer: UserReducer,
   },
 });
 
@@ -44,9 +44,23 @@ const msalInstance = new PublicClientApplication(msalConfig);
 
 /**
  * @component
- * The Main entry component
+ * Main entry component that handles theme management and application initialization.
  *
- * @returns {JSX.Element} The main JSX element.
+ * @description
+ * This component serves as the main wrapper for the application, managing:
+ * - Theme state (light/dark mode)
+ * - MSAL authentication initialization
+ * - Theme persistence using cookies
+ *
+ * @state {string} themeMode - Current theme mode ('light' or 'dark')
+ * @state {boolean} initialized - Whether MSAL has been initialized
+ *
+ * @effect
+ * On mount:
+ * - Loads saved theme preference from cookies
+ * - Initializes MSAL authentication
+ *
+ * @returns {JSX.Element} The main application wrapper with theme context and MSAL provider
  */
 function Main() {
   const { DarkModeConstant, LightConstant, DarkConstant } = PageConstants;

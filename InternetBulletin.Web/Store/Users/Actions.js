@@ -45,6 +45,6 @@ export const GetUserProfileDataAsync = (accessToken) => {
 const GetUserProfileDataSuccess = (data) => {
   return {
     type: GET_USER_PROFILE_DATA,
-    paylad: data,
+    payload: data,
   };
 };

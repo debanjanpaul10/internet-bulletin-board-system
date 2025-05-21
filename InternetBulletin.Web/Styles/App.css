@@ -35,47 +35,6 @@ code {
 	transition: transform 0.3s ease-in-out;
 }
 
-.create-link {
-	position: relative;
-	display: flex;
-	align-items: center;
-	transition: transform 0.3s ease-in-out;
-}
-
-.create-text {
-	display: none;
-}
-
-.create-link .create-text {
-	opacity: 0;
-	transform: translateX(-10px);
-	transition: opacity 0.3s, transform 0.3s;
-	white-space: nowrap;
-}
-
-.create-link:hover .create-text {
-	opacity: 1;
-	transform: translateX(0);
-	display: block;
-}
-
-.create-link:hover .icon-large {
-	animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-.create-link:hover {
-	transform: translateX(-10px);
-}
-
 /* ANIMATIONS END */
 
 /* TEXT EDITOR START */
@@ -209,10 +168,6 @@ button {
 .navbar-nav .mx-auto {
 	margin-left: auto;
 	margin-right: 10px;
-}
-
-.create-link {
-	text-align: center;
 }
 
 .post-content {
