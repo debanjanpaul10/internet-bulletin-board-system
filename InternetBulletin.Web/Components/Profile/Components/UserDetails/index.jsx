@@ -3,6 +3,26 @@ import { Card, CardHeader, Text, tokens } from "@fluentui/react-components";
 
 import { useStyles } from "./styles";
 
+/**
+ * UserDetailsComponent displays the user's personal information in a formatted layout.
+ * It receives user details as props and renders them in a structured way.
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} props.displayName - The user's display name
+ * @param {string} props.emailAddress - The user's email address
+ * @param {string} props.userName - The user's username
+ *
+ * @returns {JSX.Element} A formatted display of user details
+ *
+ * @example
+ * // Usage in ProfileComponent
+ * <UserDetailsComponent
+ *   displayName="John Doe"
+ *   emailAddress="john.doe@example.com"
+ *   userName="johndoe"
+ * />
+ */
 function UserDetailsComponent({ displayName, emailAddress, userName }) {
   const styles = useStyles();
 

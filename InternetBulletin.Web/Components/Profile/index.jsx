@@ -10,6 +10,18 @@ import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 import UserDetailsComponent from "./Components/UserDetails";
 import AlienImage from "@assets/Images/alien-pfp.jpg";
 
+/**
+ * ProfileComponent displays the user's profile information including their display name,
+ * email address, and username. It handles loading states with skeleton UI and integrates
+ * with Azure MSAL for authentication.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered profile component with user details or loading skeleton
+ * 
+ * @example
+ * // Usage in another component
+ * <ProfileComponent />
+ */
 function ProfileComponent() {
   const dispatch = useDispatch();
   const styles = useStyles();
