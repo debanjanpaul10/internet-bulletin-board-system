@@ -8,6 +8,7 @@
     <ModelCollation>1033, CI</ModelCollation>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="Stored Procedures" />
     <Folder Include="Tables" />
   </ItemGroup>
   <Target Name="BeforeBuild">

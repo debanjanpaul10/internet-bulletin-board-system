@@ -81,6 +81,7 @@ namespace InternetBulletin.API
             builder.Services.AddProblemDetails();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddHttpClient<IHttpClientHelper, HttpClientHelper>();
+            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
         }
 
         /// <summary>
