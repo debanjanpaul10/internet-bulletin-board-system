@@ -64,6 +64,6 @@ namespace InternetBulletin.Shared.DTOs.Posts
         /// <value>
         /// The previous rating value.
         /// </value>
-        public int? PreviousRatingValue { get; set; }
+        public int? RatingValue { get; set; }
     }
 }

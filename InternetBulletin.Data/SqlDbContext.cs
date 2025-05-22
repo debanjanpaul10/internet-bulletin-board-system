@@ -153,8 +153,7 @@ namespace InternetBulletin.Data
 				entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
 				entity.Property(e => e.UserName).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
 				entity.Property(e => e.RatedOn).HasColumnType(DateTimeDataTypeConstant).IsRequired();
-				entity.Property(e => e.PreviousRatingValue).HasColumnType(IntegerDataTypeConstant).IsRequired();
-				entity.Property(e => e.CurrentRatingValue).HasColumnType(IntegerDataTypeConstant).IsRequired();
+				entity.Property(e => e.RatingValue).HasColumnType(IntegerDataTypeConstant).IsRequired();
 				entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
 			});
 		}

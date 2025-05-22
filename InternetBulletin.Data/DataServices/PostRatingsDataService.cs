@@ -174,7 +174,7 @@ namespace InternetBulletin.Data.DataServices
                                 PostOwnerUserName = post.PostOwnerUserName,
                                 Ratings = post.Ratings,
                                 IsActive = post.IsActive,
-                                PreviousRatingValue = rating != null ? rating.PreviousRatingValue : 0
+                                RatingValue = rating != null ? rating.RatingValue : 0
                             };
 
                 var result = await query.ToListAsync();

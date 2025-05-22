@@ -7,7 +7,7 @@
 
 namespace InternetBulletin.Business.Contracts
 {
-    using InternetBulletin.Shared.DTOs;
+    using InternetBulletin.Shared.DTOs.Users;
 
     /// <summary>
     /// Profiles service interface.
