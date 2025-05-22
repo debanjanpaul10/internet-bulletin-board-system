@@ -100,15 +100,15 @@ namespace InternetBulletin.Business.Services
         {
             if (postRating is not null && postRating.PostId != Guid.Empty)
             {
-                if (postRating.PreviousRatingValue == 0)
+                if (postRating.RatingValue == 0)
                 {
                     post.Ratings += 1;
-                    postRating.PreviousRatingValue = 1;
+                    postRating.RatingValue = 1;
                 }
                 else
                 {
                     post.Ratings = Math.Max(0, post.Ratings - 1);
-                    postRating.PreviousRatingValue = 0;
+                    postRating.RatingValue = 0;
                 }
 
                 await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName, true).ConfigureAwait(false);
@@ -124,8 +124,7 @@ namespace InternetBulletin.Business.Services
                     UserName = userName,
                     RatedOn = DateTime.UtcNow,
                     IsActive = true,
-                    PreviousRatingValue = 1,
-                    CurrentRatingValue = 1
+                    RatingValue = 1,
                 };
 
                 await this._postsDataService.UpdatePostAsync(CreateUpdatePostDTO(post), userName, true).ConfigureAwait(false);

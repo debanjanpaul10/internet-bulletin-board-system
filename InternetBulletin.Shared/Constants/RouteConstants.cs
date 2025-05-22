@@ -163,5 +163,19 @@ namespace InternetBulletin.Shared.Constants
         public const string RewriteTextApi_Route = "BulletinAI/RewriteText";
 
         #endregion
+
+        #region BulletinServices
+
+        /// <summary>
+        /// The bulletin services base_ route prefix.
+        /// </summary>
+        public const string BulletinServicesBase_RoutePrefix = "BulletinServices";
+
+        /// <summary>
+        /// The get users data from graph_ route.
+        /// </summary>
+        public const string GetUsersDataFromGraph_Route = "GetUsersDataGraph";
+
+        #endregion
     }
 }

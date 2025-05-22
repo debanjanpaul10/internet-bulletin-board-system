@@ -11,7 +11,8 @@ namespace InternetBulletin.Business.Services
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Shared.Constants;
-    using InternetBulletin.Shared.DTOs;
+    using InternetBulletin.Shared.DTOs.Posts;
+    using InternetBulletin.Shared.DTOs.Users;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -19,18 +20,23 @@ namespace InternetBulletin.Business.Services
     /// </summary>
     /// <param name="profilesDataService">The Cosmos DB Context</param>
     /// <param name="logger">The Logger</param>
-    public class ProfilesService(IProfilesDataService profilesDataService, ILogger<ProfilesService> logger) : IProfilesService
+    public class ProfilesService(ILogger<ProfilesService> logger, IProfilesDataService profilesDataService, IBulletinServices bulletinServices) : IProfilesService
     {
+        /// <summary>
+        /// The logger.
+        /// </summary>
+        private readonly ILogger<ProfilesService> _logger = logger;
+
         /// <summary>
         /// The profiles data service.
         /// </summary>
         private readonly IProfilesDataService _profilesDataService = profilesDataService;
 
         /// <summary>
-        /// The logger.
+        /// The bulletin services.
         /// </summary>
-        private readonly ILogger<ProfilesService> _logger = logger;
-        
+        private readonly IBulletinServices _bulletinServices = bulletinServices;
+
         /// <summary>
         /// Gets user profile data async.
         /// </summary>
@@ -44,17 +50,33 @@ namespace InternetBulletin.Business.Services
                 throw exception;
             }
 
-            var result = await this._profilesDataService.GetUserProfileDataAsync(userName).ConfigureAwait(false);
-            if (result is not null && !string.IsNullOrEmpty(result.UserName))
-            {
-                return result;
-            }
-            else
+            var graphUserData = await this._bulletinServices.GetGraphUserDataAsync(userName);
+            if (graphUserData is null || string.IsNullOrEmpty(graphUserData.Id))
             {
                 var exception = new Exception(ExceptionConstants.UserDoesNotExistsMessageConstant);
                 this._logger.LogError(exception, exception.Message);
                 throw exception;
             }
+
+            var userPosts = await this._profilesDataService.GetUserPostsAsync(userName).ConfigureAwait(false);
+            var userRatings = await this._profilesDataService.GetUserRatingsAsync(userName).ConfigureAwait(false);
+            var userProfileData = new UserProfileDto()
+            {
+                DisplayName = graphUserData.DisplayName,
+                EmailAddress = graphUserData.EmailAddress,
+                UserName = graphUserData.UserName,
+                UserPosts = [.. userPosts.Select(p => new UserPostDTO
+                {
+                    PostTitle = p.PostTitle,
+                    PostCreatedDate = p.PostCreatedDate,
+                    PostId = p.PostId,
+                    PostOwnerUserName = p.PostOwnerUserName,
+                    Ratings = p.Ratings
+                })],
+                UserPostRatings = userRatings
+            };
+
+            return userProfileData;
         }
     }
 }

@@ -45,20 +45,12 @@ namespace InternetBulletin.Data.Entities
         public DateTime RatedOn { get; set; }
 
         /// <summary>
-        /// Gets or sets the previous rating value.
+        /// Gets or sets the current rating value.
         /// </summary>
         /// <value>
         /// The previous rating value.
         /// </value>
-        public int PreviousRatingValue { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current rating value.
-        /// </summary>
-        /// <value>
-        /// The current rating value.
-        /// </value>
-        public int CurrentRatingValue { get; set; }
+        public int RatingValue { get; set; }
 
         /// <summary>
         /// Gets or sets the is active.

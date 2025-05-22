@@ -66,5 +66,29 @@ namespace InternetBulletin.Shared.Constants
         /// The IBBS api issuer constant.
         /// </summary>
         public const string IBBSApiIssuerConstant = "AzureAdB2C:Issuer";
+
+        /// <summary>
+        /// The tenant id constant.
+        /// </summary>
+        public const string TenantIdConstant = "AzureAD:TenantId";
+
+        #region Graph API
+
+        /// <summary>
+        /// The graph api default scope constant.
+        /// </summary>
+        public const string GraphAPIDefaultScopeConstant = "AzureAD:GraphAPIDefaultScope";
+
+        /// <summary>
+        /// The graph a p i client id constant.
+        /// </summary>
+        public const string GraphAPIClientIdConstant = "AzureAD:GraphAPIClientId";
+
+        /// <summary>
+        /// The graph a p i client secret constant.
+        /// </summary>
+        public const string GraphAPIClientSecretConstant = "AzureAD:GraphAPIClientSecret";
+
+        #endregion
     }
 }

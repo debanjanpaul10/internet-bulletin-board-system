@@ -4,7 +4,6 @@ CREATE TABLE [dbo].[PostRatings]
   [PostId] UNIQUEIDENTIFIER NOT NULL,
   [UserName] NVARCHAR(256) NOT NULL,
   [RatedOn] DATETIME NOT NULL DEFAULT GETDATE(),
-  [PreviousRatingValue] INT NOT NULL DEFAULT 0,
-  [CurrentRatingValue] INT NOT NULL DEFAULT 0,
+  [RatingValue] INT NOT NULL DEFAULT 0,
   [IsActive] BIT NOT NULL DEFAULT 1
 )
