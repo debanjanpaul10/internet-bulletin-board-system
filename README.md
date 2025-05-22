@@ -46,10 +46,10 @@ This project is an Internet Bulletin Board Service (IBBS) that allows users to:
 
 ## Deployment Status
 ### Main
-[![Build and Deploy InternetBulletin](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml/badge.svg?event=deployment)](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml)
+[![Build and Deploy InternetBulletin](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml/badge.svg?branch=main)](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml)
 
 ### Development
-[![Build and Deploy InternetBulletin](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml/badge.svg?branch=dev&event=deployment)](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml)
+[![Build and Deploy InternetBulletin](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml/badge.svg?branch=dev)](https://github.com/debanjanpaul10/InternetBulletinService/actions/workflows/deploy-to-azure.yml)
 
 # Contributing
 We welcome contributions! Feel free to:
