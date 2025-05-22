@@ -4,8 +4,21 @@ const useStyles = makeStyles({
   card: {
     maxWidth: "100%",
     margin: "1rem",
-    height: "300px",
+    height: "250px",
     overflow: "auto",
+    "&::-webkit-scrollbar": {
+      width: "8px",
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "var(--colorNeutralBackground1)",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "var(--colorNeutralForeground3)",
+      borderRadius: "4px",
+      "&:hover": {
+        background: "var(--colorNeutralForeground2)",
+      },
+    },
   },
   postTable: {
     width: "100%",
