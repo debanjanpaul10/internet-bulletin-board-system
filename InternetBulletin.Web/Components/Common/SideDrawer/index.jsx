@@ -254,7 +254,6 @@ function SideDrawerComponent() {
           }
         >
           {/* HOME BUTTON */}
-
           <Button
             onClick={handleHomePageRedirect}
             className={styles.homeButton}
@@ -283,6 +282,28 @@ function SideDrawerComponent() {
                 >
                   <AddCircle28Regular />
                   <span>{Headings.CreatePost.Name}</span>
+                </Button>
+              </Tooltip>
+            )}
+          </div>
+        )}
+
+        {/* MY PROFILE */}
+        {isUserLoggedIn() && (
+          <div className="row">
+            {location.pathname !== Headings.MyProfile.Link && (
+              <Tooltip
+                content={ButtonTitles.MyProfile}
+                relationship="label"
+                positioning="after"
+              >
+                <Button
+                  className={styles.button}
+                  onClick={handleProfileRedirect}
+                  appearance="transparent"
+                >
+                  <Person28Regular />
+                  <span>{Headings.MyProfile.Name}</span>
                 </Button>
               </Tooltip>
             )}
@@ -323,28 +344,6 @@ function SideDrawerComponent() {
             </Tooltip>
           )}
         </div>
-
-        {/* MY PROFILE */}
-        {isUserLoggedIn() && (
-          <div className="row">
-            {location.pathname !== Headings.MyProfile.Link && (
-              <Tooltip
-                content={ButtonTitles.MyProfile}
-                relationship="label"
-                positioning="after"
-              >
-                <Button
-                  className={styles.button}
-                  onClick={handleProfileRedirect}
-                  appearance="transparent"
-                >
-                  <Person28Regular />
-                  <span>{Headings.MyProfile.Name}</span>
-                </Button>
-              </Tooltip>
-            )}
-          </div>
-        )}
       </DrawerBody>
     </OverlayDrawer>
   );

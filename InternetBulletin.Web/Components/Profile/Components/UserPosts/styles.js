@@ -5,7 +5,12 @@ const useStyles = makeStyles({
     maxWidth: "100%",
     margin: "1rem",
     height: "250px",
-    overflow: "auto",
+    display: "flex",
+    flexDirection: "column",
+  },
+  scrollableItems: {
+    flex: 1,
+    overflowY: "auto",
     "&::-webkit-scrollbar": {
       width: "8px",
     },
@@ -19,9 +24,19 @@ const useStyles = makeStyles({
         background: "var(--colorNeutralForeground2)",
       },
     },
+    width: "100%"
   },
   postTable: {
     width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: 0,
+    tableLayout: "fixed",
+  },
+  tableHeader: {
+    position: "sticky",
+    top: 0,
+    backgroundColor: "var(--colorNeutralBackground1)",
+    zIndex: 1,
   },
   dateText: {
     marginLeft: "auto",
@@ -38,6 +53,12 @@ const useStyles = makeStyles({
   },
   rowCell: {
     padding: "10px",
+  },
+  stickyHeader: {
+    position: 'sticky',
+    top: 0,
+    backgroundColor: 'var(--colorNeutralBackground1)',
+    zIndex: 1,
   },
 });
 
