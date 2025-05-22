@@ -136,8 +136,10 @@ export const MyProfilePageConstants = {
   Headings: {
     Header: "My Profile",
     WelcomeMessage: "Your Profile's so fly, it could make a crocodile smile!",
+    AsPerMyKnowledge: "As per my knowledge, these are your details!",
     YourPostsMessage: "Your stories",
-    AsPerMyKnowledge: "As per my knowledge, these are your details!"
+    YourRatings: "Your ratings",
   },
   PostTableHeaders: ["Post Name", "Date Created", "Ratings"],
+  RatingsTableHeaders: ["Post Name", "Rated on"],
 };

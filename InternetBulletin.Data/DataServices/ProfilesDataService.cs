@@ -68,7 +68,7 @@ namespace InternetBulletin.Data.DataServices
             {
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserRatingsAsync), DateTime.UtcNow, userName));
                 var userRatings = await this._dbContext.PostRatings
-                    .Where(pr => pr.UserName == userName && pr.IsActive)
+                    .Where(pr => pr.UserName == userName && pr.IsActive && pr.RatingValue == 1)
                     .Join(
                         this._dbContext.Posts.Where(p => p.IsActive),
                         pr => pr.PostId,
@@ -77,7 +77,7 @@ namespace InternetBulletin.Data.DataServices
                         {
                             PostName = p.PostTitle,
                             RatedOn = pr.RatedOn,
-                            CurrentRatingValue = pr.CurrentRatingValue
+                            CurrentRatingValue = pr.RatingValue
                         }
                     ).ToListAsync();
 

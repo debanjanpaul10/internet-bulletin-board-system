@@ -11,6 +11,7 @@ import UserDetailsComponent from "./Components/UserDetails";
 import AlienImage from "@assets/Images/alien-pfp.jpg";
 import PageNotFound from "@components/Common/PageNotFound";
 import UserPostsComponent from "./Components/UserPosts";
+import UserRatingsComponent from "./Components/UserRatings";
 
 /**
  * ProfileComponent displays the user's profile information including their display name,
@@ -163,6 +164,7 @@ function ProfileComponent() {
 
         {/* USER ACTIVITY */}
         <div className="row position-relative mt-4">
+          
           {/* USER POSTS */}
           {isUserDataLoading || !userStateData?.userPosts ? (
             <div className="col-sm-6">
@@ -177,27 +179,33 @@ function ProfileComponent() {
             </div>
           ) : (
             <div className="col-sm-6">
-              <UserPostsComponent userPosts={userStateData?.userPosts} />
+              <UserPostsComponent userPosts={userStateData.userPosts} />
             </div>
           )}
+          
           {/* USER RATINGS */}
-          {isUserDataLoading ||
-            (!userStateData?.userPostRatings && (
-              <div className="col-sm-6">
-                <Skeleton
-                  aria-label="Profile data loading"
+          {isUserDataLoading || !userStateData?.userPostRatings ? (
+            <div className="col-sm-6">
+              <Skeleton
+                aria-label="Profile data loading"
+                as="div"
+                className="row"
+              >
+                <SkeletonItem
+                  appearance="translucent"
+                  animation="pulse"
                   as="div"
-                  className="row"
-                >
-                  <SkeletonItem
-                    appearance="translucent"
-                    animation="pulse"
-                    as="div"
-                    className={styles.userImgSkeleton}
-                  ></SkeletonItem>
-                </Skeleton>
-              </div>
-            ))}
+                  className={styles.userImgSkeleton}
+                ></SkeletonItem>
+              </Skeleton>
+            </div>
+          ) : (
+            <div className="col-sm-6">
+              <UserRatingsComponent
+                userPostRatings={userStateData.userPostRatings}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
