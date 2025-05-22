@@ -43,11 +43,13 @@ function UserRatingsComponent({ userPostRatings }) {
           size="medium"
         >
           <TableHeader className={styles.stickyHeader}>
-            {MyProfilePageConstants.RatingsTableHeaders.map((item, index) => (
-              <TableHeaderCell key={index} className={styles.rowCell}>
-                <Text size={400}>{item}</Text>
-              </TableHeaderCell>
-            ))}
+            <TableRow>
+              {MyProfilePageConstants.RatingsTableHeaders.map((item, index) => (
+                <TableHeaderCell key={index} className={styles.rowCell}>
+                  <Text size={400}>{item}</Text>
+                </TableHeaderCell>
+              ))}
+            </TableRow>
           </TableHeader>
           <TableBody className="row">
             {Object.values(userPostRatingsState).length > 0 &&
