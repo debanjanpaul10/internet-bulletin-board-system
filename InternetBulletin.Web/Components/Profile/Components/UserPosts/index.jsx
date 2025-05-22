@@ -20,6 +20,26 @@ import {
 import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 
+/**
+ * UserPostsComponent displays a table of user's posts with their titles, creation dates, and ratings.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Array<Object>} props.userPosts - Array of user post objects
+ * @param {string} props.userPosts[].postTitle - Title of the post
+ * @param {string|Date} props.userPosts[].postCreatedDate - Creation date of the post
+ * @param {number} props.userPosts[].ratings - Number of ratings for the post
+ * 
+ * @example
+ * const userPosts = [
+ *   {
+ *     postTitle: "My First Post",
+ *     postCreatedDate: "2024-03-20",
+ *     ratings: 5
+ *   }
+ * ];
+ * return <UserPostsComponent userPosts={userPosts} />;
+ */
 function UserPostsComponent({ userPosts }) {
   const styles = useStyles();
 
