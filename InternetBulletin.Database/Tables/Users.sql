@@ -9,7 +9,3 @@ CREATE TABLE [dbo].[Users]
   [IsAdmin] BIT NOT NULL DEFAULT 0,
   CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
-
--- Add indexes
-CREATE NONCLUSTERED INDEX [IX_Users_EmailAddress] ON [dbo].[Users] ([UserName], [EmailAddress]);
-CREATE NONCLUSTERED INDEX [IX_Users_IsActive] ON [dbo].[Users] ([IsActive]);
