@@ -8,7 +8,7 @@ const useStyles = makeStyles({
   },
   userImgSkeleton: {
     width: "100%",
-    height: "200px"
+    height: "200px",
   },
   profileHeading: {
     fontFamily: "Architects Daughter",
@@ -18,7 +18,10 @@ const useStyles = makeStyles({
     alignItems: "center",
   },
   imageContainer: {
-    flexShrink: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%'
   },
   profileImage: {
     width: "100%",

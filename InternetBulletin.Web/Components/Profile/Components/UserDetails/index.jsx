@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellLayout,
+  TableRow,
   Text,
   Title1,
   tokens,
@@ -67,34 +72,60 @@ function UserDetailsComponent({ displayName, emailAddress, userName }) {
       <Title1 className={styles.heading}>
         {MyProfilePageConstants.Headings.AsPerMyKnowledge}
       </Title1>
-      <CardHeader
-        header={
-          <div className={styles.detailsContainer}>
-            <div className={styles.profileSection}>
-              <div className={styles.userInfo}>
-                <div className={styles.detailRow}>
-                  <Text size={400}>Name: </Text>
-                  <Text size={400} weight={tokens.fontWeightSemibold}>
-                    {userDetailsData.displayName}
+      <div className={styles.scrollableItems}>
+        <Table
+          aria-label="User details"
+          className={styles.detailsTable}
+          size="medium"
+        >
+          <TableBody className="row">
+            <TableRow>
+              <TableCell className={styles.rowCell}>
+                <TableCellLayout>
+                  <Text size={400} weight={"bold"}>
+                    Name
                   </Text>
-                </div>
-                <div className={styles.detailRow}>
-                  <Text size={400}>Email: </Text>
-                  <Text size={400} weight={tokens.fontWeightSemibold}>
-                    {userDetailsData.emailAddress}
+                </TableCellLayout>
+              </TableCell>
+              <TableCell>
+                <TableCellLayout>
+                  <Text size={400}>{userDetailsData.displayName}</Text>
+                </TableCellLayout>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell className={styles.rowCell}>
+                <TableCellLayout>
+                  <Text size={400} weight={"bold"}>
+                    Email
                   </Text>
-                </div>
-                <div className={styles.detailRow}>
-                  <Text size={400}>Username: </Text>
-                  <Text size={400} weight={tokens.fontWeightSemibold}>
-                    {userDetailsData.userName}
+                </TableCellLayout>
+              </TableCell>
+              <TableCell>
+                <TableCellLayout>
+                  <Text size={400}>{userDetailsData.emailAddress}</Text>
+                </TableCellLayout>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell className={styles.rowCell}>
+                <TableCellLayout>
+                  <Text size={400} weight={"bold"}>
+                    UserName
                   </Text>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      />
+                </TableCellLayout>
+              </TableCell>
+              <TableCell>
+                <TableCellLayout>
+                  <Text size={400}>{userDetailsData.userName}</Text>
+                </TableCellLayout>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
     </Card>
   );
 }

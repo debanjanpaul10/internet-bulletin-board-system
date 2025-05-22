@@ -6,6 +6,33 @@ export const useStyles = makeStyles({
     margin: "1rem",
     maxHeight: "300px",
   },
+  scrollableItems: {
+    flex: 1,
+    overflowY: "auto",
+    "&::-webkit-scrollbar": {
+      width: "8px",
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "var(--colorNeutralBackground1)",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "var(--colorNeutralForeground3)",
+      borderRadius: "4px",
+      "&:hover": {
+        background: "var(--colorNeutralForeground2)",
+      },
+    },
+    width: "100%",
+  },
+  detailsTable: {
+    width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: 0,
+    tableLayout: "fixed",
+  },
+  rowCell: {
+    padding: "10px",
+  },
   detailsContainer: {
     width: "100%",
     display: "flex",
