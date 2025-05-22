@@ -18,9 +18,10 @@ namespace InternetBulletin.Business.Services
     /// <summary>
     /// The Profiles Data Service Class.
     /// </summary>
-    /// <param name="profilesDataService">The Cosmos DB Context</param>
     /// <param name="logger">The Logger</param>
-    public class ProfilesService(ILogger<ProfilesService> logger, IProfilesDataService profilesDataService, IBulletinServices bulletinServices) : IProfilesService
+    /// <param name="profilesDataService">The profiles data service</param>
+    /// <param name="usersService">The users service</param>
+    public class ProfilesService(ILogger<ProfilesService> logger, IProfilesDataService profilesDataService, IUsersService usersService) : IProfilesService
     {
         /// <summary>
         /// The logger.
@@ -33,9 +34,9 @@ namespace InternetBulletin.Business.Services
         private readonly IProfilesDataService _profilesDataService = profilesDataService;
 
         /// <summary>
-        /// The bulletin services.
+        /// The users services.
         /// </summary>
-        private readonly IBulletinServices _bulletinServices = bulletinServices;
+        private readonly IUsersService _userService = usersService;
 
         /// <summary>
         /// Gets user profile data async.
@@ -50,7 +51,7 @@ namespace InternetBulletin.Business.Services
                 throw exception;
             }
 
-            var graphUserData = await this._bulletinServices.GetGraphUserDataAsync(userName);
+            var graphUserData = await this._userService.GetGraphUserDataAsync(userName);
             if (graphUserData is null || string.IsNullOrEmpty(graphUserData.Id))
             {
                 var exception = new Exception(ExceptionConstants.UserDoesNotExistsMessageConstant);

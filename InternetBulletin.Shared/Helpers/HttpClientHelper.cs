@@ -23,9 +23,8 @@ namespace InternetBulletin.Shared.Helpers
         /// <summary>
         /// Gets graph api data async.
         /// </summary>
-        /// <param name="userName">The user name.</param>
         /// <returns>The user collection response data.</returns>
-        Task<UserCollectionResponse> GetGraphApiDataAsync(string userName);
+        Task<UserCollectionResponse> GetGraphApiDataAsync();
     }
 
     /// <summary>
@@ -49,13 +48,12 @@ namespace InternetBulletin.Shared.Helpers
         /// <summary>
         /// Gets graph api data async.
         /// </summary>
-        /// <param name="userName">The user name.</param>
         /// <returns>The user collection response data.</returns>
-        public async Task<UserCollectionResponse> GetGraphApiDataAsync(string userName)
+        public async Task<UserCollectionResponse> GetGraphApiDataAsync()
         {
             try
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetGraphApiDataAsync), DateTime.UtcNow, userName));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetGraphApiDataAsync), DateTime.UtcNow, string.Empty));
 
                 var scopes = new[] { this._configuration[GraphAPIDefaultScopeConstant] };
                 var tenantId = this._configuration[TenantIdConstant];
@@ -92,7 +90,7 @@ namespace InternetBulletin.Shared.Helpers
             }
             finally
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetGraphApiDataAsync), DateTime.UtcNow, userName));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetGraphApiDataAsync), DateTime.UtcNow, string.Empty));
             }
         }
     }

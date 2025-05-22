@@ -53,10 +53,9 @@ namespace InternetBulletin.API.Dependencies
         public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IPostsService, PostsService>();
-            builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
             builder.Services.AddScoped<IPostRatingsService, PostRatingsService>();
-            builder.Services.AddScoped<IBulletinServices, BulletinServices>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
         }
 
         /// <summary>
@@ -68,6 +67,7 @@ namespace InternetBulletin.API.Dependencies
             builder.Services.AddScoped<IPostsDataService, PostsDataService>();
             builder.Services.AddScoped<IProfilesDataService, ProfilesDataService>();
             builder.Services.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
+            builder.Services.AddScoped<IUsersDataService, UsersDataService>();
         }
     }
 }

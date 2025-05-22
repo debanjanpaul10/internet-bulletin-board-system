@@ -38,6 +38,11 @@ namespace InternetBulletin.Shared.Constants
         public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
 
         /// <summary>
+        /// The ibbs functin app config key constant.
+        /// </summary>
+        public const string IbbsFunctinAppConfigKeyConstant = "IBBS.Function";
+
+        /// <summary>
         /// The local appsettings file constant.
         /// </summary>
         public const string LocalAppsettingsFileConstant = "appsettings.development.json";
