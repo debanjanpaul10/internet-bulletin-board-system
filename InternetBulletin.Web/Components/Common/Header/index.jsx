@@ -54,14 +54,20 @@ function Header() {
     <nav className="navbar navbar-expand-lg">
       <div className="d-flex w-100">
         <div className="navbar-nav mr-auto">
-          <Button
-            appearance="subtle"
-            className={styles.sidecarButton}
-            onClick={toggleSideBar}
-            {...restoreFocusTargetAttributes}
+          <Tooltip
+            content={ButtonTitles.SideDrawer}
+            relationship="label"
+            positioning="after"
           >
-            <AppFolder32Filled />
-          </Button>
+            <Button
+              appearance="subtle"
+              className={styles.sidecarButton}
+              onClick={toggleSideBar}
+              {...restoreFocusTargetAttributes}
+            >
+              <AppFolder32Filled />
+            </Button>
+          </Tooltip>
         </div>
 
         {/* IBBS LOGO */}

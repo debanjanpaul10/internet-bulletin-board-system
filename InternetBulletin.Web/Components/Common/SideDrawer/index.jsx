@@ -239,7 +239,7 @@ function SideDrawerComponent() {
       {...restoreFocusSourceAttributes}
       as="aside"
       open={isSideBarOpenState}
-      onOpenChange={(_, { open }) => setIsOpen(open)}
+      onOpenChange={(_, { open }) => setIsSideBarOpenState(open)}
       surfaceMotion={{ children: (_, props) => <DrawerMotion {...props} /> }}
     >
       <DrawerHeader className={styles.drawerHeader}>
@@ -254,20 +254,15 @@ function SideDrawerComponent() {
           }
         >
           {/* HOME BUTTON */}
-          <Tooltip
-            content={ButtonTitles.HomeButton}
-            relationship="label"
-            positioning="after"
+
+          <Button
+            onClick={handleHomePageRedirect}
+            className={styles.homeButton}
+            appearance="subtle"
           >
-            <Button
-              onClick={handleHomePageRedirect}
-              className={styles.homeButton}
-              appearance="subtle"
-            >
-              <img src={AppLogo} height={"30px"} />
-              &nbsp; {HomePageConstants.Headings.IBBS}
-            </Button>
-          </Tooltip>
+            <img src={AppLogo} height={"30px"} />
+            &nbsp; {HomePageConstants.Headings.IBBS}
+          </Button>
         </DrawerHeaderTitle>
       </DrawerHeader>
 

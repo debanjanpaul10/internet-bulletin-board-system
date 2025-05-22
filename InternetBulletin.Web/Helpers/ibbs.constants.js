@@ -34,6 +34,7 @@ export const HeaderPageConstants = {
     Login: "I am back!",
     Create: "I have something to share ...",
     MyProfile: "I wanna check myself out...",
+    SideDrawer: "Check out what features I have ...",
   },
 };
 
@@ -135,5 +136,8 @@ export const MyProfilePageConstants = {
   Headings: {
     Header: "My Profile",
     WelcomeMessage: "Your Profile's so fly, it could make a crocodile smile!",
+    YourPostsMessage: "Your stories",
+    AsPerMyKnowledge: "As per my knowledge, these are your details!"
   },
+  PostTableHeaders: ["Post Name", "Date Created", "Ratings"],
 };

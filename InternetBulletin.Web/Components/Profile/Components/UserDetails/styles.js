@@ -4,7 +4,7 @@ export const useStyles = makeStyles({
   card: {
     maxWidth: "100%",
     margin: "1rem",
-    height: "200px"
+    maxHeight: "300px",
   },
   detailsContainer: {
     width: "100%",
@@ -22,12 +22,20 @@ export const useStyles = makeStyles({
   },
   userInfo: {
     flex: 1,
-    margin: "40px 0",
+    margin: "20px 0",
   },
   detailRow: {
     marginBottom: "1rem",
     "&:last-child": {
       marginBottom: 0,
     },
+  },
+  heading: {
+    fontFamily: "Architects Daughter",
+    textAlign: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "10px",
   },
 });

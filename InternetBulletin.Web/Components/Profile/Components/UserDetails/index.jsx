@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
-import { Card, CardHeader, Text, tokens } from "@fluentui/react-components";
+import {
+  Card,
+  CardHeader,
+  Text,
+  Title1,
+  tokens,
+} from "@fluentui/react-components";
 
 import { useStyles } from "./styles";
+import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 
 /**
  * UserDetailsComponent displays the user's personal information in a formatted layout.
@@ -56,7 +63,10 @@ function UserDetailsComponent({ displayName, emailAddress, userName }) {
   }, [displayName, emailAddress, userName]);
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} appearance="filled-alternative">
+      <Title1 className={styles.heading}>
+        {MyProfilePageConstants.Headings.AsPerMyKnowledge}
+      </Title1>
       <CardHeader
         header={
           <div className={styles.detailsContainer}>
