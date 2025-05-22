@@ -33,7 +33,8 @@ This project is an Internet Bulletin Board Service (IBBS) that allows users to:
 - The application is deployed to Azure services using Github actions.
 - The pipeline information is present in `.github/workflows` folder.
 - Deployment is handled through GitHub Actions using the `Build and Deploy InternetBulletin` pipeline
-- Currently, only `main` and `dev` branch commits trigger deployments
+- Currently, only `main` and `dev` branch commits should be deployed.
+- The pipeline is configured with workflow triggers with selectable stages.
 - Deployment consists of two stages:
     - .NET stage: Builds the .NET app using .NET 9.0.x SDK and deploys to Azure App Service.
     - React stage: Builds the frontend and deploys to Azure Static Web App.
