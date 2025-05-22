@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE [dbo].[GetUserPostsAndRatings]
+CREATE PROCEDURE [dbo].[GetUserPostsAndRatings]
 (
   @UserName NVARCHAR(MAX) = ''
 )
