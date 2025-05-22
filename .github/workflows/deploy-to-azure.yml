@@ -12,19 +12,19 @@ on:
       deploy_api:
         description: 'InternetBulletin.API'
         required: false
-        default: true
+        default: false
         type: boolean
 
       deploy_web:
         description: 'InternetBulletin.Web'
         required: false
-        default: true
+        default: false
         type: boolean
 
       deploy_database:
         description: 'InternetBulletin.Database'
         required: false
-        default: true
+        default: false
         type: boolean
       
       deploy_function:
