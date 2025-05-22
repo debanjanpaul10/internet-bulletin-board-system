@@ -34,6 +34,8 @@ on:
         type: boolean
 
 jobs:
+  #region API
+
   build-and-deploy-api:
     name: Build and Deploy InternetBulletin.API
     if: ${{ inputs.deploy_api }}
@@ -69,6 +71,10 @@ jobs:
         slot-name: production
         publish-profile: ${{ secrets.AZURE_IBBS_API_PUBLISH_PROFILE }}
         package: ./publish-api
+    
+  #endregion
+
+  #region WEB
 
   build-and-deploy-web:
     name: Build and Deploy InternetBulletin.Web
@@ -101,6 +107,10 @@ jobs:
         action: 'upload'
         app_location: ${{ env.WEB_PROJECT_PATH }}
         output_location: 'dist'
+
+  #endregion
+
+  #region Database
 
   build-and-deploy-database:
     name: Build and Deploy InternetBulletin.Database
@@ -144,6 +154,10 @@ jobs:
         action: 'publish'
         arguments: '/p:DropObjectsNotInSource=true'
 
+  #endregion
+
+  #region Azure Function
+
   build-and-deploy-function:
     name: Build and Deploy InternetBulletin.Functions
     if: ${{inputs.deploy_function}}
@@ -177,6 +191,9 @@ jobs:
       with:
         app-name: func-internet-bulletin
         package: ./publish-function
+        sku: 'flexconsumption'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} 
+
+  #endregion
 
         
