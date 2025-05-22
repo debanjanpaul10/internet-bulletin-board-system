@@ -7,10 +7,13 @@
 
 namespace InternetBulletin.Functions
 {
+    using Azure.Identity;
     using Microsoft.Azure.Functions.Worker;
     using Microsoft.Azure.Functions.Worker.Builder;
     using Microsoft.Extensions.DependencyInjection;
+    using InternetBulletin.Functions.Dependencies;
     using Microsoft.Extensions.Hosting;
+    using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
     /// <summary>
     /// Program class from where the execution starts
@@ -26,16 +29,24 @@ namespace InternetBulletin.Functions
 
             var builder = FunctionsApplication.CreateBuilder(args);
 
+            var credentials = builder.Environment.IsDevelopment()
+                ? new DefaultAzureCredential()
+                : new DefaultAzureCredential(new DefaultAzureCredentialOptions
+                {
+                    ManagedIdentityClientId = builder.Configuration[ManagedIdentityClientIdConstant]
+                });
+
             builder.ConfigureFunctionsWebApplication();
+            builder.ConfigureAzureAppConfiguration(credentials);
+            builder.ConfigureAzureSqlServer();
+            builder.ConfigureFunctionServices();
 
             builder.Services
                 .AddApplicationInsightsTelemetryWorkerService()
                 .ConfigureFunctionsApplicationInsights();
 
             builder.Build().Run();
-
         }
     }
-
 }
 

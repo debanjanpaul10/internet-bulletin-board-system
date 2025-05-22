@@ -16,12 +16,12 @@ namespace InternetBulletin.API.Controllers
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="httpContextAccessor">The http context accessor.</param>
-    /// <param name="bulletinServices">The bulletin services.</param>
+    /// <param name="usersService">The user services.</param>
     /// <seealso cref="BaseController"/>
     [ApiController]
     [Route(RouteConstants.BulletinServicesBase_RoutePrefix)]
     public class BulletinServicesController(
-        ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, IBulletinServices bulletinServices) : BaseController(httpContextAccessor)
+        ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, IUsersService usersService) : BaseController(httpContextAccessor)
     {
         /// <summary>
         /// The logger.
@@ -29,9 +29,9 @@ namespace InternetBulletin.API.Controllers
         private readonly ILogger<BulletinServicesController> _logger = logger;
 
         /// <summary>
-        /// The bulletin services.
+        /// The user services.
         /// </summary>
-        private readonly IBulletinServices _bulletinServices = bulletinServices;
+        private readonly IUsersService _usersService = usersService;
 
         /// <summary>
         /// Gets graph user data async.
@@ -47,7 +47,7 @@ namespace InternetBulletin.API.Controllers
                 this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUsersDataFromGraphApiAsync), DateTime.UtcNow, this.UserName));
                 if (this.IsAuthorized())
                 {
-                    var result = await this._bulletinServices.GetGraphUserDataAsync(userName);
+                    var result = await this._usersService.GetGraphUserDataAsync(userName);
                     if (result is not null)
                     {
                         return this.HandleSuccessResult(result);
