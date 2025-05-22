@@ -114,18 +114,19 @@ namespace InternetBulletin.Data
 		/// </remarks>
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			base.OnModelCreating(modelBuilder);
+
 			modelBuilder.Entity<User>(entity =>
 			{
 				entity.ToTable(UsersTableConstant);
-				entity.HasKey(e => e.UserId).HasName(PrimaryKeyUsersConstant);
-				entity.Property(e => e.UserId).HasColumnType(IntegerDataTypeConstant).ValueGeneratedOnAdd();
+				entity.HasKey(e => e.Id);
 
-				entity.Property(p => p.Name).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.UserEmail).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.UserAlias).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.UserPassword).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-				entity.Property(p => p.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
-				entity.Property(p => p.IsAdmin).HasColumnType(BitDataTypeConstant).HasDefaultValue(0).IsRequired();
+				entity.Property(e => e.Id).IsRequired();
+				entity.Property(e => e.DisplayName).IsRequired();
+				entity.Property(e => e.EmailAddress).IsRequired();
+				entity.Property(e => e.DateCreated).IsRequired();
+				entity.Property(e => e.IsActive).IsRequired();
+				entity.Property(e => e.IsAdmin).IsRequired();
 			});
 
 			modelBuilder.Entity<Post>(entity =>
