@@ -9,14 +9,12 @@ on:
     push:
         branches: [dev, main]
 
-# Add permissions block
 permissions:
     pull-requests: write
     contents: read
     statuses: write
 
 jobs:
-    #region Tests
     internet-bulletin-tests:
         name: Unit tests and coverage
         runs-on: ubuntu-latest
@@ -76,4 +74,3 @@ jobs:
                         description: `Code coverage: ${coveragePct}%`,
                         target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
                       });
-    # endregion
