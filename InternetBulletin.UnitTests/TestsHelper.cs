@@ -9,6 +9,9 @@ namespace InternetBulletin.UnitTests
 {
     using InternetBulletin.Shared.DTOs.Posts;
     using InternetBulletin.Shared.DTOs.Users;
+    using Microsoft.Graph.Groups.Item.MembersWithLicenseErrors;
+    using Microsoft.Graph.Models;
+    using Post = InternetBulletin.Data.Entities.Post;
 
     /// <summary>
     /// Tests helper.
@@ -218,6 +221,83 @@ namespace InternetBulletin.UnitTests
                     PostTitle = "TITLE 3"
                 },
             ];
+        }
+        /// <summary>
+        /// Prepares the graph API response.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The graph API response.</returns>
+        public static UserCollectionResponse PrepareGraphApiResponseForSingleUser(string userName)
+        {
+            return new UserCollectionResponse
+            {
+                Value =
+                [
+                    new()
+                    {
+                        DisplayName = "User 1",
+                        Id = Guid.NewGuid().ToString(),
+                        AdditionalData = new Dictionary<string, object>
+                        {
+                            { IbbsConstants.UserNameExtensionConstant, userName }
+                        }
+                    },
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Prepares the graph API response.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The graph API response.</returns>
+        public static UserCollectionResponse PrepareGraphApiResponse()
+        {
+            return new UserCollectionResponse
+            {
+                Value =
+                [
+                    new()
+                    {
+                        DisplayName = "User 1",
+                        Id = Guid.NewGuid().ToString(),
+                        AdditionalData = new Dictionary<string, object>
+                        {
+                            { IbbsConstants.UserNameExtensionConstant, "user1" }
+                        }
+                    },
+                    new()
+                    {
+                        DisplayName = "User 2",
+                        Id = Guid.NewGuid().ToString(),
+                        AdditionalData = new Dictionary<string, object>
+                        {
+                            { IbbsConstants.UserNameExtensionConstant, "user2" }
+                        }
+                    },
+                    new()
+                    {
+                        DisplayName = "User 3",
+                        Id = Guid.NewGuid().ToString(),
+                        AdditionalData = new Dictionary<string, object>
+                        {
+                            { IbbsConstants.UserNameExtensionConstant, "user3" }
+                        }
+                    }
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Prepares the empty graph API response.
+        /// </summary>
+        /// <returns>The empty graph API response.</returns>
+        public static UserCollectionResponse PrepareEmptyGraphApiResponse()
+        {
+            return new UserCollectionResponse
+            {
+                Value = []
+            };
         }
     }
 }
