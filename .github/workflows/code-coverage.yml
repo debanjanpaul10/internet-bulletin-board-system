@@ -7,6 +7,11 @@ on:
     pull_request:
         branches: [dev, main]
 
+# Add permissions block
+permissions:
+    pull-requests: write
+    contents: read
+
 jobs:
     #region Tests
     internet-bulletin-tests:
@@ -48,4 +53,5 @@ jobs:
               with:
                   recreate: true
                   path: code-coverage-results.md
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # endregion
