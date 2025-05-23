@@ -199,8 +199,8 @@ jobs:
 
     #region Tests
     internet-bulletin-tests:
-        name: InternetBulletin.UnitTests
-        needs: [build-and-deploy-api]
+        name: Unit tests and coverage
+        if: ${{ inputs.deploy_api || inputs.deploy_function }}
         runs-on: ubuntu-latest
 
         steps:
