@@ -224,7 +224,8 @@ jobs:
             # Install ReportGenerator
             - name: Install ReportGenerator
               run: |
-                  dotnet tool install -g dotnet-reportgenerator-globaltool
+                  dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
+                  dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
 
             # Generate PDF report
             - name: Generate PDF Report
