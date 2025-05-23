@@ -37,14 +37,29 @@ jobs:
               id: coverage
               run: |
                   dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+                  # Debug: List coverage files
+                  echo "Coverage files:"
+                  ls -la coverage/**/coverage.cobertura.xml
+                  
                   # Extract coverage percentage from the coverage report
                   COVERAGE=$(grep -oP 'line-rate="\K[^"]+' coverage/**/coverage.cobertura.xml | head -1)
+                  echo "Raw coverage value: $COVERAGE"
+                  
+                  # Convert to percentage and round to 2 decimal places
+                  COVERAGE_PCT=$(echo "scale=2; $COVERAGE * 100" | bc)
+                  echo "Coverage percentage: $COVERAGE_PCT%"
+                  
+                  # Set outputs
                   echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
-                  # Set status check
-                  if (( $(echo "$COVERAGE >= 60" | bc -l) )); then
+                  echo "coverage_pct=$COVERAGE_PCT" >> $GITHUB_OUTPUT
+                  
+                  # Set status (using float comparison)
+                  if (( $(echo "$COVERAGE >= 0.60" | bc -l) )); then
                     echo "status=success" >> $GITHUB_OUTPUT
+                    echo "Status set to success"
                   else
                     echo "status=failure" >> $GITHUB_OUTPUT
+                    echo "Status set to failure"
                   fi
 
             - name: Code Coverage Report
@@ -72,7 +87,12 @@ jobs:
               with:
                   script: |
                     const coverage = '${{ steps.coverage.outputs.coverage }}';
+                    const coveragePct = '${{ steps.coverage.outputs.coverage_pct }}';
                     const status = '${{ steps.coverage.outputs.status }}';
+                    
+                    console.log('Coverage value:', coverage);
+                    console.log('Coverage percentage:', coveragePct);
+                    console.log('Status:', status);
                     
                     await github.rest.repos.createCommitStatus({
                       owner: context.repo.owner,
@@ -80,7 +100,7 @@ jobs:
                       sha: context.sha,
                       state: status,
                       context: 'Code Coverage',
-                      description: `Code coverage: ${(parseFloat(coverage) * 100).toFixed(2)}%`,
+                      description: `Code coverage: ${coveragePct}%`,
                       target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
                     });
     # endregion
