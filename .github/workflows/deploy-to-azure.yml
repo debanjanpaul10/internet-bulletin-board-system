@@ -224,7 +224,6 @@ jobs:
             # Install ReportGenerator
             - name: Install ReportGenerator
               run: |
-                  dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
                   dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
 
             # Generate HTML report
@@ -232,7 +231,7 @@ jobs:
               run: |
                   echo "Listing coverage directory contents:"
                   ls -R ./coverage
-                  echo "Generating PDF report..."
+                  echo "Generating HTML report..."
                   reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage-report" -reporttypes:Html -verbosity:Verbose
                   echo "Listing generated report directory contents:"
                   ls -R ./coverage-report
