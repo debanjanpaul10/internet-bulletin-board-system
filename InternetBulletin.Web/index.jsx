@@ -15,7 +15,7 @@ import { PostsReducer } from "@store/Posts/Reducers";
 import { CommonReducer } from "@store/Common/Reducers";
 import { msalConfig } from "@services/auth.config";
 import { UserReducer } from "@store/Users/Reducer";
-import Main from "./Main.jsx";
+import Main from "@components/Main";
 
 /**
  * Configures the redux store.

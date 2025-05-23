@@ -69,13 +69,15 @@ function UserPostsComponent({ userPosts }) {
           size="medium"
         >
           <TableHeader className={styles.stickyHeader}>
-            {MyProfilePageConstants.PostTableHeaders.map((item, index) => (
-              <TableHeaderCell key={index} className={styles.rowCell}>
-                <Text size={400}>{item}</Text>
-              </TableHeaderCell>
-            ))}
+            <TableRow>
+              {MyProfilePageConstants.PostTableHeaders.map((item, index) => (
+                <TableHeaderCell key={index} className={styles.rowCell}>
+                  <Text size={400}>{item}</Text>
+                </TableHeaderCell>
+              ))}
+            </TableRow>
           </TableHeader>
-          <TableBody className="row">
+          <TableBody>
             {Object.values(userPostsData).length > 0 &&
               userPostsData?.map((item, index) => (
                 <TableRow key={index}>
