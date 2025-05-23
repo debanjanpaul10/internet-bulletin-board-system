@@ -6,14 +6,15 @@ env:
 on:
     pull_request:
         branches: [dev, main]
+    push:
+        branches: [dev, main]
 
-# Add permissions block
 permissions:
     pull-requests: write
     contents: read
+    statuses: write
 
 jobs:
-    #region Tests
     internet-bulletin-tests:
         name: Unit tests and coverage
         runs-on: ubuntu-latest
@@ -30,28 +31,46 @@ jobs:
                   dotnet-version: "9.0.x"
 
             # Run tests with coverage
-            - name: Run .NET Tests with Coverage
+            - name: Run .NET Tests with Cobertura coverage
+              id: coverage
               run: |
                   dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-            - name: Code Coverage Report
-              uses: irongut/CodeCoverageSummary@v1.3.0
-              with:
-                  filename: coverage/**/coverage.cobertura.xml
-                  badge: true
-                  fail_below_min: true
-                  format: markdown
-                  hide_branch_rate: false
-                  hide_complexity: false
-                  indicators: true
-                  output: both
-                  thresholds: "60 80"
+                  # Extract coverage percentage from the coverage report
+                  COVERAGE=$(grep -oP 'line-rate="\K[^"]+' coverage/**/coverage.cobertura.xml | head -1)
+                  echo "Raw coverage value: $COVERAGE"
 
-            - name: Add Coverage PR Comment
-              uses: marocchino/sticky-pull-request-comment@v2
-              if: github.event_name == 'pull_request'
+                  # Convert to percentage and round to 2 decimal places
+                  COVERAGE_PCT=$(echo "scale=2; $COVERAGE * 100" | bc)
+                  echo "Coverage percentage: $COVERAGE_PCT%"
+
+                  # Set outputs
+                  echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+                  echo "coverage_pct=$COVERAGE_PCT" >> $GITHUB_OUTPUT
+
+                  # Set status (using float comparison)
+                  if (( $(echo "$COVERAGE >= 0.60" | bc -l) )); then
+                    echo "status=success" >> $GITHUB_OUTPUT
+                    echo "Status set to success"
+                  else
+                    echo "status=failure" >> $GITHUB_OUTPUT
+                    echo "Status set to failure"
+                  fi
+
+            - name: Update Status Check
+              uses: actions/github-script@v6
               with:
-                  recreate: true
-                  path: code-coverage-results.md
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    # endregion
+                  script: |
+                      const coverage = '${{ steps.coverage.outputs.coverage }}';
+                      const coveragePct = '${{ steps.coverage.outputs.coverage_pct }}';
+                      const status = '${{ steps.coverage.outputs.status }}';
+
+                      await github.rest.repos.createCommitStatus({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        sha: context.sha,
+                        state: status,
+                        context: 'Code Coverage',
+                        description: `Code coverage: ${coveragePct}%`,
+                        target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+                      });
