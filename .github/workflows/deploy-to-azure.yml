@@ -219,7 +219,7 @@ jobs:
               run: |
                   dotnet restore ${{ env.TEST_PROJECT_PATH }}
                   dotnet build ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-restore
-                  dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
+                  dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage --logger "console;verbosity=detailed"
 
             # Install ReportGenerator
             - name: Install ReportGenerator
@@ -230,7 +230,12 @@ jobs:
             # Generate PDF report
             - name: Generate PDF Report
               run: |
-                  reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage-report" -reporttypes:"PDF"
+                  echo "Listing coverage directory contents:"
+                  ls -R ./coverage
+                  echo "Generating PDF report..."
+                  reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage-report" -reporttypes:"PDF" -verbosity:Verbose
+                  echo "Listing generated report directory contents:"
+                  ls -R ./coverage-report
 
             # Upload coverage report
             - name: Upload coverage report
