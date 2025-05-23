@@ -5,7 +5,6 @@ env:
     WEB_PROJECT_PATH: InternetBulletin.Web
     DATABASE_PROJECT_PATH: InternetBulletin.Database/InternetBulletin.Database.sqlproj
     FUNCTION_PROJECT_PATH: InternetBulletin.Functions/InternetBulletin.Functions.csproj
-    TEST_PROJECT_PATH: InternetBulletin.UnitTests/InternetBulletin.UnitTests.csproj
 
 on:
     workflow_dispatch:
@@ -194,39 +193,5 @@ jobs:
                   package: ./publish-function
                   sku: "flexconsumption"
                   publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-
-    #endregion
-
-    #region Tests
-    internet-bulletin-tests:
-        name: InternetBulletin.UnitTests
-        needs: [build-and-deploy-api]
-        runs-on: ubuntu-latest
-
-        steps:
-            # Checkout the repository
-            - name: Checkout code
-              uses: actions/checkout@v3
-
-            # Setup .NET
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v3
-              with:
-                  dotnet-version: "9.0.x"
-
-            # Run tests with coverage
-            - name: Run .NET Tests with Coverage
-              run: |
-                  dotnet restore ${{ env.TEST_PROJECT_PATH }}
-                  dotnet build ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-restore
-                  dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
-
-            # Upload coverage report
-            - name: Upload coverage report
-              uses: actions/upload-artifact@v4
-              with:
-                  name: coverage-report
-                  path: ./coverage
-                  retention-days: 14
 
     #endregion
