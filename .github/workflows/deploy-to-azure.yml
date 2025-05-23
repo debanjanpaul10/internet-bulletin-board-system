@@ -5,7 +5,7 @@ env:
   WEB_PROJECT_PATH: InternetBulletin.Web
   DATABASE_PROJECT_PATH: InternetBulletin.Database/InternetBulletin.Database.sqlproj
   FUNCTION_PROJECT_PATH: InternetBulletin.Functions/InternetBulletin.Functions.csproj
-  TEST_PROJECT_PATH: InternetBulletin.UnitTests/InternetBulletin.Tests.csproj
+  TEST_PROJECT_PATH: InternetBulletin.UnitTests/InternetBulletin.UnitTests.csproj
 
 on:
   workflow_dispatch:
