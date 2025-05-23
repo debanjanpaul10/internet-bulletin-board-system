@@ -2,34 +2,46 @@
 //	<copyright file="ProfilesServiceTests.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>Profiles service tests.</summary>
+// <summary>The Profiles Service Tests Class.</summary>
 // *********************************************************************************
-
-using InternetBulletin.Business.Contracts;
 
 namespace InternetBulletin.UnitTests.Business
 {
+    using InternetBulletin.Business.Contracts;
+    using InternetBulletin.Business.Services;
+    using InternetBulletin.Data.Contracts;
+    using InternetBulletin.Shared.Constants;
+    using InternetBulletin.Shared.DTOs.Users;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using System;
+    using System.Threading.Tasks;
+    using Xunit;
+
     /// <summary>
-    /// Profiles service tests.
+    /// The Profiles Service Tests Class.
     /// </summary>
     public class ProfilesServiceTests
     {
         /// <summary>
         /// The user name.
         /// </summary>
-        private static readonly string UserName = "user@example.com";
+        private readonly static string UserName = "user1234";
 
         /// <summary>
-        /// The mock logger.
+        /// The logger mock.
         /// </summary>
-        private readonly Mock<ILogger<ProfilesService>> _mockLogger;
+        private readonly Mock<ILogger<ProfilesService>> _loggerMock;
 
         /// <summary>
-        /// The mock profiles data service.
+        /// The profiles data service mock.
         /// </summary>
-        private readonly Mock<IProfilesDataService> _mockProfilesDataService;
+        private readonly Mock<IProfilesDataService> _profilesDataServiceMock;
 
-        private readonly Mock<IUsersService> _mockUsersService;
+        /// <summary>
+        /// The users service mock.
+        /// </summary>
+        private readonly Mock<IUsersService> _usersServiceMock;
 
         /// <summary>
         /// The profiles service.
@@ -41,19 +53,134 @@ namespace InternetBulletin.UnitTests.Business
         /// </summary>
         public ProfilesServiceTests()
         {
-            this._mockLogger = new Mock<ILogger<ProfilesService>>();
-            this._mockProfilesDataService = new Mock<IProfilesDataService>();
-            this._mockUsersService = new Mock<IUsersService>();
-
+            this._loggerMock = new Mock<ILogger<ProfilesService>>();
+            this._profilesDataServiceMock = new Mock<IProfilesDataService>();
+            this._usersServiceMock = new Mock<IUsersService>();
             this._profilesService = new ProfilesService(
-                this._mockLogger.Object,
-                this._mockProfilesDataService.Object,
-                this._mockUsersService.Object
-            );
+                this._loggerMock.Object,
+                this._profilesDataServiceMock.Object,
+                this._usersServiceMock.Object);
         }
 
+        /// <summary>
+        /// Tests that GetUserProfileDataAsync returns correct profile data when valid username is provided.
+        /// </summary>
+        [Fact]
+        public async Task GetUserProfileDataAsync_ValidUserName_ReturnsProfileData()
+        {
+            // Arrange
+            var graphUserData = TestsHelper.PrepareGraphUserDTOData(UserName);
+            var userPosts = TestsHelper.PrepareUserPostsData(UserName);
+            var userRatings = TestsHelper.PrepareUserPostRatingsData();
 
+            this._usersServiceMock.Setup(x => x.GetGraphUserDataAsync(It.IsAny<string>())).ReturnsAsync(graphUserData);
+            this._profilesDataServiceMock.Setup(x => x.GetUserPostsAsync(It.IsAny<string>())).ReturnsAsync(userPosts);
+            this._profilesDataServiceMock.Setup(x => x.GetUserRatingsAsync(It.IsAny<string>())).ReturnsAsync(userRatings);
+
+            // Act
+            var result = await this._profilesService.GetUserProfileDataAsync(UserName);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(graphUserData.DisplayName, result.DisplayName);
+            Assert.Equal(graphUserData.EmailAddress, result.EmailAddress);
+            Assert.Equal(graphUserData.UserName, result.UserName);
+            Assert.NotNull(result.UserPosts);
+            Assert.NotNull(result.UserPostRatings);
+        }
+
+        /// <summary>
+        /// Tests that GetUserProfileDataAsync throws exception when username is null.
+        /// </summary>
+        [Fact]
+        public async Task GetUserProfileDataAsync_NullUserName_ThrowsException()
+        {
+            // Arrange
+            string userName = null!;
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(userName));
+            Assert.Equal(ExceptionConstants.UserIdCannotBeNullMessageConstant, exception.Message);
+        }
+
+        /// <summary>
+        /// Tests that GetUserProfileDataAsync throws exception when username is empty.
+        /// </summary>
+        [Fact]
+        public async Task GetUserProfileDataAsync_EmptyUserName_ThrowsException()
+        {
+            // Arrange
+            var userName = string.Empty;
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(userName));
+            Assert.Equal(ExceptionConstants.UserIdCannotBeNullMessageConstant, exception.Message);
+        }
+
+        /// <summary>
+        /// Tests that GetUserProfileDataAsync throws exception when user doesn't exist in Graph.
+        /// </summary>
+        [Fact]
+        public async Task GetUserProfileDataAsync_UserNotFoundInGraph_ThrowsException()
+        {
+            // Arrange
+            var userName = "nonexistentUser";
+            this._usersServiceMock.Setup(x => x.GetGraphUserDataAsync(userName))
+                .ReturnsAsync((GraphUserDTO)null!);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => this._profilesService.GetUserProfileDataAsync(userName));
+            Assert.Equal(ExceptionConstants.UserDoesNotExistsMessageConstant, exception.Message);
+        }
+
+        /// <summary>
+        /// Tests that GetUserProfileDataAsync returns empty collections when user has no posts or ratings.
+        /// </summary>
+        [Fact]
+        public async Task GetUserProfileDataAsync_NoPostsOrRatings_ReturnsEmptyCollections()
+        {
+            // Arrange
+            var graphUserData = TestsHelper.PrepareGraphUserDTOData(UserName);
+
+            this._usersServiceMock.Setup(x => x.GetGraphUserDataAsync(It.IsAny<string>())).ReturnsAsync(graphUserData);
+            this._profilesDataServiceMock.Setup(x => x.GetUserPostsAsync(It.IsAny<string>())).ReturnsAsync([]);
+            this._profilesDataServiceMock.Setup(x => x.GetUserRatingsAsync(It.IsAny<string>()))
+                .ReturnsAsync([]);
+
+            // Act
+            var result = await this._profilesService.GetUserProfileDataAsync(UserName);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result.UserPosts);
+            Assert.Empty(result.UserPostRatings);
+        }
+
+        /// <summary>
+        /// Tests that GetUserProfileDataAsync correctly maps post data to DTOs.
+        /// </summary>
+        [Fact]
+        public async Task GetUserProfileDataAsync_CorrectlyMapsPostData()
+        {
+            // Arrange
+            var postId = Guid.NewGuid();
+            var graphUserData = TestsHelper.PrepareGraphUserDTOData(UserName);
+            var userPosts = TestsHelper.PrepareUserPostsData(UserName);
+
+            this._usersServiceMock.Setup(x => x.GetGraphUserDataAsync(It.IsAny<string>())).ReturnsAsync(graphUserData);
+            this._profilesDataServiceMock.Setup(x => x.GetUserPostsAsync(It.IsAny<string>())).ReturnsAsync(userPosts);
+            this._profilesDataServiceMock.Setup(x => x.GetUserRatingsAsync(It.IsAny<string>())).ReturnsAsync([]);
+
+            // Act
+            var result = await this._profilesService.GetUserProfileDataAsync(UserName);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.UserPosts);
+            var postDto = result.UserPosts[0];
+            Assert.Equal(userPosts[0].PostId, postDto.PostId);
+            Assert.Equal(userPosts[0].PostTitle, postDto.PostTitle);
+            Assert.Equal(UserName, postDto.PostOwnerUserName);
+        }
     }
 }
-
-

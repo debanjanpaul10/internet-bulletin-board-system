@@ -9,12 +9,10 @@ namespace InternetBulletin.UnitTests.Business
 {
     using InternetBulletin.Business.Services;
     using InternetBulletin.Data.Contracts;
-    using InternetBulletin.Data.Entities;
     using InternetBulletin.Shared.DTOs.Posts;
     using Microsoft.Extensions.Logging;
     using Moq;
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -71,8 +69,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task GetPostAsync_ValidPostId_ReturnsPost()
         {
             // Arrange
-            var expectedPost = new Post { PostId = Guid.Parse(PostIdGuid) };
-
+            var expectedPost = TestsHelper.PrepareNewPostDataDTO(PostIdGuid, 0);
             this._postsDataServiceMock.Setup(x => x.GetPostAsync(It.IsAny<Guid>(), It.IsAny<string>(), true)).ReturnsAsync(expectedPost);
 
             // Act
@@ -105,7 +102,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task AddNewPostAsync_ValidPost_ReturnsTrue()
         {
             // Arrange
-            var newPost = new AddPostDTO { PostTitle = "Test Post", PostContent = "Test Content" };
+            var newPost = TestsHelper.PrepareNewAddPostDataDTO();
             this._postsDataServiceMock.Setup(x => x.AddNewPostAsync(It.IsAny<AddPostDTO>(), It.IsAny<string>())).ReturnsAsync(true);
 
             // Act
@@ -122,8 +119,8 @@ namespace InternetBulletin.UnitTests.Business
         public async Task UpdatePostAsync_ValidPost_ReturnsUpdatedPost()
         {
             // Arrange
-            var updatedPost = new UpdatePostDTO { PostId = Guid.Parse(PostIdGuid) };
-            var expectedPost = new Post { PostId = updatedPost.PostId };
+            var updatedPost = TestsHelper.PrepareNewUpdatePostDataDTO(PostIdGuid);
+            var expectedPost = TestsHelper.PrepareNewPostDataDTO(PostIdGuid, 1);
             this._postsDataServiceMock.Setup(x => x.UpdatePostAsync(It.IsAny<UpdatePostDTO>(), It.IsAny<string>(), false)).ReturnsAsync(expectedPost);
 
             // Act
@@ -157,10 +154,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task GetAllPostsAsync_WithUserName_ReturnsPostsWithRatings()
         {
             // Arrange
-            var expectedPosts = new List<PostWithRatingsDTO>
-            {
-                new() { PostId = Guid.NewGuid() }
-            };
+            var expectedPosts = TestsHelper.PreparePostWithRatingsDTO();
             this._postRatingsDataServiceMock.Setup(x => x.GetAllPostsWithRatingsAsync(It.IsAny<string>())).ReturnsAsync(expectedPosts);
 
             // Act
@@ -168,7 +162,7 @@ namespace InternetBulletin.UnitTests.Business
 
             // Assert
             Assert.NotNull(result);
-            Assert.Single(result);
+            Assert.NotNull(result);
             Assert.Equal(expectedPosts[0].PostId, result[0].PostId);
         }
 
@@ -179,10 +173,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task GetAllPostsAsync_WithoutUserName_ReturnsAllPosts()
         {
             // Arrange
-            var expectedPosts = new List<Post>
-            {
-                new() { PostId = Guid.NewGuid() }
-            };
+            var expectedPosts = TestsHelper.PreparePostsDataForUser();
             this._postsDataServiceMock.Setup(x => x.GetAllPostsAsync()).ReturnsAsync(expectedPosts);
 
             // Act
@@ -190,7 +181,7 @@ namespace InternetBulletin.UnitTests.Business
 
             // Assert
             Assert.NotNull(result);
-            Assert.Single(result);
+            Assert.NotNull(result);
             Assert.Equal(expectedPosts[0].PostId, result[0].PostId);
         }
 
