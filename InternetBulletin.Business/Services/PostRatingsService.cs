@@ -8,8 +8,6 @@
 namespace InternetBulletin.Business.Services
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
     using System.Threading.Tasks;
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Data.Contracts;
