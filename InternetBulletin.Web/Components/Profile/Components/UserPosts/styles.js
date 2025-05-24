@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
 	card: {
@@ -7,6 +7,11 @@ const useStyles = makeStyles({
 		height: "250px",
 		display: "flex",
 		flexDirection: "column",
+		boxShadow: tokens.shadow28,
+		backgroundColor: tokens.colorNeutralCardBackground,
+		"&:hover": {
+			backgroundColor: tokens.colorNeutralCardBackgroundHover,
+		},
 	},
 	scrollableItems: {
 		flex: 1,
@@ -35,7 +40,6 @@ const useStyles = makeStyles({
 	tableHeader: {
 		position: "sticky",
 		top: 0,
-		backgroundColor: "var(--colorNeutralBackground1)",
 		zIndex: 1,
 	},
 	dateText: {
@@ -57,8 +61,8 @@ const useStyles = makeStyles({
 	stickyHeader: {
 		position: "sticky",
 		top: 0,
-		backgroundColor: "var(--colorNeutralBackground1)",
 		zIndex: 1,
+		backgroundColor: tokens.colorNeutralCardBackgroundPressed,
 	},
 });
 

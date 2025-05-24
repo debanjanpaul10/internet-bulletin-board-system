@@ -50,7 +50,7 @@ function Header() {
 	};
 
 	return (
-		<nav className={`navbar navbar-expand-lg ${styles.navbar}`}>
+		<nav className={styles.navbar}>
 			<div className={styles.navContent}>
 				<div className="navbar-nav mr-auto">
 					<Tooltip

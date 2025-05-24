@@ -1,19 +1,15 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
 	toastContainer: {
 		position: "relative",
+		boxShadow: tokens.shadow28,
 	},
 	dismissButton: {
 		position: "absolute",
-		top: "8px",
-		right: "8px",
+		top: "4px",
+		right: "2px",
 		cursor: "pointer",
-		padding: "4px",
-		borderRadius: "4px",
-		":hover": {
-			backgroundColor: "var(--colorNeutralBackground3)",
-		},
 	},
 });
 

@@ -299,7 +299,7 @@ function PostBody({ post }) {
 							></p>
 							{isTextOverflowing && !showFullText && (
 								<Button
-									className={styles.button}
+									className={styles.textSizeButton}
 									onClick={handleToggleText}
 								>
 									Show More
@@ -307,7 +307,7 @@ function PostBody({ post }) {
 							)}
 							{showFullText && (
 								<Button
-									className={styles.button}
+									className={styles.textSizeButton}
 									onClick={handleToggleText}
 								>
 									Show Less

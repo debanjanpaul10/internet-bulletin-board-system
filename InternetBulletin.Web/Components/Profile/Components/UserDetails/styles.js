@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
 	card: {
@@ -7,6 +7,11 @@ export const useStyles = makeStyles({
 		maxHeight: "300px",
 		"@media (max-width: 575px)": {
 			margin: "0",
+		},
+		boxShadow: tokens.shadow28,
+		backgroundColor: tokens.colorNeutralCardBackground,
+		"&:hover": {
+			backgroundColor: tokens.colorNeutralCardBackgroundHover,
 		},
 	},
 	scrollableItems: {
