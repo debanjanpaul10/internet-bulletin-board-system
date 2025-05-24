@@ -15,6 +15,7 @@ import {
 	AddCircle28Regular,
 	PersonAdd28Regular,
 	Person28Regular,
+	BookOpen28Regular,
 } from "@fluentui/react-icons";
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
@@ -234,6 +235,11 @@ function SideDrawerComponent() {
 		dispatch(ToggleSideBar(false));
 	};
 
+	const handleAboutUsPageRedirect = () => {
+		navigate(Headings.AboutUs.Link);
+		dispatch(ToggleSideBar(false));
+	};
+
 	return (
 		<OverlayDrawer
 			{...restoreFocusSourceAttributes}
@@ -268,8 +274,8 @@ function SideDrawerComponent() {
 				</DrawerHeaderTitle>
 			</DrawerHeader>
 
-			{/* CREATE NEW POST */}
 			<DrawerBody className={styles.drawerBody}>
+				{/* CREATE NEW POST */}
 				{isUserLoggedIn() && (
 					<div className="row">
 						{location.pathname !== Headings.CreatePost.Link && (
@@ -312,6 +318,24 @@ function SideDrawerComponent() {
 						)}
 					</div>
 				)}
+
+				{/* ABOUT US */}
+				<div className="row">
+					<Tooltip
+						content={ButtonTitles.AboutUs}
+						relationship="label"
+						positioning="after"
+					>
+						<Button
+							onClick={handleAboutUsPageRedirect}
+							className={styles.button}
+							appearance="transparent"
+						>
+							<BookOpen28Regular />
+							<span>{Headings.AboutUs.Name}</span>
+						</Button>
+					</Tooltip>
+				</div>
 
 				{/* LOGIN AND LOGOUT */}
 				<div className="row">

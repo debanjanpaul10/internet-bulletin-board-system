@@ -26,17 +26,24 @@ const useStyles = makeStyles({
 		textDecoration: "none",
 	},
 	editButton: {
+		color: tokens.colorBrandForegroundLink,
 		margin: "10px 0px 10px 0px",
 		cursor: "pointer",
 		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
+		"&:hover": {
+			color: tokens.colorBrandForegroundLinkHover,
+		},
 	},
-	deleteButton: {
-		color: "#d83b01",
+	cancelButton: {
+		color: tokens.colorStatusDangerBackground3,
 		margin: "10px 0px 10px 0px",
 		cursor: "pointer",
 		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
+		"&:hover": {
+			color: tokens.colorStatusDangerBackground3Hover,
+		},
 	},
 });
 export { useStyles };

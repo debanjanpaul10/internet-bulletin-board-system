@@ -4,10 +4,10 @@ import { useMsal } from "@azure/msal-react";
 
 import { HomePageConstants } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
-import PostsContainer from "@components/Posts/PostsContainer";
+import PostsContainer from "@components/Posts";
 import { GetAllPostsAsync } from "@store/Posts/Actions";
 import { loginRequests } from "@services/auth.config";
-import EditPostComponent from "@components/Posts/EditPost";
+import EditPostComponent from "@components/Posts/Components/EditPost";
 import { LargeTitle } from "@fluentui/react-components";
 import { useStyles } from "./styles";
 

@@ -16,7 +16,7 @@ import ReactQuill from "react-quill-new";
 
 import AiButton from "@assets/Images/ai-icon.svg";
 import { ToggleEditPostDialog, UpdatePostAsync } from "@store/Posts/Actions";
-import { useStyles } from "@components/Posts/EditPost/styles";
+import { useStyles } from "@components/Posts/Components/EditPost/styles";
 import {
 	CreatePostPageConstants,
 	PageConstants,
@@ -35,12 +35,6 @@ function EditPostComponent() {
 	const dispatch = useDispatch();
 	const styles = useStyles();
 	const { instance, accounts } = useMsal();
-	const { themeMode } = useContext(ThemeContext);
-
-	const overlayBackgroundColor =
-		themeMode === PageConstants.LightConstant
-			? "rgba(255, 255, 255, 0.8)" // Light mode
-			: "rgba(41, 41, 41, 0.8)"; // Dark mode
 
 	const IsEditPostDialogOpen = useSelector(
 		(state) => state.PostsReducer.isEditModalOpen
@@ -205,7 +199,6 @@ function EditPostComponent() {
 								left: 0,
 								right: 0,
 								bottom: 0,
-								backgroundColor: overlayBackgroundColor,
 								display: "flex",
 								justifyContent: "center",
 								alignItems: "center",
@@ -280,7 +273,6 @@ function EditPostComponent() {
 
 									<div className="text-center">
 										<Button
-											appearance="primary"
 											type="submit"
 											onClick={handleUpdatePost}
 											className={styles.editButton}
@@ -290,7 +282,7 @@ function EditPostComponent() {
 										&nbsp;
 										<Button
 											onClick={handleModalClose}
-											className={styles.deleteButton}
+											className={styles.cancelButton}
 										>
 											{"Close"}
 										</Button>

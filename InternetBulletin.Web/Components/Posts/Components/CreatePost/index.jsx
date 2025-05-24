@@ -10,14 +10,17 @@ import {
 	LargeTitle,
 } from "@fluentui/react-components";
 
-import { CreatePostPageConstants } from "@helpers/ibbs.constants";
+import {
+	CreatePostPageConstants,
+	HeaderPageConstants,
+} from "@helpers/ibbs.constants";
 import { AddNewPostAsync, RewriteStoryWithAiAsync } from "@store/Posts/Actions";
 import AddPostDtoModel from "@models/AddPostDto";
 import PageNotFound from "@components/Common/PageNotFound";
 import AiButton from "@assets/Images/ai-icon.svg";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
-import { useStyles } from "@components/Posts/CreatePost/styles";
+import { useStyles } from "@components/Posts/Components/CreatePost/styles";
 import { useMsal } from "@azure/msal-react";
 import { loginRequests } from "@services/auth.config";
 
@@ -198,6 +201,13 @@ function CreatePostComponent() {
 		[]
 	);
 
+	/**
+	 * Handles the cancel click event.
+	 */
+	const handleCancelClick = () => {
+		navigate(HeaderPageConstants.Headings.Home.Link);
+	};
+
 	return isUserLoggedIn() ? (
 		<div className="container d-flex flex-column">
 			<Spinner isLoading={IsCreatePostLoadingStoreData} />
@@ -259,7 +269,7 @@ function CreatePostComponent() {
 									)}
 									<Button
 										type="button"
-										className={styles.button}
+										className={styles.aiEditButton}
 										onClick={handleAiRewrite}
 									>
 										<img
@@ -272,12 +282,18 @@ function CreatePostComponent() {
 
 								<div className="text-center">
 									<Button
-										appearance="primary"
 										type="submit"
 										onClick={handleCreatePost}
-										className={styles.button}
+										className={styles.createButton}
 									>
 										{"Create"}
+									</Button>
+									&nbsp;
+									<Button
+										className={styles.cancelButton}
+										onClick={handleCancelClick}
+									>
+										{"Cancel"}
 									</Button>
 								</div>
 							</div>

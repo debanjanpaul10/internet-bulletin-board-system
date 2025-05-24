@@ -23,11 +23,32 @@ const useStyles = makeStyles({
 		overflow: "hidden",
 		textOverflow: "ellipsis",
 	},
-	button: {
+	createButton: {
+		color: tokens.colorPaletteLightGreenBackground3,
 		margin: "10px 0px 10px 0px",
 		cursor: "pointer",
 		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
+		"&:hover": {
+			color: tokens.colorPaletteLightGreenBorder2,
+		},
+	},
+	cancelButton: {
+		color: tokens.colorPaletteRedBackground3,
+		margin: "10px 0px 10px 0px",
+		cursor: "pointer",
+		fontSize: tokens.fontSizeBase300,
+		textDecoration: "none",
+		"&:hover": {
+			color: tokens.colorPaletteRedBorder2,
+		},
+	},
+	aiEditButton: {
+		margin: "10px 0px 10px 0px",
+		cursor: "pointer",
+		fontSize: tokens.fontSizeBase300,
+		textDecoration: "none",
+		padding: "0.75em",
 	},
 	addNewHeading: {
 		fontFamily: "Architects Daughter",

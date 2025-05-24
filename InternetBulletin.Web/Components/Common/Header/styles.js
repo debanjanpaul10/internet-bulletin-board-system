@@ -5,8 +5,11 @@ const useStyles = makeStyles({
 		width: "50px",
 		minWidth: "50px",
 	},
-	sidecarButton: {
+	sideBarButton: {
 		padding: "0px !important",
+		"&:hover": {
+			backgroundColor: tokens.colorNeutralBackground1Pressed,
+		}
 	},
 	navbar: {
 		padding: "10px 15px",

@@ -20,7 +20,7 @@ import {
 } from "@fluentui/react-icons";
 import { useMsal } from "@azure/msal-react";
 
-import { useStyles } from "@components/Posts/PostBody/styles";
+import { useStyles } from "@components/Posts/Components/PostBody/styles";
 import {
 	DeletePostAsync,
 	GetEditPostData,
@@ -184,6 +184,7 @@ function PostBody({ post }) {
 									<b>{postData.postTitle}</b>
 								</Body1>
 
+								{/* RATINGS BUTTON */}
 								<div className={styles.headerButtons}>
 									{!showEditAndDelete && isUserLoggedIn && (
 										<Tooltip
@@ -216,7 +217,8 @@ function PostBody({ post }) {
 												&nbsp;
 												{postData.ratings > 0 && (
 													<Badge
-														appearance="tint"
+														appearance="outline"
+														color="success"
 														size="large"
 													>
 														{postData.ratings}
@@ -225,6 +227,8 @@ function PostBody({ post }) {
 											</Button>
 										</Tooltip>
 									)}
+
+									{/* EDIT AND DELETE BUTTONS */}
 									{showEditAndDelete && isUserLoggedIn && (
 										<>
 											<Tooltip

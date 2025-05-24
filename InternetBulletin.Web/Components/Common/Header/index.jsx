@@ -52,6 +52,7 @@ function Header() {
 	return (
 		<nav className={styles.navbar}>
 			<div className={styles.navContent}>
+				{/* SIDE BAR */}
 				<div className="navbar-nav mr-auto">
 					<Tooltip
 						content={ButtonTitles.SideDrawer}
@@ -60,7 +61,7 @@ function Header() {
 					>
 						<Button
 							appearance="subtle"
-							className={styles.sidecarButton}
+							className={styles.sideBarButton}
 							onClick={toggleSideBar}
 							{...restoreFocusTargetAttributes}
 						>
