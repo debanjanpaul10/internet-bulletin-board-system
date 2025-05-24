@@ -143,10 +143,9 @@ button {
 }
 
 .footer {
-	bottom: 0;
-	margin: auto;
+	position: relative;
 	width: 75%;
-	position: fixed;
+	margin: 2rem auto;
 	padding: 0px 0px 10px 0px;
 	font-size: large;
 }
@@ -205,4 +204,24 @@ button {
 
 .form-control-plaintext {
 	padding: 10px;
+}
+
+/* Add a new class for the main content wrapper */
+.main-content {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Add padding at the bottom of the main content */
+.main-content > *:last-child {
+	margin-bottom: 2rem;
+}
+
+/* Add responsive padding for small devices */
+@media screen and (max-width: 768px) {
+	
+	.main-content > *:last-child {
+		margin-bottom: 3rem;
+	}
 }

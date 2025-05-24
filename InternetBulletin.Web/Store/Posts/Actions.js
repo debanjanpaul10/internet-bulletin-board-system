@@ -102,11 +102,11 @@ export const GetAllPostsAsync = (accessToken) => {
 			}
 		} catch (error) {
 			console.error(error);
-			dispatch(PostDataFailure(error.data));
+			dispatch(PostDataFailure(error.data ?? error.title));
 			dispatch(
 				ToggleErrorToaster({
 					shouldShow: true,
-					errorMessage: error,
+					errorMessage: error.data ?? error.title,
 				})
 			);
 		} finally {

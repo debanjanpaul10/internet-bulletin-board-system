@@ -1,17 +1,17 @@
 import React, { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AppFolder32Filled } from "@fluentui/react-icons";
+import { PanelLeft32Filled } from "@fluentui/react-icons";
 import { useDispatch } from "react-redux";
 import {
-  Button,
-  Tooltip,
-  useRestoreFocusTarget,
+	Button,
+	Tooltip,
+	useRestoreFocusTarget,
 } from "@fluentui/react-components";
 
 import {
-  HeaderPageConstants,
-  HomePageConstants,
-  PageConstants,
+	HeaderPageConstants,
+	HomePageConstants,
+	PageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
 import ThemeContext from "@context/ThemeContext";
@@ -27,94 +27,102 @@ import DarkModeIcon from "@assets/Images/light-bulb-off.png";
  * @returns {JSX.Element} The rendered component.
  */
 function Header() {
-  const location = useLocation();
-  const { themeMode, toggleThemeMode } = useContext(ThemeContext);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const styles = useStyles();
-  const restoreFocusTargetAttributes = useRestoreFocusTarget();
+	const { themeMode, toggleThemeMode } = useContext(ThemeContext);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const styles = useStyles();
+	const restoreFocusTargetAttributes = useRestoreFocusTarget();
 
-  const { Headings, ButtonTitles } = HeaderPageConstants;
+	const { Headings, ButtonTitles } = HeaderPageConstants;
 
-  /**
-   * Handles the home page redirection.
-   */
-  const handleHomePageRedirect = () => {
-    navigate(Headings.Home.Link);
-  };
+	/**
+	 * Handles the home page redirection.
+	 */
+	const handleHomePageRedirect = () => {
+		navigate(Headings.Home.Link);
+	};
 
-  /**
-   * Toggles the side car.
-   */
-  const toggleSideBar = () => {
-    dispatch(ToggleSideBar(true));
-  };
+	/**
+	 * Toggles the side car.
+	 */
+	const toggleSideBar = () => {
+		dispatch(ToggleSideBar(true));
+	};
 
-  return (
-    <nav className="navbar navbar-expand-lg">
-      <div className="d-flex w-100">
-        <div className="navbar-nav mr-auto">
-          <Tooltip
-            content={ButtonTitles.SideDrawer}
-            relationship="label"
-            positioning="after"
-          >
-            <Button
-              appearance="subtle"
-              className={styles.sidecarButton}
-              onClick={toggleSideBar}
-              {...restoreFocusTargetAttributes}
-            >
-              <AppFolder32Filled />
-            </Button>
-          </Tooltip>
-        </div>
+	return (
+		<nav className={styles.navbar}>
+			<div className={styles.navContent}>
+				{/* SIDE BAR */}
+				<div className="navbar-nav mr-auto">
+					<Tooltip
+						content={ButtonTitles.SideDrawer}
+						relationship="label"
+						position="after"
+					>
+						<Button
+							appearance="subtle"
+							className={styles.sideBarButton}
+							onClick={toggleSideBar}
+							{...restoreFocusTargetAttributes}
+						>
+							<PanelLeft32Filled />
+						</Button>
+					</Tooltip>
+				</div>
 
-        {/* IBBS LOGO */}
-        <div className="navbar-nav mx-auto">
-          <Tooltip content={ButtonTitles.HomeButton} relationship="label">
-            <Button
-              onClick={handleHomePageRedirect}
-              className={styles.homeButton}
-              appearance="subtle"
-            >
-              <img src={AppLogo} height={"30px"} />
-              &nbsp; {HomePageConstants.Headings.IBBS}
-            </Button>
-          </Tooltip>
-        </div>
+				{/* IBBS LOGO */}
+				<div className="navbar-nav mx-auto">
+					<Tooltip
+						content={ButtonTitles.HomeButton}
+						relationship="label"
+					>
+						<Button
+							onClick={handleHomePageRedirect}
+							className={styles.homeButton}
+							appearance="subtle"
+						>
+							<img src={AppLogo} height={"30px"} />
+							&nbsp; {HomePageConstants.Headings.IBBS}
+						</Button>
+					</Tooltip>
+				</div>
 
-        <div className="navbar-nav ml-auto">
-          {/* TOGGLE THEME BUTTON */}
-          <div
-            className="mr-3 pr-2"
-            style={{ marginRight: "10px", marginTop: "5px" }}
-          >
-            <Tooltip
-              content={
-                themeMode === PageConstants.DarkConstant
-                  ? ButtonTitles.TurnOnLight
-                  : ButtonTitles.TurnOnDark
-              }
-              relationship="label"
-            >
-              <Button
-                className={styles.themeToggleButton}
-                onClick={toggleThemeMode}
-                appearance="transparent"
-              >
-                {themeMode === PageConstants.LightConstant ? (
-                  <img src={DarkModeIcon} width={40} height={35} />
-                ) : (
-                  <img src={LightModeIcon} width={40} height={35} />
-                )}
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
+				<div className="navbar-nav ml-auto">
+					{/* TOGGLE THEME BUTTON */}
+					<div className="mr-3 pr-2">
+						<Tooltip
+							content={
+								themeMode === PageConstants.DarkConstant
+									? ButtonTitles.TurnOnLight
+									: ButtonTitles.TurnOnDark
+							}
+							relationship="label"
+						>
+							<Button
+								className={styles.themeToggleButton}
+								onClick={toggleThemeMode}
+								appearance="transparent"
+							>
+								{themeMode === PageConstants.LightConstant ? (
+									<img
+										src={DarkModeIcon}
+										width={40}
+										height={35}
+									/>
+								) : (
+									<img
+										src={LightModeIcon}
+										width={40}
+										height={35}
+									/>
+								)}
+							</Button>
+						</Tooltip>
+					</div>
+				</div>
+			</div>
+		</nav>
+	);
 }
 
 export default Header;

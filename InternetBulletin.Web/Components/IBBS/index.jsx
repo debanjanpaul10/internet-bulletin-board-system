@@ -1,15 +1,17 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
+import { useStyles } from "./styles";
 import { HeaderPageConstants } from "@helpers/ibbs.constants";
 import Header from "@components/Common/Header";
 import PageNotFound from "@components/Common/PageNotFound";
 import HomeComponent from "@components/Home";
-import CreatePostComponent from "@components/Posts/CreatePost";
+import CreatePostComponent from "@components/Posts/Components/CreatePost";
 import ToasterComponent from "@components/Common/Toaster";
 import ProfileComponent from "@components/Profile";
 import SideDrawerComponent from "@components/Common/SideDrawer";
-import { useStyles } from "./styles";
+import AboutUsComponent from "@components/AboutUs";
+import FooterComponent from "@components/Common/Footer";
 
 /**
  * @component
@@ -41,7 +43,7 @@ function IBBS() {
 	const { Headings } = HeaderPageConstants;
 
 	return (
-		<>
+		<div className="main-content">
 			<div className={styles.headerNav}>
 				<Header />
 			</div>
@@ -63,9 +65,16 @@ function IBBS() {
 						path={Headings.MyProfile.Link}
 						element={<ProfileComponent />}
 					/>
+					<Route
+						path={Headings.AboutUs.Link}
+						element={<AboutUsComponent />}
+					/>
 				</Routes>
 			</div>
-		</>
+			<div className={styles.footerContent}>
+				<FooterComponent />
+			</div>
+		</div>
 	);
 }
 

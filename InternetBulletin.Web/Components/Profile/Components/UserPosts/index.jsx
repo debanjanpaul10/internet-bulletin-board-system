@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import {
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableCellLayout,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  Text,
-  Title1,
+	Card,
+	Table,
+	TableBody,
+	TableCell,
+	TableCellLayout,
+	TableHeader,
+	TableHeaderCell,
+	TableRow,
+	Text,
+	Title1,
 } from "@fluentui/react-components";
 import {
-  SparkleCircle28Regular,
-  Star28Filled,
-  Star28Regular,
+	SparkleCircle28Regular,
+	Star28Filled,
+	Star28Regular,
 } from "@fluentui/react-icons";
 
 import { useStyles } from "./styles";
@@ -42,83 +42,102 @@ import { formatDate } from "@helpers/common.utility";
  * return <UserPostsComponent userPosts={userPosts} />;
  */
 function UserPostsComponent({ userPosts }) {
-  const styles = useStyles();
+	const styles = useStyles();
 
-  const [userPostsData, setUserPostsData] = useState({});
+	const [userPostsData, setUserPostsData] = useState({});
 
-  useEffect(() => {
-    if (
-      userPosts !== null &&
-      userPosts !== undefined &&
-      Object.values(userPosts).length > 0 &&
-      userPosts !== userPostsData
-    ) {
-      setUserPostsData(userPosts);
-    }
-  }, [userPosts]);
+	useEffect(() => {
+		if (
+			userPosts !== null &&
+			userPosts !== undefined &&
+			Object.values(userPosts).length > 0 &&
+			userPosts !== userPostsData
+		) {
+			setUserPostsData(userPosts);
+		}
+	}, [userPosts]);
 
-  return (
-    <Card className={styles.card} appearance="filled-alternative">
-      <Title1 className={styles.yourStoriesHeader}>
-        {MyProfilePageConstants.Headings.YourPostsMessage}
-      </Title1>
-      <div className={styles.scrollableItems}>
-        <Table
-          aria-label="User posts"
-          className={styles.postTable}
-          size="medium"
-        >
-          <TableHeader className={styles.stickyHeader}>
-            <TableRow>
-              {MyProfilePageConstants.PostTableHeaders.map((item, index) => (
-                <TableHeaderCell key={index} className={styles.rowCell}>
-                  <Text size={400}>{item}</Text>
-                </TableHeaderCell>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Object.values(userPostsData).length > 0 &&
-              userPostsData?.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className={styles.rowCell}>
-                    <TableCellLayout
-                      media={
-                        <Text size={400}>
-                          <SparkleCircle28Regular />{" "}
-                        </Text>
-                      }
-                    >
-                      <Text size={400}>{item.postTitle} </Text>
-                    </TableCellLayout>
-                  </TableCell>
+	return (
+		<Card className={styles.card} appearance="filled-alternative">
+			<Title1 className={styles.yourStoriesHeader}>
+				{MyProfilePageConstants.Headings.YourPostsMessage}
+			</Title1>
+			<div className={styles.scrollableItems}>
+				<Table
+					aria-label="User posts"
+					className={styles.postTable}
+					size="medium"
+				>
+					<TableHeader className={styles.stickyHeader}>
+						<TableRow>
+							{MyProfilePageConstants.PostTableHeaders.map(
+								(item, index) => (
+									<TableHeaderCell
+										key={index}
+										className={styles.rowCell}
+									>
+										<Text size={400}>{item}</Text>
+									</TableHeaderCell>
+								)
+							)}
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{Object.values(userPostsData).length > 0 &&
+							userPostsData?.map((item, index) => (
+								<TableRow key={index}>
+									<TableCell className={styles.rowCell}>
+										<TableCellLayout
+											media={
+												<Text size={400}>
+													<SparkleCircle28Regular />{" "}
+												</Text>
+											}
+										>
+											<Text size={400}>
+												{item.postTitle}{" "}
+											</Text>
+										</TableCellLayout>
+									</TableCell>
 
-                  <TableCell className={styles.rowCell}>
-                    <TableCellLayout>
-                      <Text size={400} className={styles.dateText}>
-                        {formatDate(item.postCreatedDate)}{" "}
-                      </Text>
-                    </TableCellLayout>
-                  </TableCell>
+									<TableCell className={styles.rowCell}>
+										<TableCellLayout>
+											<Text
+												size={400}
+												className={styles.dateText}
+											>
+												{formatDate(
+													item.postCreatedDate
+												)}{" "}
+											</Text>
+										</TableCellLayout>
+									</TableCell>
 
-                  <TableCell className={styles.rowCell}>
-                    <TableCellLayout
-                      media={
-                        item.ratings > 0 ? <Star28Filled /> : <Star28Regular />
-                      }
-                    >
-                      <Text size={200} className={styles.dateText}>
-                        {item.ratings}
-                      </Text>
-                    </TableCellLayout>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </div>
-    </Card>
-  );
+									<TableCell className={styles.rowCell}>
+										<TableCellLayout
+											media={
+												item.ratings > 0 ? (
+													<Star28Filled />
+												) : (
+													<Star28Regular />
+												)
+											}
+										>
+											<Text
+												size={200}
+												className={styles.dateText}
+											>
+												{item.ratings}
+											</Text>
+										</TableCellLayout>
+									</TableCell>
+								</TableRow>
+							))}
+					</TableBody>
+				</Table>
+			</div>
+		</Card>
+	);
 }
 
 export default UserPostsComponent;

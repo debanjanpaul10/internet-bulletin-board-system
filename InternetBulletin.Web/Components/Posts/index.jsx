@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import PostBody from "@components/Posts/PostBody";
-import NoPostsContainer from "@components/Posts/NoPosts";
+import PostBody from "@components/Posts/Components/PostBody";
+import NoPostsContainer from "@components/Posts/Components/NoPosts";
 
 /**
  * @component

@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
 	card: {
@@ -6,7 +6,7 @@ const useStyles = makeStyles({
 		width: "100%",
 		maxWidth: "100%",
 		padding: "20px",
-		boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+		boxShadow: tokens.shadow28,
 		borderRadius: "8px",
 	},
 	cardPreview: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 		padding: "0px 10px 0px 10px",
 	},
 	postContent: {
-		fontSize: "14px",
+		fontSize: tokens.fontSizeBase300,
 		lineHeight: "1.6",
 		overflow: "hidden",
 		textOverflow: "ellipsis",
@@ -22,21 +22,28 @@ const useStyles = makeStyles({
 	button: {
 		margin: "10px 0px 10px 0px",
 		cursor: "pointer",
-		fontSize: "14px",
+		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
 	},
 	editButton: {
+		color: tokens.colorBrandForegroundLink,
 		margin: "10px 0px 10px 0px",
 		cursor: "pointer",
-		fontSize: "14px",
+		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
+		"&:hover": {
+			color: tokens.colorBrandForegroundLinkHover,
+		},
 	},
-	deleteButton: {
-		color: "#d83b01",
+	cancelButton: {
+		color: tokens.colorStatusDangerBackground3,
 		margin: "10px 0px 10px 0px",
 		cursor: "pointer",
-		fontSize: "14px",
+		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
-	}
+		"&:hover": {
+			color: tokens.colorStatusDangerBackground3Hover,
+		},
+	},
 });
 export { useStyles };
