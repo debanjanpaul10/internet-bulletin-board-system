@@ -1,7 +1,7 @@
 import { makeStyles } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
-	mainHeading: {
+	noPostsHeading: {
 		fontFamily: "Architects Daughter",
 		textAlign: "center",
 		display: "flex",

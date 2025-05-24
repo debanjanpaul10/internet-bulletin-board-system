@@ -1,13 +1,13 @@
 import { makeStyles } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
-  notFoundHeader: {
-    fontFamily: "Architects Daughter",
-    textAlign: "center",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+	notFoundHeader: {
+		fontFamily: "Architects Daughter",
+		textAlign: "center",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+	},
 });
 
 export { useStyles };

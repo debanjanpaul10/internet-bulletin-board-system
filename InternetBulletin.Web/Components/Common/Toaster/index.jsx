@@ -8,13 +8,13 @@ import {
 	ToastTitle,
 	Button,
 } from "@fluentui/react-components";
+import { Dismiss28Regular } from "@fluentui/react-icons";
 
 import {
 	ToggleErrorToaster,
 	ToggleSuccessToaster,
 } from "@store/Common/Actions";
 import { useStyles } from "@components/Common/Toaster/styles";
-import { Dismiss24Regular } from "@fluentui/react-icons";
 
 /**
  * @component
@@ -103,8 +103,9 @@ function ToasterComponent() {
 						className={styles.dismissButton}
 						onClick={handleDismissSuccess}
 						appearance="transparent"
+						size="small"
 					>
-						<Dismiss24Regular />
+						<Dismiss28Regular />
 					</Button>
 					<ToastTitle>{message}</ToastTitle>
 				</Toast>
@@ -125,8 +126,9 @@ function ToasterComponent() {
 						className={styles.dismissButton}
 						onClick={handleDismissError}
 						appearance="transparent"
+						size="small"
 					>
-						<Dismiss24Regular />
+						<Dismiss28Regular />
 					</Button>
 					<ToastTitle>{message}</ToastTitle>
 				</Toast>

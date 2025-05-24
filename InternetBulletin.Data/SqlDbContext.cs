@@ -90,8 +90,6 @@ namespace InternetBulletin.Data
 		/// </remarks>
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			var connectionString = this._configuration[ConfigurationConstants.SqlConnectionStringConstant];
-			optionsBuilder.UseSqlServer(connectionString);
 		}
 
 		/// <summary>

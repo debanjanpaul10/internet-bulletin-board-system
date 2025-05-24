@@ -10,19 +10,19 @@ import { useStyles } from "./styles";
  * @returns {JSX.Element} The page not found component JSX element.
  */
 function PageNotFound() {
-  const styles = useStyles();
+	const styles = useStyles();
 
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-sm-12 mt-5">
-          <LargeTitle className={styles.notFoundHeader}>
-            {ErrorPageConstants.PageNotFoundMessage}
-          </LargeTitle>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="container">
+			<div className="row">
+				<div className="col-sm-12 mt-5">
+					<LargeTitle className={styles.notFoundHeader}>
+						{ErrorPageConstants.PageNotFoundMessage}
+					</LargeTitle>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default PageNotFound;

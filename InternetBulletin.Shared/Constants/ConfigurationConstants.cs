@@ -23,6 +23,11 @@ namespace InternetBulletin.Shared.Constants
         public const string SqlConnectionStringConstant = "SqlConnectionString";
 
         /// <summary>
+        /// The local sql connection string constant.
+        /// </summary>
+        public const string LocalSqlConnectionStringConstant = "LocalSqlServerConnection";
+
+        /// <summary>
         /// The user assigned client identifier constant
         /// </summary>
         public const string ManagedIdentityClientIdConstant = "ManagedIdentityClientId";

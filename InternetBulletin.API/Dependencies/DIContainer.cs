@@ -27,7 +27,9 @@ namespace InternetBulletin.API.Dependencies
         /// <param name="services">The services.</param>
         public static void ConfigureAzureSqlServer(this WebApplicationBuilder builder)
         {
-            var sqlConnectionString = builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
+            var sqlConnectionString = builder.Environment.IsDevelopment()
+                ? builder.Configuration[ConfigurationConstants.LocalSqlConnectionStringConstant] 
+                : builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
             if (!string.IsNullOrEmpty(sqlConnectionString))
             {
                 builder.Services.AddDbContext<SqlDbContext>(options =>
