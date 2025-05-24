@@ -19,6 +19,17 @@ const useStyles = makeStyles({
   sidecarButton: {
     padding: "0px !important",
   },
+  navbar: {
+    padding: "10px 15px",
+    "@media (max-width: 768px)": {
+      padding: "15px",
+    },
+  },
+  navContent: {
+    display: "flex",
+    width: "100%",
+    alignItems: "center",
+  },
 });
 
 export default useStyles;

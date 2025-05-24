@@ -5,6 +5,9 @@ export const useStyles = makeStyles({
     maxWidth: "100%",
     margin: "1rem",
     maxHeight: "300px",
+    '@media (max-width: 575px)': {
+      margin: "0",
+    }
   },
   scrollableItems: {
     flex: 1,

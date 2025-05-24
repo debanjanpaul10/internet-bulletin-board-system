@@ -50,13 +50,13 @@ function Header() {
 	};
 
 	return (
-		<nav className="navbar navbar-expand-lg">
-			<div className="d-flex w-100">
+		<nav className={`navbar navbar-expand-lg ${styles.navbar}`}>
+			<div className={styles.navContent}>
 				<div className="navbar-nav mr-auto">
 					<Tooltip
 						content={ButtonTitles.SideDrawer}
 						relationship="label"
-						positioning="after"
+						position="after"
 					>
 						<Button
 							appearance="subtle"
@@ -88,10 +88,7 @@ function Header() {
 
 				<div className="navbar-nav ml-auto">
 					{/* TOGGLE THEME BUTTON */}
-					<div
-						className="mr-3 pr-2"
-						style={{ marginRight: "10px", marginTop: "5px" }}
-					>
+					<div className="mr-3 pr-2">
 						<Tooltip
 							content={
 								themeMode === PageConstants.DarkConstant
