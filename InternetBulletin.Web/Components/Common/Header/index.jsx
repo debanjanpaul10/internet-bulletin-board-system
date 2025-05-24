@@ -21,12 +21,23 @@ import LightModeIcon from "@assets/Images/light-bulb-on.png";
 import DarkModeIcon from "@assets/Images/light-bulb-off.png";
 
 /**
- * @component
- * Header component that renders the navigation bar.
- *
- * @returns {JSX.Element} The rendered component.
+ * Header - A React component that renders the main navigation header of the application.
+ * 
+ * The component includes:
+ * - A sidebar toggle button with tooltip
+ * - The IBBS logo that redirects to the home page
+ * - A theme toggle button that switches between light and dark modes
+ * 
+ * Features:
+ * - Uses Fluent UI components for consistent styling
+ * - Implements theme context for dark/light mode switching
+ * - Integrates with Redux for sidebar state management
+ * - Uses React Router for navigation
+ * - Includes tooltips for better user experience
+ * 
+ * @returns {JSX.Element} A navigation bar containing the application header elements
  */
-function Header() {
+function HeaderComponent() {
 	const { themeMode, toggleThemeMode } = useContext(ThemeContext);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -125,4 +136,4 @@ function Header() {
 	);
 }
 
-export default Header;
+export default HeaderComponent;

@@ -150,3 +150,17 @@ export const MyProfilePageConstants = {
 	PostTableHeaders: ["Post Name", "Date Created", "Ratings"],
 	RatingsTableHeaders: ["Post Name", "Rated on"],
 };
+
+export const AboutUsPageConstants = {
+	ButtonTexts: {
+		WebsiteNav: "Visit the official website",
+	},
+	Subtitle: "Made with",
+};
+
+export const FooterConstants = {
+	EmailLink: "mailto:debanjanpaul10@gmail.com",
+	FaceBookLink: "https://www.facebook.com/debanjan.paul.69",
+	GithubLink: "https://github.com/debanjanpaul10",
+	LinkedinLink: "https://www.linkedin.com/in/debanjan-paul/",
+};

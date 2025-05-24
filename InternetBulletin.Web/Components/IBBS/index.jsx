@@ -3,15 +3,15 @@ import { Routes, Route } from "react-router-dom";
 
 import { useStyles } from "./styles";
 import { HeaderPageConstants } from "@helpers/ibbs.constants";
-import Header from "@components/Common/Header";
 import PageNotFound from "@components/Common/PageNotFound";
-import HomeComponent from "@components/Home";
 import CreatePostComponent from "@components/Posts/Components/CreatePost";
 import ToasterComponent from "@components/Common/Toaster";
 import ProfileComponent from "@components/Profile";
 import SideDrawerComponent from "@components/Common/SideDrawer";
 import AboutUsComponent from "@components/AboutUs";
 import FooterComponent from "@components/Common/Footer";
+import HeaderComponent from "@components/Common/Header";
+import LandingPageComponent from "@components/LandingPage";
 
 /**
  * @component
@@ -45,7 +45,7 @@ function IBBS() {
 	return (
 		<div className="main-content">
 			<div className={styles.headerNav}>
-				<Header />
+				<HeaderComponent />
 			</div>
 			<div className={styles.bodyContent}>
 				{" "}
@@ -54,7 +54,7 @@ function IBBS() {
 				<Routes>
 					<Route
 						path={Headings.Home.Link}
-						element={<HomeComponent />}
+						element={<LandingPageComponent />}
 					/>
 					<Route
 						path={Headings.CreatePost.Link}

@@ -13,7 +13,10 @@ import {
 import { HeartFilled } from "@fluentui/react-icons";
 
 import { AboutUsData } from "@helpers/aboutus.data";
-import { MyProfilePageConstants } from "@helpers/ibbs.constants";
+import {
+	AboutUsPageConstants,
+	MyProfilePageConstants,
+} from "@helpers/ibbs.constants";
 
 /**
  * AboutUsComponent - A React component that displays the About Us section of the application.
@@ -57,7 +60,7 @@ function AboutUsComponent() {
 			<div className="row">
 				<div className="col-12">
 					<Title3 className={styles.subHeading}>
-						Made with &nbsp;
+						{AboutUsPageConstants.Subtitle}&nbsp;
 						<HeartFilled />
 						&nbsp; and
 					</Title3>
@@ -73,9 +76,7 @@ function AboutUsComponent() {
 									key={`image-${index}`}
 									index={index}
 									data={data}
-								>
-									Card {index + 1}
-								</BannerCardComponent>
+								></BannerCardComponent>
 							))}
 						</CarouselSlider>
 					</CarouselViewport>

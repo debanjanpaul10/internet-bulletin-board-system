@@ -321,20 +321,22 @@ function SideDrawerComponent() {
 
 				{/* ABOUT US */}
 				<div className="row">
-					<Tooltip
-						content={ButtonTitles.AboutUs}
-						relationship="label"
-						positioning="after"
-					>
-						<Button
-							onClick={handleAboutUsPageRedirect}
-							className={styles.button}
-							appearance="transparent"
+					{location.pathname !== Headings.AboutUs.Link && (
+						<Tooltip
+							content={ButtonTitles.AboutUs}
+							relationship="label"
+							positioning="after"
 						>
-							<BookOpen28Regular />
-							<span>{Headings.AboutUs.Name}</span>
-						</Button>
-					</Tooltip>
+							<Button
+								onClick={handleAboutUsPageRedirect}
+								className={styles.button}
+								appearance="transparent"
+							>
+								<BookOpen28Regular />
+								<span>{Headings.AboutUs.Name}</span>
+							</Button>
+						</Tooltip>
+					)}
 				</div>
 
 				{/* LOGIN AND LOGOUT */}
