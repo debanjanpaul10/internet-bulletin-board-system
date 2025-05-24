@@ -10,11 +10,28 @@ import {
 	LargeTitle,
 	Title3,
 } from "@fluentui/react-components";
-import { HeartFilled, MailRegular } from "@fluentui/react-icons";
+import { HeartFilled } from "@fluentui/react-icons";
 
 import { AboutUsData } from "@helpers/aboutus.data";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 
+/**
+ * AboutUsComponent - A React component that displays the About Us section of the application.
+ * 
+ * This component renders:
+ * - A main heading using LargeTitle component
+ * - A subheading with a heart icon
+ * - A carousel that displays banner cards with information from AboutUsData
+ * 
+ * The carousel features:
+ * - Automatic sliding with 4-second intervals
+ * - Navigation buttons with tooltips
+ * - Circular navigation
+ * - Single item display at a time
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered About Us section with carousel
+ */
 function AboutUsComponent() {
 	const styles = useStyles();
 	const data = AboutUsData;
