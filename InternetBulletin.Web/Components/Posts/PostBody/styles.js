@@ -44,7 +44,6 @@ const useStyles = makeStyles({
 	},
 	headerButtons: {
 		display: "flex",
-		gap: "10px",
 		marginLeft: "autoo",
 	},
 	editButton: {

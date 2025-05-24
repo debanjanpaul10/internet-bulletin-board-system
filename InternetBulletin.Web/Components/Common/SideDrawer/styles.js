@@ -18,9 +18,6 @@ const useStyles = makeStyles({
     display: "grid",
     gridRowGap: tokens.spacingVerticalS,
   },
-  drawer: {
-    width: "320px",
-  },
   drawerHeader: {
     padding: "16px",
     borderBottom: "1px active",

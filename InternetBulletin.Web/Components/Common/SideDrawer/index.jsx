@@ -241,6 +241,7 @@ function SideDrawerComponent() {
       open={isSideBarOpenState}
       onOpenChange={(_, { open }) => setIsSideBarOpenState(open)}
       surfaceMotion={{ children: (_, props) => <DrawerMotion {...props} /> }}
+      size="medium"
     >
       <DrawerHeader className={styles.drawerHeader}>
         <DrawerHeaderTitle

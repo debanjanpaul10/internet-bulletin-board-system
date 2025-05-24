@@ -20,6 +20,7 @@ const DrawerMotion = createPresenceComponent(() => {
     {
       opacity: 1,
       transform: "translate3D(0, 0, 0)",
+      margin: tokens.spacingVerticalM,
       backgroundColor: tokens.colorNeutralBackground3,
       borderColor: tokens.colorNeutralBackground4,
       borderRadius: tokens.borderRadiusXLarge,

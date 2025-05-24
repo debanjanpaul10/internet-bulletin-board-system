@@ -41,7 +41,7 @@ function IBBS() {
 	const { Headings } = HeaderPageConstants;
 
 	return (
-		<>
+		<div className="main-content">
 			<div className={styles.headerNav}>
 				<Header />
 			</div>
@@ -65,7 +65,7 @@ function IBBS() {
 					/>
 				</Routes>
 			</div>
-		</>
+		</div>
 	);
 }
 

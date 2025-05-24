@@ -15,8 +15,8 @@ import {
 import {
   Edit28Filled,
   Delete28Filled,
-  ArrowCircleUp28Regular,
-  ArrowCircleUp28Filled,
+  Star28Filled,
+  Star28Regular,
 } from "@fluentui/react-icons";
 import { useMsal } from "@azure/msal-react";
 
@@ -197,12 +197,13 @@ function PostBody({ post }) {
                         appearance="subtle"
                         shape="circular"
                         onClick={() => handleVoting(postData.postId)}
+                        size="small"
                       >
                         {renderRatingButtonIcons(
                           postData.ratingValue === 1 ? (
-                            <ArrowCircleUp28Filled />
+                            <Star28Filled />
                           ) : (
-                            <ArrowCircleUp28Regular />
+                            <Star28Regular />
                           )
                         )}
                         &nbsp;
@@ -225,6 +226,7 @@ function PostBody({ post }) {
                           appearance="subtle"
                           shape="circular"
                           onClick={() => handleEdit(postData)}
+                          size="small"
                         >
                           <Edit28Filled />
                         </Button>
@@ -238,6 +240,7 @@ function PostBody({ post }) {
                           appearance="subtle"
                           shape="circular"
                           onClick={() => handleDelete(postData.postId)}
+                          size="small"
                         >
                           <Delete28Filled />
                         </Button>
