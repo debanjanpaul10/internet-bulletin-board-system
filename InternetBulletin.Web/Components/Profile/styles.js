@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 		alignItems: "center",
 		justifyContent: "center",
 		height: "100%",
-		marginBottom: "1rem",
+		margin: "0 -1rem 1rem 1rem",
 		"@media (min-width: 520px)": {
 			marginBottom: "0",
 		},
@@ -36,16 +36,27 @@ const useStyles = makeStyles({
 	},
 	userDetailsContainer: {
 		width: "100%",
-		padding: "0 1rem",
+    marginLeft: "1rem",
+		display: "flex",
+		justifyContent: "center",
 		"@media (max-width: 520px)": {
 			padding: "0",
 			width: "100%",
-			margin: "1rem 0px 0px 1rem",
+			margin: "1rem 0 0 1rem",
 		},
 	},
 	userPostsContainer: {
 		width: "100%",
-		padding: "0 1rem",
+		padding: "0",
+		"@media (max-width: 520px)": {
+			width: "100%",
+			padding: "0",
+			marginTop: "1rem",
+		},
+	},
+	userRatingsContainer: {
+		width: "100%",
+		padding: "0",
 		"@media (max-width: 520px)": {
 			width: "100%",
 			padding: "0",

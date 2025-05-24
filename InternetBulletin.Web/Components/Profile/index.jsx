@@ -141,7 +141,7 @@ function ProfileComponent() {
 							</div>
 						</Skeleton>
 					) : (
-						<div className="row position-relative">
+						<div className="row">
 							<div className="col-12 col-sm-2">
 								<div className={styles.imageContainer}>
 									<img
@@ -208,9 +208,13 @@ function ProfileComponent() {
 						</div>
 					) : (
 						<div className="col-12 col-sm-6">
-							<UserRatingsComponent
-								userPostRatings={userStateData.userPostRatings}
-							/>
+							<div className={styles.userRatingsContainer}>
+								<UserRatingsComponent
+									userPostRatings={
+										userStateData.userPostRatings
+									}
+								/>
+							</div>
 						</div>
 					)}
 				</div>
