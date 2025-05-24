@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 	},
 	userDetailsContainer: {
 		width: "100%",
-    marginLeft: "1rem",
+		marginLeft: "1rem",
 		display: "flex",
 		justifyContent: "center",
 		"@media (max-width: 520px)": {

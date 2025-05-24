@@ -37,6 +37,6 @@ const useStyles = makeStyles({
 		cursor: "pointer",
 		fontSize: "14px",
 		textDecoration: "none",
-	}
+	},
 });
 export { useStyles };
