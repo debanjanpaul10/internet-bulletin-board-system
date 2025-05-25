@@ -10,9 +10,9 @@ import PostRatingDtoModel from "@models/PostRatingDto";
  *
  * @returns {Promise} The promise of the response from api.
  */
-export const GetPostApiAsync = async (postId, accessToken) => {
+export const GetPostApiAsync = async ( postId, accessToken ) => {
 	return await HttpUtility.GetAsync(
-		`Posts/GetPost?postId=${postId}`,
+		`Posts/GetPost?postId=${ postId }`,
 		accessToken
 	);
 };
@@ -21,8 +21,8 @@ export const GetPostApiAsync = async (postId, accessToken) => {
  * Gets all the posts data from api.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetAllPostsApiAsync = async (accessToken) => {
-	return await HttpUtility.GetAsync(`Posts/GetAllPosts`, accessToken);
+export const GetAllPostsApiAsync = async ( accessToken ) => {
+	return await HttpUtility.GetAsync( `Posts/GetAllPosts`, accessToken );
 };
 
 /**
@@ -32,7 +32,7 @@ export const GetAllPostsApiAsync = async (accessToken) => {
  *
  * @returns {Promise} The promise of the response from api.
  */
-export const AddNewPostApiAsync = async (newPostData, accessToken) => {
+export const AddNewPostApiAsync = async ( newPostData, accessToken ) => {
 	return await HttpUtility.PostAsync(
 		`Posts/AddPost`,
 		newPostData,
@@ -47,7 +47,7 @@ export const AddNewPostApiAsync = async (newPostData, accessToken) => {
  *
  * @returns {Promise} The promise of the response from api.
  */
-export const UpdatePostApiAsync = async (updatedPostData, accessToken) => {
+export const UpdatePostApiAsync = async ( updatedPostData, accessToken ) => {
 	return await HttpUtility.PostAsync(
 		`Posts/UpdatePost`,
 		updatedPostData,
@@ -62,9 +62,9 @@ export const UpdatePostApiAsync = async (updatedPostData, accessToken) => {
  *
  * @returns {Promise} The promise of the response from api.
  */
-export const DeletePostApiAsync = async (postId, accessToken) => {
+export const DeletePostApiAsync = async ( postId, accessToken ) => {
 	return await HttpUtility.PostAsync(
-		`Posts/DeletePost?postId=${postId}`,
+		`Posts/DeletePost?postId=${ postId }`,
 		null,
 		accessToken
 	);
@@ -77,7 +77,7 @@ export const DeletePostApiAsync = async (postId, accessToken) => {
  *
  * @returns {Promise} The promise of the response from api.
  */
-export const UpdateRatingApiAsync = async (postRatingModel, accessToken) => {
+export const UpdateRatingApiAsync = async ( postRatingModel, accessToken ) => {
 	return await HttpUtility.PostAsync(
 		`PostRatings/UpdateRating`,
 		postRatingModel,
@@ -94,9 +94,9 @@ export const UpdateRatingApiAsync = async (postRatingModel, accessToken) => {
  * @param {string} keyName The configuration key name.
  * @returns {Promise} The promise of the response from api.
  */
-export const GetConfigurationApiAsync = async (keyName) => {
+export const GetConfigurationApiAsync = async ( keyName ) => {
 	return await HttpUtility.GetAsync(
-		`Configuration/GetConfiguration?keyName=${keyName}`
+		`Configuration/GetConfiguration?keyName=${ keyName }`
 	);
 };
 
@@ -109,15 +109,15 @@ export const GetConfigurationApiAsync = async (keyName) => {
  * @param {string} storyText The story text.
  * @returns {Promise} The promise of the response from api.
  */
-export const PostRewriteStoryWithAiApiAsync = async (storyText) => {
-	return await HttpUtility.PostAIAsync(storyText);
+export const PostRewriteStoryWithAiApiAsync = async ( storyText ) => {
+	return await HttpUtility.PostAIAsync( storyText );
 };
 
 // #endregion
 
 // #region Profile
 
-export const GetUserProfilesDataApiAsync = async (accessToken) => {
+export const GetUserProfilesDataApiAsync = async ( accessToken ) => {
 	return await HttpUtility.GetAsync(
 		"Profiles/GetUserProfileData",
 		accessToken

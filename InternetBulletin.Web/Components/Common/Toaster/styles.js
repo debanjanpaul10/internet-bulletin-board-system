@@ -1,6 +1,6 @@
 import { makeStyles, tokens } from "@fluentui/react-components";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	toastContainer: {
 		position: "relative",
 		boxShadow: tokens.shadow28,
@@ -11,6 +11,6 @@ const useStyles = makeStyles({
 		right: "2px",
 		cursor: "pointer",
 	},
-});
+} );
 
 export { useStyles };

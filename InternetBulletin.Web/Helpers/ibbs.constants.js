@@ -147,8 +147,8 @@ export const MyProfilePageConstants = {
 		YourRatings: "Your ratings",
 		AboutUsMessage: "This is my story!",
 	},
-	PostTableHeaders: ["Post Name", "Date Created", "Ratings"],
-	RatingsTableHeaders: ["Post Name", "Rated on"],
+	PostTableHeaders: [ "Post Name", "Date Created", "Ratings" ],
+	RatingsTableHeaders: [ "Post Name", "Rated on" ],
 };
 
 export const AboutUsPageConstants = {

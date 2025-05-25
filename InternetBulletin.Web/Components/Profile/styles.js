@@ -1,6 +1,6 @@
 import { tokens, makeStyles } from "@fluentui/react-components";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	userDataSkeleton: {
 		height: "200px",
 		width: "100%",
@@ -63,6 +63,6 @@ const useStyles = makeStyles({
 			marginTop: "1rem",
 		},
 	},
-});
+} );
 
 export { useStyles };

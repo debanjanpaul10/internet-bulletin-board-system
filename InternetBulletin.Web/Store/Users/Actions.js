@@ -9,7 +9,7 @@ import {
  * @param {boolean} isLoading The is loading boolean flag.
  * @returns {Object} The action type and payload data.
  */
-export const ToggleProfileDataSpinner = (isLoading) => {
+export const ToggleProfileDataSpinner = ( isLoading ) => {
   return {
     type: TOGGLE_USER_PROFILE_DATA_SPINNER,
     paylad: isLoading,
@@ -21,18 +21,18 @@ export const ToggleProfileDataSpinner = (isLoading) => {
  * @param {string} accessToken The access token
  * @returns {Promise} The promise of the api response.
  */
-export const GetUserProfileDataAsync = (accessToken) => {
-  return async (dispatch) => {
+export const GetUserProfileDataAsync = ( accessToken ) => {
+  return async ( dispatch ) => {
     try {
-      dispatch(ToggleProfileDataSpinner(true));
-      const response = await GetUserProfilesDataApiAsync(accessToken);
-      if (response?.statusCode === 200) {
-        dispatch(GetUserProfileDataSuccess(response?.data));
+      dispatch( ToggleProfileDataSpinner( true ) );
+      const response = await GetUserProfilesDataApiAsync( accessToken );
+      if ( response?.statusCode === 200 ) {
+        dispatch( GetUserProfileDataSuccess( response?.data ) );
       }
-    } catch (error) {
-      console.error(error);
+    } catch ( error ) {
+      console.error( error );
     } finally {
-      dispatch(ToggleProfileDataSpinner(false));
+      dispatch( ToggleProfileDataSpinner( false ) );
     }
   };
 };
@@ -42,7 +42,7 @@ export const GetUserProfileDataAsync = (accessToken) => {
  * @param {Object} data The user profile data.
  * @returns {Object} The action type and payload data.
  */
-const GetUserProfileDataSuccess = (data) => {
+const GetUserProfileDataSuccess = ( data ) => {
   return {
     type: GET_USER_PROFILE_DATA,
     payload: data,

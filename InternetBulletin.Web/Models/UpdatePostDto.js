@@ -6,25 +6,25 @@ class UpdatePostDtoModel {
      * Gets or sets the post identifier.
      * @type {string}
      */
-	postId = "";
+    postId = "";
 
     /**
      * Gets or sets the post title.
      * @type {string}
      */
-	postTitle = "";
+    postTitle = "";
 
     /**
      * Gets or sets the content of the post.
      * @type {string}
      */
-	postContent = "";
+    postContent = "";
 
     /**
      * Gets or sets the post rating.
      * @type {number}
      */
-	postRating = 0;
+    postRating = 0;
 
     /**
      * Creates an instance of UpdatePostDtoModel.
@@ -33,12 +33,12 @@ class UpdatePostDtoModel {
      * @param {string} PostContent The content of the post.
      * @param {number} PostRating The post rating.
      */
-	constructor(PostId, PostTitle, PostContent, PostRating) {
-		this.postId = PostId;
-		this.postTitle = PostTitle;
-		this.postContent = PostContent;
-		this.postRating = PostRating;
-	}
+    constructor ( PostId, PostTitle, PostContent, PostRating ) {
+        this.postId = PostId;
+        this.postTitle = PostTitle;
+        this.postContent = PostContent;
+        this.postRating = PostRating;
+    }
 }
 
 export default UpdatePostDtoModel;

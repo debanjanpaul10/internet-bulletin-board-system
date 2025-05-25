@@ -4,7 +4,7 @@ import {
 	buttonClassNames,
 } from "@fluentui/react-components";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	card: {
 		margin: "20px auto",
 		width: "720px",
@@ -62,6 +62,6 @@ const useStyles = makeStyles({
 			color: tokens.colorPaletteRedForeground2
 		}
 	},
-});
+} );
 
 export { useStyles };

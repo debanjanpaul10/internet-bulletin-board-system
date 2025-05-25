@@ -24,38 +24,38 @@ import { useStyles } from "@components/Common/Toaster/styles";
  */
 function ToasterComponent() {
 	const dispatch = useDispatch();
-	const toasterId = useId("toaster");
-	const { dispatchToast, dismissToast } = useToastController(toasterId);
+	const toasterId = useId( "toaster" );
+	const { dispatchToast, dismissToast } = useToastController( toasterId );
 	const styles = useStyles();
 
 	const SuccessToasterStoreData = useSelector(
-		(state) => state.CommonReducer.successToaster
+		( state ) => state.CommonReducer.successToaster
 	);
 	const ErrorToasterStoreData = useSelector(
-		(state) => state.CommonReducer.errorToaster
+		( state ) => state.CommonReducer.errorToaster
 	);
 
-	const [sucessToasterShow, setSuccessToasterShow] = useState(false);
-	const [failToasterShow, setFailToasterShow] = useState(false);
+	const [ sucessToasterShow, setSuccessToasterShow ] = useState( false );
+	const [ failToasterShow, setFailToasterShow ] = useState( false );
 
-	useEffect(() => {
+	useEffect( () => {
 		if (
-			Object.values(SuccessToasterStoreData).length > 0 &&
+			Object.values( SuccessToasterStoreData ).length > 0 &&
 			sucessToasterShow !== SuccessToasterStoreData
 		) {
-			setSuccessToasterShow(SuccessToasterStoreData);
-			if (SuccessToasterStoreData.shouldShow) {
-				showSuccessToast(SuccessToasterStoreData.successMessage);
+			setSuccessToasterShow( SuccessToasterStoreData );
+			if ( SuccessToasterStoreData.shouldShow ) {
+				showSuccessToast( SuccessToasterStoreData.successMessage );
 			}
 		}
 
 		if (
-			Object.values(ErrorToasterStoreData).length > 0 &&
+			Object.values( ErrorToasterStoreData ).length > 0 &&
 			failToasterShow !== ErrorToasterStoreData
 		) {
-			setFailToasterShow(ErrorToasterStoreData);
-			if (ErrorToasterStoreData.shouldShow) {
-				showErrorToast(ErrorToasterStoreData.errorMessage);
+			setFailToasterShow( ErrorToasterStoreData );
+			if ( ErrorToasterStoreData.shouldShow ) {
+				showErrorToast( ErrorToasterStoreData.errorMessage );
 			}
 		}
 	}, [
@@ -63,19 +63,19 @@ function ToasterComponent() {
 		ErrorToasterStoreData,
 		dispatchToast,
 		dispatch,
-	]);
+	] );
 
 	/**
 	 * Handles the success toaster dismiss event.
 	 */
 	const handleDismissSuccess = () => {
 		dispatch(
-			ToggleSuccessToaster({
+			ToggleSuccessToaster( {
 				shouldShow: false,
 				successMessage: "",
-			})
+			} )
 		);
-		dismissToast(toasterId);
+		dismissToast( toasterId );
 	};
 
 	/**
@@ -83,31 +83,31 @@ function ToasterComponent() {
 	 */
 	const handleDismissError = () => {
 		dispatch(
-			ToggleErrorToaster({
+			ToggleErrorToaster( {
 				shouldShow: false,
 				errorMessage: "",
-			})
+			} )
 		);
-		dismissToast(toasterId);
+		dismissToast( toasterId );
 	};
 
 	/**
 	 * Handles the success toaster show event.
 	 * @param {string} message The toaster message.
 	 */
-	const showSuccessToast = (message) => {
+	const showSuccessToast = ( message ) => {
 		dispatchToast(
-			<div className={styles.toastContainer}>
+			<div className={ styles.toastContainer }>
 				<Toast>
 					<Button
-						className={styles.dismissButton}
-						onClick={handleDismissSuccess}
+						className={ styles.dismissButton }
+						onClick={ handleDismissSuccess }
 						appearance="transparent"
 						size="small"
 					>
 						<Dismiss28Regular />
 					</Button>
-					<ToastTitle>{message}</ToastTitle>
+					<ToastTitle>{ message }</ToastTitle>
 				</Toast>
 			</div>,
 			{ timeout: -1, intent: "success", toastId: toasterId }
@@ -118,26 +118,26 @@ function ToasterComponent() {
 	 * Handles the error toaster show event.
 	 * @param {string} message The toaster message.
 	 */
-	const showErrorToast = (message) => {
+	const showErrorToast = ( message ) => {
 		dispatchToast(
-			<div className={styles.toastContainer}>
+			<div className={ styles.toastContainer }>
 				<Toast appearance="error">
 					<Button
-						className={styles.dismissButton}
-						onClick={handleDismissError}
+						className={ styles.dismissButton }
+						onClick={ handleDismissError }
 						appearance="transparent"
 						size="small"
 					>
 						<Dismiss28Regular />
 					</Button>
-					<ToastTitle>{message}</ToastTitle>
+					<ToastTitle>{ message }</ToastTitle>
 				</Toast>
 			</div>,
 			{ timeout: -1, intent: "error", toastId: toasterId }
 		);
 	};
 
-	return <Toaster toasterId={toasterId} />;
+	return <Toaster toasterId={ toasterId } />;
 }
 
 export default ToasterComponent;

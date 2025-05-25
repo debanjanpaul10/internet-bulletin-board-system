@@ -13,9 +13,9 @@ function NoPostsContainer() {
 	const styles = useStyles();
 
 	return (
-		<div className="text-center" style={{ marginTop: "200px" }}>
-			<LargeTitle className={styles.noPostsHeading}>
-				{NoPostsMessageConstant.Heading}
+		<div className={ styles.noPostsContainer }>
+			<LargeTitle className={ styles.noPostsHeading }>
+				{ NoPostsMessageConstant.Heading }
 			</LargeTitle>
 		</div>
 	);

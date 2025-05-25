@@ -1,6 +1,6 @@
 import { makeStyles, tokens } from "@fluentui/react-components";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	card: {
 		margin: "20px auto",
 		width: "100%",
@@ -45,5 +45,5 @@ const useStyles = makeStyles({
 			color: tokens.colorStatusDangerBackground3Hover,
 		},
 	},
-});
+} );
 export { useStyles };
