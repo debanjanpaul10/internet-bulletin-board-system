@@ -1,6 +1,6 @@
 import { makeStyles, tokens } from "@fluentui/react-components";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	themeToggleButton: {
 		width: "50px",
 		minWidth: "50px",
@@ -16,13 +16,13 @@ const useStyles = makeStyles({
 		"@media (max-width: 768px)": {
 			padding: "15px",
 		},
-		backgroundColor: tokens.colorNeutralBackground1Pressed, 
+		backgroundColor: tokens.colorNeutralBackground1Pressed,
 	},
 	navContent: {
 		display: "flex",
 		width: "100%",
 		alignItems: "center",
 	},
-});
+} );
 
 export default useStyles;

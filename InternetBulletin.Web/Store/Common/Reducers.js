@@ -18,8 +18,8 @@ const initialState = {
  * @param {Object} action The action data.
  * @returns {Object} The updated redux store object.
  */
-const CommonReducer = (state = initialState, action) => {
-	switch (action.type) {
+const CommonReducer = ( state = initialState, action ) => {
+	switch ( action.type ) {
 		case GET_CONFIGURATION_VALUE: {
 			return {
 				...state,

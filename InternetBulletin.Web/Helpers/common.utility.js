@@ -14,6 +14,6 @@ export const ConsoleLogMessage = console.log(
  * @param {Date} date The unformatted date
  * @returns {string} The formatted date.
  */
-export const formatDate = (date) => {
-  return new Date(date).toDateString();
+export const formatDate = ( date ) => {
+  return new Date( date ).toDateString();
 };

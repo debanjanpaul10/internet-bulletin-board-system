@@ -1,6 +1,6 @@
 import { makeStyles, tokens } from "@fluentui/react-components";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	aboutUsHeading: {
 		fontFamily: "Architects Daughter",
 		textAlign: "center",
@@ -27,6 +27,6 @@ const useStyles = makeStyles({
 		maxHeight: "60vh",
 		overflow: "hidden"
 	}
-});
+} );
 
 export { useStyles };

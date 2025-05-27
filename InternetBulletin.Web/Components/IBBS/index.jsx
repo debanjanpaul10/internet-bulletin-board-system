@@ -3,15 +3,15 @@ import { Routes, Route } from "react-router-dom";
 
 import { useStyles } from "./styles";
 import { HeaderPageConstants } from "@helpers/ibbs.constants";
-import Header from "@components/Common/Header";
 import PageNotFound from "@components/Common/PageNotFound";
-import HomeComponent from "@components/Home";
 import CreatePostComponent from "@components/Posts/Components/CreatePost";
 import ToasterComponent from "@components/Common/Toaster";
 import ProfileComponent from "@components/Profile";
 import SideDrawerComponent from "@components/Common/SideDrawer";
 import AboutUsComponent from "@components/AboutUs";
 import FooterComponent from "@components/Common/Footer";
+import HeaderComponent from "@components/Common/Header";
+import LandingPageComponent from "@components/LandingPage";
 
 /**
  * @component
@@ -44,34 +44,34 @@ function IBBS() {
 
 	return (
 		<div className="main-content">
-			<div className={styles.headerNav}>
-				<Header />
+			<div className={ styles.headerNav }>
+				<HeaderComponent />
 			</div>
-			<div className={styles.bodyContent}>
-				{" "}
+			<div className={ styles.bodyContent }>
+				{ " " }
 				<ToasterComponent />
 				<SideDrawerComponent />
 				<Routes>
 					<Route
-						path={Headings.Home.Link}
-						element={<HomeComponent />}
+						path={ Headings.Home.Link }
+						element={ <LandingPageComponent /> }
 					/>
 					<Route
-						path={Headings.CreatePost.Link}
-						element={<CreatePostComponent />}
+						path={ Headings.CreatePost.Link }
+						element={ <CreatePostComponent /> }
 					/>
-					<Route path="*" element={<PageNotFound />} />
+					<Route path="*" element={ <PageNotFound /> } />
 					<Route
-						path={Headings.MyProfile.Link}
-						element={<ProfileComponent />}
+						path={ Headings.MyProfile.Link }
+						element={ <ProfileComponent /> }
 					/>
 					<Route
-						path={Headings.AboutUs.Link}
-						element={<AboutUsComponent />}
+						path={ Headings.AboutUs.Link }
+						element={ <AboutUsComponent /> }
 					/>
 				</Routes>
 			</div>
-			<div className={styles.footerContent}>
+			<div className={ styles.footerContent }>
 				<FooterComponent />
 			</div>
 		</div>

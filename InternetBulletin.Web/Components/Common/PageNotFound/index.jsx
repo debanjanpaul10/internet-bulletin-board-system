@@ -16,8 +16,8 @@ function PageNotFound() {
 		<div className="container">
 			<div className="row">
 				<div className="col-sm-12 mt-5">
-					<LargeTitle className={styles.notFoundHeader}>
-						{ErrorPageConstants.PageNotFoundMessage}
+					<LargeTitle className={ styles.notFoundHeader }>
+						{ ErrorPageConstants.PageNotFoundMessage }
 					</LargeTitle>
 				</div>
 			</div>
