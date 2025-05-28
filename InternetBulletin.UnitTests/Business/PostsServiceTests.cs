@@ -10,6 +10,7 @@ namespace InternetBulletin.UnitTests.Business
     using InternetBulletin.Business.Services;
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Shared.DTOs.Posts;
+    using InternetBulletin.Shared.Helpers;
     using Microsoft.Extensions.Logging;
     using Moq;
     using System;
@@ -47,6 +48,11 @@ namespace InternetBulletin.UnitTests.Business
         private readonly Mock<IPostRatingsDataService> _postRatingsDataServiceMock;
 
         /// <summary>
+        /// The mock http client helper.
+        /// </summary>
+        private readonly Mock<IHttpClientHelper> _mockHttpClientHelper;
+
+        /// <summary>
         /// The posts service.
         /// </summary>
         private readonly PostsService _postsService;
@@ -59,7 +65,8 @@ namespace InternetBulletin.UnitTests.Business
             this._loggerMock = new Mock<ILogger<PostsService>>();
             this._postsDataServiceMock = new Mock<IPostsDataService>();
             this._postRatingsDataServiceMock = new Mock<IPostRatingsDataService>();
-            this._postsService = new PostsService(this._loggerMock.Object, this._postsDataServiceMock.Object, this._postRatingsDataServiceMock.Object);
+            this._mockHttpClientHelper = new Mock<IHttpClientHelper>();
+            this._postsService = new PostsService(this._loggerMock.Object, this._mockHttpClientHelper.Object, this._postsDataServiceMock.Object, this._postRatingsDataServiceMock.Object);
         }
 
         /// <summary>

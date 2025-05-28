@@ -7,30 +7,41 @@
 
 namespace InternetBulletin.Business.Services
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Shared.Constants;
     using InternetBulletin.Shared.DTOs.Users;
     using InternetBulletin.Shared.Helpers;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Graph.Models;
 
     /// <summary>
     /// The users service class.
     /// </summary>
-    /// <param name="httpClientHelper">The http client helper</param>
     /// <param name="usersDataService">The users data service</param>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="logger">The logger</param>
     /// <seealso cref="IUsersService"/>
-    public class UsersService(IHttpClientHelper httpClientHelper, IUsersDataService usersDataService) : IUsersService
+    [ExcludeFromCodeCoverage]
+    public class UsersService(IUsersDataService usersDataService, IConfiguration configuration, ILogger<UsersService> logger) : IUsersService
     {
-        /// <summary>
-        /// The http client helper.
-        /// </summary>
-        private readonly IHttpClientHelper _httpClientHelper = httpClientHelper;
-
         /// <summary>
         /// The users data service.
         /// </summary>
         private readonly IUsersDataService _usersDataService = usersDataService;
+
+        /// <summary>
+        /// The configuration.
+        /// </summary>
+        private readonly IConfiguration _configuration = configuration;
+
+        /// <summary>
+        /// The _logger.
+        /// </summary>
+        private readonly ILogger<UsersService> _logger = logger;
 
         /// <summary>
         /// Gets graph user data async.
@@ -40,11 +51,11 @@ namespace InternetBulletin.Business.Services
         public async Task<GraphUserDTO> GetGraphUserDataAsync(string userName)
         {
             var responseDto = new GraphUserDTO();
-            var graphResponse = await this._httpClientHelper.GetGraphApiDataAsync();
-            if (graphResponse?.Value is not null)
+            var usersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+            if (usersData?.Value is not null)
             {
                 // Find the user with matching username
-                var user = graphResponse.Value.FirstOrDefault(u =>
+                var user = usersData.Value.FirstOrDefault(u =>
                     u.AdditionalData is not null &&
                     u.AdditionalData.ContainsKey(IbbsConstants.UserNameExtensionConstant) &&
                     Convert.ToString(u.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture) == userName);
@@ -70,15 +81,35 @@ namespace InternetBulletin.Business.Services
         }
 
         /// <summary>
-        /// Gets all graph users data async.
+        /// Saves users data from azure ad async.
         /// </summary>
-        public async Task<List<GraphUserDTO>> GetAllGraphUsersDataAsync()
+        /// <param name="graphUsersData">The users data.</param>
+        /// <returns>The boolean for success / failure</returns>
+        public async Task<bool> SaveUsersDataFromAzureAdAsync()
+        {
+            var graphUsersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+            var userData = GetAllGraphUsersData(graphUsersData);
+            if (userData is not null && userData.Count > 0)
+            {
+                return await this._usersDataService.SaveUsersDataAsync(userData);
+            }
+
+            return false;
+        }
+
+        #region PRIVATE Methods
+
+        /// <summary>
+        /// Gets all graph users data.
+        /// </summary>
+        /// <param name="graphUsersData">The graph users data.</param>
+        /// <returns>The list of graph user dto.</returns>
+        private static List<GraphUserDTO> GetAllGraphUsersData(UserCollectionResponse graphUsersData)
         {
             var responseDto = new List<GraphUserDTO>();
-            var graphResponse = await this._httpClientHelper.GetGraphApiDataAsync();
-            if (graphResponse?.Value is not null)
+            if (graphUsersData?.Value is not null)
             {
-                var usersData = graphResponse.Value.Where(u =>
+                var usersData = graphUsersData.Value.Where(u =>
                     u.AdditionalData.ContainsKey(IbbsConstants.UserNameExtensionConstant)
                     && !string.IsNullOrEmpty(Convert.ToString(u.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture))).ToList();
                 if (usersData.Count > 0)
@@ -96,21 +127,7 @@ namespace InternetBulletin.Business.Services
             return responseDto;
         }
 
-        /// <summary>
-        /// Saves users data from azure ad async.
-        /// </summary>
-        /// <param name="usersData">The users data.</param>
-        /// <returns>The boolean for success / failure</returns>
-        public async Task<bool> SaveUsersDataFromAzureAdAsync()
-        {
-            var usersData = await this.GetAllGraphUsersDataAsync();
-            if (usersData is not null && usersData.Count > 0)
-            {
-                return await this._usersDataService.SaveUsersDataAsync(usersData);
-            }
-
-            return false;
-        }
+        #endregion
     }
 }
 

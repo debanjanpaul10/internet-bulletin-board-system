@@ -62,6 +62,16 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string UserDisplayNameConstant = "name";
 
+		/// <summary>
+		/// The authorization constant.
+		/// </summary>
+		public const string AuthorizationConstant = "Authorization";
+
+		/// <summary>
+		/// The bearer constant.
+		/// </summary>
+		public const string BearerConstant = "Bearer";
+
 		#region AzureADB2CConstants
 
 		/// <summary>
@@ -110,7 +120,7 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The ibbs ai API URL constant
 		/// </summary>
-		public const string IbbsAiApiUrlConstant = "IbbsAiApiUrl";
+		public const string IbbsAiApiBaseUrlConstant = "IbbsAiApiBaseUrl";
 
 		/// <summary>
 		/// The ibbs ai ad client id.

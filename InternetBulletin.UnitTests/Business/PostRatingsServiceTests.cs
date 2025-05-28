@@ -27,6 +27,9 @@ namespace InternetBulletin.UnitTests.Business
         /// </summary>
         private static readonly string PostIdGuid = Guid.NewGuid().ToString();
 
+        /// <summary>
+        /// The user name.
+        /// </summary>
         private static readonly string UserName = "user1234";
 
         /// <summary>

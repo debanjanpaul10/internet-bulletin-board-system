@@ -24,7 +24,7 @@ namespace InternetBulletin.Business.Services
 	/// <param name="logger">The logger.</param>
 	/// <param name="postsDataService">The Posts Data Service.</param>
 	/// <seealso cref="IPostsService"/>
-	public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
+	public class PostsService(ILogger<PostsService> logger, IHttpClientHelper httpClientHelper, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
 	{
 		/// <summary>
 		/// The logger
@@ -40,6 +40,11 @@ namespace InternetBulletin.Business.Services
 		/// The post ratings service.
 		/// </summary>
 		private readonly IPostRatingsDataService _postRatingsDataService = postRatingsDataService;
+
+		/// <summary>
+		/// The http client helper.
+		/// </summary>
+		private readonly IHttpClientHelper _httpClientHelper = httpClientHelper;
 
 		/// <summary>
 		/// Gets the post asynchronous.
@@ -120,6 +125,25 @@ namespace InternetBulletin.Business.Services
 			{
 				return await this._postRatingsDataService.GetAllPostsWithRatingsAsync(userName);
 			}
+		}
+
+		/// <summary>
+		/// Rewrites with a i async.
+		/// </summary>
+		/// <param name="story">The story.</param>
+		/// <returns>The AI rewritten response.</returns>
+		public async Task<string> RewriteWithAIAsync(string story)
+		{
+			var rewriteAiUrl = RouteConstants.RewriteTextApi_Route;
+			var aiResponse = await this._httpClientHelper.GetIbbsAiResponseAsync(data: story, apiUrl: rewriteAiUrl);
+
+			var aiStoryResponse = aiResponse.Content.ToString();
+			if (aiResponse is not null && aiResponse.IsSuccessStatusCode && !string.IsNullOrEmpty(aiStoryResponse))
+			{
+				return aiStoryResponse;
+			}
+
+			throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
 		}
 	}
 }

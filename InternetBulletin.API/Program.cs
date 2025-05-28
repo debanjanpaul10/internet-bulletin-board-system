@@ -10,7 +10,6 @@ namespace InternetBulletin.API
     using Azure.Identity;
     using InternetBulletin.API.Dependencies;
     using InternetBulletin.API.Middleware;
-    using InternetBulletin.Shared.Helpers;
     using Microsoft.OpenApi.Models;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
@@ -80,8 +79,6 @@ namespace InternetBulletin.API
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddHttpClient<IHttpClientHelper, HttpClientHelper>();
-            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
         }
 
         /// <summary>

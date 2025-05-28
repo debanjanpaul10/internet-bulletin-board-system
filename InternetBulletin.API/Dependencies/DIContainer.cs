@@ -13,6 +13,7 @@ namespace InternetBulletin.API.Dependencies
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Data.DataServices;
     using InternetBulletin.Shared.Constants;
+    using InternetBulletin.Shared.Helpers;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -28,7 +29,7 @@ namespace InternetBulletin.API.Dependencies
         public static void ConfigureAzureSqlServer(this WebApplicationBuilder builder)
         {
             var sqlConnectionString = builder.Environment.IsDevelopment()
-                ? builder.Configuration[ConfigurationConstants.LocalSqlConnectionStringConstant] 
+                ? builder.Configuration[ConfigurationConstants.LocalSqlConnectionStringConstant]
                 : builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
             if (!string.IsNullOrEmpty(sqlConnectionString))
             {
@@ -54,6 +55,7 @@ namespace InternetBulletin.API.Dependencies
         /// <param name="builder">The web application builder.</param>
         public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
         {
+            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
             builder.Services.AddScoped<IPostsService, PostsService>();
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
             builder.Services.AddScoped<IPostRatingsService, PostRatingsService>();
