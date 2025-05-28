@@ -60,6 +60,7 @@ namespace InternetBulletin.API.Dependencies
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
             builder.Services.AddScoped<IPostRatingsService, PostRatingsService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<ICacheService, CacheService>();
         }
 
         /// <summary>

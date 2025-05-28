@@ -53,6 +53,7 @@ namespace InternetBulletin.API.Dependencies
         /// <param name="builder">The builder.</param>
         public static void ConfigureApiServices(this WebApplicationBuilder builder)
         {
+            builder.Services.AddMemoryCache();
             builder.ConfigureAuthenticationServices();
             builder.ConfigureHttpClientFactory();
             builder.ConfigureAzureSqlServer();

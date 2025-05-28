@@ -24,9 +24,10 @@ namespace InternetBulletin.Business.Services
     /// <param name="usersDataService">The users data service</param>
     /// <param name="configuration">The configuration.</param>
     /// <param name="logger">The logger</param>
+    /// <param name="cacheService">The cache service.</param>
     /// <seealso cref="IUsersService"/>
     [ExcludeFromCodeCoverage]
-    public class UsersService(IUsersDataService usersDataService, IConfiguration configuration, ILogger<UsersService> logger) : IUsersService
+    public class UsersService(IUsersDataService usersDataService, IConfiguration configuration, ILogger<UsersService> logger, ICacheService cacheService) : IUsersService
     {
         /// <summary>
         /// The users data service.
@@ -44,6 +45,11 @@ namespace InternetBulletin.Business.Services
         private readonly ILogger<UsersService> _logger = logger;
 
         /// <summary>
+        /// The cache service.
+        /// </summary>
+        private readonly ICacheService _cacheService = cacheService;
+
+        /// <summary>
         /// Gets graph user data async.
         /// </summary>
         /// <param name="userName">The user name.</param>
@@ -51,7 +57,17 @@ namespace InternetBulletin.Business.Services
         public async Task<GraphUserDTO> GetGraphUserDataAsync(string userName)
         {
             var responseDto = new GraphUserDTO();
-            var usersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+            var usersData = new UserCollectionResponse();
+            var cachedData = this._cacheService.GetCachedData<UserCollectionResponse?>(CacheKeys.FilteredGraphUsersDataCacheKey);
+            if (cachedData is not null)
+            {
+                usersData = cachedData;
+            }
+            else
+            {
+                usersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+            }
+
             if (usersData?.Value is not null)
             {
                 // Find the user with matching username
@@ -87,7 +103,17 @@ namespace InternetBulletin.Business.Services
         /// <returns>The boolean for success / failure</returns>
         public async Task<bool> SaveUsersDataFromAzureAdAsync()
         {
-            var graphUsersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+            var graphUsersData = new UserCollectionResponse();
+            var cachedData = this._cacheService.GetCachedData<UserCollectionResponse>(CacheKeys.FilteredGraphUsersDataCacheKey);
+            if (cachedData is not null)
+            {
+                graphUsersData = cachedData;
+            }
+            else
+            {
+                graphUsersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+            }
+
             var userData = GetAllGraphUsersData(graphUsersData);
             if (userData is not null && userData.Count > 0)
             {

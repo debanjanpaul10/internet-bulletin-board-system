@@ -16,6 +16,7 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Shared.Helpers;
 	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
+	using System.Globalization;
 	using System.Threading.Tasks;
 
 	/// <summary>
@@ -23,8 +24,12 @@ namespace InternetBulletin.Business.Services
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="postsDataService">The Posts Data Service.</param>
+	/// <param name="cacheService">The cache service.</param>
+	/// <param name="httpClientHelper">The http client helper.</param>
+	/// <param name="postRatingsDataService">The post ratings data service.</param>
 	/// <seealso cref="IPostsService"/>
-	public class PostsService(ILogger<PostsService> logger, IHttpClientHelper httpClientHelper, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
+	public class PostsService(
+		ILogger<PostsService> logger, IHttpClientHelper httpClientHelper, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService, ICacheService cacheService) : IPostsService
 	{
 		/// <summary>
 		/// The logger
@@ -45,6 +50,11 @@ namespace InternetBulletin.Business.Services
 		/// The http client helper.
 		/// </summary>
 		private readonly IHttpClientHelper _httpClientHelper = httpClientHelper;
+
+		/// <summary>
+		/// The cache service.
+		/// </summary>
+		private readonly ICacheService _cacheService = cacheService;
 
 		/// <summary>
 		/// Gets the post asynchronous.
@@ -107,23 +117,44 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
 		public async Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName)
 		{
-			if (string.IsNullOrEmpty(userName))
+			if (string.IsNullOrWhiteSpace(userName)) // Consider IsNullOrWhiteSpace for robustness
 			{
-				var result = await this._postsDataService.GetAllPostsAsync();
-				return [.. result.Select(post => new PostWithRatingsDTO
+				var cachedData = this._cacheService.GetCachedData<List<PostWithRatingsDTO>>(CacheKeys.AllPostsCacheKey);
+				if (cachedData is not null)
 				{
-					PostId = post.PostId,
-					PostTitle = post.PostTitle,
-					PostContent = post.PostContent,
-					PostCreatedDate = post.PostCreatedDate,
-					PostOwnerUserName = post.PostOwnerUserName,
-					Ratings = post.Ratings,
-					IsActive = post.IsActive,
-				})];
+					return cachedData;
+				}
+				else
+				{
+					var result = await this._postsDataService.GetAllPostsAsync();
+					var postsData = result.Select(post => new PostWithRatingsDTO
+					{
+						PostId = post.PostId,
+						PostTitle = post.PostTitle,
+						PostContent = post.PostContent,
+						PostCreatedDate = post.PostCreatedDate,
+						PostOwnerUserName = post.PostOwnerUserName,
+						Ratings = post.Ratings,
+						IsActive = post.IsActive,
+					}).ToList();
+
+					this._cacheService.SetCacheData(CacheKeys.AllPostsCacheKey, postsData, CacheKeys.DefaultCacheExpiration);
+					return postsData;
+				}
 			}
 			else
 			{
-				return await this._postRatingsDataService.GetAllPostsWithRatingsAsync(userName);
+				var cachedData = this._cacheService.GetCachedData<List<PostWithRatingsDTO>>(CacheKeys.AllUserPostsDataCacheKey(userName));
+				if (cachedData is not null)
+				{
+					return cachedData;
+				}
+				else
+				{
+					var postsData = await this._postRatingsDataService.GetAllPostsWithRatingsAsync(userName);
+					this._cacheService.SetCacheData(CacheKeys.AllUserPostsDataCacheKey(userName), postsData, CacheKeys.DefaultCacheExpiration);
+					return postsData;
+				}
 			}
 		}
 
