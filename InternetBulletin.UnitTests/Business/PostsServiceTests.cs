@@ -7,6 +7,7 @@
 
 namespace InternetBulletin.UnitTests.Business
 {
+    using InternetBulletin.Business.Contracts;
     using InternetBulletin.Business.Services;
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Shared.DTOs.Posts;
@@ -16,6 +17,7 @@ namespace InternetBulletin.UnitTests.Business
     using System;
     using System.Threading.Tasks;
     using Xunit;
+    using static InternetBulletin.UnitTests.Helpers.TestsHelper;
 
     /// <summary>
     /// Posts service tests.
@@ -26,11 +28,6 @@ namespace InternetBulletin.UnitTests.Business
         /// The post id guid.
         /// </summary>
         private static readonly string PostIdGuid = Guid.NewGuid().ToString();
-
-        /// <summary>
-        /// The user name.
-        /// </summary>
-        private static readonly string UserName = "user12345";
 
         /// <summary>
         /// The logger mock.
@@ -53,6 +50,11 @@ namespace InternetBulletin.UnitTests.Business
         private readonly Mock<IHttpClientHelper> _mockHttpClientHelper;
 
         /// <summary>
+        /// The mock cache service.
+        /// </summary>
+        private readonly Mock<ICacheService> _mockCacheService;
+
+        /// <summary>
         /// The posts service.
         /// </summary>
         private readonly PostsService _postsService;
@@ -66,7 +68,11 @@ namespace InternetBulletin.UnitTests.Business
             this._postsDataServiceMock = new Mock<IPostsDataService>();
             this._postRatingsDataServiceMock = new Mock<IPostRatingsDataService>();
             this._mockHttpClientHelper = new Mock<IHttpClientHelper>();
-            this._postsService = new PostsService(this._loggerMock.Object, this._mockHttpClientHelper.Object, this._postsDataServiceMock.Object, this._postRatingsDataServiceMock.Object);
+            this._mockCacheService = new Mock<ICacheService>();
+
+            this._postsService = new PostsService(
+                this._loggerMock.Object, this._mockHttpClientHelper.Object, this._postsDataServiceMock.Object,
+                this._postRatingsDataServiceMock.Object, this._mockCacheService.Object);
         }
 
         /// <summary>
@@ -76,7 +82,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task GetPostAsync_ValidPostId_ReturnsPost()
         {
             // Arrange
-            var expectedPost = TestsHelper.PrepareNewPostDataDTO(PostIdGuid, 0);
+            var expectedPost = PrepareNewPostDataDTO(PostIdGuid, 0);
             this._postsDataServiceMock.Setup(x => x.GetPostAsync(It.IsAny<Guid>(), It.IsAny<string>(), true)).ReturnsAsync(expectedPost);
 
             // Act
@@ -109,7 +115,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task AddNewPostAsync_ValidPost_ReturnsTrue()
         {
             // Arrange
-            var newPost = TestsHelper.PrepareNewAddPostDataDTO();
+            var newPost = PrepareNewAddPostDataDTO();
             this._postsDataServiceMock.Setup(x => x.AddNewPostAsync(It.IsAny<AddPostDTO>(), It.IsAny<string>())).ReturnsAsync(true);
 
             // Act
@@ -126,8 +132,8 @@ namespace InternetBulletin.UnitTests.Business
         public async Task UpdatePostAsync_ValidPost_ReturnsUpdatedPost()
         {
             // Arrange
-            var updatedPost = TestsHelper.PrepareNewUpdatePostDataDTO(PostIdGuid);
-            var expectedPost = TestsHelper.PrepareNewPostDataDTO(PostIdGuid, 1);
+            var updatedPost = PrepareNewUpdatePostDataDTO(PostIdGuid);
+            var expectedPost = PrepareNewPostDataDTO(PostIdGuid, 1);
             this._postsDataServiceMock.Setup(x => x.UpdatePostAsync(It.IsAny<UpdatePostDTO>(), It.IsAny<string>(), false)).ReturnsAsync(expectedPost);
 
             // Act
@@ -161,7 +167,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task GetAllPostsAsync_WithUserName_ReturnsPostsWithRatings()
         {
             // Arrange
-            var expectedPosts = TestsHelper.PreparePostWithRatingsDTO();
+            var expectedPosts = PreparePostWithRatingsDTO();
             this._postRatingsDataServiceMock.Setup(x => x.GetAllPostsWithRatingsAsync(It.IsAny<string>())).ReturnsAsync(expectedPosts);
 
             // Act
@@ -180,7 +186,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task GetAllPostsAsync_WithoutUserName_ReturnsAllPosts()
         {
             // Arrange
-            var expectedPosts = TestsHelper.PreparePostsDataForUser();
+            var expectedPosts = PreparePostsDataForUser();
             this._postsDataServiceMock.Setup(x => x.GetAllPostsAsync()).ReturnsAsync(expectedPosts);
 
             // Act

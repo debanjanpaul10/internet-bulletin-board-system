@@ -7,6 +7,7 @@
 
 namespace InternetBulletin.Shared.Helpers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Azure.Identity;
     using InternetBulletin.Shared.Constants;
     using Microsoft.Extensions.Configuration;
@@ -18,6 +19,7 @@ namespace InternetBulletin.Shared.Helpers
     /// <summary>
     /// Common utilities.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class CommonUtilities
     {
         /// <summary>

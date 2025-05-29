@@ -7,13 +7,14 @@
 
 namespace InternetBulletin.Shared.Helpers
 {
+    using System.Diagnostics.CodeAnalysis;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
     using InternetBulletin.Shared.Constants;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
-    using System.Text;
-    using System.Net.Http.Headers;
-    using System.Net.Http;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
     /// <summary>
@@ -38,6 +39,7 @@ namespace InternetBulletin.Shared.Helpers
     /// <param name="configuration">The configuration.</param>
     /// <param name="httpClientFactory">The http client factory.</param>
     /// <seealso cref="IHttpClientHelper"/>
+    [ExcludeFromCodeCoverage]
     public class HttpClientHelper(ILogger<HttpClientHelper> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) : IHttpClientHelper
     {
         /// <summary>

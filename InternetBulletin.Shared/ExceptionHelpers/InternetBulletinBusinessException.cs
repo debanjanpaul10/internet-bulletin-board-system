@@ -7,9 +7,12 @@
 
 namespace InternetBulletin.Shared.ExceptionHelpers
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Internet bulletin exception helper.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class InternetBulletinBusinessException : Exception
     {
         /// <summary>

@@ -7,6 +7,7 @@
 
 namespace InternetBulletin.Shared.Helpers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Azure.Core;
     using Azure.Identity;
     using InternetBulletin.Shared.Constants;
@@ -17,6 +18,7 @@ namespace InternetBulletin.Shared.Helpers
     /// <summary>
     /// Token helper.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class TokenHelper
     {
         /// <summary>
