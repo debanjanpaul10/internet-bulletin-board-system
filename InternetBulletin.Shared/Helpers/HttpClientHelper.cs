@@ -28,7 +28,12 @@ namespace InternetBulletin.Shared.Helpers
         /// <typeparam name="T">The input data.</typeparam>
         /// <param name="data">The data.</param>
         /// <param name="apiUrl">The api url.</param>
-        /// <returns>The response from IBBS.AI</returns>
+        /// <summary>
+    /// Sends a JSON-serialized payload to the specified IBBS.AI API endpoint using an authenticated HTTP POST request.
+    /// </summary>
+    /// <param name="data">The data object to serialize and send in the request body.</param>
+    /// <param name="apiUrl">The target IBBS.AI API endpoint URL.</param>
+    /// <returns>The HTTP response message from the IBBS.AI service.</returns>
         Task<HttpResponseMessage> GetIbbsAiResponseAsync<T>(T data, string apiUrl);
     }
 
@@ -63,7 +68,14 @@ namespace InternetBulletin.Shared.Helpers
         /// <typeparam name="T">The input data.</typeparam>
         /// <param name="data">The data.</param>
         /// <param name="apiUrl">The api url.</param>
-        /// <returns>The response from IBBS.AI</returns>
+        /// <summary>
+        /// Sends a JSON-serialized payload to the specified IBBS.AI API endpoint using an authenticated HTTP POST request.
+        /// </summary>
+        /// <param name="data">The data object to serialize and send as the request body.</param>
+        /// <param name="apiUrl">The target IBBS.AI API endpoint URL.</param>
+        /// <returns>The HTTP response message from the IBBS.AI service.</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="apiUrl"/> is null or empty.</exception>
+        /// <exception cref="HttpRequestException">Thrown if the HTTP response indicates failure.</exception>
         public async Task<HttpResponseMessage> GetIbbsAiResponseAsync<T>(T data, string apiUrl)
         {
             try
@@ -103,7 +115,11 @@ namespace InternetBulletin.Shared.Helpers
         /// Prepares http client factory async.
         /// </summary>
         /// <param name="client">The client.</param>
-        /// <param name="tokenTask">The task to get the token.</param>
+        /// <summary>
+        /// Asynchronously sets the Authorization header of the provided HTTP client using a bearer token obtained from the specified task.
+        /// </summary>
+        /// <param name="client">The HTTP client whose Authorization header will be set.</param>
+        /// <param name="tokenTask">A task that retrieves the bearer token.</param>
         private static async Task PrepareHttpClientFactoryAsync(HttpClient client, Task<string> tokenTask)
         {
             var token = await tokenTask.ConfigureAwait(false);

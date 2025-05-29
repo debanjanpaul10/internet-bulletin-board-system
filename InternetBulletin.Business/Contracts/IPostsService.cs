@@ -1,4 +1,4 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="IPostsService.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
@@ -52,13 +52,21 @@ namespace InternetBulletin.Business.Contracts
 		/// Gets all posts asynchronous.
 		/// </summary>
 		/// <param name="userName">The user name</param>
-		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
+		/// <summary>
+/// Retrieves all posts accessible to the specified user.
+/// </summary>
+/// <param name="userName">The name of the user requesting the posts.</param>
+/// <returns>A list of posts with associated ratings.</returns>
 		Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName);
 
 		/// <summary>
 		/// Rewrites with a i async.
 		/// </summary>
-		/// <param name="story">The story.</param>
+		/// <summary>
+/// Asynchronously rewrites the provided story using AI.
+/// </summary>
+/// <param name="story">The original story text to be rewritten.</param>
+/// <returns>A task that represents the asynchronous operation, containing the AI-rewritten story as a string.</returns>
 		Task<string> RewriteWithAIAsync(string story);
 	}
 }

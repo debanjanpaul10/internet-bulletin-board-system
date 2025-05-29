@@ -17,7 +17,11 @@ namespace InternetBulletin.Business.Contracts
         /// Gets graph user data async.
         /// </summary>
         /// <param name="userName">The user name.</param>
-        /// <returns>The graph user data dto.</returns>
+        /// <summary>
+/// Retrieves user data from the graph service for the specified username.
+/// </summary>
+/// <param name="userName">The username to look up in the graph service.</param>
+/// <returns>A task that represents the asynchronous operation. The task result contains the user's graph data.</returns>
         Task<GraphUserDTO> GetGraphUserDataAsync(string userName);
 
         /// <summary>

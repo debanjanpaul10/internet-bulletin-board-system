@@ -42,7 +42,11 @@ namespace InternetBulletin.API.Controllers
 		/// Gets graph user data async.
 		/// </summary>
 		/// <param name="userName">The user name.</param>
-		/// <returns>The graph user data dto.</returns>
+		/// <summary>
+		/// Retrieves user data from the Graph API for the specified username if the request is authorized.
+		/// </summary>
+		/// <param name="userName">The username for which to retrieve Graph API user data.</param>
+		/// <returns>An <see cref="IActionResult"/> containing the user data if found and authorized; otherwise, a bad request or unauthorized response.</returns>
 		[HttpGet]
 		[Route(RouteConstants.GetUsersDataFromGraph_Route)]
 		public async Task<IActionResult> GetUsersDataFromGraphApiAsync(string userName)
@@ -81,7 +85,11 @@ namespace InternetBulletin.API.Controllers
 		/// Rewrites the with ai asynchronous.
 		/// </summary>
 		/// <param name="story">The story.</param>
-		/// <returns>The ai rewritten response.</returns>
+		/// <summary>
+		/// Rewrites the provided story using AI and returns the rewritten version.
+		/// </summary>
+		/// <param name="story">The original story to be rewritten.</param>
+		/// <returns>An HTTP response containing the AI-rewritten story if successful; otherwise, a bad request or unauthorized response.</returns>
 		[HttpPost]
 		[Route(RouteConstants.RewriteWithAI_Route)]
 		public async Task<IActionResult> RewriteWithAIAsync([FromBody] string story)

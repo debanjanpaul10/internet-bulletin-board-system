@@ -57,7 +57,14 @@ namespace InternetBulletin.Shared.Helpers
         /// </summary>
         /// <param name="postId">The post id.</param>
         /// <param name="logger">The logger.</param>
-        /// <typeparam name="T">The logger type.</typeparam>
+        /// <summary>
+        /// Validates that the provided post ID is not null, empty, or whitespace, and parses it as a <see cref="Guid"/>.
+        /// </summary>
+        /// <param name="postId">The post ID string to validate and parse.</param>
+        /// <returns>The parsed <see cref="Guid"/> representing the post ID.</returns>
+        /// <remarks>
+        /// Throws a logged exception if the post ID is missing or not a valid GUID.
+        /// </remarks>
         public static Guid ValidateAndParsePostId<T>(string postId, ILogger<T> logger)
         {
             if (string.IsNullOrWhiteSpace(postId))
@@ -79,7 +86,13 @@ namespace InternetBulletin.Shared.Helpers
         /// <param name="configuration">The configuration.</param>
         /// <param name="logger">The logger.</param>
         /// <returns>The user collection response data.</returns>
-        /// <exception cref="Exception">Exception error.</exception>
+        /// <summary>
+        /// Asynchronously retrieves user data from Microsoft Graph API using client credentials specified in the configuration.
+        /// </summary>
+        /// <param name="configuration">Application configuration containing Azure AD and Graph API credentials.</param>
+        /// <param name="logger">Logger for recording informational and error messages.</param>
+        /// <returns>A <see cref="UserCollectionResponse"/> containing user data from Microsoft Graph.</returns>
+        /// <exception cref="Exception">Thrown if no users are found or if an error occurs during the API call.</exception>
         public static async Task<UserCollectionResponse> GetGraphApiDataAsync(IConfiguration configuration, ILogger logger)
         {
             try

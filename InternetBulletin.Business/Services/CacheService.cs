@@ -35,7 +35,12 @@ namespace InternetBulletin.Business.Services
         /// </summary>
         /// <param name="key">The key.</param>
         /// <typeparam name="T"></typeparam>
-        /// <exception cref="ArgumentNullException">ArgumentNullException error.</exception>
+        /// <summary>
+        /// Retrieves cached data of type <typeparamref name="T"/> associated with the specified key.
+        /// </summary>
+        /// <param name="key">The cache key to retrieve the value for.</param>
+        /// <returns>The cached value if found; otherwise, the default value for <typeparamref name="T"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the key is null or empty.</exception>
         public T? GetCachedData<T>(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -71,7 +76,12 @@ namespace InternetBulletin.Business.Services
         /// Removes cached data.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <exception cref="ArgumentNullException">ArgumentNullException error.</exception>
+        /// <summary>
+        /// Removes the cached data associated with the specified key.
+        /// </summary>
+        /// <param name="key">The cache key to remove.</param>
+        /// <returns>True if the cache entry was found and removed; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the key is null or empty.</exception>
         public bool RemoveCachedData(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -112,7 +122,14 @@ namespace InternetBulletin.Business.Services
         /// <param name="value">The value.</param>
         /// <param name="expirationTime">The expiration time.</param>
         /// <typeparam name="T"></typeparam>
-        /// <exception cref="ArgumentNullException">ArgumentNullException error.</exception>
+        /// <summary>
+        /// Stores a value in the cache with the specified key and expiration time.
+        /// </summary>
+        /// <param name="key">The unique identifier for the cached entry.</param>
+        /// <param name="value">The value to cache.</param>
+        /// <param name="expirationTime">The duration after which the cache entry expires.</param>
+        /// <returns>True if the value was successfully cached; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the key is null or empty.</exception>
         public bool SetCacheData<T>(string key, T value, TimeSpan expirationTime)
         {
             if (string.IsNullOrEmpty(key))

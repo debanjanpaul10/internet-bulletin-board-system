@@ -1,4 +1,4 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="PostsService.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
@@ -114,7 +114,11 @@ namespace InternetBulletin.Business.Services
 		/// Gets all posts asynchronous.
 		/// </summary>
 		/// <param name="userName">The user name</param>
-		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
+		/// <summary>
+		/// Retrieves all posts with ratings, optionally filtered by user, utilizing caching for performance.
+		/// </summary>
+		/// <param name="userName">The username to filter posts by. If null or whitespace, retrieves all posts.</param>
+		/// <returns>A list of posts with ratings information.</returns>
 		public async Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName)
 		{
 			if (string.IsNullOrWhiteSpace(userName)) // Consider IsNullOrWhiteSpace for robustness
@@ -162,7 +166,13 @@ namespace InternetBulletin.Business.Services
 		/// Rewrites with a i async.
 		/// </summary>
 		/// <param name="story">The story.</param>
-		/// <returns>The AI rewritten response.</returns>
+		/// <summary>
+		/// Rewrites the provided story using an AI-powered rewriting service.
+		/// </summary>
+		/// <param name="story">The original story text to be rewritten.</param>
+		/// <returns>The rewritten story as returned by the AI service.</returns>
+		/// <exception cref="ArgumentException">Thrown if the input story is null or empty.</exception>
+		/// <exception cref="Exception">Thrown if the AI service call fails or returns invalid data.</exception>
 		public async Task<string> RewriteWithAIAsync(string story)
 		{
 			ArgumentException.ThrowIfNullOrEmpty(story);

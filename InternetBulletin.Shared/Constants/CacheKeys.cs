@@ -26,13 +26,21 @@ namespace InternetBulletin.Shared.Constants
         /// <summary>
         /// The all user posts data key.
         /// </summary>
-        /// <param name="userName">The user name.</param>
+        /// <summary>
+/// Generates a cache key for storing or retrieving a user's posts and ratings data.
+/// </summary>
+/// <param name="userName">The user name to include in the cache key.</param>
+/// <returns>A cache key string in the format "User-{userName}-PostsAndRatings".</returns>
         public static string AllUserPostsDataCacheKey(string userName) => string.Format(CultureInfo.CurrentCulture, "User-{0}-PostsAndRatings", userName);
 
         /// <summary>
         /// The user ratings key.
         /// </summary>
-        /// <param name="userName">The user name.</param>
+        /// <summary>
+/// Generates a cache key for storing or retrieving a user's ratings data.
+/// </summary>
+/// <param name="userName">The user name for which to generate the cache key.</param>
+/// <returns>A cache key string in the format "User-{userName}-Ratings".</returns>
         public static string UserRatingsCacheKey(string userName) => string.Format(CultureInfo.CurrentCulture, "User-{0}-Ratings", userName);
 
         /// <summary>

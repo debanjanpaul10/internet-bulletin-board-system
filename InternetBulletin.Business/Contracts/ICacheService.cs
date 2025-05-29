@@ -16,7 +16,12 @@ namespace InternetBulletin.Business.Contracts
         /// Gets async.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <typeparam name="T"></typeparam>
+        /// <summary>
+/// Retrieves cached data of the specified type associated with the given key.
+/// </summary>
+/// <typeparam name="T">The type of the cached data.</typeparam>
+/// <param name="key">The unique key identifying the cached item.</param>
+/// <returns>The cached value if found; otherwise, null.</returns>
         T? GetCachedData<T>(string key);
 
         /// <summary>
@@ -25,13 +30,24 @@ namespace InternetBulletin.Business.Contracts
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         /// <param name="expirationTime">The expiration time.</param>
-        /// <typeparam name="T"></typeparam>
+        /// <summary>
+/// Stores a value in the cache under the specified key with a defined expiration time.
+/// </summary>
+/// <typeparam name="T">The type of the value to cache.</typeparam>
+/// <param name="key">The unique key identifying the cached data.</param>
+/// <param name="value">The value to store in the cache.</param>
+/// <param name="expirationTime">The duration after which the cached data expires.</param>
+/// <returns>True if the data was successfully cached; otherwise, false.</returns>
         bool SetCacheData<T>(string key, T value, TimeSpan expirationTime);
 
         /// <summary>
         /// Removes data.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <summary>
+/// Removes the cached data associated with the specified key.
+/// </summary>
+/// <param name="key">The cache key to remove.</param>
+/// <returns>True if the data was successfully removed; otherwise, false.</returns>
         bool RemoveCachedData(string key);
     }
 

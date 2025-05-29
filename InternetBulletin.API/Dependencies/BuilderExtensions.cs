@@ -1,4 +1,4 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="BuilderExtensions.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
@@ -50,7 +50,9 @@ namespace InternetBulletin.API.Dependencies
         /// <summary>
         /// Configures api services.
         /// </summary>
-        /// <param name="builder">The builder.</param>
+        /// <summary>
+        /// Configures core API services for the application, including memory caching, authentication, HTTP client factory, Azure SQL Server, and dependency injection for business and data managers.
+        /// </summary>
         public static void ConfigureApiServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddMemoryCache();
@@ -67,7 +69,12 @@ namespace InternetBulletin.API.Dependencies
         /// Configures http client factory.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <exception cref="ArgumentNullException">ArgumentNullException error.</exception>
+        /// <summary>
+        /// Registers an HTTP client with a base address from configuration and a 3-minute timeout.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if the API base address configuration value is missing or empty.
+        /// </exception>
         private static void ConfigureHttpClientFactory(this WebApplicationBuilder builder)
         {
             builder.Services.AddHttpClient(IbbsConstants.IbbsAIConstant, client =>
@@ -86,7 +93,9 @@ namespace InternetBulletin.API.Dependencies
         /// <summary>
         /// Configures authentication services.
         /// </summary>
-        /// <param name="builder">The builder.</param>
+        /// <summary>
+        /// Configures JWT Bearer authentication using Microsoft Identity Web API with token validation parameters and event handlers.
+        /// </summary>
         private static void ConfigureAuthenticationServices(this WebApplicationBuilder builder)
         {
             var configuration = builder.Configuration;

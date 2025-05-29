@@ -25,10 +25,11 @@ import { useMsal } from "@azure/msal-react";
 import { loginRequests } from "@services/auth.config";
 
 /**
- * @component
- * This component allows users to create a new post.
+ * React component for creating a new post with a title and rich text content, including AI-assisted rewriting.
  *
- * @returns {JSX.Element} The CreatePostComponent JSX element.
+ * Renders a form for authenticated users to compose and submit a post. Provides validation, AI rewriting of content, and navigation upon successful creation. Displays a loading spinner during submission and shows validation errors as needed. If the user is not authenticated, displays a "Page Not Found" component.
+ *
+ * @returns {JSX.Element} The rendered CreatePostComponent.
  */
 function CreatePostComponent() {
 	const dispatch = useDispatch();

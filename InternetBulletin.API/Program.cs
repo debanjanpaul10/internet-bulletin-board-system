@@ -47,7 +47,9 @@ namespace InternetBulletin.API
         /// <summary>
         /// Configures the services.
         /// </summary>
-        /// <param name="services">The services.</param>
+        /// <summary>
+        /// Registers core API, OpenAPI, CORS, Swagger, exception handling, and HTTP context services for the application.
+        /// </summary>
         public static void ConfigureServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();

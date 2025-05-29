@@ -201,7 +201,10 @@ namespace InternetBulletin.UnitTests.Helpers
 
         /// <summary>
         /// Prepares posts data for user.
+        /// <summary>
+        /// Creates a list of sample Post entities with unique IDs, titles, and contents for testing purposes.
         /// </summary>
+        /// <returns>A list of three Post objects with preset titles and contents.</returns>
         public static List<Post> PreparePostsDataForUser()
         {
             return

@@ -53,7 +53,11 @@ namespace InternetBulletin.Business.Services
         /// Gets graph user data async.
         /// </summary>
         /// <param name="userName">The user name.</param>
-        /// <returns>The graph user data dto.</returns>
+        /// <summary>
+        /// Retrieves user data from Microsoft Graph for the specified username, using cached data if available.
+        /// </summary>
+        /// <param name="userName">The username to search for in the Graph user data.</param>
+        /// <returns>A <see cref="GraphUserDTO"/> containing the user's Id, DisplayName, UserName, and EmailAddress if found; otherwise, an empty <see cref="GraphUserDTO"/>.</returns>
         public async Task<GraphUserDTO> GetGraphUserDataAsync(string userName)
         {
             var responseDto = new GraphUserDTO();
@@ -100,7 +104,10 @@ namespace InternetBulletin.Business.Services
         /// Saves users data from azure ad async.
         /// </summary>
         /// <param name="graphUsersData">The users data.</param>
-        /// <returns>The boolean for success / failure</returns>
+        /// <summary>
+        /// Retrieves user data from Azure AD via Microsoft Graph and saves it to persistent storage.
+        /// </summary>
+        /// <returns>True if user data was successfully saved; otherwise, false.</returns>
         public async Task<bool> SaveUsersDataFromAzureAdAsync()
         {
             var graphUsersData = new UserCollectionResponse();
@@ -129,7 +136,11 @@ namespace InternetBulletin.Business.Services
         /// Gets all graph users data.
         /// </summary>
         /// <param name="graphUsersData">The graph users data.</param>
-        /// <returns>The list of graph user dto.</returns>
+        /// <summary>
+        /// Converts a collection of Microsoft Graph user data into a list of GraphUserDTO objects.
+        /// </summary>
+        /// <param name="graphUsersData">The user data response from Microsoft Graph API.</param>
+        /// <returns>A list of GraphUserDTO objects representing users with valid usernames.</returns>
         private static List<GraphUserDTO> GetAllGraphUsersData(UserCollectionResponse graphUsersData)
         {
             var responseDto = new List<GraphUserDTO>();

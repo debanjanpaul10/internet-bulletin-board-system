@@ -68,7 +68,11 @@ namespace InternetBulletin.Business.Services
         /// Gets all user post ratings async.
         /// </summary>
         /// <param name="userName">The user name.</param>
-        /// <returns>The list of post ratings</returns>
+        /// <summary>
+        /// Retrieves all post ratings for a user, using cached data if available.
+        /// </summary>
+        /// <param name="userName">The username whose post ratings are to be retrieved.</param>
+        /// <returns>A list of post ratings associated with the specified user.</returns>
         public async Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName)
         {
             var cachedData = this._cacheService.GetCachedData<List<PostRating>>(CacheKeys.UserRatingsCacheKey(userName));

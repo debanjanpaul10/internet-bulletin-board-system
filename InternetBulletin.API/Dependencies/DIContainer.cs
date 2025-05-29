@@ -1,4 +1,4 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="DIContainer.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
@@ -25,7 +25,9 @@ namespace InternetBulletin.API.Dependencies
         /// Configures the application dependencies.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="services">The services.</param>
+        /// <summary>
+        /// Configures the application's DbContext to use SQL Server with environment-specific connection strings and retry-on-failure settings.
+        /// </summary>
         public static void ConfigureAzureSqlServer(this WebApplicationBuilder builder)
         {
             var sqlConnectionString = builder.Environment.IsDevelopment()
@@ -52,7 +54,10 @@ namespace InternetBulletin.API.Dependencies
         /// <summary>
         /// Configures business manager dependencies.
         /// </summary>
-        /// <param name="builder">The web application builder.</param>
+        /// <summary>
+        /// Registers business layer services with scoped lifetimes in the dependency injection container.
+        /// </summary>
+        /// <param name="builder">The web application builder used to configure services.</param>
         public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();

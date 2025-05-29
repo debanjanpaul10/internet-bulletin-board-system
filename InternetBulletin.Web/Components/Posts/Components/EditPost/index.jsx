@@ -27,10 +27,11 @@ import { loginRequests } from "@services/auth.config";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 
 /**
- * @component
- * `EditPostComponent` component to handle the edit post dialog.
+ * Renders a dialog interface for editing a post, including form fields, validation, and AI-assisted rewriting.
  *
- * @returns {JSX.Element} The edit post dialog jsx element.
+ * Integrates authentication, Redux state management, and rich text editing to allow users to update post content within a modal dialog.
+ *
+ * @returns {JSX.Element} The edit post dialog component.
  */
 function EditPostComponent() {
 	const dispatch = useDispatch();

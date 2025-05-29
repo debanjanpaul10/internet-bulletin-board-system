@@ -27,7 +27,13 @@ namespace InternetBulletin.Shared.Helpers
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="logger">The logger.</param>
-        /// <exception cref="Exception">Exception error.</exception>
+        /// <summary>
+        /// Asynchronously retrieves an Azure AD access token for the Ibbs AI service using client credentials from configuration.
+        /// </summary>
+        /// <param name="configuration">Application configuration containing Azure AD credentials.</param>
+        /// <param name="logger">Logger for recording informational and error messages.</param>
+        /// <returns>The acquired access token as a string.</returns>
+        /// <exception cref="Exception">Thrown if the access token cannot be obtained or is empty.</exception>
         public static async Task<string> GetIbbsAiTokenAsync(IConfiguration configuration, ILogger logger)
         {
             try
