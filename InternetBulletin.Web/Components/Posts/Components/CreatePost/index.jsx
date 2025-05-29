@@ -37,54 +37,54 @@ function CreatePostComponent() {
 	const { instance, accounts } = useMsal();
 
 	const IsCreatePostLoadingStoreData = useSelector(
-		( state ) => state.PostsReducer.isCreatePostLoading
+		(state) => state.PostsReducer.isCreatePostLoading
 	);
 	const AiRewrittenStoryStoreData = useSelector(
-		( state ) => state.PostsReducer.aiRewrittenStory
+		(state) => state.PostsReducer.aiRewrittenStory
 	);
 
-	const [ postData, setPostData ] = useState( {
+	const [postData, setPostData] = useState({
 		Title: "",
 		Content: "",
 		CreatedBy: "",
-	} );
-	const [ errors, setErrors ] = useState( {
+	});
+	const [errors, setErrors] = useState({
 		Title: "",
 		Content: "",
-	} );
-	const [ currentLoggedInUser, setCurrentLoggedInUser ] = useState( {} );
+	});
+	const [currentLoggedInUser, setCurrentLoggedInUser] = useState({});
 
-	useEffect( () => {
-		if ( accounts.length > 0 ) {
-			const userName = accounts[ 0 ].idTokenClaims?.extension_UserName;
-			setCurrentLoggedInUser( userName );
+	useEffect(() => {
+		if (accounts.length > 0) {
+			const userName = accounts[0].idTokenClaims?.extension_UserName;
+			setCurrentLoggedInUser(userName);
 		} else {
 			setCurrentLoggedInUser();
 		}
-	}, [ instance, accounts ] );
+	}, [instance, accounts]);
 
-	useEffect( () => {
+	useEffect(() => {
 		if (
 			AiRewrittenStoryStoreData !== "" &&
 			postData.Content !== "" &&
 			AiRewrittenStoryStoreData !== postData.Content
 		) {
-			setPostData( {
+			setPostData({
 				...postData,
 				Content: AiRewrittenStoryStoreData,
-			} );
+			});
 		}
-	}, [ AiRewrittenStoryStoreData ] );
+	}, [AiRewrittenStoryStoreData]);
 
 	/**
 	 * Gets the access token silently using msal.
 	 * @returns {string} The access token.
 	 */
 	const getAccessToken = async () => {
-		const tokenResponse = await instance.acquireTokenSilent( {
+		const tokenResponse = await instance.acquireTokenSilent({
 			...loginRequests,
-			account: accounts[ 0 ],
-		} );
+			account: accounts[0],
+		});
 
 		return tokenResponse.accessToken;
 	};
@@ -105,16 +105,16 @@ function CreatePostComponent() {
 	 * Handles the form submit event.
 	 * @param {Event} event The submit event.
 	 */
-	const handleCreatePost = async ( event ) => {
+	const handleCreatePost = async (event) => {
 		event.preventDefault();
 
 		const validations = CreatePostPageConstants.validations;
 		errors.Title = postData.Title === "" ? validations.TitleRequired : "";
 		errors.Content =
 			postData.Content === "" ? validations.ContentRequired : "";
-		setErrors( { ...errors } );
+		setErrors({ ...errors });
 
-		if ( errors.Content === "" && errors.Title === "" ) {
+		if (errors.Content === "" && errors.Title === "") {
 			const addPostData = new AddPostDtoModel(
 				postData.Title,
 				postData.Content,
@@ -122,13 +122,13 @@ function CreatePostComponent() {
 			);
 
 			const accessToken = await getAccessToken();
-			dispatch( AddNewPostAsync( addPostData, accessToken ) )
-				.then( () => {
-					navigate( "/" );
-				} )
-				.catch( ( error ) => {
-					console.error( error );
-				} );
+			dispatch(AddNewPostAsync(addPostData, accessToken))
+				.then(() => {
+					navigate("/");
+				})
+				.catch((error) => {
+					console.error(error);
+				});
 		}
 	};
 
@@ -136,21 +136,21 @@ function CreatePostComponent() {
 	 * Handles the form change event.
 	 * @param {Event} event The on change event.
 	 */
-	const handleFormChange = ( event ) => {
+	const handleFormChange = (event) => {
 		event.persist();
 		const target = event.target;
-		setPostData( {
+		setPostData({
 			...postData,
-			[ target.name ]: target.value,
-		} );
+			[target.name]: target.value,
+		});
 	};
 
 	/**
 	 * Handles the key down event to prevent form submission on Enter key press.
 	 * @param {Event} event The key down event.
 	 */
-	const handleKeyDown = ( event ) => {
-		if ( event.key === "Enter" ) {
+	const handleKeyDown = (event) => {
+		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	};
@@ -160,28 +160,28 @@ function CreatePostComponent() {
 	 * @param {string} content The content of the editor.
 	 */
 	const handleContentChange = useMemo(
-		() => ( content ) => {
-			setPostData( {
+		() => (content) => {
+			setPostData({
 				...postData,
 				Content: content,
-			} );
+			});
 		},
-		[ postData ]
+		[postData]
 	);
 
 	/**
 	 * Handles the ai rewrite event.
 	 * @param {Event} event The rewrite event.
 	 */
-	const handleAiRewrite = ( event ) => {
+	const handleAiRewrite = (event) => {
 		event.preventDefault();
 		const strippedContent = postData.Content.replace(
 			/<[^>]*>?/gm,
 			""
 		).trim();
-		if ( strippedContent !== "" ) {
-			var requestDto = new RewriteRequestDtoModel( postData.Content );
-			dispatch( RewriteStoryWithAiAsync( requestDto ) );
+		if (strippedContent !== "") {
+			var requestDto = new RewriteRequestDtoModel(postData.Content);
+			dispatch(RewriteStoryWithAiAsync(requestDto));
 		}
 	};
 
@@ -189,17 +189,17 @@ function CreatePostComponent() {
 	 * The modules for React Quill
 	 */
 	const modules = useMemo(
-		() => ( {
+		() => ({
 			toolbar: {
 				container: [
-					[ { header: "1" }, { header: "2" } ],
-					[ "bold", "italic", "underline", "blockquote" ],
-					[ { list: "ordered" }, { list: "bullet" } ],
-					[ "link" ],
-					[ "clean" ],
+					[{ header: "1" }, { header: "2" }],
+					["bold", "italic", "underline", "blockquote"],
+					[{ list: "ordered" }, { list: "bullet" }],
+					["link"],
+					["clean"],
 				],
 			},
-		} ),
+		}),
 		[]
 	);
 
@@ -207,33 +207,33 @@ function CreatePostComponent() {
 	 * Handles the cancel click event.
 	 */
 	const handleCancelClick = () => {
-		navigate( HeaderPageConstants.Headings.Home.Link );
+		navigate(HeaderPageConstants.Headings.Home.Link);
 	};
 
 	return isUserLoggedIn() ? (
 		<div className="container d-flex flex-column">
-			<Spinner isLoading={ IsCreatePostLoadingStoreData } />
+			<Spinner isLoading={IsCreatePostLoadingStoreData} />
 			<div className="row">
 				<div className="col-sm-12 mt-5">
-					<LargeTitle className={ styles.addNewHeading }>
-						{ CreatePostPageConstants.Headings.Header }
+					<LargeTitle className={styles.addNewHeading}>
+						{CreatePostPageConstants.Headings.Header}
 					</LargeTitle>
 				</div>
-				<form onKeyDown={ handleKeyDown } className="addpost">
+				<form onKeyDown={handleKeyDown} className="addpost">
 					<Card
-						className={ styles.card }
+						className={styles.card}
 						appearance="filled-alternative"
 					>
 						<CardHeader
-							className={ styles.cardHeader }
+							className={styles.cardHeader}
 							header={
 								<div className="col sm-12 mb-3 mb-sm-0">
 									<div className="row p-2">
 										<input
 											type="text"
 											name="Title"
-											onChange={ handleFormChange }
-											value={ postData.Title }
+											onChange={handleFormChange}
+											value={postData.Title}
 											className="form-control mt-0"
 											id="Title"
 											placeholder={
@@ -241,43 +241,43 @@ function CreatePostComponent() {
 													.TitleBarPlaceholder
 											}
 										/>
-										{ errors.Title && (
+										{errors.Title && (
 											<span className="alert alert-danger ml-10 mt-3">
-												{ errors.Title }
+												{errors.Title}
 											</span>
-										) }
+										)}
 									</div>
 								</div>
 							}
 						/>
-						<CardPreview className={ styles.cardPreview }>
+						<CardPreview className={styles.cardPreview}>
 							<div className="form-group row mt-3">
 								<div className="col sm-12 mb-3 mb-sm-0 p-3">
 									<ReactQuill
-										value={ postData.Content }
-										onChange={ handleContentChange }
+										value={postData.Content}
+										onChange={handleContentChange}
 										id="Content"
 										className="text-editor"
 										placeholder={
 											CreatePostPageConstants.Headings
 												.ContentBoxPlaceholder
 										}
-										modules={ modules }
+										modules={modules}
 									/>
-									{ errors.Content && (
+									{errors.Content && (
 										<span className="alert alert-danger ml-10 mt-3">
-											{ errors.Content }
+											{errors.Content}
 										</span>
-									) }
+									)}
 									<Button
 										type="button"
-										className={ styles.aiEditButton }
-										onClick={ handleAiRewrite }
+										className={styles.aiEditButton}
+										onClick={handleAiRewrite}
 									>
 										<img
-											src={ AiButton }
-											style={ { height: "20px" } }
-										/>{ " " }
+											src={AiButton}
+											style={{ height: "20px" }}
+										/>{" "}
 										Rewrite with AI
 									</Button>
 								</div>
@@ -285,17 +285,17 @@ function CreatePostComponent() {
 								<div className="text-center">
 									<Button
 										type="submit"
-										onClick={ handleCreatePost }
-										className={ styles.createButton }
+										onClick={handleCreatePost}
+										className={styles.createButton}
 									>
-										{ "Create" }
+										{"Create"}
 									</Button>
 									&nbsp;
 									<Button
-										className={ styles.cancelButton }
-										onClick={ handleCancelClick }
+										className={styles.cancelButton}
+										onClick={handleCancelClick}
 									>
-										{ "Cancel" }
+										{"Cancel"}
 									</Button>
 								</div>
 							</div>
