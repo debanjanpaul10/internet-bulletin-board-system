@@ -82,6 +82,11 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string NullStringConstant = "null";
 
+		/// <summary>
+		/// The token scope format.
+		/// </summary>
+		public const string TokenScopeFormat = "{0}/.default";
+
 		#region AzureADB2CConstants
 
 		/// <summary>

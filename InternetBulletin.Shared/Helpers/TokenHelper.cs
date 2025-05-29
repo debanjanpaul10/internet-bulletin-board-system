@@ -8,6 +8,7 @@
 namespace InternetBulletin.Shared.Helpers
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using Azure.Core;
     using Azure.Identity;
     using InternetBulletin.Shared.Constants;
@@ -37,7 +38,7 @@ namespace InternetBulletin.Shared.Helpers
                 var tenantId = configuration[TenantIdConstant];
                 var clientId = configuration[IbbsAiAdClientId];
                 var clientSecret = configuration[IbbsAiAdClientSecret];
-                var scopes = new[] { $"{clientId}/.default" };
+                var scopes = new[] { string.Format(CultureInfo.CurrentCulture, TokenScopeFormat, clientId) };
 
                 var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
                 var accessToken = await credential.GetTokenAsync(new TokenRequestContext(scopes), CancellationToken.None).ConfigureAwait(false);
