@@ -68,7 +68,7 @@ namespace InternetBulletin.Shared.Helpers
         {
             try
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetIbbsAiResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? "null"));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetIbbsAiResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? NullStringConstant));
 
                 var client = this._httpClientFactory.CreateClient(IbbsConstants.IbbsAIConstant);
                 ArgumentException.ThrowIfNullOrEmpty(apiUrl);
@@ -76,7 +76,7 @@ namespace InternetBulletin.Shared.Helpers
                 await PrepareHttpClientFactoryAsync(client, TokenHelper.GetIbbsAiTokenAsync(this._configuration, this._logger));
 
                 var inputJson = JsonConvert.SerializeObject(data);
-                var contentData = new StringContent(content: inputJson, encoding: Encoding.UTF8, "application/json");
+                var contentData = new StringContent(content: inputJson, encoding: Encoding.UTF8, ApplicationJsonConstant);
 
                 var response = await client.PostAsync(apiUrl, contentData).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -93,7 +93,7 @@ namespace InternetBulletin.Shared.Helpers
             }
             finally
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetIbbsAiResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? "null"));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetIbbsAiResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? NullStringConstant));
             }
         }
 

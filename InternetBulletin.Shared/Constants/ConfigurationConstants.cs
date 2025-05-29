@@ -72,6 +72,16 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string BearerConstant = "Bearer";
 
+		/// <summary>
+		/// The application json constant.
+		/// </summary>
+		public const string ApplicationJsonConstant = "application/json";
+
+		/// <summary>
+		/// The null string constant.
+		/// </summary>
+		public const string NullStringConstant = "null";
+
 		#region AzureADB2CConstants
 
 		/// <summary>
