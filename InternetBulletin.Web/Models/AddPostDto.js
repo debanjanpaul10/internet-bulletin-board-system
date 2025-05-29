@@ -1,7 +1,8 @@
 /**
  * AddPostDtoModel class to represent the data for adding a post.
  */
-class AddPostDtoModel {
+class AddPostDtoModel
+{
 	/**
 	 * Gets or sets the post title.
 	 * @type {string}
@@ -26,7 +27,8 @@ class AddPostDtoModel {
 	 * @param {string} PostContent The content of the post.
 	 * @param {string} PostCreatedBy The user who created the post.
 	 */
-	constructor ( PostTitle, PostContent, PostCreatedBy ) {
+	constructor ( PostTitle, PostContent, PostCreatedBy )
+	{
 		this.postTitle = PostTitle;
 		this.postContent = PostContent;
 		this.postCreatedBy = PostCreatedBy;
