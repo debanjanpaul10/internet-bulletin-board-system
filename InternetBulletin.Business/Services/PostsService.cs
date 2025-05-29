@@ -7,6 +7,9 @@
 
 namespace InternetBulletin.Business.Services
 {
+	using System.Collections.Generic;
+	using System.Globalization;
+	using System.Threading.Tasks;
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Data.Contracts;
 	using InternetBulletin.Data.Entities;
@@ -15,9 +18,6 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Shared.DTOs.Posts;
 	using InternetBulletin.Shared.Helpers;
 	using Microsoft.Extensions.Logging;
-	using System.Collections.Generic;
-	using System.Globalization;
-	using System.Threading.Tasks;
 
 	/// <summary>
 	/// The Posts BusinessManager Class.
@@ -165,6 +165,8 @@ namespace InternetBulletin.Business.Services
 		/// <returns>The AI rewritten response.</returns>
 		public async Task<string> RewriteWithAIAsync(string story)
 		{
+			ArgumentException.ThrowIfNullOrEmpty(story);
+
 			var rewriteAiUrl = RouteConstants.RewriteTextApi_Route;
 			var aiResponse = await this._httpClientHelper.GetIbbsAiResponseAsync(data: story, apiUrl: rewriteAiUrl);
 

@@ -7,7 +7,6 @@
 
 namespace InternetBulletin.Business.Services
 {
-    using System.Diagnostics.CodeAnalysis;
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Shared.Constants;
     using Microsoft.Extensions.Caching.Memory;
@@ -19,7 +18,6 @@ namespace InternetBulletin.Business.Services
     /// <param name="memoryCache">The memory cache service.</param>
     /// <param name="logger">The logger.</param>
     /// <seealso cref="ICacheService"/>
-    [ExcludeFromCodeCoverage]
     public class CacheService(IMemoryCache memoryCache, ILogger<CacheService> logger) : ICacheService
     {
         /// <summary>
