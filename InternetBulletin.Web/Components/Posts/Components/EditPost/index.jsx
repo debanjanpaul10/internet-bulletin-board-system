@@ -15,11 +15,13 @@ import { useMsal } from "@azure/msal-react";
 import ReactQuill from "react-quill-new";
 
 import AiButton from "@assets/Images/ai-icon.svg";
-import { RewriteStoryWithAiAsync, ToggleEditPostDialog, UpdatePostAsync } from "@store/Posts/Actions";
-import { useStyles } from "@components/Posts/Components/EditPost/styles";
 import {
-	CreatePostPageConstants,
-} from "@helpers/ibbs.constants";
+	RewriteStoryWithAiAsync,
+	ToggleEditPostDialog,
+	UpdatePostAsync,
+} from "@store/Posts/Actions";
+import { useStyles } from "@components/Posts/Components/EditPost/styles";
+import { CreatePostPageConstants } from "@helpers/ibbs.constants";
 import UpdatePostDtoModel from "@models/UpdatePostDto";
 import { loginRequests } from "@services/auth.config";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
@@ -36,51 +38,51 @@ function EditPostComponent() {
 	const { instance, accounts } = useMsal();
 
 	const IsEditPostDialogOpen = useSelector(
-		( state ) => state.PostsReducer.isEditModalOpen
+		(state) => state.PostsReducer.isEditModalOpen
 	);
 	const EditPostData = useSelector(
-		( state ) => state.PostsReducer.editPostData
+		(state) => state.PostsReducer.editPostData
 	);
 	const IsEditPostDataLoading = useSelector(
-		( state ) => state.PostsReducer.isEditPostDataLoading
+		(state) => state.PostsReducer.isEditPostDataLoading
 	);
 
-	const [ isDialogOpen, setIsDialogOpen ] = useState( false );
-	const [ isEditPostLoading, setIsEditPostLoading ] = useState( false );
-	const [ postData, setPostData ] = useState( {
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [isEditPostLoading, setIsEditPostLoading] = useState(false);
+	const [postData, setPostData] = useState({
 		postTitle: "",
 		postContent: "",
 		postId: "",
-	} );
-	const [ errors, setErrors ] = useState( {
+	});
+	const [errors, setErrors] = useState({
 		postTitle: "",
 		postContent: "",
-	} );
+	});
 
 	// #region SIDE EFFECTS
 
-	useEffect( () => {
+	useEffect(() => {
 		if (
 			EditPostData !== null &&
 			EditPostData !== undefined &&
-			Object.values( EditPostData ).length > 0 &&
+			Object.values(EditPostData).length > 0 &&
 			EditPostData !== postData
 		) {
-			setPostData( EditPostData );
+			setPostData(EditPostData);
 		}
-	}, [ EditPostData ] );
+	}, [EditPostData]);
 
-	useEffect( () => {
-		if ( IsEditPostDialogOpen !== isDialogOpen ) {
-			setIsDialogOpen( IsEditPostDialogOpen );
+	useEffect(() => {
+		if (IsEditPostDialogOpen !== isDialogOpen) {
+			setIsDialogOpen(IsEditPostDialogOpen);
 		}
-	}, [ IsEditPostDialogOpen ] );
+	}, [IsEditPostDialogOpen]);
 
-	useEffect( () => {
-		if ( IsEditPostDataLoading !== isEditPostLoading ) {
-			setIsEditPostLoading( IsEditPostDataLoading );
+	useEffect(() => {
+		if (IsEditPostDataLoading !== isEditPostLoading) {
+			setIsEditPostLoading(IsEditPostDataLoading);
 		}
-	}, [ IsEditPostDataLoading ] );
+	}, [IsEditPostDataLoading]);
 
 	// #endregion
 
@@ -89,10 +91,10 @@ function EditPostComponent() {
 	 * @returns {string} The access token.
 	 */
 	const getAccessToken = async () => {
-		const tokenData = await instance.acquireTokenSilent( {
+		const tokenData = await instance.acquireTokenSilent({
 			...loginRequests,
-			account: accounts[ 0 ],
-		} );
+			account: accounts[0],
+		});
 
 		return tokenData.accessToken;
 	};
@@ -101,8 +103,8 @@ function EditPostComponent() {
 	 * Handles the key down event.
 	 * @param {Event} event The key down event.
 	 */
-	const handleKeyDown = ( event ) => {
-		if ( event.key === "Enter" ) {
+	const handleKeyDown = (event) => {
+		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	};
@@ -111,40 +113,40 @@ function EditPostComponent() {
 	 * Handles the form change event.
 	 * @param {Event} event The form change event.
 	 */
-	const handleFormChange = ( event ) => {
+	const handleFormChange = (event) => {
 		event.persist();
 		const target = event.target;
-		setPostData( {
+		setPostData({
 			...postData,
-			[ target.name ]: target.value,
-		} );
+			[target.name]: target.value,
+		});
 	};
 
 	/**
 	 * Handles the react quill content change event.
 	 */
-	const handleContentChange = useMemo( () => ( content ) => {
-		setPostData( {
+	const handleContentChange = useMemo(() => (content) => {
+		setPostData({
 			...postData,
 			Content: content,
-		} );
-	} );
+		});
+	});
 
 	/**
 	 * The modules for React Quill
 	 */
 	const modules = useMemo(
-		() => ( {
+		() => ({
 			toolbar: {
 				container: [
-					[ { header: "1" }, { header: "2" } ],
-					[ "bold", "italic", "underline", "blockquote" ],
-					[ { list: "ordered" }, { list: "bullet" } ],
-					[ "link" ],
-					[ "clean" ],
+					[{ header: "1" }, { header: "2" }],
+					["bold", "italic", "underline", "blockquote"],
+					[{ list: "ordered" }, { list: "bullet" }],
+					["link"],
+					["clean"],
 				],
 			},
-		} ),
+		}),
 		[]
 	);
 
@@ -152,7 +154,7 @@ function EditPostComponent() {
 	 * Handles the update post event.
 	 * @param {Event} event The update post event.
 	 */
-	const handleUpdatePost = async ( event ) => {
+	const handleUpdatePost = async (event) => {
 		event.preventDefault();
 
 		const validations = CreatePostPageConstants.validations;
@@ -160,9 +162,9 @@ function EditPostComponent() {
 			postData.postTitle === "" ? validations.TitleRequired : "";
 		errors.postContent =
 			postData.postContent === "" ? validations.ContentRequired : "";
-		setErrors( { ...errors } );
+		setErrors({ ...errors });
 
-		if ( errors.postContent === "" && errors.postTitle === "" ) {
+		if (errors.postContent === "" && errors.postTitle === "") {
 			const updatePostData = new UpdatePostDtoModel(
 				postData.postId,
 				postData.postTitle,
@@ -170,7 +172,7 @@ function EditPostComponent() {
 				0
 			);
 			const accessToken = await getAccessToken();
-			dispatch( UpdatePostAsync( updatePostData, accessToken ) );
+			dispatch(UpdatePostAsync(updatePostData, accessToken));
 		}
 	};
 
@@ -178,15 +180,15 @@ function EditPostComponent() {
 	 * Handles the AI rewrite text event.
 	 * @param {Event} event The rewrite event.
 	 */
-	const handleAiRewrite = async ( event ) => {
+	const handleAiRewrite = async (event) => {
 		event.preventDefault();
 		const strippedContent = postData.Content.replace(
 			/<[^>]*>?/gm,
 			""
 		).trim();
-		if ( strippedContent !== "" ) {
-			var requestDto = new RewriteRequestDtoModel( postData.Content );
-			dispatch( RewriteStoryWithAiAsync( requestDto ) );
+		if (strippedContent !== "") {
+			var requestDto = new RewriteRequestDtoModel(postData.Content);
+			dispatch(RewriteStoryWithAiAsync(requestDto));
 		}
 	};
 
@@ -194,17 +196,17 @@ function EditPostComponent() {
 	 * Handles the edit modal close event.
 	 */
 	const handleModalClose = () => {
-		setIsDialogOpen( false );
-		dispatch( ToggleEditPostDialog( false ) );
+		setIsDialogOpen(false);
+		dispatch(ToggleEditPostDialog(false));
 	};
 
 	return (
-		<Dialog open={ isDialogOpen }>
+		<Dialog open={isDialogOpen}>
 			<DialogSurface>
-				<div style={ { position: "relative" } }>
-					{ isEditPostLoading && (
+				<div style={{ position: "relative" }}>
+					{isEditPostLoading && (
 						<div
-							style={ {
+							style={{
 								position: "absolute",
 								top: 0,
 								left: 0,
@@ -214,12 +216,12 @@ function EditPostComponent() {
 								justifyContent: "center",
 								alignItems: "center",
 								zIndex: 1000,
-							} }
+							}}
 						>
 							<Spinner size="large" />
 						</div>
-					) }
-					<form onKeyDown={ handleKeyDown } className="addPost">
+					)}
+					<form onKeyDown={handleKeyDown} className="addPost">
 						<Card appearance="subtle">
 							<CardHeader
 								header={
@@ -231,8 +233,8 @@ function EditPostComponent() {
 											<input
 												type="text"
 												name="postTitle"
-												onChange={ handleFormChange }
-												value={ postData.postTitle }
+												onChange={handleFormChange}
+												value={postData.postTitle}
 												className="form-control"
 												id="Title"
 												placeholder={
@@ -241,43 +243,43 @@ function EditPostComponent() {
 														.TitleBarPlaceholder
 												}
 											/>
-											{ errors.postTitle && (
+											{errors.postTitle && (
 												<span className="alert alert-danger ml-10 mt-3">
-													{ errors.postTitle }
+													{errors.postTitle}
 												</span>
-											) }
+											)}
 										</div>
 									</div>
 								}
 							/>
-							<CardPreview className={ styles.cardPreview }>
+							<CardPreview className={styles.cardPreview}>
 								<div className="form-group row mt-3">
 									<div className="col sm-12 mb-3 mb-sm-0 p-3">
 										<ReactQuill
-											value={ postData.postContent }
-											onChange={ handleContentChange }
+											value={postData.postContent}
+											onChange={handleContentChange}
 											id="postContent"
 											className="text-editor"
 											placeholder={
 												CreatePostPageConstants.Headings
 													.ContentBoxPlaceholder
 											}
-											modules={ modules }
+											modules={modules}
 										/>
-										{ errors.postContent && (
+										{errors.postContent && (
 											<span className="alert alert-danger ml-10 mt-3">
-												{ errors.postContent }
+												{errors.postContent}
 											</span>
-										) }
+										)}
 										<Button
 											type="button"
-											className={ styles.button }
-											onClick={ handleAiRewrite }
+											className={styles.button}
+											onClick={handleAiRewrite}
 										>
 											<img
-												src={ AiButton }
-												style={ { height: "20px" } }
-											/>{ " " }
+												src={AiButton}
+												style={{ height: "20px" }}
+											/>{" "}
 											Rewrite with AI
 										</Button>
 									</div>
@@ -285,17 +287,17 @@ function EditPostComponent() {
 									<div className="text-center">
 										<Button
 											type="submit"
-											onClick={ handleUpdatePost }
-											className={ styles.editButton }
+											onClick={handleUpdatePost}
+											className={styles.editButton}
 										>
-											{ "Edit" }
+											{"Edit"}
 										</Button>
 										&nbsp;
 										<Button
-											onClick={ handleModalClose }
-											className={ styles.cancelButton }
+											onClick={handleModalClose}
+											className={styles.cancelButton}
 										>
-											{ "Close" }
+											{"Close"}
 										</Button>
 									</div>
 								</div>

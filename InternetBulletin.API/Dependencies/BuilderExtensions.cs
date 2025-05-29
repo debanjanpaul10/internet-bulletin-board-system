@@ -53,13 +53,35 @@ namespace InternetBulletin.API.Dependencies
         /// <param name="builder">The builder.</param>
         public static void ConfigureApiServices(this WebApplicationBuilder builder)
         {
+            builder.Services.AddMemoryCache();
             builder.ConfigureAuthenticationServices();
+            builder.ConfigureHttpClientFactory();
             builder.ConfigureAzureSqlServer();
             builder.ConfigureBusinessManagerDependencies();
             builder.ConfigureDataManagerDependencies();
         }
 
         #region PRIVATE Methods
+
+        /// <summary>
+        /// Configures http client factory.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <exception cref="ArgumentNullException">ArgumentNullException error.</exception>
+        private static void ConfigureHttpClientFactory(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddHttpClient(IbbsConstants.IbbsAIConstant, client =>
+            {
+                var apiBaseAddress = builder.Configuration[IbbsAiApiBaseUrlConstant];
+                if (string.IsNullOrEmpty(apiBaseAddress))
+                {
+                    throw new ArgumentNullException(apiBaseAddress);
+                }
+
+                client.BaseAddress = new Uri(apiBaseAddress);
+                client.Timeout = TimeSpan.FromMinutes(3);
+            });
+        }
 
         /// <summary>
         /// Configures authentication services.
@@ -81,14 +103,8 @@ namespace InternetBulletin.API.Dependencies
                     };
                     options.Events = new JwtBearerEvents
                     {
-                        OnTokenValidated = async context =>
-                        {
-                            await context.HandleAuthTokenValidationSuccessAsync();
-                        },
-                        OnAuthenticationFailed = async context =>
-                        {
-                            await context.HandleAuthTokenValidationFailedAsync();
-                        }
+                        OnTokenValidated = HandleAuthTokenValidationSuccessAsync,
+                        OnAuthenticationFailed = HandleAuthTokenValidationFailedAsync
                     };
                 },
                 options =>
