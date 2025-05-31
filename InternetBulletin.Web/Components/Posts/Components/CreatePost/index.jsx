@@ -9,6 +9,7 @@ import {
 	CardHeader,
 	LargeTitle,
 } from "@fluentui/react-components";
+import { useMsal } from "@azure/msal-react";
 
 import {
 	CreatePostPageConstants,
@@ -21,7 +22,6 @@ import AiButton from "@assets/Images/ai-icon.svg";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
-import { useMsal } from "@azure/msal-react";
 import { loginRequests } from "@services/auth.config";
 
 /**

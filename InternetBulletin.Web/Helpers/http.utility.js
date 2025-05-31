@@ -5,8 +5,7 @@ import { UrlConstants } from "@helpers/config.constants";
  * @class
  * The Http Utility class.
  */
-class HttpUtility
-{
+class HttpUtility {
 	/**
 	 * The Web api base url endpoint.
 	 */
@@ -19,27 +18,23 @@ class HttpUtility
 	 *
 	 * @returns {Promise} The promise of the api response.
 	 */
-	static GetAsync = async ( apiUrl, accessToken ) =>
-	{
-		try
-		{
+	static GetAsync = async (apiUrl, accessToken) => {
+		try {
 			const url = this.WebApiEndpoint + apiUrl;
-			const response = await axios.get( url, {
+			const response = await axios.get(url, {
 				headers: {
-					Authorization: `Bearer ${ accessToken }`,
+					Authorization: `Bearer ${accessToken}`,
 				},
-			} );
+			});
 
-			if ( response !== null || response.data !== "" )
-			{
+			if (response !== null || response.data !== "") {
 				return response.data;
 			}
 
 			return "";
 		}
-		catch ( error )
-		{
-			console.error( error );
+		catch (error) {
+			console.error(error);
 			return Promise.reject(
 				error.response ? error.response.data : error.message
 			);
@@ -54,26 +49,22 @@ class HttpUtility
 	 *
 	 * @returns {Promise} The promise of the api response.
 	 */
-	static PostAsync = async ( apiUrl, data, accessToken ) =>
-	{
-		try
-		{
+	static PostAsync = async (apiUrl, data, accessToken) => {
+		try {
 			const url = this.WebApiEndpoint + apiUrl;
 
-			const response = await axios.post( url, data, {
+			const response = await axios.post(url, data, {
 				headers: {
-					Authorization: `Bearer ${ accessToken }`,
+					Authorization: `Bearer ${accessToken}`,
 				},
-			} );
+			});
 
-			if ( response !== null || response.data !== "" )
-			{
+			if (response !== null || response.data !== "") {
 				return response.data;
 			}
 		}
-		catch ( error )
-		{
-			console.error( error );
+		catch (error) {
+			console.error(error);
 			return Promise.reject(
 				error.response ? error.response.data : error.message
 			);

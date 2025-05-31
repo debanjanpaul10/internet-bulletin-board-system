@@ -1,6 +1,5 @@
 import { GetConfigurationApiAsync } from "@services/ibbs.apiservice";
-import
-{
+import {
 	GET_CONFIGURATION_VALUE,
 	TOGGLE_ERROR_TOASTER,
 	TOGGLE_SIDE_BAR_STATUS,
@@ -12,20 +11,15 @@ import
  * @param {string} keyName The key name
  * @returns {Promise} The promise from the api response.
  */
-export const GetConfigurationValueAsync = ( keyName ) =>
-{
-	return async ( dispatch ) =>
-	{
-		try
-		{
-			const response = await GetConfigurationApiAsync( keyName );
-			if ( response?.statusCode === 200 )
-			{
-				dispatch( GetConfigurationValueSuccess( response.data ) );
+export const GetConfigurationValueAsync = (keyName) => {
+	return async (dispatch) => {
+		try {
+			const response = await GetConfigurationApiAsync(keyName);
+			if (response?.statusCode === 200) {
+				dispatch(GetConfigurationValueSuccess(response.data));
 			}
-		} catch ( error )
-		{
-			console.error( error );
+		} catch (error) {
+			console.error(error);
 		}
 	};
 };
@@ -35,8 +29,7 @@ export const GetConfigurationValueAsync = ( keyName ) =>
  * @param {Object} data The api response.
  * @returns {Object} The action type and payload data.
  */
-const GetConfigurationValueSuccess = ( data ) =>
-{
+const GetConfigurationValueSuccess = (data) => {
 	return {
 		type: GET_CONFIGURATION_VALUE,
 		payload: data,
@@ -48,8 +41,7 @@ const GetConfigurationValueSuccess = ( data ) =>
  * @param {Object} data The data object
  * @returns {Object} The action type and payload data.
  */
-export const ToggleSuccessToaster = ( data ) =>
-{
+export const ToggleSuccessToaster = (data) => {
 	return {
 		type: TOGGLE_SUCCESS_TOASTER,
 		payload: {
@@ -64,8 +56,7 @@ export const ToggleSuccessToaster = ( data ) =>
  * @param {Object} data The data object
  * @returns {Object} The action type and payload data.
  */
-export const ToggleErrorToaster = ( data ) =>
-{
+export const ToggleErrorToaster = (data) => {
 	return {
 		type: TOGGLE_ERROR_TOASTER,
 		payload: {
@@ -80,8 +71,7 @@ export const ToggleErrorToaster = ( data ) =>
  * @param {boolean} isOpen The is open boolean flag.
  * @returns {Object} The action type and payload data.
  */
-export const ToggleSideBar = ( isOpen ) =>
-{
+export const ToggleSideBar = (isOpen) => {
 	return {
 		type: TOGGLE_SIDE_BAR_STATUS,
 		payload: isOpen,

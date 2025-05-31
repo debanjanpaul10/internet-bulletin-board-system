@@ -1,5 +1,6 @@
-import { useStyles } from "@components/AboutUs/Components/BannerCard/styles";
 import { CarouselCard, Image, Button } from "@fluentui/react-components";
+
+import { useStyles } from "@components/AboutUs/Components/BannerCard/styles";
 import { AboutUsPageConstants } from "@helpers/ibbs.constants";
 
 /**
@@ -14,25 +15,25 @@ import { AboutUsPageConstants } from "@helpers/ibbs.constants";
  * @param {number} props.index - The index of the banner in a carousel
  * @returns {JSX.Element} A carousel card with banner content
  */
-function BannerCardComponent( { data, index } ) {
+function BannerCardComponent({ data, index }) {
 	const styles = useStyles();
 
 	return (
 		<CarouselCard
-			className={ styles.bannerCard }
-			aria-label={ `${ index + 1 } of ${ 1 }` }
-			id={ `test-${ index }` }
+			className={styles.bannerCard}
+			aria-label={`${index + 1} of ${1}`}
+			id={`test-${index}`}
 		>
-			<Image fit="cover" src={ data.Image } role="presentation" />
-			<div className={ styles.cardContainer }>
-				<div className={ styles.title }>{ data.Heading }</div>
-				<div className={ styles.subtext }>{ data.Description }</div>
+			<Image fit="cover" src={data.Image} role="presentation" />
+			<div className={styles.cardContainer}>
+				<div className={styles.title}>{data.Heading}</div>
+				<div className={styles.subtext}>{data.Description}</div>
 				<div>
 					<Button
 						size="small"
 						shape="square"
 						appearance="primary"
-						onClick={ () =>
+						onClick={() =>
 							window.open(
 								data.Link,
 								"_blank",
@@ -40,7 +41,7 @@ function BannerCardComponent( { data, index } ) {
 							)
 						}
 					>
-						{ AboutUsPageConstants.ButtonTexts.WebsiteNav }
+						{AboutUsPageConstants.ButtonTexts.WebsiteNav}
 					</Button>
 				</div>
 			</div>
