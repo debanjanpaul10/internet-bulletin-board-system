@@ -7,7 +7,8 @@
 
 namespace InternetBulletin.Data.Contracts
 {
-	using InternetBulletin.Shared.DTOs;
+	using InternetBulletin.Data.Entities;
+	using InternetBulletin.Shared.DTOs.Posts;
 
 	/// <summary>
 	/// The Profiles Data Service Interface.
@@ -15,10 +16,17 @@ namespace InternetBulletin.Data.Contracts
 	public interface IProfilesDataService
 	{
 		/// <summary>
-		/// Gets the user profile data asynchronous.
+		/// Gets all posts and ratings for user async.
 		/// </summary>
-		/// <param name="userId">The user identifier.</param>
-		/// <returns>The user profile data dto.</returns>
-		Task<UserProfileDto> GetUserProfileDataAsync(int userId);
+		/// <param name="userName">The user name.</param>
+		/// <returns>The user posts and ratings data.</returns>
+		Task<List<Post>> GetUserPostsAsync(string userName);
+
+		/// <summary>
+		/// Gets user ratings async.
+		/// </summary>
+		/// <param name="userName">The user name.</param>
+		/// <returns>The list of user post ratings data</returns>
+		Task<List<UserPostRatingDTO>> GetUserRatingsAsync(string userName);
 	}
 }

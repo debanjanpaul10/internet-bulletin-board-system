@@ -11,65 +11,49 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Data.Contracts;
 	using InternetBulletin.Data.Entities;
 	using InternetBulletin.Shared.Constants;
-    using InternetBulletin.Shared.DTOs;
-    using Microsoft.Extensions.Logging;
+	using InternetBulletin.Shared.DTOs;
+	using InternetBulletin.Shared.DTOs.Posts;
+	using InternetBulletin.Shared.Helpers;
+	using Microsoft.Extensions.Logging;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
 	/// <summary>
 	/// The Posts BusinessManager Class.
 	/// </summary>
-	/// <param name="postsDataService">The Posts Data Service.</param>
 	/// <param name="logger">The logger.</param>
-	public class PostsService(IPostsDataService postsDataService, ILogger<PostsService> logger) : IPostsService
+	/// <param name="postsDataService">The Posts Data Service.</param>
+	/// <seealso cref="IPostsService"/>
+	public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
 	{
-		/// <summary>
-		/// The posts data service
-		/// </summary>
-		private readonly IPostsDataService _postsDataService = postsDataService;
-
 		/// <summary>
 		/// The logger
 		/// </summary>
 		private readonly ILogger<PostsService> _logger = logger;
 
 		/// <summary>
+		/// The posts data service
+		/// </summary>
+		private readonly IPostsDataService _postsDataService = postsDataService;
+
+		/// <summary>
+		/// The post ratings service.
+		/// </summary>
+		private readonly IPostRatingsDataService _postRatingsDataService = postRatingsDataService;
+
+		/// <summary>
 		/// Gets the post asynchronous.
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
+		/// <param name="userName">The user name.</param>
 		/// <returns>
 		/// The specific post.
 		/// </returns>
-		public async Task<Post> GetPostAsync(string postId)
+		public async Task<Post> GetPostAsync(string postId, string userName)
 		{
-			if (string.IsNullOrWhiteSpace(postId))
-			{
-				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			if (!Guid.TryParse(postId, out var postGuid))
-			{
-				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.GetPostAsync(postGuid);
-			if (result is not null && result.PostId != Guid.Empty)
-			{
-				return result;
-			}
-			else
-			{
-				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
+			var postGuid = CommonUtilities.ValidateAndParsePostId(postId, this._logger);
+			var result = await this._postsDataService.GetPostAsync(postGuid, userName, true);
+			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
 		/// <summary>
@@ -79,17 +63,10 @@ namespace InternetBulletin.Business.Services
 		/// <returns>
 		/// The boolean for success or failure.
 		/// </returns>
-		public async Task<bool> AddNewPostAsync(AddPostDTO newPost)
+		public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
 		{
-			if (newPost is null)
-			{
-				var exception = new Exception(ExceptionConstants.NullPostMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.AddNewPostAsync(newPost);
+			CommonUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, this._logger);
+			var result = await this._postsDataService.AddNewPostAsync(newPost, userName);
 			return result;
 		}
 
@@ -98,65 +75,51 @@ namespace InternetBulletin.Business.Services
 		/// </summary>
 		/// <param name="updatedPost">The updated post.</param>
 		/// <returns>The updated post data.</returns>
-		public async Task<Post> UpdatePostAsync(Post updatedPost)
+		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
 		{
-			if (updatedPost is null)
-			{
-				var exception = new Exception(ExceptionConstants.NullPostMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.UpdatePostAsync(updatedPost);
-			if (result is not null && !Equals(result.PostId, Guid.Empty))
-			{
-				return result;
-			}
-			else
-			{
-				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
+			CommonUtilities.ThrowIfNull(updatedPost, ExceptionConstants.NullPostMessageConstant, this._logger);
+			var result = await this._postsDataService.UpdatePostAsync(updatedPost, userName, false);
+			return CommonUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, this._logger);
 		}
 
 		/// <summary>
 		/// Deletes the post asynchronous.
 		/// </summary>
 		/// <param name="postId">The post identifier.</param>
+		/// <param name="userName">The user name.</param>
 		/// <returns>The boolean for success / failure</returns>
-		public async Task<bool> DeletePostAsync(string postId)
+		public async Task<bool> DeletePostAsync(string postId, string userName)
 		{
-			if (string.IsNullOrWhiteSpace(postId))
-			{
-				var exception = new Exception(ExceptionConstants.PostIdNotPresentMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			if (!Guid.TryParse(postId, out var postIdGuid))
-			{
-				var exception = new Exception(ExceptionConstants.PostGuidNotValidMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._postsDataService.DeletePostAsync(postIdGuid);
-			return result;
+			var postGuid = CommonUtilities.ValidateAndParsePostId(postId, this._logger);
+			var response = await this._postsDataService.DeletePostAsync(postGuid, userName);
+			return response;
 		}
 
 		/// <summary>
 		/// Gets all posts asynchronous.
 		/// </summary>
-		/// <returns>The list of <see cref="Post"/></returns>
-		public async Task<List<Post>> GetAllPostsAsync()
+		/// <param name="userName">The user name</param>
+		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
+		public async Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName)
 		{
-			var result = await this._postsDataService.GetAllPostsAsync();
-			return result;
+			if (string.IsNullOrEmpty(userName))
+			{
+				var result = await this._postsDataService.GetAllPostsAsync();
+				return [.. result.Select(post => new PostWithRatingsDTO
+				{
+					PostId = post.PostId,
+					PostTitle = post.PostTitle,
+					PostContent = post.PostContent,
+					PostCreatedDate = post.PostCreatedDate,
+					PostOwnerUserName = post.PostOwnerUserName,
+					Ratings = post.Ratings,
+					IsActive = post.IsActive,
+				})];
+			}
+			else
+			{
+				return await this._postRatingsDataService.GetAllPostsWithRatingsAsync(userName);
+			}
 		}
 	}
 }

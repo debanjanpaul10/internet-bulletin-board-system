@@ -1,52 +1,37 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="IUsersService.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>The Users Service Interface.</summary>
+// <summary>The Users Services Interface.</summary>
 // *********************************************************************************
-
 namespace InternetBulletin.Business.Contracts
 {
-	using InternetBulletin.Data.Entities;
-	using InternetBulletin.Shared.DTOs;
+    using InternetBulletin.Shared.DTOs.Users;
 
-	/// <summary>
-	/// The Users Service Interface.
-	/// </summary>
-	public interface IUsersService
-	{
-		/// <summary>
-		/// Gets the user asynchronous.
-		/// </summary>
-		/// <param name="userLogin">The user identifier.</param>
-		/// <returns>The user data.</returns>
-		Task<User> GetUserAsync(UserLoginDTO userLogin);
+    /// <summary>
+    /// The users service interface.
+    /// </summary>
+    public interface IUsersService
+    {
+        /// <summary>
+        /// Gets graph user data async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The graph user data dto.</returns>
+        Task<GraphUserDTO> GetGraphUserDataAsync(string userName);
 
-		/// <summary>
-		/// Gets all users asynchronous.
-		/// </summary>
-		/// <returns>The list of <see cref="User"/></returns>
-		Task<List<User>> GetAllUsersAsync();
+        /// <summary>
+        /// Gets all graph users data async.
+        /// </summary>
+        /// <returns>The list of graph user data</returns>
+        Task<List<GraphUserDTO>> GetAllGraphUsersDataAsync();
 
-		/// <summary>
-		/// Adds the new user asynchronous.
-		/// </summary>
-		/// <param name="newUser">The new user.</param>
-		/// <returns>The boolean for success/failure</returns>
-		Task<bool> AddNewUserAsync(NewUserDTO newUser);
-
-		/// <summary>
-		/// Updates the user asynchronous.
-		/// </summary>
-		/// <param name="updateUser">The update user.</param>
-		/// <returns>The updated user.</returns>
-		Task<User> UpdateUserAsync(User updateUser);
-
-		/// <summary>
-		/// Deletes the user asynchronous.
-		/// </summary>
-		/// <param name="userId">The user identifier.</param>
-		/// <returns>The boolean for success/failure</returns>
-		Task<bool> DeleteUserAsync(int userId);
-	}
+        /// <summary>
+        /// Saves users data from azure ad async.
+        /// </summary>
+        /// <returns>The boolean for success / failure</returns>
+        Task<bool> SaveUsersDataFromAzureAdAsync();
+    }
 }
+
+

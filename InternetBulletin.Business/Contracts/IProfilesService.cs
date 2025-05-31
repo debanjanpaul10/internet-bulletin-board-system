@@ -7,7 +7,7 @@
 
 namespace InternetBulletin.Business.Contracts
 {
-    using InternetBulletin.Shared.DTOs;
+    using InternetBulletin.Shared.DTOs.Users;
 
     /// <summary>
     /// Profiles service interface.
@@ -17,7 +17,7 @@ namespace InternetBulletin.Business.Contracts
         /// <summary>
         /// Gets user profile data async.
         /// </summary>
-        /// <param name="userId">The user id.</param>
-        Task<UserProfileDto> GetUserProfileDataAsync(int userId);
+        /// <param name="userName">The user name.</param>
+        Task<UserProfileDto> GetUserProfileDataAsync(string userName);
     }
 }

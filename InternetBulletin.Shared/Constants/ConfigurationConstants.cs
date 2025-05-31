@@ -7,156 +7,121 @@
 
 namespace InternetBulletin.Shared.Constants
 {
-    /// <summary>
-    /// The Configuration Constants Class.
-    /// </summary>
-    public static class ConfigurationConstants
-    {
-        /// <summary>
-        /// The app configuration endpoint key constant.
-        /// </summary>
-        public const string AppConfigurationEndpointKeyConstant = "AppConfigurationEndpoint";
+	/// <summary>
+	/// The Configuration Constants Class.
+	/// </summary>
+	public static class ConfigurationConstants
+	{
+		/// <summary>
+		/// The app configuration endpoint key constant.
+		/// </summary>
+		public const string AppConfigurationEndpointKeyConstant = "AppConfigurationEndpoint";
 
-        /// <summary>
-        /// The web antiforgery token value
-        /// </summary>
-        public const string WebAntiforgeryTokenConstant = "x-antiforgery-token-ibbs-web";
+		/// <summary>
+		/// The SQL connection string constant
+		/// </summary>
+		public const string SqlConnectionStringConstant = "SqlConnectionString";
 
-        /// <summary>
-        /// The web antiforgery token value
-        /// </summary>
-        public const string WebAntiforgeryTokenValue = "WebAntiforgeryToken";
+		/// <summary>
+		/// The local sql connection string constant.
+		/// </summary>
+		public const string LocalSqlConnectionStringConstant = "LocalSqlServerConnection";
 
+		/// <summary>
+		/// The user assigned client identifier constant
+		/// </summary>
+		public const string ManagedIdentityClientIdConstant = "ManagedIdentityClientId";
 
-        /// <summary>
-        /// The application insights instrumentation keykv
-        /// </summary>
-        public const string AppInsightsInstrumentationKeykv = "AppInsights-InstrumentationKey";
+		/// <summary>
+		/// The base configuration app config key constant.
+		/// </summary>
+		public const string BaseConfigurationAppConfigKeyConstant = "BaseConfiguration";
 
-        /// <summary>
-        /// The cosmos db connection string constant
-        /// </summary>
-        public const string CosmosConnectionStringConstant = "CosmosConnectionString";
+		/// <summary>
+		/// The ibbs api app config key constant.
+		/// </summary>
+		public const string IbbsAPIAppConfigKeyConstant = "BulletinAPI";
 
-        /// <summary>
-        /// The SQL connection string constant
-        /// </summary>
-        public const string SqlConnectionStringConstant = "SqlConnectionString";
+		/// <summary>
+		/// The ibbs functin app config key constant.
+		/// </summary>
+		public const string IbbsFunctinAppConfigKeyConstant = "IBBS.Function";
 
-        /// <summary>
-        /// The base address constant
-        /// </summary>
-        public const string WebApiBaseAddressConstant = "WebApiBaseAddress";
+		/// <summary>
+		/// The local appsettings file constant.
+		/// </summary>
+		public const string LocalAppsettingsFileConstant = "appsettings.development.json";
 
-        /// <summary>
-        /// The local web api base address constant.
-        /// </summary>
-        public const string LocalWebApiBaseAddressConstant = "LocalWebApiBaseAddress";
+		/// <summary>
+		/// The user name claim constant.
+		/// </summary>
+		public const string UserNameClaimConstant = "extension_UserName";
 
-        /// <summary>
-        /// The bulletin HTTP client constant
-        /// </summary>
-        public const string BulletinHttpClientConstant = "bulletinClient";
+		/// <summary>
+		/// The user display name constant.
+		/// </summary>
+		public const string UserDisplayNameConstant = "name";
 
-        /// <summary>
-        /// The bulletin ai http client constant.
-        /// </summary>
-        public const string BulletinAiHttpClientConstant = "bulletinAiClient";
+		#region AzureADB2CConstants
 
-        /// <summary>
-        /// The user assigned client identifier constant
-        /// </summary>
-        public const string ManagedIdentityClientIdConstant = "ManagedIdentityClientId";
+		/// <summary>
+		/// The azure ad b2 c constant.
+		/// </summary>
+		public const string AzureAdB2CConstant = "AzureAdB2C";
 
-        /// <summary>
-        /// The is development mode constant
-        /// </summary>
-        public const string IsDevelopmentModeConstant = "IsDevelopmentMode";
+		/// <summary>
+		/// The IBBS api client id constant.
+		/// </summary>
+		public const string IBBSApiClientIdConstant = "AzureAdB2C:ClientId";
 
-        /// <summary>
-        /// The application json constant
-        /// </summary>
-        public const string ApplicationJsonConstant = "application/json";
+		/// <summary>
+		/// The IBBS api issuer constant.
+		/// </summary>
+		public const string IBBSApiIssuerConstant = "AzureAdB2C:Issuer";
 
-        /// <summary>
-        /// The cosmos database name constant.
-        /// </summary>
-        public const string CosmosDatabaseNameConstant = "CosmosDatabaseName";
+		/// <summary>
+		/// The tenant id constant.
+		/// </summary>
+		public const string TenantIdConstant = "AzureAdB2C:TenantId";
 
-        /// <summary>
-        /// The posts container name constant.
-        /// </summary>
-        public const string PostsContainerConstant = "posts";
+		#endregion
 
-        /// <summary>
-        /// The base configuration app config key constant.
-        /// </summary>
-        public const string BaseConfigurationAppConfigKeyConstant = "BaseConfiguration";
+		#region Graph API
 
-        /// <summary>
-        /// The ibbs api app config key constant.
-        /// </summary>
-        public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
+		/// <summary>
+		/// The graph api default scope constant.
+		/// </summary>
+		public const string GraphAPIDefaultScopeConstant = "AzureAD:GraphAPI:DefaultScope";
 
-        /// <summary>
-        /// The bulletin ai api endpoint constant.
-        /// </summary>
-        public const string BulletinAIApiEndpointConstant = "BulletinAiApiUrl";
+		/// <summary>
+		/// The graph a p i client id constant.
+		/// </summary>
+		public const string GraphAPIClientIdConstant = "AzureAD:GraphAPI:ClientId";
 
+		/// <summary>
+		/// The graph a p i client secret constant.
+		/// </summary>
+		public const string GraphAPIClientSecretConstant = "AzureAD:GraphAPI:ClientSecret";
 
-        /// <summary>
-        /// The ibbs ai app config key constant.
-        /// </summary>
-        public const string IBBSAIAppConfigKeyConstant = "IBBS.AI";
+		#endregion
 
-        // <summary>
-        /// The tenant id constant.
-        /// </summary>
-        public const string TenantIdConstant = "TenantId";
+		#region IBBS.AI
 
-        /// <summary>
-        /// The client id constant.
-        /// </summary>
-        public const string ClientIdConstant = "ClientId";
+		/// <summary>
+		/// The ibbs ai API URL constant
+		/// </summary>
+		public const string IbbsAiApiUrlConstant = "IbbsAiApiUrl";
 
-        /// <summary>
-        /// The client secret constant.
-        /// </summary>
-        public const string ClientSecretConstant = "ClientSecret";
+		/// <summary>
+		/// The ibbs ai ad client id.
+		/// </summary>
+		public const string IbbsAiAdClientId = "AzureAD:IBBS.AI:ClientId";
 
-        /// <summary>
-        /// The azure ad token request url constant.
-        /// </summary>
-        public const string AzureAdTokenRequestUrlConstant = "AzureAdUrl";
+		/// <summary>
+		/// The ibbs ai ad client secret.
+		/// </summary>
+		public const string IbbsAiAdClientSecret = "AzureAD:IBBS.AI:ClientSecret";
 
-        /// <summary>
-        /// The resource constant.
-        /// </summary>
-        public const string ResourceConstant = "api://{0}/.default";
-
-        /// <summary>
-        /// The bearer constant.
-        /// </summary>
-        public const string BearerConstant = "Bearer";
-
-        /// <summary>
-        /// The application identifier token constant
-        /// </summary>
-        public const string ApplicationIdTokenConstant = "appid";
-
-        /// <summary>
-        /// The token expiry constant
-        /// </summary>
-        public const string TokenExpiryConstant = "exp";
-
-        /// <summary>
-        /// The apim base url constant.
-        /// </summary>
-        public const string ApimBaseUrlConstant = "ApimBaseUrl";
-
-        /// <summary>
-        /// The local appsettings file constant.
-        /// </summary>
-        public const string LocalAppsettingsFileConstant = "appsettings.development.json";
-    }
+		#endregion
+	}
 }

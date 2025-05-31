@@ -1,162 +1,117 @@
-﻿// *********************************************************************************
+// *********************************************************************************
 //	<copyright file="UsersService.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>The Users Service Class.</summary>
+// <summary>The Users Services Class.</summary>
 // *********************************************************************************
 
 namespace InternetBulletin.Business.Services
 {
-	using InternetBulletin.Business.Contracts;
-	using InternetBulletin.Data.Contracts;
-	using InternetBulletin.Data.Entities;
-	using InternetBulletin.Shared.Constants;
-	using InternetBulletin.Shared.DTOs;
-	using Microsoft.Extensions.Logging;
-	using System.Collections.Generic;
-	using System.Threading.Tasks;
+    using System.Globalization;
+    using InternetBulletin.Business.Contracts;
+    using InternetBulletin.Data.Contracts;
+    using InternetBulletin.Shared.Constants;
+    using InternetBulletin.Shared.DTOs.Users;
+    using InternetBulletin.Shared.Helpers;
 
-	/// <summary>
-	/// The Users Service Class.
-	/// </summary>
-	/// <seealso cref="InternetBulletin.Business.Contracts.IUsersService" />
-	/// <param name="usersDataService">The users data service.</param>
-	/// <param name="logger">The Logger</param>
-	public class UsersService(IUsersDataService usersDataService, ILogger<UsersService> logger) : IUsersService
-	{
-		/// <summary>
-		/// The users data service
-		/// </summary>
-		private readonly IUsersDataService _usersDataService = usersDataService;
+    /// <summary>
+    /// The users service class.
+    /// </summary>
+    /// <param name="httpClientHelper">The http client helper</param>
+    /// <param name="usersDataService">The users data service</param>
+    /// <seealso cref="IUsersService"/>
+    public class UsersService(IHttpClientHelper httpClientHelper, IUsersDataService usersDataService) : IUsersService
+    {
+        /// <summary>
+        /// The http client helper.
+        /// </summary>
+        private readonly IHttpClientHelper _httpClientHelper = httpClientHelper;
 
-		/// <summary>
-		/// The logger
-		/// </summary>
-		private readonly ILogger<UsersService> _logger = logger;
+        /// <summary>
+        /// The users data service.
+        /// </summary>
+        private readonly IUsersDataService _usersDataService = usersDataService;
 
-		/// <summary>
-		/// Gets the user asynchronous.
-		/// </summary>
-		/// <param name="userLogin">The user identifier.</param>
-		/// <returns>
-		/// The user data.
-		/// </returns>
-		public async Task<User> GetUserAsync(UserLoginDTO userLogin)
-		{
-			if (string.IsNullOrEmpty(userLogin.UserEmail) || string.IsNullOrEmpty(userLogin.UserPassword))
-			{
-				var exception = new Exception(ExceptionConstants.UserIdNotCorrectMessageConstant);
-				this._logger.LogError(exception, exception.Message);
+        /// <summary>
+        /// Gets graph user data async.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The graph user data dto.</returns>
+        public async Task<GraphUserDTO> GetGraphUserDataAsync(string userName)
+        {
+            var responseDto = new GraphUserDTO();
+            var graphResponse = await this._httpClientHelper.GetGraphApiDataAsync();
+            if (graphResponse?.Value is not null)
+            {
+                // Find the user with matching username
+                var user = graphResponse.Value.FirstOrDefault(u =>
+                    u.AdditionalData is not null &&
+                    u.AdditionalData.ContainsKey(IbbsConstants.UserNameExtensionConstant) &&
+                    Convert.ToString(u.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture) == userName);
 
-				throw exception;
-			}
+                if (user is not null)
+                {
+                    // Create a new GraphUserDTO object with only the required fields
+                    var filteredUser = new GraphUserDTO()
+                    {
+                        Id = user.Id ?? string.Empty,
+                        DisplayName = user.DisplayName ?? string.Empty,
+                        UserName = Convert.ToString(user.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture) ?? string.Empty,
+                        EmailAddress = user.Identities?
+                            .FirstOrDefault(i => i.SignInType == IbbsConstants.EmailAddressConstant)?
+                            .IssuerAssignedId ?? string.Empty
+                    };
 
-			var result = await this._usersDataService.GetUserDetailsAsync(userLogin);
-			if (result is not null && result.UserId > 0)
-			{
-				return result;
-			}
-			else
-			{
-				var exception = new Exception(ExceptionConstants.UserDoesNotExistsMessageConstant);
-				this._logger.LogError(exception, exception.Message);
+                    responseDto = filteredUser;
+                }
+            }
 
-				throw exception;
-			}
-		}
+            return responseDto;
+        }
 
-		/// <summary>
-		/// Gets all users asynchronous.
-		/// </summary>
-		/// <returns>
-		/// The list of <see cref="User" />
-		/// </returns>
-		public async Task<List<User>> GetAllUsersAsync()
-		{
-			var result = await this._usersDataService.GetAllUsersDataAsync();
-			return result;
-		}
+        /// <summary>
+        /// Gets all graph users data async.
+        /// </summary>
+        public async Task<List<GraphUserDTO>> GetAllGraphUsersDataAsync()
+        {
+            var responseDto = new List<GraphUserDTO>();
+            var graphResponse = await this._httpClientHelper.GetGraphApiDataAsync();
+            if (graphResponse?.Value is not null)
+            {
+                var usersData = graphResponse.Value.Where(u =>
+                    u.AdditionalData.ContainsKey(IbbsConstants.UserNameExtensionConstant)
+                    && !string.IsNullOrEmpty(Convert.ToString(u.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture))).ToList();
+                if (usersData.Count > 0)
+                {
+                    responseDto = [..usersData.Select(user => new GraphUserDTO
+                    {
+                        Id = user.Id ?? string.Empty,
+                        DisplayName = user.DisplayName ?? string.Empty,
+                        UserName = Convert.ToString(user.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture) ?? string.Empty,
+                        EmailAddress = user.Identities?.FirstOrDefault(i => i.SignInType == IbbsConstants.EmailAddressConstant)?.IssuerAssignedId ?? string.Empty
+                    })];
+                }
+            }
 
-		/// <summary>
-		/// Adds the new user asynchronous.
-		/// </summary>
-		/// <param name="newUser">The new user.</param>
-		/// <returns>
-		/// The boolean for success/failure
-		/// </returns>
-		public async Task<bool> AddNewUserAsync(NewUserDTO newUser)
-		{
-			if (newUser is null)
-			{
-				var exception = new Exception(ExceptionConstants.NullUserMessageConstant);
-				this._logger.LogError(exception, exception.Message);
+            return responseDto;
+        }
 
-				throw exception;
-			}
+        /// <summary>
+        /// Saves users data from azure ad async.
+        /// </summary>
+        /// <param name="usersData">The users data.</param>
+        /// <returns>The boolean for success / failure</returns>
+        public async Task<bool> SaveUsersDataFromAzureAdAsync()
+        {
+            var usersData = await this.GetAllGraphUsersDataAsync();
+            if (usersData is not null && usersData.Count > 0)
+            {
+                return await this._usersDataService.SaveUsersDataAsync(usersData);
+            }
 
-			var dbUser = new User()
-			{
-				IsActive = true,
-				IsAdmin = false,
-				Name = newUser.Name,
-				UserAlias = newUser.UserAlias,
-				UserEmail = newUser.UserEmail,
-				UserPassword = newUser.UserPassword,
-			};
-			var result = await this._usersDataService.AddNewUserAsync(dbUser);
-			return result;
-		}
-
-		/// <summary>
-		/// Updates the user asynchronous.
-		/// </summary>
-		/// <param name="updateUser">The update user.</param>
-		/// <returns>
-		/// The updated user.
-		/// </returns>
-		public async Task<User> UpdateUserAsync(User updateUser)
-		{
-			if (updateUser is null)
-			{
-				var exception = new Exception(ExceptionConstants.NullUserMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._usersDataService.UpdateUserAsync(updateUser);
-			if (result is not null && result.UserId > 0)
-			{
-				return result;
-			}
-			else
-			{
-				var exception = new Exception(ExceptionConstants.UserDoesNotExistsMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-		}
-
-		/// <summary>
-		/// Deletes the user asynchronous.
-		/// </summary>
-		/// <param name="userId">The user identifier.</param>
-		/// <returns>
-		/// The boolean for success/failure
-		/// </returns>
-		public async Task<bool> DeleteUserAsync(int userId)
-		{
-			if (userId <= 0)
-			{
-				var exception = new Exception(ExceptionConstants.UserIdNotCorrectMessageConstant);
-				this._logger.LogError(exception, exception.Message);
-
-				throw exception;
-			}
-
-			var result = await this._usersDataService.DeleteUserAsync(userId);
-			return result;
-		}
-	}
+            return false;
+        }
+    }
 }
+
+

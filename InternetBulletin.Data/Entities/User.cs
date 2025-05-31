@@ -18,7 +18,7 @@ namespace InternetBulletin.Data.Entities
 		/// <value>
 		/// The user identifier.
 		/// </value>
-		public int UserId { get; set; }
+		public string Id { get; set; } = string.Empty;
 
 		/// <summary>
 		/// Gets or sets the name.
@@ -26,31 +26,31 @@ namespace InternetBulletin.Data.Entities
 		/// <value>
 		/// The name.
 		/// </value>
-		public string Name { get; set; }
+		public string DisplayName { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the user email.
+		/// Gets or sets the user name.
 		/// </summary>
 		/// <value>
-		/// The user email.
+		/// The user name.
 		/// </value>
-		public string UserEmail { get; set; }
+		public string UserName { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the user alias.
+		/// Gets or sets the email address.
 		/// </summary>
 		/// <value>
-		/// The user alias.
+		/// The email address.
 		/// </value>
-		public string UserAlias { get; set; }
+		public string EmailAddress { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the user password.
+		/// Gets or sets the date created.
 		/// </summary>
 		/// <value>
-		/// The user password.
+		/// The date created.
 		/// </value>
-		public string UserPassword { get; set; }
+		public DateTime DateCreated { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is active.

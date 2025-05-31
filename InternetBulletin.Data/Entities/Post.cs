@@ -25,7 +25,7 @@ namespace InternetBulletin.Data.Entities
 		/// <value>
 		/// The post title.
 		/// </value>
-		public string PostTitle { get; set; }
+		public string PostTitle { get; set; } = string.Empty;
 
 		/// <summary>
 		/// Gets or sets the content of the post.
@@ -33,7 +33,7 @@ namespace InternetBulletin.Data.Entities
 		/// <value>
 		/// The content of the post.
 		/// </value>
-		public string PostContent { get; set; }
+		public string PostContent { get; set; } = string.Empty;
 
 		/// <summary>
 		/// Gets or sets the post created date.
@@ -44,28 +44,20 @@ namespace InternetBulletin.Data.Entities
 		public DateTime PostCreatedDate { get; set; }
 
 		/// <summary>
-		/// Gets or sets the post created by.
+		/// Gets or sets the post owner user name.
 		/// </summary>
 		/// <value>
-		/// The post created by.
+		/// The post owner user name.
 		/// </value>
-		public string PostCreatedBy { get; set; }
+		public string PostOwnerUserName { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the post modified date.
+		/// Gets or sets the rating.
 		/// </summary>
 		/// <value>
-		/// The post modified date.
+		/// The rating.
 		/// </value>
-		public DateTime PostModifiedDate { get; set; }
-
-		/// <summary>
-		/// Gets or sets the post modified by.
-		/// </summary>
-		/// <value>
-		/// The post modified by.
-		/// </value>
-		public string PostModifiedBy { get; set; }
+		public int Ratings { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is active.
