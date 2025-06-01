@@ -1,8 +1,7 @@
-import
-	{
-		GET_USER_PROFILE_DATA,
-		TOGGLE_USER_PROFILE_DATA_SPINNER,
-	} from "./ActionTypes";
+import {
+	GET_USER_PROFILE_DATA,
+	TOGGLE_USER_PROFILE_DATA_SPINNER,
+} from "./ActionTypes";
 
 const initialState = {
 	userProfileData: {},
@@ -15,10 +14,8 @@ const initialState = {
  * @param {Object} action The action.
  * @returns {Object} The updated state.
  */
-const UserReducer = ( state = initialState, action ) =>
-{
-	switch ( action.type )
-	{
+const UserReducer = (state = initialState, action) => {
+	switch (action.type) {
 		case GET_USER_PROFILE_DATA: {
 			return {
 				...state,

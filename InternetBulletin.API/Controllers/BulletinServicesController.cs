@@ -9,6 +9,7 @@ namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Shared.Constants;
+	using InternetBulletin.Shared.DTOs.Posts;
 	using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
@@ -84,14 +85,15 @@ namespace InternetBulletin.API.Controllers
 		/// <returns>The ai rewritten response.</returns>
 		[HttpPost]
 		[Route(RouteConstants.RewriteWithAI_Route)]
-		public async Task<IActionResult> RewriteWithAIAsync([FromBody] string story)
+		public async Task<IActionResult> RewriteWithAIAsync(RewriteRequestDTO requestDto)
 		{
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(RewriteWithAIAsync), DateTime.UtcNow, this.UserName));
 				if (this.IsAuthorized())
 				{
-					var rewrittenStory = await this._postsService.RewriteWithAIAsync(story);
+					ArgumentNullException.ThrowIfNull(requestDto);
+					var rewrittenStory = await this._postsService.RewriteWithAIAsync(requestDto);
 					if (!string.IsNullOrEmpty(rewrittenStory))
 					{
 						return this.HandleSuccessResult(rewrittenStory);

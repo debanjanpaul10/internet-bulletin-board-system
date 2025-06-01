@@ -40,6 +40,7 @@ jobs:
         name: Build and Deploy InternetBulletin.API
         if: ${{ inputs.deploy_api }}
         runs-on: ubuntu-latest
+        environment: Production
 
         steps:
             # Checkout the repository
@@ -61,7 +62,7 @@ jobs:
             # Publish the project to a folder
             - name: Publish the project
               run: |
-                  dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --output ./publish-api
+                  dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-api
 
             # Deploy to Azure App Service
             - name: Deploy to Azure App Service
@@ -80,6 +81,7 @@ jobs:
         name: Build and Deploy InternetBulletin.Web
         if: ${{ inputs.deploy_web }}
         runs-on: ubuntu-latest
+        environment: Production
 
         steps:
             # Checkout the repository
@@ -107,6 +109,7 @@ jobs:
                   action: "upload"
                   app_location: ${{ env.WEB_PROJECT_PATH }}
                   output_location: "dist"
+                  skip_app_build: true
 
     #endregion
 
@@ -116,6 +119,7 @@ jobs:
         name: Build and Deploy InternetBulletin.Database
         if: ${{ inputs.deploy_database }}
         runs-on: windows-latest
+        environment: Production
 
         steps:
             # Checkout the repository
@@ -162,6 +166,7 @@ jobs:
         name: Build and Deploy InternetBulletin.Functions
         if: ${{inputs.deploy_function}}
         runs-on: ubuntu-latest
+        environment: Production
 
         steps:
             # Checkout the repository
@@ -183,7 +188,7 @@ jobs:
             # Publish the project to a folder
             - name: Publish the project
               run: |
-                  dotnet publish ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --output ./publish-function
+                  dotnet publish ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --no-build --output ./publish-function
 
             # Run Azure Functions action
             - name: Run Azure Functions action

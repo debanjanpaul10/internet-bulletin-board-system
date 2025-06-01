@@ -1,8 +1,7 @@
 /**
  * RewriteRequestDtoModel class to represent the rewrite request model.
  */
-class RewriteRequestDtoModel
-{
+class RewriteRequestDtoModel {
     /**
      * The story.
      * @type {string}
@@ -13,8 +12,7 @@ class RewriteRequestDtoModel
      * Creates an instance of RewriteRequestDtoModel
      * @param {string} Story The story.
      */
-    constructor ( Story )
-    {
+    constructor(Story) {
         this.story = Story;
     }
 }

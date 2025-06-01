@@ -9,7 +9,9 @@ import {
 	Label,
 	CardPreview,
 	Spinner,
-	tokens,
+	Tooltip,
+	Skeleton,
+	SkeletonItem,
 } from "@fluentui/react-components";
 import { useMsal } from "@azure/msal-react";
 import ReactQuill from "react-quill-new";
@@ -17,6 +19,7 @@ import ReactQuill from "react-quill-new";
 import AiButton from "@assets/Images/ai-icon.svg";
 import {
 	RewriteStoryWithAiAsync,
+	RewriteStoryWithAiSuccess,
 	ToggleEditPostDialog,
 	UpdatePostAsync,
 } from "@store/Posts/Actions";
@@ -27,25 +30,45 @@ import { loginRequests } from "@services/auth.config";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 
 /**
- * @component
- * `EditPostComponent` component to handle the edit post dialog.
- *
- * @returns {JSX.Element} The edit post dialog jsx element.
+ * @component EditPostComponent
+ * @description A dialog component for editing existing posts with AI-powered text rewriting capabilities.
+ * 
+ * @features
+ * - Edit post title and content
+ * - Rich text editing with ReactQuill
+ * - AI-powered text rewriting
+ * - Form validation
+ * - Loading states for edit and AI operations
+ * - Automatic content restoration on dialog close
+ * 
+ * @state
+ * @property {boolean} isDialogOpen - Controls dialog visibility
+ * @property {boolean} isEditPostLoading - Loading state for post editing
+ * @property {Object} postData - Current post data (title, content, id)
+ * @property {string} originalContent - Stores original content before AI rewrite
+ * @property {Object} errors - Form validation errors
+ * 
+ * @redux
+ * @property {boolean} IsEditModalOpen - Dialog open state from Redux
+ * @property {Object} EditPostData - Post data from Redux
+ * @property {boolean} IsEditPostDataLoading - Loading state from Redux
+ * @property {string} AiRewrittenStory - AI rewritten content from Redux
+ * @property {boolean} IsRewriteLoading - AI rewrite loading state from Redux
+ * 
+ * @returns {JSX.Element} A dialog containing the post edit form with AI rewrite capabilities
  */
 function EditPostComponent() {
 	const dispatch = useDispatch();
 	const styles = useStyles();
 	const { instance, accounts } = useMsal();
 
-	const IsEditPostDialogOpen = useSelector(
-		(state) => state.PostsReducer.isEditModalOpen
-	);
-	const EditPostData = useSelector(
-		(state) => state.PostsReducer.editPostData
-	);
-	const IsEditPostDataLoading = useSelector(
-		(state) => state.PostsReducer.isEditPostDataLoading
-	);
+	const EditPostsStoreData = useSelector(({ PostsReducer }) => ({
+		IsEditModalOpen: PostsReducer.isEditModalOpen,
+		EditPostData: PostsReducer.editPostData,
+		IsEditPostDataLoading: PostsReducer.isEditPostDataLoading,
+		AiRewrittenStory: PostsReducer.aiRewrittenStory,
+		IsRewriteLoading: PostsReducer.isRewriteLoading
+	}));
 
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isEditPostLoading, setIsEditPostLoading] = useState(false);
@@ -54,6 +77,7 @@ function EditPostComponent() {
 		postContent: "",
 		postId: "",
 	});
+	const [originalContent, setOriginalContent] = useState("");
 	const [errors, setErrors] = useState({
 		postTitle: "",
 		postContent: "",
@@ -63,26 +87,40 @@ function EditPostComponent() {
 
 	useEffect(() => {
 		if (
-			EditPostData !== null &&
-			EditPostData !== undefined &&
-			Object.values(EditPostData).length > 0 &&
-			EditPostData !== postData
+			EditPostsStoreData.EditPostData !== null &&
+			EditPostsStoreData.EditPostData !== undefined &&
+			Object.values(EditPostsStoreData.EditPostData).length > 0 &&
+			EditPostsStoreData.EditPostData !== postData
 		) {
-			setPostData(EditPostData);
+			setPostData(EditPostsStoreData.EditPostData);
 		}
-	}, [EditPostData]);
+	}, [EditPostsStoreData.EditPostData]);
 
 	useEffect(() => {
-		if (IsEditPostDialogOpen !== isDialogOpen) {
-			setIsDialogOpen(IsEditPostDialogOpen);
+		if (EditPostsStoreData.IsEditModalOpen !== isDialogOpen) {
+			setIsDialogOpen(EditPostsStoreData.IsEditModalOpen);
 		}
-	}, [IsEditPostDialogOpen]);
+	}, [EditPostsStoreData.IsEditModalOpen]);
 
 	useEffect(() => {
-		if (IsEditPostDataLoading !== isEditPostLoading) {
-			setIsEditPostLoading(IsEditPostDataLoading);
+		if (EditPostsStoreData.IsEditPostDataLoading !== isEditPostLoading) {
+			setIsEditPostLoading(EditPostsStoreData.IsEditPostDataLoading);
 		}
-	}, [IsEditPostDataLoading]);
+	}, [EditPostsStoreData.IsEditPostDataLoading]);
+
+	useEffect(() => {
+		if (
+			EditPostsStoreData.AiRewrittenStory !== '' &&
+			postData.postContent !== '' &&
+			EditPostsStoreData.AiRewrittenStory !== postData.postContent
+		) {
+			setOriginalContent(postData.postContent);
+			setPostData({
+				...postData,
+				postContent: EditPostsStoreData.AiRewrittenStory
+			});
+		}
+	}, [EditPostsStoreData.AiRewrittenStory]);
 
 	// #endregion
 
@@ -123,14 +161,18 @@ function EditPostComponent() {
 	};
 
 	/**
-	 * Handles the react quill content change event.
+	 * Handles the content change event for the rich text editor.
+	 * @param {string} content The content of the editor.
 	 */
-	const handleContentChange = useMemo(() => (content) => {
-		setPostData({
-			...postData,
-			Content: content,
-		});
-	});
+	const handleContentChange = useMemo(
+		() => (content) => {
+			setPostData({
+				...postData,
+				postContent: content,
+			});
+		},
+		[postData]
+	);
 
 	/**
 	 * The modules for React Quill
@@ -182,13 +224,14 @@ function EditPostComponent() {
 	 */
 	const handleAiRewrite = async (event) => {
 		event.preventDefault();
-		const strippedContent = postData.Content.replace(
+		const strippedContent = postData.postContent.replace(
 			/<[^>]*>?/gm,
 			""
 		).trim();
 		if (strippedContent !== "") {
-			var requestDto = new RewriteRequestDtoModel(postData.Content);
-			dispatch(RewriteStoryWithAiAsync(requestDto));
+			var requestDto = new RewriteRequestDtoModel(postData.postContent);
+			const accessToken = await getAccessToken();
+			dispatch(RewriteStoryWithAiAsync(requestDto, accessToken));
 		}
 	};
 
@@ -198,6 +241,14 @@ function EditPostComponent() {
 	const handleModalClose = () => {
 		setIsDialogOpen(false);
 		dispatch(ToggleEditPostDialog(false));
+		dispatch(RewriteStoryWithAiSuccess(''));
+		if (originalContent) {
+			setPostData({
+				...postData,
+				postContent: originalContent
+			});
+			setOriginalContent("");
+		}
 	};
 
 	return (
@@ -255,33 +306,59 @@ function EditPostComponent() {
 							<CardPreview className={styles.cardPreview}>
 								<div className="form-group row mt-3">
 									<div className="col sm-12 mb-3 mb-sm-0 p-3">
-										<ReactQuill
-											value={postData.postContent}
-											onChange={handleContentChange}
-											id="postContent"
-											className="text-editor"
-											placeholder={
-												CreatePostPageConstants.Headings
-													.ContentBoxPlaceholder
-											}
-											modules={modules}
-										/>
-										{errors.postContent && (
-											<span className="alert alert-danger ml-10 mt-3">
-												{errors.postContent}
-											</span>
+										{EditPostsStoreData.IsRewriteLoading ? (
+											<Skeleton
+												aria-label="Profile data loading"
+												as="div"
+												className="row"
+											>
+												<div className="col-12 col-sm-12">
+													<SkeletonItem
+														className={styles.rewriteTextSkeleton}
+														appearance="translucent"
+														animation="pulse"
+														as="div"
+														size={128}
+													/>
+												</div>
+											</Skeleton>
+										) : (
+											<>
+												<ReactQuill
+													value={postData.postContent}
+													onChange={handleContentChange}
+													id="postContent"
+													className="text-editor"
+													placeholder={
+														CreatePostPageConstants.Headings
+															.ContentBoxPlaceholder
+													}
+													modules={modules}
+												/>
+												{errors.postContent && (
+													<span className="alert alert-danger ml-10 mt-3">
+														{errors.postContent}
+													</span>
+												)}
+												<Tooltip
+													content={CreatePostPageConstants.Headings.RewriteAIButtonTexts.TooltipText}
+													relationship="label"
+													positioning="after"
+												>
+													<Button
+														type="button"
+														className={styles.button}
+														onClick={handleAiRewrite}
+													>
+														<img
+															src={AiButton}
+															style={{ height: "20px" }}
+														/>{" "}
+														{CreatePostPageConstants.Headings.RewriteAIButtonTexts.ButtonText}
+													</Button>
+												</Tooltip>
+											</>
 										)}
-										<Button
-											type="button"
-											className={styles.button}
-											onClick={handleAiRewrite}
-										>
-											<img
-												src={AiButton}
-												style={{ height: "20px" }}
-											/>{" "}
-											Rewrite with AI
-										</Button>
 									</div>
 
 									<div className="text-center">

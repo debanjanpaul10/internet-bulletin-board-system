@@ -23,9 +23,8 @@ namespace InternetBulletin.Business.Services
     /// <param name="logger">The logger.</param>
     /// <param name="postRatingsDataService">The post ratings data service.</param>
     /// <param name="postsDataService">The posts data service.</param>
-    /// <param name="cacheService">The cache service.</param>
     /// <seealso cref="IPostRatingsService"/>
-    public class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatingsDataService postRatingsDataService, IPostsDataService postsDataService, ICacheService cacheService) : IPostRatingsService
+    public class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatingsDataService postRatingsDataService, IPostsDataService postsDataService) : IPostRatingsService
     {
         /// <summary>
         /// The logger.
@@ -41,11 +40,6 @@ namespace InternetBulletin.Business.Services
         /// The posts data service.
         /// </summary>
         private readonly IPostsDataService _postsDataService = postsDataService;
-
-        /// <summary>
-        /// The cache service.
-        /// </summary>
-        private readonly ICacheService _cacheService = cacheService;
 
         /// <summary>
         /// Updates rating async.
@@ -71,17 +65,8 @@ namespace InternetBulletin.Business.Services
         /// <returns>The list of post ratings</returns>
         public async Task<List<PostRating>> GetAllUserPostRatingsAsync(string userName)
         {
-            var cachedData = this._cacheService.GetCachedData<List<PostRating>>(CacheKeys.UserRatingsCacheKey(userName));
-            if (cachedData is not null)
-            {
-                return cachedData;
-            }
-            else
-            {
-                var userPostRatings = await this._postRatingsDataService.GetAllUserPostRatingsAsync(userName);
-                this._cacheService.SetCacheData(CacheKeys.UserRatingsCacheKey(userName), userPostRatings, CacheKeys.DefaultCacheExpiration);
-                return userPostRatings;
-            }
+            var userPostRatings = await this._postRatingsDataService.GetAllUserPostRatingsAsync(userName);
+            return userPostRatings;
         }
 
         #region PRIVATE Methods

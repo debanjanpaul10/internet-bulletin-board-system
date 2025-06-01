@@ -1,8 +1,7 @@
 /**
  * UserLoginDtoModel class to represent the user login data.
  */
-class UserLoginDtoModel
-{
+class UserLoginDtoModel {
 	/** The user email.
 	 * @type {string}
 	 */
@@ -18,8 +17,7 @@ class UserLoginDtoModel
 	 * @param {string} UserEmail The user email.
 	 * @param {string} UserPassword The user password.
 	 */
-	constructor ( UserEmail, UserPassword )
-	{
+	constructor(UserEmail, UserPassword) {
 		this.userEmail = UserEmail;
 		this.userPassword = UserPassword;
 	}

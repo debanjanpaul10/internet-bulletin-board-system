@@ -226,6 +226,17 @@ namespace InternetBulletin.UnitTests.Helpers
                 },
             ];
         }
+
+        /// <summary>
+        /// Prepares rewrite request dto for user.
+        /// </summary>
+        public static RewriteRequestDTO PrepareMockRewriteRequestDTO()
+        {
+            return new RewriteRequestDTO
+            {
+                Story = "Some Sample Story"
+            };
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 import { makeStyles, tokens, typographyStyles } from "@fluentui/react-components";
 
-const useStyles = makeStyles( {
+const useStyles = makeStyles({
 	bannerCard: {
 		alignContent: "center",
 		borderRadius: tokens.borderRadiusLarge,
@@ -26,6 +26,6 @@ const useStyles = makeStyles( {
 	subtext: {
 		...typographyStyles.body1,
 	},
-} );
+});
 
 export { useStyles };

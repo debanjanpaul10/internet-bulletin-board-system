@@ -113,6 +113,10 @@ export const CreatePostPageConstants = {
 		Header: "Share your story, no need for glory, just a bit of wit, and maybe some allegory.",
 		TitleBarPlaceholder: "How can you summarize your adventure?",
 		ContentBoxPlaceholder: "Go on. Tell us. Stop the suspense now.",
+		RewriteAIButtonTexts: {
+			ButtonText: "Rewrite with GenAI",
+			TooltipText: "You can fix the minor mistakes in your story with GenAI!"
+		}
 	},
 	validations: {
 		TitleRequired: "Dude! You need a title for your adventure.",
@@ -147,8 +151,8 @@ export const MyProfilePageConstants = {
 		YourRatings: "Your ratings",
 		AboutUsMessage: "This is my story!",
 	},
-	PostTableHeaders: [ "Post Name", "Date Created", "Ratings" ],
-	RatingsTableHeaders: [ "Post Name", "Rated on" ],
+	PostTableHeaders: ["Post Name", "Date Created", "Ratings"],
+	RatingsTableHeaders: ["Post Name", "Rated on"],
 };
 
 export const AboutUsPageConstants = {

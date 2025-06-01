@@ -52,11 +52,6 @@ namespace InternetBulletin.UnitTests.Business
         private readonly Mock<IHttpClientHelper> _mockHttpClientHelper;
 
         /// <summary>
-        /// The mock cache service.
-        /// </summary>
-        private readonly Mock<ICacheService> _mockCacheService;
-
-        /// <summary>
         /// The posts service.
         /// </summary>
         private readonly PostsService _postsService;
@@ -70,11 +65,10 @@ namespace InternetBulletin.UnitTests.Business
             this._postsDataServiceMock = new Mock<IPostsDataService>();
             this._postRatingsDataServiceMock = new Mock<IPostRatingsDataService>();
             this._mockHttpClientHelper = new Mock<IHttpClientHelper>();
-            this._mockCacheService = new Mock<ICacheService>();
 
             this._postsService = new PostsService(
                 this._loggerMock.Object, this._mockHttpClientHelper.Object, this._postsDataServiceMock.Object,
-                this._postRatingsDataServiceMock.Object, this._mockCacheService.Object);
+                this._postRatingsDataServiceMock.Object);
         }
 
         /// <summary>
@@ -237,11 +231,11 @@ namespace InternetBulletin.UnitTests.Business
         public async Task RewriteWithAIAsync_SuccessfulResponseWithNonNullContent_ReturnsContentToString()
         {
             // Arrange
-            var story = "Original story.";
-            var expectedRewrittenStoryRepresentation = "System.Net.Http.StringContent"; // This is what StringContent.ToString() returns
+            var story = PrepareMockRewriteRequestDTO();
+            var expectedRewrittenStoryRepresentation = "This is the actual AI response content."; // This is what StringContent.ToString() returns
             var mockHttpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent("This is the actual AI response content.")
+                Content = new StringContent(expectedRewrittenStoryRepresentation)
             };
 
             this._mockHttpClientHelper
@@ -262,7 +256,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task RewriteWithAIAsync_HttpClientReturnsNonSuccessStatusCode_ThrowsException()
         {
             // Arrange
-            var story = "Original story.";
+            var story = PrepareMockRewriteRequestDTO();
             var mockHttpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest)
             {
                 Content = new StringContent("Error content")
@@ -284,7 +278,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task RewriteWithAIAsync_HttpClientReturnsNullResponse_ThrowsException()
         {
             // Arrange
-            var story = "Original story.";
+            var story = PrepareMockRewriteRequestDTO();
             this._mockHttpClientHelper.Setup(x => x.GetIbbsAiResponseAsync(story, RouteConstants.RewriteTextApi_Route)).ReturnsAsync((HttpResponseMessage)null!);
 
             // Act & Assert
@@ -299,7 +293,7 @@ namespace InternetBulletin.UnitTests.Business
         public async Task RewriteWithAIAsync_HttpClientHelperThrowsException_PropagatesException()
         {
             // Arrange
-            var story = "Original story.";
+            var story = PrepareMockRewriteRequestDTO();
             var expectedException = new HttpRequestException("Simulated network error");
             this._mockHttpClientHelper
                 .Setup(x => x.GetIbbsAiResponseAsync(story, RouteConstants.RewriteTextApi_Route))

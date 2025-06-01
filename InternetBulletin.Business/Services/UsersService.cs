@@ -66,6 +66,7 @@ namespace InternetBulletin.Business.Services
             else
             {
                 usersData = await CommonUtilities.GetGraphApiDataAsync(this._configuration, this._logger);
+                this._cacheService.SetCacheData(CacheKeys.FilteredGraphUsersDataCacheKey, usersData, CacheKeys.DefaultCacheExpiration);
             }
 
             if (usersData?.Value is not null)

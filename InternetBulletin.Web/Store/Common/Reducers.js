@@ -1,5 +1,4 @@
-import
-{
+import {
 	GET_CONFIGURATION_VALUE,
 	TOGGLE_ERROR_TOASTER,
 	TOGGLE_SIDE_BAR_STATUS,
@@ -19,10 +18,8 @@ const initialState = {
  * @param {Object} action The action data.
  * @returns {Object} The updated redux store object.
  */
-const CommonReducer = ( state = initialState, action ) =>
-{
-	switch ( action.type )
-	{
+const CommonReducer = (state = initialState, action) => {
+	switch (action.type) {
 		case GET_CONFIGURATION_VALUE: {
 			return {
 				...state,

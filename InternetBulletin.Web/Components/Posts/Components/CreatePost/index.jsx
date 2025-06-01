@@ -8,7 +8,11 @@ import {
 	Button,
 	CardHeader,
 	LargeTitle,
+	Tooltip,
+	SkeletonItem,
+	Skeleton,
 } from "@fluentui/react-components";
+import { useMsal } from "@azure/msal-react";
 
 import {
 	CreatePostPageConstants,
@@ -21,14 +25,34 @@ import AiButton from "@assets/Images/ai-icon.svg";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
-import { useMsal } from "@azure/msal-react";
 import { loginRequests } from "@services/auth.config";
 
 /**
- * @component
- * This component allows users to create a new post.
- *
- * @returns {JSX.Element} The CreatePostComponent JSX element.
+ * @component CreatePostComponent
+ * @description A React component that provides functionality for creating new posts in the bulletin board system.
+ * The component includes features such as:
+ * - Rich text editing using ReactQuill
+ * - Form validation for title and content
+ * - AI-powered content rewriting
+ * - Authentication integration with MSAL
+ * - Responsive design with Fluent UI components
+ * 
+ * @requires {Object} React - The React library
+ * @requires {Object} ReactQuill - Rich text editor component
+ * @requires {Object} `@fluentui/react-components` - UI component library
+ * @requires {Object} `@azure/msal-react` - Microsoft Authentication Library
+ * 
+ * @state {Object} postData - Contains the post information (Title, Content, CreatedBy)
+ * @state {Object} errors - Contains validation errors for the form
+ * @state {Object} currentLoggedInUser - Stores the current authenticated user information
+ * 
+ * @function handleCreatePost - Handles form submission and post creation
+ * @function handleFormChange - Manages form input changes
+ * @function handleContentChange - Manages rich text editor content changes
+ * @function handleAiRewrite - Handles AI-powered content rewriting
+ * @function handleCancelClick - Handles navigation back to home page
+ * 
+ * @returns {JSX.Element} Returns either the post creation form or a PageNotFound component based on authentication status
  */
 function CreatePostComponent() {
 	const dispatch = useDispatch();
@@ -41,6 +65,9 @@ function CreatePostComponent() {
 	);
 	const AiRewrittenStoryStoreData = useSelector(
 		(state) => state.PostsReducer.aiRewrittenStory
+	);
+	const IsRewriteLoadingStoreData = useSelector(
+		(state) => state.PostsReducer.isRewriteLoading
 	);
 
 	const [postData, setPostData] = useState({
@@ -173,7 +200,7 @@ function CreatePostComponent() {
 	 * Handles the ai rewrite event.
 	 * @param {Event} event The rewrite event.
 	 */
-	const handleAiRewrite = (event) => {
+	const handleAiRewrite = async (event) => {
 		event.preventDefault();
 		const strippedContent = postData.Content.replace(
 			/<[^>]*>?/gm,
@@ -181,7 +208,8 @@ function CreatePostComponent() {
 		).trim();
 		if (strippedContent !== "") {
 			var requestDto = new RewriteRequestDtoModel(postData.Content);
-			dispatch(RewriteStoryWithAiAsync(requestDto));
+			const accessToken = await getAccessToken();
+			dispatch(RewriteStoryWithAiAsync(requestDto, accessToken));
 		}
 	};
 
@@ -253,33 +281,61 @@ function CreatePostComponent() {
 						<CardPreview className={styles.cardPreview}>
 							<div className="form-group row mt-3">
 								<div className="col sm-12 mb-3 mb-sm-0 p-3">
-									<ReactQuill
-										value={postData.Content}
-										onChange={handleContentChange}
-										id="Content"
-										className="text-editor"
-										placeholder={
-											CreatePostPageConstants.Headings
-												.ContentBoxPlaceholder
-										}
-										modules={modules}
-									/>
-									{errors.Content && (
-										<span className="alert alert-danger ml-10 mt-3">
-											{errors.Content}
-										</span>
-									)}
-									<Button
-										type="button"
-										className={styles.aiEditButton}
-										onClick={handleAiRewrite}
-									>
-										<img
-											src={AiButton}
-											style={{ height: "20px" }}
-										/>{" "}
-										Rewrite with AI
-									</Button>
+									{
+										IsRewriteLoadingStoreData ? (
+											<Skeleton
+												aria-label="Profile data loading"
+												as="div"
+												className="row"
+											>
+												<div className="col-12 col-sm-12">
+													<SkeletonItem
+														className={styles.rewriteTextSkeleton}
+														appearance="translucent"
+														animation="pulse"
+														as="div"
+														size={128}
+													/>
+												</div>
+											</Skeleton>
+										) : (
+											<>
+												<ReactQuill
+													value={postData.Content}
+													onChange={handleContentChange}
+													id="Content"
+													className="text-editor"
+													placeholder={
+														CreatePostPageConstants.Headings
+															.ContentBoxPlaceholder
+													}
+													modules={modules}
+												/>
+												{errors.Content && (
+													<span className="alert alert-danger ml-10 mt-3">
+														{errors.Content}
+													</span>
+												)}
+												<Tooltip
+													content={CreatePostPageConstants.Headings.RewriteAIButtonTexts.TooltipText}
+													relationship="label"
+													positioning="after"
+												>
+													<Button
+														type="button"
+														className={styles.aiEditButton}
+														onClick={handleAiRewrite}
+													>
+														<img
+															src={AiButton}
+															style={{ height: "20px" }}
+														/>{" "}
+														{CreatePostPageConstants.Headings.RewriteAIButtonTexts.ButtonText}
+													</Button>
+												</Tooltip>
+											</>
+										)
+									}
 								</div>
 
 								<div className="text-center">

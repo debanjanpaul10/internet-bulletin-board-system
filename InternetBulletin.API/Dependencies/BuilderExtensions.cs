@@ -13,7 +13,7 @@ namespace InternetBulletin.API.Dependencies
     using InternetBulletin.Shared.Constants;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-    using Microsoft.Identity.Web;
+    using Microsoft.IdentityModel.Tokens;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
     /// <summary>
@@ -90,27 +90,29 @@ namespace InternetBulletin.API.Dependencies
         private static void ConfigureAuthenticationServices(this WebApplicationBuilder builder)
         {
             var configuration = builder.Configuration;
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(options =>
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidateAudience = true,
-                        ValidAudience = configuration[IBBSApiClientIdConstant],
-                        ValidateLifetime = true,
-                        ValidateIssuer = true,
-                        ValidIssuer = configuration[IBBSApiIssuerConstant]
-                    };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnTokenValidated = HandleAuthTokenValidationSuccessAsync,
-                        OnAuthenticationFailed = HandleAuthTokenValidationFailedAsync
-                    };
-                },
-                options =>
+                    ValidateLifetime = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    RequireExpirationTime = true,
+                    RequireSignedTokens = true,
+                    ValidAudience = configuration[IBBSApiClientIdConstant],
+                    ValidIssuer = configuration[IBBSApiIssuerConstant],
+                    SignatureValidator = (token, _) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token)
+                };
+                options.Events = new JwtBearerEvents
                 {
-                    configuration.Bind(AzureAdB2CConstant, options);
-                });
+                    OnTokenValidated = HandleAuthTokenValidationSuccessAsync,
+                    OnAuthenticationFailed = HandleAuthTokenValidationFailedAsync
+                };
+            });
 
         }
 
