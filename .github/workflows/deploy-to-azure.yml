@@ -62,7 +62,7 @@ jobs:
             # Publish the project to a folder
             - name: Publish the project
               run: |
-                  dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --output ./publish-api
+                  dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-api
 
             # Deploy to Azure App Service
             - name: Deploy to Azure App Service
@@ -109,6 +109,7 @@ jobs:
                   action: "upload"
                   app_location: ${{ env.WEB_PROJECT_PATH }}
                   output_location: "dist"
+                  skip_app_build: true
 
     #endregion
 
@@ -187,7 +188,7 @@ jobs:
             # Publish the project to a folder
             - name: Publish the project
               run: |
-                  dotnet publish ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --output ./publish-function
+                  dotnet publish ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --no-build --output ./publish-function
 
             # Run Azure Functions action
             - name: Run Azure Functions action

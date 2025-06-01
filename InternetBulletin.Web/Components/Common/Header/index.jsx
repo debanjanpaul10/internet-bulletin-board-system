@@ -68,7 +68,7 @@ function HeaderComponent() {
 					<Tooltip
 						content={ButtonTitles.SideDrawer}
 						relationship="label"
-						position="after"
+						positioning="after"
 					>
 						<Button
 							appearance="subtle"

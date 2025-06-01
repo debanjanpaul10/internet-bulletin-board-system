@@ -45,5 +45,9 @@ const useStyles = makeStyles({
 			color: tokens.colorStatusDangerBackground3Hover,
 		},
 	},
+	rewriteTextSkeleton: {
+		width: "100%",
+		borderRadius: tokens.borderRadiusLarge,
+	}
 });
 export { useStyles };

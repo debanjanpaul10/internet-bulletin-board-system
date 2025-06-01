@@ -7,6 +7,8 @@
 
 namespace InternetBulletin.UnitTests.Business
 {
+    using System;
+    using System.Threading.Tasks;
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Business.Services;
     using InternetBulletin.Data.Contracts;
@@ -14,8 +16,6 @@ namespace InternetBulletin.UnitTests.Business
     using InternetBulletin.Shared.DTOs.Posts;
     using Microsoft.Extensions.Logging;
     using Moq;
-    using System;
-    using System.Threading.Tasks;
     using Xunit;
     using static InternetBulletin.UnitTests.Helpers.TestsHelper;
 
@@ -45,11 +45,6 @@ namespace InternetBulletin.UnitTests.Business
         private readonly Mock<IPostsDataService> _postsDataServiceMock;
 
         /// <summary>
-        /// The cache service mock.
-        /// </summary>
-        private readonly Mock<ICacheService> _cacheServiceMock;
-
-        /// <summary>
         /// The post ratings service.
         /// </summary>
         private readonly PostRatingsService _postRatingsService;
@@ -62,10 +57,9 @@ namespace InternetBulletin.UnitTests.Business
             this._loggerMock = new Mock<ILogger<PostRatingsService>>();
             this._postRatingsDataServiceMock = new Mock<IPostRatingsDataService>();
             this._postsDataServiceMock = new Mock<IPostsDataService>();
-            this._cacheServiceMock = new Mock<ICacheService>();
 
             this._postRatingsService = new PostRatingsService(
-                this._loggerMock.Object, this._postRatingsDataServiceMock.Object, this._postsDataServiceMock.Object, this._cacheServiceMock.Object);
+                this._loggerMock.Object, this._postRatingsDataServiceMock.Object, this._postsDataServiceMock.Object);
         }
 
         /// <summary>

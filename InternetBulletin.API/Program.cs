@@ -38,7 +38,7 @@ namespace InternetBulletin.API
 
             builder.ConfigureAzureAppConfiguration(credentials);
             builder.ConfigureApiServices();
-            builder.ConfigureServices();
+            builder.Services.ConfigureServices();
 
             var app = builder.Build();
             app.ConfigureApplication();
@@ -48,11 +48,11 @@ namespace InternetBulletin.API
         /// Configures the services.
         /// </summary>
         /// <param name="services">The services.</param>
-        public static void ConfigureServices(this WebApplicationBuilder builder)
+        public static void ConfigureServices(this IServiceCollection services)
         {
-            builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
-            builder.Services.AddCors(options =>
+            services.AddControllers();
+            services.AddOpenApi();
+            services.AddCors(options =>
             {
                 options.AddDefaultPolicy(p =>
                 {
@@ -62,7 +62,7 @@ namespace InternetBulletin.API
                 });
             });
 
-            builder.Services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
@@ -76,9 +76,9 @@ namespace InternetBulletin.API
                     }
                 });
             });
-            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-            builder.Services.AddProblemDetails();
-            builder.Services.AddHttpContextAccessor();
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddProblemDetails();
+            services.AddHttpContextAccessor();
         }
 
         /// <summary>

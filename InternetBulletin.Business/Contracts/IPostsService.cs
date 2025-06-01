@@ -58,7 +58,7 @@ namespace InternetBulletin.Business.Contracts
 		/// <summary>
 		/// Rewrites with a i async.
 		/// </summary>
-		/// <param name="story">The story.</param>
-		Task<string> RewriteWithAIAsync(string story);
+		/// <param name="requestDTO">The story.</param>
+		Task<string> RewriteWithAIAsync(RewriteRequestDTO requestDTO);
 	}
 }

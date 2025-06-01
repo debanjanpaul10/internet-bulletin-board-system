@@ -23,9 +23,22 @@ import {
 	STOP_SPINNER,
 	TOGGLE_EDIT_POST_DIALOG,
 	TOGGLE_EDIT_POST_LOADER,
+	TOGGLE_REWRITE_LOADER,
 	TOGGLE_VOTING_LOADER,
 	UPDATE_POST_RATING,
 } from "@store/Posts/ActionTypes";
+
+/**
+ * Stores the toggle event for rewrite text loading.
+ * @param {boolean} isLoading The is loading boolean flag.
+ * @returns {Object} The action type and payload data.
+ */
+export const ToggleRewriteLoader = (isLoading) => {
+	return {
+		type: TOGGLE_REWRITE_LOADER,
+		payload: isLoading
+	};
+};
 
 /**
  * Saves the loader start status to redux store.
@@ -181,14 +194,15 @@ export const PostDataFailure = (data) => {
 
 /**
  * Rewrites the story with AI.
- * @param {string} story The story string.
+ * @param {string} requestDto The story rewrite request dto.
+ * @param {string} accessToken The access token.
  * @returns {Promise} The promise from the api response.
  */
-export const RewriteStoryWithAiAsync = (story) => {
+export const RewriteStoryWithAiAsync = (requestDto, accessToken) => {
 	return async (dispatch) => {
 		try {
-			dispatch(HandleCreatePostPageLoader(true));
-			const response = await PostRewriteStoryWithAiApiAsync(story);
+			dispatch(ToggleRewriteLoader(true));
+			const response = await PostRewriteStoryWithAiApiAsync(requestDto, accessToken);
 			if (response?.statusCode === 200) {
 				dispatch(RewriteStoryWithAiSuccess(response?.data));
 			}
@@ -197,11 +211,11 @@ export const RewriteStoryWithAiAsync = (story) => {
 			dispatch(
 				ToggleErrorToaster({
 					shouldShow: true,
-					errorMessage: error,
+					errorMessage: error.title,
 				})
 			);
 		} finally {
-			dispatch(HandleCreatePostPageLoader(false));
+			dispatch(ToggleRewriteLoader(false));
 		}
 	};
 };

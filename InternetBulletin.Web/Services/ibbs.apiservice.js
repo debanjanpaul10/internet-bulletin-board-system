@@ -107,9 +107,10 @@ export const GetConfigurationApiAsync = async (keyName) => {
 /**
  * Posts the rewrite story with ai api.
  * @param {string} storyText The story text.
+ * @param {string} accessToken The access token.
  * @returns {Promise} The promise of the response from api.
  */
-export const PostRewriteStoryWithAiApiAsync = async (accessToken, storyText) => {
+export const PostRewriteStoryWithAiApiAsync = async (storyText, accessToken) => {
 	return await HttpUtility.PostAsync(
 		'BulletinServices/RewriteWithAI',
 		storyText,
