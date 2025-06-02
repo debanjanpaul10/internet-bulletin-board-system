@@ -4,7 +4,7 @@ const useStyles = makeStyles({
 	bannerCard: {
 		alignContent: "center",
 		borderRadius: tokens.borderRadiusLarge,
-		height: "450px",
+		height: "400px",
 		textAlign: "left",
 		position: "relative",
 	},
@@ -19,6 +19,7 @@ const useStyles = makeStyles({
 		padding: "18px",
 		maxWidth: "270px",
 		width: "50%",
+		boxShadow: tokens.shadow28Brand
 	},
 	title: {
 		...typographyStyles.title1,

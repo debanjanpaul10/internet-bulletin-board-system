@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="3.9.0" />
     <PackageReference Include="Microsoft.IdentityModel" Version="7.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
   </ItemGroup>

@@ -10,12 +10,12 @@ import {
 	useRestoreFocusSource,
 } from "@fluentui/react-components";
 import {
-	Dismiss28Regular,
 	SignOut24Regular,
 	AddCircle28Regular,
 	PersonAdd28Regular,
 	Person28Regular,
 	BookOpen28Regular,
+	PanelLeftContract28Regular,
 } from "@fluentui/react-icons";
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
@@ -260,9 +260,10 @@ function SideDrawerComponent() {
 						<Button
 							appearance="subtle"
 							aria-label="Close"
-							icon={<Dismiss28Regular />}
 							onClick={handleSideBarClose}
-						/>
+						>
+							<PanelLeftContract28Regular />
+						</Button>
 					}
 				>
 					{/* HOME BUTTON */}

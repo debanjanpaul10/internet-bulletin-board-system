@@ -41,6 +41,11 @@ namespace InternetBulletin.Shared.Constants
         /// The ibbs a i constant.
         /// </summary>
         public const string IbbsAIConstant = "IBBS.AI";
+
+        /// <summary>
+        /// The Application Information Collection
+        /// </summary>
+        public const string ApplicationInformationCollectionConstant = "ApplicationInformation";
     }
 
     /// <summary>

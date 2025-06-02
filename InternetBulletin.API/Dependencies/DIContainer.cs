@@ -12,9 +12,10 @@ namespace InternetBulletin.API.Dependencies
     using InternetBulletin.Data;
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Data.DataServices;
-    using InternetBulletin.Shared.Constants;
     using InternetBulletin.Shared.Helpers;
     using Microsoft.EntityFrameworkCore;
+    using MongoDB.Driver;
+    using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
     /// <summary>
     /// The Dependency Injection Container Class.
@@ -29,8 +30,8 @@ namespace InternetBulletin.API.Dependencies
         public static void ConfigureAzureSqlServer(this WebApplicationBuilder builder)
         {
             var sqlConnectionString = builder.Environment.IsDevelopment()
-                ? builder.Configuration[ConfigurationConstants.LocalSqlConnectionStringConstant]
-                : builder.Configuration[ConfigurationConstants.SqlConnectionStringConstant];
+                ? builder.Configuration[LocalSqlConnectionStringConstant]
+                : builder.Configuration[SqlConnectionStringConstant];
             if (!string.IsNullOrEmpty(sqlConnectionString))
             {
                 builder.Services.AddDbContext<SqlDbContext>(options =>
@@ -49,40 +50,52 @@ namespace InternetBulletin.API.Dependencies
             }
         }
 
+        public static void ConfigureMongoDbServer(this WebApplicationBuilder builder)
+        {
+            var mongoConnectionString = builder.Configuration[MongoDbConnectionStringConstant];
+            if (!string.IsNullOrEmpty(mongoConnectionString))
+            {
+                var settings = MongoClientSettings.FromConnectionString(mongoConnectionString);
+                settings.SslSettings = new SslSettings() { EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 };
+                builder.Services.AddSingleton<IMongoClient>(new MongoClient(settings));
+            }
+        }
+
         /// <summary>
         /// Configures the helper service dependencies.
         /// </summary>
-        /// <param name="builder">The web application builder.</param>
-        public static void ConfigureHelperServiceDependencies(this WebApplicationBuilder builder)
+        /// <param name="services">The service collection.</param>
+        public static void ConfigureHelperServiceDependencies(this IServiceCollection services)
         {
-            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
-            builder.Services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IHttpClientHelper, HttpClientHelper>();
+            services.AddScoped<ICacheService, CacheService>();
         }
 
         /// <summary>
         /// Configures business manager dependencies.
         /// </summary>
-        /// <param name="builder">The web application builder.</param>
-        public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
+        /// <param name="builder">The service collection.</param>
+        public static void ConfigureBusinessManagerDependencies(this IServiceCollection services)
         {
-            builder.Services.AddScoped<IPostsService, PostsService>();
-            builder.Services.AddScoped<IProfilesService, ProfilesService>();
-            builder.Services.AddScoped<IPostRatingsService, PostRatingsService>();
-            builder.Services.AddScoped<IUsersService, UsersService>();
-            builder.Services.AddScoped<IAIService, AIService>();
+            services.AddScoped<IPostsService, PostsService>();
+            services.AddScoped<IProfilesService, ProfilesService>();
+            services.AddScoped<IPostRatingsService, PostRatingsService>();
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IAIService, AIService>();
+            services.AddScoped<IBulletinService, BulletinService>();
         }
 
         /// <summary>
         /// Configures data manager dependencies.
         /// </summary>
-        /// <param name="builder">The web application builder.</param>
-        public static void ConfigureDataManagerDependencies(this WebApplicationBuilder builder)
+        /// <param name="builder">The service collection.</param>
+        public static void ConfigureDataManagerDependencies(this IServiceCollection services)
         {
-            builder.Services.AddScoped<IPostsDataService, PostsDataService>();
-            builder.Services.AddScoped<IProfilesDataService, ProfilesDataService>();
-            builder.Services.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
-            builder.Services.AddScoped<IUsersDataService, UsersDataService>();
-            builder.Services.AddScoped<IAIDataService, AIDataService>();
+            services.AddScoped<IPostsDataService, PostsDataService>();
+            services.AddScoped<IProfilesDataService, ProfilesDataService>();
+            services.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
+            services.AddScoped<IUsersDataService, UsersDataService>();
+            services.AddScoped<IAIDataService, AIDataService>();
         }
     }
 }

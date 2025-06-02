@@ -9,8 +9,11 @@ namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Shared.Constants;
+	using InternetBulletin.Shared.DTOs.ApplicationInfo;
 	using InternetBulletin.Shared.DTOs.Posts;
+	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
+	using MongoDB.Driver;
 
 	/// <summary>
 	/// Bulletin services class.
@@ -19,10 +22,13 @@ namespace InternetBulletin.API.Controllers
 	/// <param name="httpContextAccessor">The http context accessor.</param>
 	/// <param name="usersService">The user services.</param>
 	/// <param name="aiService">The ai service</param>
+	/// <param name="bulletinService">The bulletin service.</param>
 	/// <seealso cref="BaseController"/>
 	[ApiController]
 	[Route(RouteConstants.BulletinServicesBase_RoutePrefix)]
-	public class BulletinServicesController(ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, IUsersService usersService, IAIService aiService) : BaseController(httpContextAccessor)
+	public class BulletinServicesController(
+		ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, IUsersService usersService, IAIService aiService,
+		IBulletinService bulletinService) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The logger.
@@ -38,6 +44,37 @@ namespace InternetBulletin.API.Controllers
 		/// The AI Service.
 		/// </summary>
 		private readonly IAIService _aiService = aiService;
+
+		/// <summary>
+		/// The bulletin service.
+		/// </summary>
+		private readonly IBulletinService _bulletinService = bulletinService;
+
+		/// <summary>
+		/// Gets the Application information data asynchronously.
+		/// </summary>
+		/// <returns>The application information data <see cref="ApplicationInformationDataDTO"/></returns>
+		[HttpGet]
+		[Route(RouteConstants.GetApplicationInformationData_Route)]
+		[AllowAnonymous]
+		public async Task<ApplicationInformationDataDTO> GetApplicationInformationDataAsync()
+		{
+			try
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(RewriteWithAIAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
+				var result = await this._bulletinService.GetApplicationInformationDataAsync();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetApplicationInformationDataAsync), DateTime.UtcNow, ex.Message));
+				throw;
+			}
+			finally
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetApplicationInformationDataAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
+			}
+		}
 
 		/// <summary>
 		/// Gets graph user data async.
@@ -115,7 +152,6 @@ namespace InternetBulletin.API.Controllers
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(RewriteWithAIAsync), DateTime.UtcNow, this.UserName));
 			}
 		}
-
 	}
 
 }

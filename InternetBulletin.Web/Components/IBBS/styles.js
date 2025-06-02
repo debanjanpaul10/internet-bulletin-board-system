@@ -10,8 +10,8 @@ const useStyles = makeStyles({
 	},
 	bodyContent: {
 		marginTop: "64px",
-		height: "calc(100vh)",
 		overflow: "auto",
+		minHeight: "calc(100vh)",
 	},
 	footerContent: {
 		width: "90%",

@@ -17,6 +17,7 @@ import {
 	AboutUsPageConstants,
 	MyProfilePageConstants,
 } from "@helpers/ibbs.constants";
+import DescriptionComponent from "@components/AboutUs/Components/Description";
 
 /**
  * AboutUsComponent - A React component that displays the About Us section of the application.
@@ -101,6 +102,10 @@ function AboutUsComponent() {
 						</CarouselNav>
 					</CarouselNavContainer>
 				</Carousel>
+			</div>
+
+			<div className="row mt-4">
+				<DescriptionComponent />
 			</div>
 		</div>
 	);

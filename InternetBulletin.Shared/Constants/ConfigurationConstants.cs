@@ -28,6 +28,11 @@ namespace InternetBulletin.Shared.Constants
 		public const string LocalSqlConnectionStringConstant = "LocalSqlServerConnection";
 
 		/// <summary>
+		/// The mongo db connection string constant.
+		/// </summary>
+		public const string MongoDbConnectionStringConstant = "MongoDbConnectionString";
+
+		/// <summary>
 		/// The user assigned client identifier constant
 		/// </summary>
 		public const string ManagedIdentityClientIdConstant = "ManagedIdentityClientId";
@@ -86,6 +91,11 @@ namespace InternetBulletin.Shared.Constants
 		/// The token scope format.
 		/// </summary>
 		public const string TokenScopeFormat = "{0}/.default";
+
+		/// <summary>
+		/// The mongo db database name constant.
+		/// </summary>
+		public const string MongoDatabaseNameConstant = "MongoDatabaseName";
 
 		#region AzureADB2CConstants
 
