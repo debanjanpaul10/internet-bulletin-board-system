@@ -54,11 +54,5 @@ namespace InternetBulletin.Business.Contracts
 		/// <param name="userName">The user name</param>
 		/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
 		Task<List<PostWithRatingsDTO>> GetAllPostsAsync(string userName);
-
-		/// <summary>
-		/// Rewrites with a i async.
-		/// </summary>
-		/// <param name="requestDTO">The story.</param>
-		Task<string> RewriteWithAIAsync(RewriteRequestDTO requestDTO);
 	}
 }

@@ -41,7 +41,23 @@ namespace InternetBulletin.Shared.Constants
         /// The ibbs a i constant.
         /// </summary>
         public const string IbbsAIConstant = "IBBS.AI";
+    }
 
+    /// <summary>
+    /// The enum for AI Usage details
+    /// </summary>
+    public enum AiUsages
+    {
+        /// <summary>
+        /// The rewrite story enum.
+        /// </summary>
+        RewriteStory = 1,
+
+        /// <summary>
+        /// The story helper enum.
+        /// </summary>
+        /// <remarks>To be done: after adding more features</remarks>
+        HelpStory = 2
     }
 }
 

@@ -50,17 +50,26 @@ namespace InternetBulletin.API.Dependencies
         }
 
         /// <summary>
+        /// Configures the helper service dependencies.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
+        public static void ConfigureHelperServiceDependencies(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
+            builder.Services.AddScoped<ICacheService, CacheService>();
+        }
+
+        /// <summary>
         /// Configures business manager dependencies.
         /// </summary>
         /// <param name="builder">The web application builder.</param>
         public static void ConfigureBusinessManagerDependencies(this WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IHttpClientHelper, HttpClientHelper>();
             builder.Services.AddScoped<IPostsService, PostsService>();
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
             builder.Services.AddScoped<IPostRatingsService, PostRatingsService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
-            builder.Services.AddScoped<ICacheService, CacheService>();
+            builder.Services.AddScoped<IAIService, AIService>();
         }
 
         /// <summary>
@@ -73,6 +82,7 @@ namespace InternetBulletin.API.Dependencies
             builder.Services.AddScoped<IProfilesDataService, ProfilesDataService>();
             builder.Services.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
             builder.Services.AddScoped<IUsersDataService, UsersDataService>();
+            builder.Services.AddScoped<IAIDataService, AIDataService>();
         }
     }
 }

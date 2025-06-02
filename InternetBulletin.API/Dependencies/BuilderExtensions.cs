@@ -57,6 +57,8 @@ namespace InternetBulletin.API.Dependencies
             builder.ConfigureAuthenticationServices();
             builder.ConfigureHttpClientFactory();
             builder.ConfigureAzureSqlServer();
+
+            builder.ConfigureHelperServiceDependencies();
             builder.ConfigureBusinessManagerDependencies();
             builder.ConfigureDataManagerDependencies();
         }
