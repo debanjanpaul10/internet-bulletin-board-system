@@ -1,6 +1,7 @@
 import {
 	Card,
 	LargeTitle,
+	Text,
 	Title2,
 	Title3,
 	Tree,
@@ -91,9 +92,15 @@ function DescriptionComponent() {
 								openItems.includes(
 									`tree-item-${startIndex}`
 								) ? (
-									<SubtractSquareRegular />
+									<SubtractSquareRegular
+										fontSize={30}
+										className="mb-1"
+									/>
 								) : (
-									<AddSquareRegular />
+									<AddSquareRegular
+										fontSize={30}
+										className="mb-1"
+									/>
 								)
 							}
 						>
@@ -118,9 +125,13 @@ function DescriptionComponent() {
 													startIndex + index + 1
 												}`
 											) ? (
-												<SubtractSquareRegular />
+												<SubtractSquareRegular
+													fontSize={25}
+												/>
 											) : (
-												<AddSquareRegular />
+												<AddSquareRegular
+													fontSize={25}
+												/>
 											)
 										}
 									>
@@ -144,17 +155,27 @@ function DescriptionComponent() {
 																		styles.listItem
 																	}
 																>
-																	<ArrowCircleRightRegular />{" "}
-																	{item}
+																	<Text
+																		className={
+																			styles.textSize
+																		}
+																	>
+																		<ArrowCircleRightRegular />{" "}
+																		{item}
+																	</Text>
 																</li>
 															)
 														)}
 													</ul>
 												) : (
-													<>
+													<Text
+														className={
+															styles.textSize
+														}
+													>
 														<ArrowCircleRightRegular />{" "}
 														{section.content}
-													</>
+													</Text>
 												)}
 											</TreeItemLayout>
 										</TreeItem>

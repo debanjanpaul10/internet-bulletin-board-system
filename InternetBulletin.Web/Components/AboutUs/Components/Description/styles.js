@@ -35,6 +35,9 @@ const useStyles = makeStyles({
     },
     listItem: {
         marginLeft: "-40px"
+    },
+    textSize: {
+        fontSize: tokens.fontSizeBase400
     }
 });
 
