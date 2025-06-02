@@ -51,12 +51,7 @@ import descriptionData from "./descriptionData.json";
 function DescriptionComponent() {
 	const styles = useStyles();
 
-	const [openItems, setOpenItems] = useState([
-		"tree-item-5",
-		"tree-item-6",
-		"tree-item-11",
-		"tree-item-14",
-	]);
+	const [openItems, setOpenItems] = useState([]);
 
 	/**
 	 * Handle the open change event for the tree items
@@ -68,6 +63,108 @@ function DescriptionComponent() {
 			data.open
 				? [...curr, data.value]
 				: curr.filter((value) => value !== data.value)
+		);
+	};
+
+	/**
+	 * Handles the rendering of the tree sections.
+	 * @param {Object} data The data passed on
+	 * @param {string} sectionKey The section key name.
+	 * @param {number} startIndex The index of the tree item.
+	 * @returns {JSX.Element} The tree section rendered element.
+	 */
+	const renderTreeSection = (data, sectionKey, startIndex) => {
+		return (
+			<Tree
+				aria-label={sectionKey}
+				className={sectionKey}
+				openItems={openItems}
+				onOpenChange={handleOpenChange}
+			>
+				<Card className={styles.treeCard}>
+					<TreeItem
+						itemType="branch"
+						value={`tree-item-${startIndex}`}
+					>
+						<TreeItemLayout
+							expandIcon={
+								openItems.includes(
+									`tree-item-${startIndex}`
+								) ? (
+									<SubtractSquareRegular />
+								) : (
+									<AddSquareRegular />
+								)
+							}
+						>
+							<Title2 className={styles.titles}>
+								{data[sectionKey].title}
+							</Title2>
+						</TreeItemLayout>
+
+						<Tree>
+							{data[sectionKey].sections.map((section, index) => (
+								<TreeItem
+									key={index}
+									itemType="branch"
+									value={`tree-item-${
+										startIndex + index + 1
+									}`}
+								>
+									<TreeItemLayout
+										expandIcon={
+											openItems.includes(
+												`tree-item-${
+													startIndex + index + 1
+												}`
+											) ? (
+												<SubtractSquareRegular />
+											) : (
+												<AddSquareRegular />
+											)
+										}
+									>
+										<Title3>{section.title}</Title3>
+									</TreeItemLayout>
+									<Tree>
+										<TreeItem itemType="leaf">
+											<TreeItemLayout>
+												{section.items ? (
+													<ul>
+														{section.items.map(
+															(
+																item,
+																itemIndex
+															) => (
+																<li
+																	key={
+																		itemIndex
+																	}
+																	className={
+																		styles.listItem
+																	}
+																>
+																	<ArrowCircleRightRegular />{" "}
+																	{item}
+																</li>
+															)
+														)}
+													</ul>
+												) : (
+													<>
+														<ArrowCircleRightRegular />{" "}
+														{section.content}
+													</>
+												)}
+											</TreeItemLayout>
+										</TreeItem>
+									</Tree>
+								</TreeItem>
+							))}
+						</Tree>
+					</TreeItem>
+				</Card>
+			</Tree>
 		);
 	};
 
@@ -94,617 +191,23 @@ function DescriptionComponent() {
 
 			<div className="row">
 				<div className="col-6 col-sm-6">
-					<Tree
-						aria-label="key-features"
-						className="key-features"
-						openItems={openItems}
-						onOpenChange={handleOpenChange}
-					>
-						<Card className={styles.treeCard}>
-							<TreeItem itemType="branch" value="tree-item-5">
-								<TreeItemLayout
-									expandIcon={
-										openItems.includes("tree-item-5") ? (
-											<SubtractSquareRegular />
-										) : (
-											<AddSquareRegular />
-										)
-									}
-								>
-									<Title2 className={styles.titles}>
-										{descriptionData.keyFeatures.title}
-									</Title2>
-								</TreeItemLayout>
-
-								<Tree>
-									{descriptionData.keyFeatures.sections.map(
-										(section, index) => (
-											<TreeItem
-												key={index}
-												itemType="branch"
-												value={`tree-item-${index + 1}`}
-											>
-												<TreeItemLayout
-													expandIcon={
-														openItems.includes(
-															`tree-item-${
-																index + 1
-															}`
-														) ? (
-															<SubtractSquareRegular />
-														) : (
-															<AddSquareRegular />
-														)
-													}
-												>
-													<Title3>
-														{section.title}
-													</Title3>
-												</TreeItemLayout>
-												<Tree>
-													<TreeItem itemType="leaf">
-														<TreeItemLayout>
-															<ul>
-																{section.items.map(
-																	(
-																		item,
-																		itemIndex
-																	) => (
-																		<li
-																			key={
-																				itemIndex
-																			}
-																			className={
-																				styles.listItem
-																			}
-																		>
-																			<ArrowCircleRightRegular />{" "}
-																			{
-																				item
-																			}
-																		</li>
-																	)
-																)}
-															</ul>
-														</TreeItemLayout>
-													</TreeItem>
-												</Tree>
-											</TreeItem>
-										)
-									)}
-								</Tree>
-							</TreeItem>
-						</Card>
-					</Tree>
+					{renderTreeSection(descriptionData, "keyFeatures", 1)}
 				</div>
-
 				<div className="col-6 col-sm-6">
-					<Tree
-						aria-label="how-to-use"
-						className="how-to-use"
-						openItems={openItems}
-						onOpenChange={handleOpenChange}
-					>
-						<Card className={styles.treeCard}>
-							<TreeItem itemType="branch" value="tree-item-6">
-								<TreeItemLayout
-									expandIcon={
-										openItems.includes("tree-item-6") ? (
-											<SubtractSquareRegular />
-										) : (
-											<AddSquareRegular />
-										)
-									}
-								>
-									<Title2 className={styles.titles}>
-										How to Use IBBS
-									</Title2>
-								</TreeItemLayout>
-
-								<Tree>
-									<TreeItem
-										itemType="branch"
-										value="tree-item-7"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-7"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>Getting Started</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Create an account
-															using your email
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Complete your
-															profile
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-
-									<TreeItem
-										itemType="branch"
-										value="tree-item-8"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-8"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>Browsing Content</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ArrowCircleRightRegular />
-													Not much speciality is
-													needed, all the information
-													is in the main page itself.
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-
-									<TreeItem
-										itemType="branch"
-										value="tree-item-9"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-9"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>Creating Content</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Check the heading
-															for the left side
-															drawer and click on
-															it
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Click "New Post" to
-															create a bulletin
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Add your content
-															with formatting
-															options
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Submit for immediate
-															posting
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-
-									<TreeItem
-										itemType="branch"
-										value="tree-item-10"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-10"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>
-												Interacting with Content
-											</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Add stars to a story
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															The total number of
-															stars will be shown
-															for both your story
-															as well as others
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-								</Tree>
-							</TreeItem>
-						</Card>
-					</Tree>
+					{renderTreeSection(descriptionData, "howToUse", 5)}
 				</div>
 			</div>
 
 			<div className="row">
 				<div className="col-6">
-					<Tree
-						aria-label="technical-excellence"
-						className="technical-excellence"
-						openItems={openItems}
-						onOpenChange={handleOpenChange}
-					>
-						<Card className={styles.treeCard}>
-							<TreeItem itemType="branch" value="tree-item-11">
-								<TreeItemLayout
-									expandIcon={
-										openItems.includes("tree-item-11") ? (
-											<SubtractSquareRegular />
-										) : (
-											<AddSquareRegular />
-										)
-									}
-								>
-									<Title2 className={styles.titles}>
-										Technical Excellence
-									</Title2>
-								</TreeItemLayout>
-
-								<Tree>
-									<TreeItem
-										itemType="branch"
-										value="tree-item-12"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-12"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>
-												Architecture & Infrastructure
-											</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Secure and scalable
-															architecture
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															High-performance
-															infrastructure
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Data backup and
-															recovery systems
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-
-									<TreeItem
-										itemType="branch"
-										value="tree-item-13"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-13"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>Design & Security</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Responsive design
-															for all devices
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Regular security
-															updates
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-								</Tree>
-							</TreeItem>
-						</Card>
-					</Tree>
+					{renderTreeSection(
+						descriptionData,
+						"technicalExcellence",
+						10
+					)}
 				</div>
 				<div className="col-6">
-					<Tree
-						aria-label="upcoming-features"
-						className="upcoming-features"
-						openItems={openItems}
-						onOpenChange={handleOpenChange}
-					>
-						<Card className={styles.treeCard}>
-							<TreeItem itemType="branch" value="tree-item-14">
-								<TreeItemLayout
-									expandIcon={
-										openItems.includes("tree-item-14") ? (
-											<SubtractSquareRegular />
-										) : (
-											<AddSquareRegular />
-										)
-									}
-								>
-									<Title2 className={styles.titles}>
-										Upcoming Features
-									</Title2>
-								</TreeItemLayout>
-
-								<Tree>
-									<TreeItem
-										itemType="branch"
-										value="tree-item-15"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-15"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>User Management</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Customizable user
-															preferences
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-
-									<TreeItem
-										itemType="branch"
-										value="tree-item-16"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-16"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>Content Management</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															File attachments and
-															media sharing
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Categorized content
-															organization
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Search and filter
-															capabilities
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-
-									<TreeItem
-										itemType="branch"
-										value="tree-item-17"
-									>
-										<TreeItemLayout
-											expandIcon={
-												openItems.includes(
-													"tree-item-17"
-												) ? (
-													<SubtractSquareRegular />
-												) : (
-													<AddSquareRegular />
-												)
-											}
-										>
-											<Title3>Communication Tools</Title3>
-										</TreeItemLayout>
-										<Tree>
-											<TreeItem itemType="leaf">
-												<TreeItemLayout>
-													<ul>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Real-time
-															notifications
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Comment and
-															discussion threads
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Email notifications
-														</li>
-														<li
-															className={
-																styles.listItem
-															}
-														>
-															<ArrowCircleRightRegular />{" "}
-															Interactive feedback
-															mechanisms
-														</li>
-													</ul>
-												</TreeItemLayout>
-											</TreeItem>
-										</Tree>
-									</TreeItem>
-								</Tree>
-							</TreeItem>
-						</Card>
-					</Tree>
+					{renderTreeSection(descriptionData, "upcomingFeatures", 13)}
 				</div>
 			</div>
 		</div>
