@@ -1,121 +1,119 @@
 {
-  "title": "Internet Bulletin Board System (IBBS)",
-  "introduction": {
-    "title": "Introduction",
-    "content": "The Internet Bulletin Board System (IBBS) is a modern, feature-rich digital platform designed to facilitate seamless communication and information sharing in today's interconnected world. Built with cutting-edge technology and user-centric design principles, IBBS serves as a comprehensive solution for organizations, communities, and individuals seeking an efficient way to manage and disseminate information."
-  },
-  "whatIsIBBS": {
-    "title": "What is IBBS?",
-    "content": "IBBS is a sophisticated web-based bulletin board system that combines the traditional concept of community notice boards with modern digital capabilities. It provides a secure, organized, and user-friendly environment where users can post, share, and interact with various types of content, from announcements and discussions to important updates and community information."
-  },
-  "keyFeatures": {
-    "title": "Key Features",
-    "sections": [
-      {
-        "title": "User Management",
-        "items": [
-          "Secure user authentication and authorization",
-          "Role-based access control",
-          "User profile management"
-        ]
-      },
-      {
-        "title": "Content Management",
-        "items": [
-          "Create and manage bulletin posts",
-          "Support for rich text formatting",
-          "Usage of AI to write and edit existing user stories"
-        ]
-      },
-      {
-        "title": "Administrative Features",
-        "items": [
-          "Content moderation tools",
-          "Analytics and reporting",
-          "System configuration options",
-          "Backup and recovery capabilities"
-        ]
-      }
-    ]
-  },
-  "howToUse": {
-    "title": "How to Use IBBS",
-    "sections": [
-      {
-        "title": "Getting Started",
-        "items": [
-          "Create an account using your email",
-          "Complete your profile"
-        ]
-      },
-      {
-        "title": "Browsing Content",
-        "content": "Not much speciality is needed, all the information is in the main page itself."
-      },
-      {
-        "title": "Creating Content",
-        "items": [
-          "Check the heading for the left side drawer and click on it",
-          "Click \"New Post\" to create a bulletin",
-          "Add your content with formatting options",
-          "Submit for immediate posting"
-        ]
-      },
-      {
-        "title": "Interacting with Content",
-        "items": [
-          "Add stars to a story",
-          "The total number of stars will be shown for both your story as well as others"
-        ]
-      }
-    ]
-  },
-  "technicalExcellence": {
-    "title": "Technical Excellence",
-    "sections": [
-      {
-        "title": "Architecture & Infrastructure",
-        "items": [
-          "Secure and scalable architecture",
-          "High-performance infrastructure",
-          "Data backup and recovery systems"
-        ]
-      },
-      {
-        "title": "Design & Security",
-        "items": [
-          "Responsive design for all devices",
-          "Regular security updates"
-        ]
-      }
-    ]
-  },
-  "upcomingFeatures": {
-    "title": "Upcoming Features",
-    "sections": [
-      {
-        "title": "User Management",
-        "items": [
-          "Customizable user preferences"
-        ]
-      },
-      {
-        "title": "Content Management",
-        "items": [
-          "File attachments and media sharing",
-          "Categorized content organization",
-          "Search and filter capabilities"
-        ]
-      },
-      {
-        "title": "Communication Tools",
-        "items": [
-          "Real-time notifications",
-          "Comment and discussion threads",
-          "Email notifications",
-          "Interactive feedback mechanisms"
-        ]
-      }
-    ]
-  }
+	"title": "Internet Bulletin Board System (IBBS)",
+	"introduction": {
+		"title": "Introduction",
+		"content": "The Internet Bulletin Board System (IBBS) is a modern, feature-rich digital platform designed to facilitate seamless communication and information sharing in today's interconnected world. Built with cutting-edge technology and user-centric design principles, IBBS serves as a comprehensive solution for organizations, communities, and individuals seeking an efficient way to manage and disseminate information."
+	},
+	"whatIsIBBS": {
+		"title": "What is IBBS?",
+		"content": "IBBS is a sophisticated web-based bulletin board system that combines the traditional concept of community notice boards with modern digital capabilities. It provides a secure, organized, and user-friendly environment where users can post, share, and interact with various types of content, from announcements and discussions to important updates and community information."
+	},
+	"keyFeatures": {
+		"title": "Key Features",
+		"sections": [
+			{
+				"title": "User Management",
+				"items": [
+					"Secure user authentication and authorization",
+					"Role-based access control",
+					"User profile management"
+				]
+			},
+			{
+				"title": "Content Management",
+				"items": [
+					"Create and manage bulletin posts",
+					"Support for rich text formatting",
+					"Usage of AI to write and edit existing user stories"
+				]
+			},
+			{
+				"title": "Administrative Features",
+				"items": [
+					"Content moderation tools",
+					"Analytics and reporting",
+					"System configuration options",
+					"Backup and recovery capabilities"
+				]
+			}
+		]
+	},
+	"howToUse": {
+		"title": "How to Use IBBS",
+		"sections": [
+			{
+				"title": "Getting Started",
+				"items": [
+					"Create an account using your email",
+					"Complete your profile"
+				]
+			},
+			{
+				"title": "Browsing Content",
+				"content": "Not much speciality is needed, all the information is in the main page itself."
+			},
+			{
+				"title": "Creating Content",
+				"items": [
+					"Check the heading for the left side drawer and click on it",
+					"Click \"New Post\" to create a bulletin",
+					"Add your content with formatting options",
+					"Submit for immediate posting"
+				]
+			},
+			{
+				"title": "Interacting with Content",
+				"items": [
+					"Add stars to a story",
+					"The total number of stars will be shown for both your story as well as others"
+				]
+			}
+		]
+	},
+	"technicalExcellence": {
+		"title": "Technical Excellence",
+		"sections": [
+			{
+				"title": "Architecture & Infrastructure",
+				"items": [
+					"Secure and scalable architecture",
+					"High-performance infrastructure",
+					"Data backup and recovery systems"
+				]
+			},
+			{
+				"title": "Design & Security",
+				"items": [
+					"Responsive design for all devices",
+					"Regular security updates"
+				]
+			}
+		]
+	},
+	"upcomingFeatures": {
+		"title": "Upcoming Features",
+		"sections": [
+			{
+				"title": "User Management",
+				"items": ["Customizable user preferences"]
+			},
+			{
+				"title": "Content Management",
+				"items": [
+					"File attachments and media sharing",
+					"Categorized content organization",
+					"Search and filter capabilities"
+				]
+			},
+			{
+				"title": "Communication Tools",
+				"items": [
+					"Real-time notifications",
+					"Comment and discussion threads",
+					"Email notifications",
+					"Interactive feedback mechanisms"
+				]
+			}
+		]
+	}
 }
