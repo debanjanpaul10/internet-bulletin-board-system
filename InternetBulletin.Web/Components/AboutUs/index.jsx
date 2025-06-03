@@ -127,8 +127,6 @@ function AboutUsComponent() {
 					</div>
 				</>
 			)}
-
-
 		</div>
 	);
 }
