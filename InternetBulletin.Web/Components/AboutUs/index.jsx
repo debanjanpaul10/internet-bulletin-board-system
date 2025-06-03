@@ -1,4 +1,5 @@
-import { useStyles } from "@components/AboutUs/styles";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	Carousel,
 	CarouselNav,
@@ -11,6 +12,7 @@ import {
 } from "@fluentui/react-components";
 import { HeartFilled } from "@fluentui/react-icons";
 
+import { useStyles } from "@components/AboutUs/styles";
 import BannerCardComponent from "@components/AboutUs/Components/BannerCard";
 import { AboutUsData } from "@helpers/aboutus.data";
 import {
@@ -18,6 +20,8 @@ import {
 	MyProfilePageConstants,
 } from "@helpers/ibbs.constants";
 import DescriptionComponent from "@components/AboutUs/Components/Description";
+import { GetApplicationInformationDataAsync } from "@store/Common/Actions";
+import Spinner from "@components/Common/Spinner";
 
 /**
  * AboutUsComponent - A React component that displays the About Us section of the application.
@@ -37,8 +41,20 @@ import DescriptionComponent from "@components/AboutUs/Components/Description";
  * @returns {JSX.Element} The rendered About Us section with carousel
  */
 function AboutUsComponent() {
+	const dispatch = useDispatch();
 	const styles = useStyles();
 	const data = AboutUsData;
+
+	const IsAboutUsLoading = useSelector(
+		(state) => state.CommonReducer.isAboutUsLoading
+	);
+
+	useEffect(() => {
+		dispatch(
+			GetApplicationInformationDataAsync()
+		);
+	}, []);
+
 
 	/**
 	 * The autoplay button props
@@ -51,62 +67,68 @@ function AboutUsComponent() {
 
 	return (
 		<div className="container">
-			<div className="row">
-				<div className="col-sm-12 mt-4">
-					<LargeTitle className={styles.aboutUsHeading}>
-						{MyProfilePageConstants.Headings.AboutUsMessage}
-					</LargeTitle>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-12">
-					<Title3 className={styles.subHeading}>
-						{AboutUsPageConstants.Subtitle}&nbsp;
-						<HeartFilled />
-						&nbsp; and
-					</Title3>
-				</div>
-			</div>
+			{IsAboutUsLoading ? <Spinner isLoading={IsAboutUsLoading} /> : (
+				<>
+					<div className="row">
+						<div className="col-sm-12 mt-4">
+							<LargeTitle className={styles.aboutUsHeading}>
+								{MyProfilePageConstants.Headings.AboutUsMessage}
+							</LargeTitle>
+						</div>
+					</div>
+					<div className="row">
+						<div className="col-12">
+							<Title3 className={styles.subHeading}>
+								{AboutUsPageConstants.Subtitle}&nbsp;
+								<HeartFilled />
+								&nbsp; and
+							</Title3>
+						</div>
+					</div>
 
-			<div className="row mt-4">
-				<Carousel groupSize={1} circular autoplayInterval={4000}>
-					<CarouselViewport>
-						<CarouselSlider>
-							{data.map((data, index) => (
-								<BannerCardComponent
-									key={`image-${index}`}
-									index={index}
-									data={data}
-								></BannerCardComponent>
-							))}
-						</CarouselSlider>
-					</CarouselViewport>
-					<CarouselNavContainer
-						layout="inline"
-						autoplay={autoPlayProps}
-						nextTooltip={{
-							content: "Next slide",
-							relationship: "label",
-						}}
-						prevTooltip={{
-							content: "Previous slide",
-							relationship: "label",
-						}}
-					>
-						<CarouselNav className={styles.carouselNavButton}>
-							{(index) => (
-								<CarouselNavButton
-									aria-label={`Carousel nav button ${index}`}
-								/>
-							)}
-						</CarouselNav>
-					</CarouselNavContainer>
-				</Carousel>
-			</div>
+					<div className="row mt-4">
+						<Carousel groupSize={1} circular autoplayInterval={4000}>
+							<CarouselViewport>
+								<CarouselSlider>
+									{data.map((data, index) => (
+										<BannerCardComponent
+											key={`image-${index}`}
+											index={index}
+											data={data}
+										></BannerCardComponent>
+									))}
+								</CarouselSlider>
+							</CarouselViewport>
+							<CarouselNavContainer
+								layout="inline"
+								autoplay={autoPlayProps}
+								nextTooltip={{
+									content: "Next slide",
+									relationship: "label",
+								}}
+								prevTooltip={{
+									content: "Previous slide",
+									relationship: "label",
+								}}
+							>
+								<CarouselNav className={styles.carouselNavButton}>
+									{(index) => (
+										<CarouselNavButton
+											aria-label={`Carousel nav button ${index}`}
+										/>
+									)}
+								</CarouselNav>
+							</CarouselNavContainer>
+						</Carousel>
+					</div>
 
-			<div className="row mt-4">
-				<DescriptionComponent />
-			</div>
+					<div className="row mt-4">
+						<DescriptionComponent />
+					</div>
+				</>
+			)}
+
+
 		</div>
 	);
 }

@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	Card,
 	LargeTitle,
@@ -15,8 +17,6 @@ import {
 } from "@fluentui/react-icons";
 
 import { useStyles } from "./styles";
-import { useState } from "react";
-import descriptionData from "./descriptionData.json";
 
 /**
  * @component DescriptionComponent
@@ -52,7 +52,23 @@ import descriptionData from "./descriptionData.json";
 function DescriptionComponent() {
 	const styles = useStyles();
 
+	const ApplicationInformationStoreData = useSelector(
+		(state) => state.CommonReducer.applicationInformation
+	);
+
 	const [openItems, setOpenItems] = useState([]);
+	const [descriptionData, setDescriptionData] = useState({});
+
+	useEffect(() => {
+		if (
+			ApplicationInformationStoreData !== null
+			&& ApplicationInformationStoreData !== undefined
+			&& Object.values(ApplicationInformationStoreData).length > 0
+			&& ApplicationInformationStoreData !== descriptionData
+		) {
+			setDescriptionData(ApplicationInformationStoreData);
+		}
+	}, [ApplicationInformationStoreData])
 
 	/**
 	 * Handle the open change event for the tree items
@@ -114,15 +130,13 @@ function DescriptionComponent() {
 								<TreeItem
 									key={index}
 									itemType="branch"
-									value={`tree-item-${
-										startIndex + index + 1
-									}`}
+									value={`tree-item-${startIndex + index + 1
+										}`}
 								>
 									<TreeItemLayout
 										expandIcon={
 											openItems.includes(
-												`tree-item-${
-													startIndex + index + 1
+												`tree-item-${startIndex + index + 1
 												}`
 											) ? (
 												<SubtractSquareRegular
@@ -189,7 +203,7 @@ function DescriptionComponent() {
 		);
 	};
 
-	return (
+	return Object.values(descriptionData).length > 0 && (
 		<div className={`row ${styles.descriptionContainer}`}>
 			<LargeTitle className={styles.titles}>
 				{descriptionData.title}

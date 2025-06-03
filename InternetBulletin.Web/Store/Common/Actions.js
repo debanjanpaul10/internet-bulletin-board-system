@@ -1,6 +1,11 @@
-import { GetConfigurationApiAsync } from "@services/ibbs.apiservice";
 import {
+	GetApplicationInformationDataApiAsync,
+	GetConfigurationApiAsync
+} from "@services/ibbs.apiservice";
+import {
+	GET_APPLICATION_INFORMATION,
 	GET_CONFIGURATION_VALUE,
+	TOGGLE_ABOUT_US_SPINNER,
 	TOGGLE_ERROR_TOASTER,
 	TOGGLE_SIDE_BAR_STATUS,
 	TOGGLE_SUCCESS_TOASTER,
@@ -77,3 +82,57 @@ export const ToggleSideBar = (isOpen) => {
 		payload: isOpen,
 	};
 };
+
+/**
+ * Gets the application information data from api.
+ * @returns {Promise} The promise of the api response.
+ */
+export const GetApplicationInformationDataAsync = () => {
+	return async (dispatch) => {
+		try {
+			dispatch(
+				ToggleAboutUsSpinner(true)
+			);
+			const response = await GetApplicationInformationDataApiAsync();
+			if (response !== null && response !== undefined) {
+				dispatch(
+					GetApplicationInformationDataSuccess(
+						response
+					)
+				);
+			}
+		}
+		catch (error) {
+			console.error(error);
+		}
+		finally {
+			dispatch(
+				ToggleAboutUsSpinner(false)
+			);
+		}
+	}
+}
+
+/**
+ * Saves the application information data to redux store.
+ * @param {Object} data The application info data.
+ * @returns {Object} The action type and payload data.
+ */
+const GetApplicationInformationDataSuccess = (data) => {
+	return {
+		type: GET_APPLICATION_INFORMATION,
+		payload: data
+	}
+}
+
+/**
+ * Toggles the About Us spinner.
+ * @param {boolean} isLoading The is loading flag.
+ * @returns {Object} The action type and payload data.
+ */
+const ToggleAboutUsSpinner = (isLoading) => {
+	return {
+		type: TOGGLE_ABOUT_US_SPINNER,
+		payload: isLoading,
+	}
+}
