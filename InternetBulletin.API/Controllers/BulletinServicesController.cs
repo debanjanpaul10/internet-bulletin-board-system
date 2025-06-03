@@ -51,28 +51,28 @@ namespace InternetBulletin.API.Controllers
 		private readonly IBulletinService _bulletinService = bulletinService;
 
 		/// <summary>
-		/// Gets the Application information data asynchronously.
+		/// Gets the about us data asynchronously.
 		/// </summary>
-		/// <returns>The application information data <see cref="ApplicationInformationDataDTO"/></returns>
+		/// <returns>The about us page data <see cref="AboutUsAppInfoDataDTO"/></returns>
 		[HttpGet]
-		[Route(RouteConstants.GetApplicationInformationData_Route)]
+		[Route(RouteConstants.GetAboutUsData_Route)]
 		[AllowAnonymous]
-		public async Task<ApplicationInformationDataDTO> GetApplicationInformationDataAsync()
+		public async Task<AboutUsAppInfoDataDTO> GetAboutUsDataAsync()
 		{
 			try
 			{
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(RewriteWithAIAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
-				var result = await this._bulletinService.GetApplicationInformationDataAsync();
+				var result = await this._bulletinService.GetAboutUsDataAsync();
 				return result;
 			}
 			catch (Exception ex)
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetApplicationInformationDataAsync), DateTime.UtcNow, ex.Message));
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAboutUsDataAsync), DateTime.UtcNow, ex.Message));
 				throw;
 			}
 			finally
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetApplicationInformationDataAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAboutUsDataAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
 			}
 		}
 

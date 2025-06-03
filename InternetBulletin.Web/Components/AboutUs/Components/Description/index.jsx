@@ -66,7 +66,7 @@ function DescriptionComponent() {
 			&& Object.values(ApplicationInformationStoreData).length > 0
 			&& ApplicationInformationStoreData !== descriptionData
 		) {
-			setDescriptionData(ApplicationInformationStoreData);
+			setDescriptionData(ApplicationInformationStoreData?.applicationInformationData);
 		}
 	}, [ApplicationInformationStoreData])
 

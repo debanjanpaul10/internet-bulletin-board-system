@@ -46,6 +46,11 @@ namespace InternetBulletin.Shared.Constants
         /// The Application Information Collection
         /// </summary>
         public const string ApplicationInformationCollectionConstant = "ApplicationInformation";
+
+        /// <summary>
+        /// The application technologies collection constant.
+        /// </summary>
+        public const string ApplicationTechnologiesCollectionConstant = "ApplicationTechnologies";
     }
 
     /// <summary>

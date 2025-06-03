@@ -7,19 +7,19 @@
 
 namespace InternetBulletin.Business.Contracts
 {
-    using InternetBulletin.Shared.DTOs.ApplicationInfo;
+	using InternetBulletin.Shared.DTOs.ApplicationInfo;
 
-    /// <summary>
-    /// The Bulletin Service interface.
-    /// </summary>
-    public interface IBulletinService
-    {
-        /// <summary>
-        /// Gets the application information data asynchronously.
-        /// </summary>
-        /// <returns>The application information data.</returns>
-        Task<ApplicationInformationDataDTO> GetApplicationInformationDataAsync();
-    }
+	/// <summary>
+	/// The Bulletin Service interface.
+	/// </summary>
+	public interface IBulletinService
+	{
+		/// <summary>
+		/// Gets the application information data asynchronously.
+		/// </summary>
+		/// <returns>The about us details data <see cref="AboutUsAppInfoDataDTO"/></returns>
+		Task<AboutUsAppInfoDataDTO> GetAboutUsDataAsync();
+	}
 }
 
 

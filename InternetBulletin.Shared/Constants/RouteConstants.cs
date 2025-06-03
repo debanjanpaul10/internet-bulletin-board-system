@@ -184,7 +184,7 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The Application information data
 		/// </summary>
-		public const string GetApplicationInformationData_Route = "GetApplicationInformationData";
+		public const string GetAboutUsData_Route = "GetAboutUsData";
 
 		#endregion
 	}

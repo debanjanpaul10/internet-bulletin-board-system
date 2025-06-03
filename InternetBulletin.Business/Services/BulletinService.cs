@@ -10,7 +10,9 @@ namespace InternetBulletin.Business.Services
 	using InternetBulletin.Shared.Constants;
 	using InternetBulletin.Shared.DTOs.ApplicationInfo;
 	using Microsoft.Extensions.Configuration;
+	using MongoDB.Bson;
 	using MongoDB.Driver;
+	using static InternetBulletin.Shared.Constants.IbbsConstants;
 
 	/// <summary>
 	/// The Bulletin Service class.
@@ -49,26 +51,34 @@ namespace InternetBulletin.Business.Services
 		}
 
 		/// <summary>
-		/// Gets the application information data asynchronously.
+		/// Gets the about us information data asynchronously.
 		/// </summary>
-		/// <returns>The application information data.</returns>
+		/// <returns>The about us information data. <see cref="AboutUsAppInfoDataDTO"/></returns>
 		/// <exception cref="Exception">The default exception thrown.</exception>
-		public async Task<ApplicationInformationDataDTO> GetApplicationInformationDataAsync()
+		public async Task<AboutUsAppInfoDataDTO> GetAboutUsDataAsync()
 		{
-			var cacheData = this._cacheService.GetCachedData<ApplicationInformationDataDTO>(CacheKeys.ApplicationInformationDataCacheKey);
+			var cacheData = this._cacheService.GetCachedData<AboutUsAppInfoDataDTO>(CacheKeys.AboutUsDataCacheKey);
 			if (cacheData is not null)
 			{
 				return cacheData;
 			}
 			else
 			{
-				var collectionName = IbbsConstants.ApplicationInformationCollectionConstant;
-				var collection = this._mongoDatabase.GetCollection<ApplicationInformationDataDTO>(collectionName);
-				if (collection is not null)
+				var applicationInformation = this._mongoDatabase.GetCollection<ApplicationInformation>(ApplicationInformationCollectionConstant);
+				var applicationTechnologies = this._mongoDatabase.GetCollection<ApplicationTechnologies>(ApplicationTechnologiesCollectionConstant);
+				if (applicationInformation is not null && applicationTechnologies is not null)
 				{
-					var response = await collection.Find(_ => true).FirstAsync();
-					this._cacheService.SetCacheData(CacheKeys.ApplicationInformationDataCacheKey, response, TimeSpan.FromMinutes(30));
-					return response;
+					var applicationInfoResponseTask = applicationInformation.Find(_ => true).FirstAsync();
+					var applicationTechnolgiesDataTask = applicationTechnologies.Find(new BsonDocument()).ToListAsync();
+					await Task.WhenAll(applicationInfoResponseTask, applicationTechnolgiesDataTask).ConfigureAwait(false);
+
+					var finalResult = new AboutUsAppInfoDataDTO
+					{
+						ApplicationTechnologiesData = applicationTechnolgiesDataTask.Result,
+						ApplicationInformationData = applicationInfoResponseTask.Result
+					};
+					this._cacheService.SetCacheData(CacheKeys.AboutUsDataCacheKey, finalResult, TimeSpan.FromMinutes(30));
+					return finalResult;
 				}
 
 				throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);

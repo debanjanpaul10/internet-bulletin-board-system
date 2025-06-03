@@ -124,7 +124,7 @@ export const PostRewriteStoryWithAiApiAsync = async (storyText, accessToken) => 
  */
 export const GetApplicationInformationDataApiAsync = async () => {
 	return await HttpUtility.GetAsync(
-		'BulletinServices/GetApplicationInformationData',
+		'BulletinServices/GetAboutUsData',
 		null
 	);
 }

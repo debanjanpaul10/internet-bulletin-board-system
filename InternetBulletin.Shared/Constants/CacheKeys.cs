@@ -23,8 +23,8 @@ namespace InternetBulletin.Shared.Constants
         public const string FilteredGraphUsersDataCacheKey = "FilteredGraphUsersData";
 
         /// <summary>
-        /// The application information data cache key.
+        /// The abut us data cache key.
         /// </summary>
-        public const string ApplicationInformationDataCacheKey = "ApplicationInformationData";
+        public const string AboutUsDataCacheKey = "AboutUsData";
     }
 }
