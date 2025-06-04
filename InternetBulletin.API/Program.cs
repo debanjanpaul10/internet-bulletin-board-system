@@ -76,8 +76,10 @@ namespace InternetBulletin.API
                     }
                 });
             });
-            services.AddExceptionHandler<GlobalExceptionHandler>();
-            services.AddProblemDetails();
+            services.AddMvc(options =>
+            {
+                options.Filters.AddService<GlobalExceptionFilter>();
+            });
             services.AddHttpContextAccessor();
         }
 
@@ -99,7 +101,6 @@ namespace InternetBulletin.API
                 });
             }
 
-            app.UseExceptionHandler();
             app.UseHttpsRedirection();
             app.UseCors();
             app.UseAuthentication();

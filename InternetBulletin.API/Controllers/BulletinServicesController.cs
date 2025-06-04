@@ -27,8 +27,8 @@ namespace InternetBulletin.API.Controllers
 	[ApiController]
 	[Route(RouteConstants.BulletinServicesBase_RoutePrefix)]
 	public class BulletinServicesController(
-		ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, IUsersService usersService, IAIService aiService,
-		IBulletinService bulletinService) : BaseController(httpContextAccessor)
+		ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, 
+		IUsersService usersService, IAIService aiService, IBulletinService bulletinService) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The logger.

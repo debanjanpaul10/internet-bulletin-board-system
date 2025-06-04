@@ -45,12 +45,7 @@ namespace InternetBulletin.UnitTests.Business
         /// The post ratings data service mock.
         /// </summary>
         private readonly Mock<IPostRatingsDataService> _postRatingsDataServiceMock;
-
-        /// <summary>
-        /// The mock http client helper.
-        /// </summary>
-        private readonly Mock<IHttpClientHelper> _mockHttpClientHelper;
-
+        
         /// <summary>
         /// The posts service.
         /// </summary>
@@ -64,11 +59,7 @@ namespace InternetBulletin.UnitTests.Business
             this._loggerMock = new Mock<ILogger<PostsService>>();
             this._postsDataServiceMock = new Mock<IPostsDataService>();
             this._postRatingsDataServiceMock = new Mock<IPostRatingsDataService>();
-            this._mockHttpClientHelper = new Mock<IHttpClientHelper>();
-
-            this._postsService = new PostsService(
-                this._loggerMock.Object, this._mockHttpClientHelper.Object, this._postsDataServiceMock.Object,
-                this._postRatingsDataServiceMock.Object);
+            this._postsService = new PostsService(this._loggerMock.Object, this._postsDataServiceMock.Object, this._postRatingsDataServiceMock.Object);
         }
 
         /// <summary>
@@ -89,10 +80,10 @@ namespace InternetBulletin.UnitTests.Business
             Assert.Equal(expectedPost.PostId, result.PostId);
         }
 
-        [Fact]
         /// <summary>
         /// Gets post async invalid post id throws exception.
         /// </summary>
+        [Fact]
         public async Task GetPostAsync_InvalidPostId_ThrowsException()
         {
             // Arrange
@@ -104,10 +95,10 @@ namespace InternetBulletin.UnitTests.Business
                 this._postsService.GetPostAsync(invalidPostId, userName));
         }
 
-        [Fact]
         /// <summary>
         /// Adds new post async valid post returns true.
         /// </summary>
+        [Fact]
         public async Task AddNewPostAsync_ValidPost_ReturnsTrue()
         {
             // Arrange
@@ -121,10 +112,10 @@ namespace InternetBulletin.UnitTests.Business
             Assert.True(result);
         }
 
-        [Fact]
         /// <summary>
         /// Updates post async valid post returns updated post.
         /// </summary>
+        [Fact]
         public async Task UpdatePostAsync_ValidPost_ReturnsUpdatedPost()
         {
             // Arrange
@@ -140,10 +131,10 @@ namespace InternetBulletin.UnitTests.Business
             Assert.Equal(expectedPost.PostId, result.PostId);
         }
 
-        [Fact]
         /// <summary>
         /// Deletes post async valid post id returns true.
         /// </summary>
+        [Fact]
         public async Task DeletePostAsync_ValidPostId_ReturnsTrue()
         {
             // Arrange
