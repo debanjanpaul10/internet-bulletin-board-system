@@ -7,14 +7,11 @@
 
 namespace InternetBulletin.API.Middleware
 {
-	using InternetBulletin.Shared.Constants;
 	using InternetBulletin.Shared.ExceptionHelpers;
 	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Mvc;
 	using Microsoft.AspNetCore.Mvc.Filters;
 	using Microsoft.Extensions.Logging;
-	using Newtonsoft.Json;
-	using System.Net;
 
 	/// <summary>
 	/// The Global Exception Handler.

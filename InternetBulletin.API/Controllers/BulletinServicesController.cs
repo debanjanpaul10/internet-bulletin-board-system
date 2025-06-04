@@ -13,7 +13,6 @@ namespace InternetBulletin.API.Controllers
 	using InternetBulletin.Shared.DTOs.Posts;
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
-	using MongoDB.Driver;
 
 	/// <summary>
 	/// Bulletin services class.
