@@ -129,6 +129,7 @@ namespace InternetBulletin.API.Controllers
 				if (this.IsAuthorized())
 				{
 					ArgumentNullException.ThrowIfNull(requestDto);
+          
 					var rewrittenStory = await this._aiService.RewriteWithAIAsync(this.UserName, requestDto);
 					if (!string.IsNullOrEmpty(rewrittenStory))
 					{

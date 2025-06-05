@@ -44,8 +44,8 @@ namespace InternetBulletin.UnitTests.Business
         /// <summary>
         /// The post ratings data service mock.
         /// </summary>
-        private readonly Mock<IPostRatingsDataService> _postRatingsDataServiceMock;
-        
+        private readonly Mock<IPostRatingsDataService> _postRatingsDataServiceMock;      
+
         /// <summary>
         /// The posts service.
         /// </summary>

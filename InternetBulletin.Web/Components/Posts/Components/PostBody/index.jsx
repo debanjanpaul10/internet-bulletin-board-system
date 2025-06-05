@@ -295,6 +295,7 @@ function PostBody({ post }) {
 								}`}
 							style={{
 								maxHeight: showFullText ? "none" : "50px",
+
 							}}
 							dangerouslySetInnerHTML={{
 								__html: postData.postContent
