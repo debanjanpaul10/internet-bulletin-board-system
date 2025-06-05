@@ -32,12 +32,7 @@ import { useStyles } from "./styles";
  * - Upcoming Features: Planned features categorized by user management, content management, and communication tools
  *
  * @state {string[]} openItems - Array of tree item IDs that are currently expanded
- *
- * @function handleOpenChange
- * @param {Object} event - The event object
- * @param {Object} data - The data object containing open state and value
- * @param {boolean} data.open - Whether the tree item should be opened
- * @param {string} data.value - The ID of the tree item being toggled
+ * @state {Object} descriptionData - Object containing api values.
  *
  * @example
  * <DescriptionComponent />
@@ -100,19 +95,12 @@ function DescriptionComponent({ applicationDescriptionData }) {
 					>
 						<TreeItemLayout
 							expandIcon={
-								openItems.includes(
-									`tree-item-${startIndex}`
-								) ? (
-									<SubtractSquareRegular
-										fontSize={30}
-										className="mb-1"
-									/>
-								) : (
-									<AddSquareRegular
-										fontSize={30}
-										className="mb-1"
-									/>
-								)
+								openItems.includes(`tree-item-${startIndex}`)
+									? (
+										<SubtractSquareRegular fontSize={30} className="mb-1" />
+									) : (
+										<AddSquareRegular fontSize={30} className="mb-1" />
+									)
 							}
 						>
 							<Title2 className={styles.titles}>
@@ -125,23 +113,16 @@ function DescriptionComponent({ applicationDescriptionData }) {
 								<TreeItem
 									key={index}
 									itemType="branch"
-									value={`tree-item-${startIndex + index + 1
-										}`}
+									value={`tree-item-${startIndex + index + 1}`}
 								>
 									<TreeItemLayout
 										expandIcon={
-											openItems.includes(
-												`tree-item-${startIndex + index + 1
-												}`
-											) ? (
-												<SubtractSquareRegular
-													fontSize={25}
-												/>
-											) : (
-												<AddSquareRegular
-													fontSize={25}
-												/>
-											)
+											openItems.includes(`tree-item-${startIndex + index + 1}`)
+												? (
+													<SubtractSquareRegular fontSize={25} />
+												) : (
+													<AddSquareRegular fontSize={25} />
+												)
 										}
 									>
 										<Title3>{section.title}</Title3>
@@ -151,37 +132,17 @@ function DescriptionComponent({ applicationDescriptionData }) {
 											<TreeItemLayout>
 												{section.items ? (
 													<ul>
-														{section.items.map(
-															(
-																item,
-																itemIndex
-															) => (
-																<li
-																	key={
-																		itemIndex
-																	}
-																	className={
-																		styles.listItem
-																	}
-																>
-																	<Text
-																		className={
-																			styles.textSize
-																		}
-																	>
-																		<ArrowCircleRightRegular />{" "}
-																		{item}
-																	</Text>
-																</li>
-															)
-														)}
+														{section.items.map((item, itemIndex) => (
+															<li key={itemIndex} className={styles.listItem}>
+																<Text className={styles.textSize}>
+																	<ArrowCircleRightRegular />{" "}
+																	{item}
+																</Text>
+															</li>
+														))}
 													</ul>
 												) : (
-													<Text
-														className={
-															styles.textSize
-														}
-													>
+													<Text className={styles.textSize}>
 														<ArrowCircleRightRegular />{" "}
 														{section.content}
 													</Text>
@@ -230,11 +191,7 @@ function DescriptionComponent({ applicationDescriptionData }) {
 
 			<div className="row">
 				<div className="col-6">
-					{renderTreeSection(
-						descriptionData,
-						"technicalExcellence",
-						10
-					)}
+					{renderTreeSection(descriptionData, "technicalExcellence", 10)}
 				</div>
 				<div className="col-6">
 					{renderTreeSection(descriptionData, "upcomingFeatures", 13)}

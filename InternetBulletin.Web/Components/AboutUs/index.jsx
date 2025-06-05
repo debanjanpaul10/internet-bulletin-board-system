@@ -91,11 +91,7 @@ function AboutUsComponent() {
 							<CarouselViewport>
 								<CarouselSlider>
 									{ApplicationInformationStoreData?.applicationTechnologiesData?.map((data, index) => (
-										<BannerCardComponent
-											key={`image-${index}`}
-											index={index}
-											data={data}
-										></BannerCardComponent>
+										<BannerCardComponent key={`image-${index}`} index={index} data={data} />
 									))}
 								</CarouselSlider>
 							</CarouselViewport>
@@ -112,11 +108,7 @@ function AboutUsComponent() {
 								}}
 							>
 								<CarouselNav className={styles.carouselNavButton}>
-									{(index) => (
-										<CarouselNavButton
-											aria-label={`Carousel nav button ${index}`}
-										/>
-									)}
+									{(index) => (<CarouselNavButton aria-label={`Carousel nav button ${index}`} />)}
 								</CarouselNav>
 							</CarouselNavContainer>
 						</Carousel>
