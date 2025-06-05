@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	Carousel,
@@ -14,7 +14,6 @@ import { HeartFilled } from "@fluentui/react-icons";
 
 import { useStyles } from "@components/AboutUs/styles";
 import BannerCardComponent from "@components/AboutUs/Components/BannerCard";
-import { AboutUsData } from "@helpers/aboutus.data";
 import {
 	AboutUsPageConstants,
 	MyProfilePageConstants,
@@ -43,7 +42,6 @@ import Spinner from "@components/Common/Spinner";
 function AboutUsComponent() {
 	const dispatch = useDispatch();
 	const styles = useStyles();
-	const data = AboutUsData;
 
 	const IsAboutUsLoading = useSelector(
 		(state) => state.CommonReducer.isAboutUsLoading
@@ -52,26 +50,11 @@ function AboutUsComponent() {
 		(state) => state.CommonReducer.applicationInformation
 	);
 
-	const [descriptionData, setDescriptionData] = useState({});
-
 	useEffect(() => {
 		dispatch(
 			GetApplicationInformationDataAsync()
 		);
 	}, []);
-
-	useEffect(() => {
-		if (
-			ApplicationInformationStoreData !== null
-			&& ApplicationInformationStoreData !== undefined
-			&& Object.values(ApplicationInformationStoreData).length > 0
-			&& ApplicationInformationStoreData !== descriptionData
-		) {
-			setDescriptionData(ApplicationInformationStoreData);
-		}
-
-	}, [ApplicationInformationStoreData]);
-
 
 	/**
 	 * The autoplay button props
@@ -84,7 +67,7 @@ function AboutUsComponent() {
 
 	return (
 		<div className="container">
-			{IsAboutUsLoading && Object.values(ApplicationInformationStoreData).length == 0 ? <Spinner isLoading={IsAboutUsLoading} /> : (
+			{IsAboutUsLoading ? <Spinner isLoading={IsAboutUsLoading} /> : (
 				<>
 					<div className="row">
 						<div className="col-sm-12 mt-4">
@@ -140,7 +123,7 @@ function AboutUsComponent() {
 					</div>
 
 					<div className="row mt-4">
-						<DescriptionComponent applicationDescriptionData={descriptionData?.applicationInformationData} />
+						<DescriptionComponent applicationDescriptionData={ApplicationInformationStoreData?.applicationInformationData} />
 					</div>
 				</>
 			)}
