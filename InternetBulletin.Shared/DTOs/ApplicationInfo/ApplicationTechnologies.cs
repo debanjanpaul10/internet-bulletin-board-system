@@ -40,5 +40,11 @@ namespace InternetBulletin.Shared.DTOs.ApplicationInfo
 		/// </summary>
 		[BsonElement("Link")]
 		public string Link { get; set; } = string.Empty;
+
+		/// <summary>
+		/// The image.
+		/// </summary>
+		[BsonElement("Image")]
+		public string Image { get; set; } = string.Empty;
 	}
 }

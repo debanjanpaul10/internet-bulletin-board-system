@@ -13,7 +13,7 @@ const initialState = {
 	errorToaster: {},
 	isSideBarOpen: false,
 	applicationInformation: {},
-	isAboutUsLoading: false,
+	isAboutUsLoading: true,
 };
 
 /**

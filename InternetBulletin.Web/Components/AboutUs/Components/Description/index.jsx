@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import {
 	Card,
 	LargeTitle,
@@ -49,26 +48,22 @@ import { useStyles } from "./styles";
  *
  * @returns {JSX.Element} A structured component displaying IBBS information
  */
-function DescriptionComponent() {
+function DescriptionComponent({ applicationDescriptionData }) {
 	const styles = useStyles();
-
-	const ApplicationInformationStoreData = useSelector(
-		(state) => state.CommonReducer.applicationInformation
-	);
 
 	const [openItems, setOpenItems] = useState([]);
 	const [descriptionData, setDescriptionData] = useState({});
 
 	useEffect(() => {
 		if (
-			ApplicationInformationStoreData !== null
-			&& ApplicationInformationStoreData !== undefined
-			&& Object.values(ApplicationInformationStoreData).length > 0
-			&& ApplicationInformationStoreData !== descriptionData
+			applicationDescriptionData !== null
+			&& applicationDescriptionData !== undefined
+			&& Object.values(applicationDescriptionData).length > 0
+			&& applicationDescriptionData !== descriptionData
 		) {
-			setDescriptionData(ApplicationInformationStoreData?.applicationInformationData);
+			setDescriptionData(applicationDescriptionData);
 		}
-	}, [ApplicationInformationStoreData])
+	}, [applicationDescriptionData])
 
 	/**
 	 * Handle the open change event for the tree items

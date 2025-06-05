@@ -186,7 +186,6 @@ function PostBody({ post }) {
 							<Body1 className={styles.headerTitle}>
 								<b>{postData.postTitle}</b>
 							</Body1>
-
 							{/* RATINGS BUTTON */}
 							<div className={styles.headerButtons}>
 								{!showEditAndDelete && isUserLoggedIn && (
@@ -295,7 +294,7 @@ function PostBody({ post }) {
 							className={`${styles.postContent} ${showFullText ? "full-text" : ""
 								}`}
 							style={{
-								maxHeight: showFullText ? "none" : "100px",
+								maxHeight: showFullText ? "none" : "50px",
 							}}
 							dangerouslySetInnerHTML={{
 								__html: postData.postContent

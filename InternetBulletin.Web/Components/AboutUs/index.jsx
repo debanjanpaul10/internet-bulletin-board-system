@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	Carousel,
@@ -48,12 +48,29 @@ function AboutUsComponent() {
 	const IsAboutUsLoading = useSelector(
 		(state) => state.CommonReducer.isAboutUsLoading
 	);
+	const ApplicationInformationStoreData = useSelector(
+		(state) => state.CommonReducer.applicationInformation
+	);
+
+	const [descriptionData, setDescriptionData] = useState({});
 
 	useEffect(() => {
 		dispatch(
 			GetApplicationInformationDataAsync()
 		);
 	}, []);
+
+	useEffect(() => {
+		if (
+			ApplicationInformationStoreData !== null
+			&& ApplicationInformationStoreData !== undefined
+			&& Object.values(ApplicationInformationStoreData).length > 0
+			&& ApplicationInformationStoreData !== descriptionData
+		) {
+			setDescriptionData(ApplicationInformationStoreData);
+		}
+
+	}, [ApplicationInformationStoreData]);
 
 
 	/**
@@ -67,7 +84,7 @@ function AboutUsComponent() {
 
 	return (
 		<div className="container">
-			{IsAboutUsLoading ? <Spinner isLoading={IsAboutUsLoading} /> : (
+			{IsAboutUsLoading && Object.values(ApplicationInformationStoreData).length == 0 ? <Spinner isLoading={IsAboutUsLoading} /> : (
 				<>
 					<div className="row">
 						<div className="col-sm-12 mt-4">
@@ -90,7 +107,7 @@ function AboutUsComponent() {
 						<Carousel groupSize={1} circular autoplayInterval={4000}>
 							<CarouselViewport>
 								<CarouselSlider>
-									{data.map((data, index) => (
+									{ApplicationInformationStoreData?.applicationTechnologiesData?.map((data, index) => (
 										<BannerCardComponent
 											key={`image-${index}`}
 											index={index}
@@ -123,7 +140,7 @@ function AboutUsComponent() {
 					</div>
 
 					<div className="row mt-4">
-						<DescriptionComponent />
+						<DescriptionComponent applicationDescriptionData={descriptionData?.applicationInformationData} />
 					</div>
 				</>
 			)}
