@@ -10,3 +10,5 @@ global using Xunit;
 global using InternetBulletin.Shared.Helpers;
 global using System.Net;
 global using InternetBulletin.Shared.Constants;
+global using InternetBulletin.Business.Contracts;
+global using Microsoft.Extensions.Configuration;
