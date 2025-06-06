@@ -154,6 +154,24 @@ function EditPostComponent() {
 	const handleFormChange = (event) => {
 		event.persist();
 		const target = event.target;
+		const value = target.value.trim();
+
+		// Add a character limit validation for the title
+		if (target.name === 'postTitle') {
+			if (target.value.length > 50) {
+				setErrors({
+					...errors,
+					postTitle: CreatePostPageConstants.validations.MaxTitleLength,
+				});
+				return;
+			} else {
+				setErrors({
+					...errors,
+					postTitle: "",
+				})
+			}
+		}
+
 		setPostData({
 			...postData,
 			[target.name]: target.value,
@@ -201,7 +219,8 @@ function EditPostComponent() {
 
 		const validations = CreatePostPageConstants.validations;
 		errors.Title =
-			postData.postTitle === "" ? validations.TitleRequired : "";
+			postData.postTitle === "" ? validations.TitleRequired :
+				postData.postTitle.length > 50 ? validations.MaxTitleLength : "";
 		errors.postContent =
 			postData.postContent === "" ? validations.ContentRequired : "";
 		setErrors({ ...errors });
@@ -328,7 +347,7 @@ function EditPostComponent() {
 													value={postData.postContent}
 													onChange={handleContentChange}
 													id="postContent"
-													className="text-editor"
+													className={styles.rewriteTextBox}
 													placeholder={
 														CreatePostPageConstants.Headings
 															.ContentBoxPlaceholder
@@ -347,7 +366,7 @@ function EditPostComponent() {
 												>
 													<Button
 														type="button"
-														className={styles.button}
+														className={styles.aiButton}
 														onClick={handleAiRewrite}
 													>
 														<img

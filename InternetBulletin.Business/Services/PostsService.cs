@@ -8,7 +8,6 @@
 namespace InternetBulletin.Business.Services
 {
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Threading.Tasks;
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Data.Contracts;
@@ -24,11 +23,10 @@ namespace InternetBulletin.Business.Services
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="postsDataService">The Posts Data Service.</param>
-    /// <param name="httpClientHelper">The http client helper.</param>
     /// <param name="postRatingsDataService">The post ratings data service.</param>
     /// <seealso cref="IPostsService"/>
     public class PostsService(
-        ILogger<PostsService> logger, IHttpClientHelper httpClientHelper, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
+        ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
     {
         /// <summary>
         /// The logger
@@ -44,11 +42,6 @@ namespace InternetBulletin.Business.Services
         /// The post ratings service.
         /// </summary>
         private readonly IPostRatingsDataService _postRatingsDataService = postRatingsDataService;
-
-        /// <summary>
-        /// The http client helper.
-        /// </summary>
-        private readonly IHttpClientHelper _httpClientHelper = httpClientHelper;
 
         /// <summary>
         /// Gets the post asynchronous.
@@ -134,23 +127,5 @@ namespace InternetBulletin.Business.Services
             }
         }
 
-        /// <summary>
-        /// Rewrites with a i async.
-        /// </summary>
-        /// <param name="story">The story.</param>
-        /// <returns>The AI rewritten response.</returns>
-        public async Task<string> RewriteWithAIAsync(RewriteRequestDTO requestDTO)
-        {
-            var rewriteAiUrl = RouteConstants.RewriteTextApi_Route;
-            var aiResponse = await this._httpClientHelper.GetIbbsAiResponseAsync(data: requestDTO, apiUrl: rewriteAiUrl);
-
-            var aiStoryResponse = await aiResponse.Content.ReadAsStringAsync();
-            if (aiResponse is not null && aiResponse.IsSuccessStatusCode && !string.IsNullOrEmpty(aiStoryResponse))
-            {
-                return aiStoryResponse;
-            }
-
-            throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
-        }
     }
 }

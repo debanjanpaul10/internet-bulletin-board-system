@@ -102,7 +102,7 @@ export const GetConfigurationApiAsync = async (keyName) => {
 
 // #endregion
 
-// #region AI
+// #region BulletinServices
 
 /**
  * Posts the rewrite story with ai api.
@@ -117,6 +117,17 @@ export const PostRewriteStoryWithAiApiAsync = async (storyText, accessToken) => 
 		accessToken
 	);
 };
+
+/**
+ * Gets the application information data from api.
+ * @returns {Promise} The promise of the response from api.
+ */
+export const GetApplicationInformationDataApiAsync = async () => {
+	return await HttpUtility.GetAsync(
+		'BulletinServices/GetAboutUsData',
+		null
+	);
+}
 
 // #endregion
 

@@ -181,6 +181,11 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string RewriteWithAI_Route = "RewriteWithAI";
 
+		/// <summary>
+		/// The Application information data
+		/// </summary>
+		public const string GetAboutUsData_Route = "GetAboutUsData";
+
 		#endregion
 	}
 }

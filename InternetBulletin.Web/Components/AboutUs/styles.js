@@ -26,6 +26,12 @@ const useStyles = makeStyles({
 	carouselContainer: {
 		maxHeight: "60vh",
 		overflow: "hidden"
+	},
+	aboutUsContainer: {
+		height: '100vh',
+		overflow: 'auto',
+		display: 'flex',
+		flexDirection: 'column',
 	}
 });
 

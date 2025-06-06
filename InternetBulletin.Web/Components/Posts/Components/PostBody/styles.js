@@ -14,10 +14,25 @@ const useStyles = makeStyles({
 		backgroundColor: tokens.colorNeutralCardBackground,
 		"&:hover": {
 			backgroundColor: tokens.colorNeutralCardBackgroundHover
-		}
+		},
 	},
 	cardHeader: {
 		marginBottom: "10px",
+	},
+	headerContainer: {
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "flex-start",
+		width: "100%",
+		gap: "10px",
+	},
+	headerTitle: {
+		fontSize: tokens.fontSizeBase600,
+		marginBottom: "10px",
+		flexGrow: 1,
+		lineHeight: tokens.lineHeightBase500,
+		wordBreak: "break-word",
+		minWidth: 0,
 	},
 	cardPreview: {
 		marginTop: "auto",
@@ -25,29 +40,22 @@ const useStyles = makeStyles({
 	},
 	postContent: {
 		fontSize: tokens.fontSizeBase300,
-		lineHeight: "1.6",
+		lineHeight: tokens.lineHeightBase300,
 		overflow: "hidden",
 		textOverflow: "ellipsis",
+		borderBottom: "1px solid " + tokens.colorNeutralStroke1,
 	},
 	textSizeButton: {
-		marginTop: "10px",
+		marginTop: "-10px",
 		color: tokens.colorBrandForegroundOnLight,
 		cursor: "pointer",
 		fontSize: tokens.fontSizeBase300,
 		textDecoration: "none",
 	},
-	headerContainer: {
-		display: "flex",
-		justifyContent: "space-between",
-		alignItems: "center",
-		width: "100%",
-	},
-	headerTitle: {
-		flexGrow: 1,
-	},
 	headerButtons: {
 		display: "flex",
-		marginLeft: "auto",
+		flexShrink: 0,
+		gap: "8px",
 	},
 	editButton: {
 		color: tokens.colorPaletteYellowBackground3,

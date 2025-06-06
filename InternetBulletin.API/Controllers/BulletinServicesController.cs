@@ -9,7 +9,9 @@ namespace InternetBulletin.API.Controllers
 {
 	using InternetBulletin.Business.Contracts;
 	using InternetBulletin.Shared.Constants;
+	using InternetBulletin.Shared.DTOs.ApplicationInfo;
 	using InternetBulletin.Shared.DTOs.Posts;
+	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
 
 	/// <summary>
@@ -18,11 +20,14 @@ namespace InternetBulletin.API.Controllers
 	/// <param name="logger">The logger.</param>
 	/// <param name="httpContextAccessor">The http context accessor.</param>
 	/// <param name="usersService">The user services.</param>
-	/// <param name="postsService">The posts services.</param>
+	/// <param name="aiService">The ai service</param>
+	/// <param name="bulletinService">The bulletin service.</param>
 	/// <seealso cref="BaseController"/>
 	[ApiController]
 	[Route(RouteConstants.BulletinServicesBase_RoutePrefix)]
-	public class BulletinServicesController(ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, IUsersService usersService, IPostsService postsService) : BaseController(httpContextAccessor)
+	public class BulletinServicesController(
+		ILogger<BulletinServicesController> logger, IHttpContextAccessor httpContextAccessor, 
+		IUsersService usersService, IAIService aiService, IBulletinService bulletinService) : BaseController(httpContextAccessor)
 	{
 		/// <summary>
 		/// The logger.
@@ -35,9 +40,40 @@ namespace InternetBulletin.API.Controllers
 		private readonly IUsersService _usersService = usersService;
 
 		/// <summary>
-		/// The posts service.
+		/// The AI Service.
 		/// </summary>
-		private readonly IPostsService _postsService = postsService;
+		private readonly IAIService _aiService = aiService;
+
+		/// <summary>
+		/// The bulletin service.
+		/// </summary>
+		private readonly IBulletinService _bulletinService = bulletinService;
+
+		/// <summary>
+		/// Gets the about us data asynchronously.
+		/// </summary>
+		/// <returns>The about us page data <see cref="AboutUsAppInfoDataDTO"/></returns>
+		[HttpGet]
+		[Route(RouteConstants.GetAboutUsData_Route)]
+		[AllowAnonymous]
+		public async Task<AboutUsAppInfoDataDTO> GetAboutUsDataAsync()
+		{
+			try
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(RewriteWithAIAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
+				var result = await this._bulletinService.GetAboutUsDataAsync();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAboutUsDataAsync), DateTime.UtcNow, ex.Message));
+				throw;
+			}
+			finally
+			{
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAboutUsDataAsync), DateTime.UtcNow, this.UserName ?? string.Empty));
+			}
+		}
 
 		/// <summary>
 		/// Gets graph user data async.
@@ -93,7 +129,8 @@ namespace InternetBulletin.API.Controllers
 				if (this.IsAuthorized())
 				{
 					ArgumentNullException.ThrowIfNull(requestDto);
-					var rewrittenStory = await this._postsService.RewriteWithAIAsync(requestDto);
+		  
+					var rewrittenStory = await this._aiService.RewriteWithAIAsync(this.UserName, requestDto);
 					if (!string.IsNullOrEmpty(rewrittenStory))
 					{
 						return this.HandleSuccessResult(rewrittenStory);
@@ -115,7 +152,6 @@ namespace InternetBulletin.API.Controllers
 				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(RewriteWithAIAsync), DateTime.UtcNow, this.UserName));
 			}
 		}
-
 	}
 
 }

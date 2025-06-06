@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { PanelLeft32Filled } from "@fluentui/react-icons";
+import { PanelLeftExpand28Regular } from "@fluentui/react-icons";
 import { useDispatch } from "react-redux";
 import {
 	Button,
@@ -76,7 +76,7 @@ function HeaderComponent() {
 							onClick={toggleSideBar}
 							{...restoreFocusTargetAttributes}
 						>
-							<PanelLeft32Filled />
+							<PanelLeftExpand28Regular />
 						</Button>
 					</Tooltip>
 				</div>

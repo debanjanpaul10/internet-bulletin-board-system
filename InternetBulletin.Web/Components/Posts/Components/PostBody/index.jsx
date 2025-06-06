@@ -11,6 +11,7 @@ import {
 	Spinner,
 	Tooltip,
 	Badge,
+	Subtitle2,
 } from "@fluentui/react-components";
 import {
 	Edit28Filled,
@@ -191,39 +192,20 @@ function PostBody({ post }) {
 							<div className={styles.headerButtons}>
 								{!showEditAndDelete && isUserLoggedIn && (
 									<Tooltip
-										content={
-											postData.ratingValue === 1
-												? ButtonText.AlreadyRatedButtonTooltipText
-												: ButtonText.RatingsButtonTooltipText
-										}
+										content={postData.ratingValue === 1 ? ButtonText.AlreadyRatedButtonTooltipText : ButtonText.RatingsButtonTooltipText}
 										relationship="label"
 									>
 										<Button
 											disabled={postRatingLoader}
 											appearance="subtle"
 											shape="circular"
-											onClick={() =>
-												handleVoting(
-													postData.postId
-												)
-											}
+											onClick={() => handleVoting(postData.postId)}
 											size="small"
 										>
-											{renderRatingButtonIcons(
-												postData.ratingValue ===
-													1 ? (
-													<Star28Filled />
-												) : (
-													<Star28Regular />
-												)
-											)}
+											{renderRatingButtonIcons(postData.ratingValue === 1 ? (<Star28Filled />) : (<Star28Regular />))}
 											&nbsp;
 											{postData.ratings > 0 && (
-												<Badge
-													appearance="outline"
-													color="success"
-													size="large"
-												>
+												<Badge appearance="outline" color="success" size="large">
 													{postData.ratings}
 												</Badge>
 											)}
@@ -235,20 +217,14 @@ function PostBody({ post }) {
 								{showEditAndDelete && isUserLoggedIn && (
 									<>
 										<Tooltip
-											content={
-												ButtonText.EditButtonTooltipText
-											}
+											content={ButtonText.EditButtonTooltipText}
 											relationship="label"
 										>
 											<Button
-												className={
-													styles.editButton
-												}
+												className={styles.editButton}
 												appearance="subtle"
 												shape="circular"
-												onClick={() =>
-													handleEdit(postData)
-												}
+												onClick={() => handleEdit(postData)}
 												size="small"
 											>
 												<Edit28Filled />
@@ -283,8 +259,8 @@ function PostBody({ post }) {
 					}
 					description={
 						<Caption1>
-							By {postData.postOwnerUserName} on{" "}
-							{formatDate(postData.postCreatedDate)}
+							<Subtitle2>{postData.postOwnerUserName}</Subtitle2>  on{" "}
+							<Subtitle2>{formatDate(postData.postCreatedDate)}</Subtitle2>
 						</Caption1>
 					}
 				/>
@@ -292,30 +268,21 @@ function PostBody({ post }) {
 					<Body2>
 						<p
 							ref={contentRef}
-							className={`${styles.postContent} ${showFullText ? "full-text" : ""
-								}`}
-							style={{
-								maxHeight: showFullText ? "none" : "100px",
-							}}
+							className={`${styles.postContent} ${showFullText ? "full-text" : ""}`}
+							style={{ maxHeight: showFullText ? "none" : "50px", }}
 							dangerouslySetInnerHTML={{
 								__html: postData.postContent
 									.replace(/\n/g, "<br>")
 									.replace(/<br\s*\/?>/g, "<br>"),
 							}}
-						></p>
+						/>
 						{isTextOverflowing && !showFullText && (
-							<Button
-								className={styles.textSizeButton}
-								onClick={handleToggleText}
-							>
+							<Button className={styles.textSizeButton} onClick={handleToggleText}>
 								Show More
 							</Button>
 						)}
 						{showFullText && (
-							<Button
-								className={styles.textSizeButton}
-								onClick={handleToggleText}
-							>
+							<Button className={styles.textSizeButton} onClick={handleToggleText}>
 								Show Less
 							</Button>
 						)}

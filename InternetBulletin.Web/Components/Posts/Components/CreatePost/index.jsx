@@ -136,7 +136,8 @@ function CreatePostComponent() {
 		event.preventDefault();
 
 		const validations = CreatePostPageConstants.validations;
-		errors.Title = postData.Title === "" ? validations.TitleRequired : "";
+		errors.Title = postData.Title === "" ? validations.TitleRequired :
+			postData.Title.length > 50 ? validations.MaxTitleLength : "";
 		errors.Content =
 			postData.Content === "" ? validations.ContentRequired : "";
 		setErrors({ ...errors });
@@ -166,9 +167,28 @@ function CreatePostComponent() {
 	const handleFormChange = (event) => {
 		event.persist();
 		const target = event.target;
+		const value = target.value;
+		
+		// Add character limit validation for title
+		if (target.name === 'Title') {
+			if (value.length > 50) {
+				setErrors({
+					...errors,
+					Title: CreatePostPageConstants.validations.MaxTitleLength
+				});
+				return;
+			} else {
+				// Clear the error if length is valid
+				setErrors({
+					...errors,
+					Title: ""
+				});
+			}
+		}
+		
 		setPostData({
 			...postData,
-			[target.name]: target.value,
+			[target.name]: value,
 		});
 	};
 

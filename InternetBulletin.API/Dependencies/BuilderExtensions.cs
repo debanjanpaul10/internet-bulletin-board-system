@@ -57,8 +57,11 @@ namespace InternetBulletin.API.Dependencies
             builder.ConfigureAuthenticationServices();
             builder.ConfigureHttpClientFactory();
             builder.ConfigureAzureSqlServer();
-            builder.ConfigureBusinessManagerDependencies();
-            builder.ConfigureDataManagerDependencies();
+            builder.ConfigureMongoDbServer();
+
+            builder.Services.ConfigureHelperServiceDependencies();
+            builder.Services.ConfigureBusinessManagerDependencies();
+            builder.Services.ConfigureDataManagerDependencies();
         }
 
         #region PRIVATE Methods
