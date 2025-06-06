@@ -49,11 +49,11 @@ import RewriteRequestDtoModel from "@models/RewriteRequestDto";
  * @property {Object} errors - Form validation errors
  * 
  * @redux
- * @property {boolean} IsEditModalOpen - Dialog open state from Redux
- * @property {Object} EditPostData - Post data from Redux
- * @property {boolean} IsEditPostDataLoading - Loading state from Redux
- * @property {string} AiRewrittenStory - AI rewritten content from Redux
- * @property {boolean} IsRewriteLoading - AI rewrite loading state from Redux
+ * @property {boolean} IsEditModelOpenStoreData - Dialog open state from Redux
+ * @property {Object} EditPostStoreData - Post data from Redux
+ * @property {boolean} IsEditPostDataLoadingStoreData - Loading state from Redux
+ * @property {string} AiRewrittenStoryStoreData - AI rewritten content from Redux
+ * @property {boolean} IsRewriteLoadingStoreData - AI rewrite loading state from Redux
  * 
  * @returns {JSX.Element} A dialog containing the post edit form with AI rewrite capabilities
  */
@@ -62,13 +62,11 @@ function EditPostComponent() {
 	const styles = useStyles();
 	const { instance, accounts } = useMsal();
 
-	const EditPostsStoreData = useSelector(({ PostsReducer }) => ({
-		IsEditModalOpen: PostsReducer.isEditModalOpen,
-		EditPostData: PostsReducer.editPostData,
-		IsEditPostDataLoading: PostsReducer.isEditPostDataLoading,
-		AiRewrittenStory: PostsReducer.aiRewrittenStory,
-		IsRewriteLoading: PostsReducer.isRewriteLoading
-	}));
+	const IsEditModelOpenStoreData = useSelector((state) => state.PostsReducer.isEditModalOpen);
+	const EditPostStoreData = useSelector((state) => state.PostsReducer.editPostData);
+	const IsEditPostDataLoadingStoreData = useSelector((state) => state.PostsReducer.isEditPostDataLoading);
+	const AiRewrittenStoryStoreData = useSelector((state) => state.PostsReducer.aiRewrittenStory);
+	const IsRewriteLoadingStoreData = useSelector((state) => state.PostsReducer.isRewriteLoading);
 
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isEditPostLoading, setIsEditPostLoading] = useState(false);
@@ -87,40 +85,40 @@ function EditPostComponent() {
 
 	useEffect(() => {
 		if (
-			EditPostsStoreData.EditPostData !== null &&
-			EditPostsStoreData.EditPostData !== undefined &&
-			Object.values(EditPostsStoreData.EditPostData).length > 0 &&
-			EditPostsStoreData.EditPostData !== postData
+			EditPostStoreData !== null &&
+			EditPostStoreData !== undefined &&
+			Object.values(EditPostStoreData).length > 0 &&
+			EditPostStoreData !== postData
 		) {
-			setPostData(EditPostsStoreData.EditPostData);
+			setPostData(EditPostStoreData);
 		}
-	}, [EditPostsStoreData.EditPostData]);
+	}, [EditPostStoreData]);
 
 	useEffect(() => {
-		if (EditPostsStoreData.IsEditModalOpen !== isDialogOpen) {
-			setIsDialogOpen(EditPostsStoreData.IsEditModalOpen);
+		if (IsEditModelOpenStoreData !== isDialogOpen) {
+			setIsDialogOpen(IsEditModelOpenStoreData);
 		}
-	}, [EditPostsStoreData.IsEditModalOpen]);
+	}, [IsEditModelOpenStoreData]);
 
 	useEffect(() => {
-		if (EditPostsStoreData.IsEditPostDataLoading !== isEditPostLoading) {
-			setIsEditPostLoading(EditPostsStoreData.IsEditPostDataLoading);
+		if (IsEditPostDataLoadingStoreData !== isEditPostLoading) {
+			setIsEditPostLoading(IsEditPostDataLoadingStoreData);
 		}
-	}, [EditPostsStoreData.IsEditPostDataLoading]);
+	}, [IsEditPostDataLoadingStoreData]);
 
 	useEffect(() => {
 		if (
-			EditPostsStoreData.AiRewrittenStory !== '' &&
+			AiRewrittenStoryStoreData !== '' &&
 			postData.postContent !== '' &&
-			EditPostsStoreData.AiRewrittenStory !== postData.postContent
+			AiRewrittenStoryStoreData !== postData.postContent
 		) {
 			setOriginalContent(postData.postContent);
 			setPostData({
 				...postData,
-				postContent: EditPostsStoreData.AiRewrittenStory
+				postContent: AiRewrittenStoryStoreData
 			});
 		}
-	}, [EditPostsStoreData.AiRewrittenStory]);
+	}, [AiRewrittenStoryStoreData]);
 
 	// #endregion
 
@@ -325,7 +323,7 @@ function EditPostComponent() {
 							<CardPreview className={styles.cardPreview}>
 								<div className="form-group row mt-3">
 									<div className="col sm-12 mb-3 mb-sm-0 p-3">
-										{EditPostsStoreData.IsRewriteLoading ? (
+										{IsRewriteLoadingStoreData ? (
 											<Skeleton
 												aria-label="Profile data loading"
 												as="div"
