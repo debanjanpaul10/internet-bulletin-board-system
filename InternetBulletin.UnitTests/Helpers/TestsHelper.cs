@@ -237,6 +237,17 @@ namespace InternetBulletin.UnitTests.Helpers
                 Story = "Some Sample Story"
             };
         }
+
+        public static RewriteResponseDTO PrepareRewriteResponseDTO()
+        {
+            return new RewriteResponseDTO()
+            {
+                CandidatesTokenCount = new Random().Next(1, 100),
+                PromptTokenCount = new Random().Next(1, 100),
+                RewrittenStory = "This is the rewritten story",
+                TotalTokensConsumed = new Random().Next(101, 200)
+            };
+        }
     }
 }
 

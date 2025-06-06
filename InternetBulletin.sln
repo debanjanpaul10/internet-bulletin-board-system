@@ -22,8 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Functions"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBulletin.Web", "InternetBulletin.Web\InternetBulletin.Web.csproj", "{9C37188D-4B3A-4C81-8087-BF81F5FB0B75}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "InternetBulletin.Database", "InternetBulletin.Database\InternetBulletin.Database.sqlproj", "{849DF4E7-F43F-4238-ABAF-E3B145098584}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,23 +116,7 @@ Global
 		{9C37188D-4B3A-4C81-8087-BF81F5FB0B75}.Release|x64.Build.0 = Release|Any CPU
 		{9C37188D-4B3A-4C81-8087-BF81F5FB0B75}.Release|x86.ActiveCfg = Release|Any CPU
 		{9C37188D-4B3A-4C81-8087-BF81F5FB0B75}.Release|x86.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.Build.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.Deploy.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.Build.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.Deploy.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.ActiveCfg = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.Deploy.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.ActiveCfg = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.Deploy.0 = Release|Any CPU
+		
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
