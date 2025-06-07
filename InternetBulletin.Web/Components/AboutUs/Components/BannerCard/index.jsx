@@ -29,7 +29,7 @@ function BannerCardComponent({ data, index }) {
 				<div className={styles.title}>{data.heading}</div>
 				<div className={styles.subtext}>{data.description}</div>
 				<div>
-					<Button size="small" shape="square" appearance="primary" onClick={() => window.open(data.link, "_blank", "noopener,noreferrer")}>
+					<Button className={styles.linkButton} size="small" shape="square" onClick={() => window.open(data.link, "_blank", "noopener,noreferrer")}>
 						{AboutUsPageConstants.ButtonTexts.WebsiteNav}
 					</Button>
 				</div>

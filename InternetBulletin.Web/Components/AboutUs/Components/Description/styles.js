@@ -2,9 +2,9 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
     descriptionContainer: {
-        maxWidth: 'full',
-        margin: '0 auto',
-        padding: '2rem',
+        maxWidth: "full",
+        margin: "0 auto",
+        padding: "2rem",
         lineHeight: 1.6,
     },
     titles: {
@@ -13,6 +13,10 @@ const useStyles = makeStyles({
         justifyContent: "center",
         alignItems: "center",
         marginBottom: "10px",
+        color: tokens.colorPaletteSeafoamForeground2,
+    },
+    introTitle: {
+        color: tokens.colorPaletteSeafoamForeground2,
     },
     card: {
         maxWidth: "100%",
@@ -34,11 +38,11 @@ const useStyles = makeStyles({
         backgroundColor: tokens.colorNeutralCardBackground,
     },
     listItem: {
-        marginLeft: "-40px"
+        marginLeft: "-40px",
     },
     textSize: {
-        fontSize: tokens.fontSizeBase400
-    }
+        fontSize: tokens.fontSizeBase400,
+    },
 });
 
 export { useStyles };

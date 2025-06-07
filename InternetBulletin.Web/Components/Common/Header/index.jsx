@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { PanelLeftExpand28Regular } from "@fluentui/react-icons";
+import { Lightbulb48Regular, LightbulbFilament48Regular, PanelLeftExpand28Regular } from "@fluentui/react-icons";
 import { useDispatch } from "react-redux";
 import {
 	Button,
@@ -115,17 +115,9 @@ function HeaderComponent() {
 								appearance="transparent"
 							>
 								{themeMode === PageConstants.LightConstant ? (
-									<img
-										src={DarkModeIcon}
-										width={40}
-										height={35}
-									/>
+									<Lightbulb48Regular height={40} width={35} />
 								) : (
-									<img
-										src={LightModeIcon}
-										width={40}
-										height={35}
-									/>
+									<LightbulbFilament48Regular height={40} width={35} />
 								)}
 							</Button>
 						</Tooltip>
