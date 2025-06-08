@@ -45,7 +45,7 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The ibbs api app config key constant.
 		/// </summary>
-		public const string IbbsAPIAppConfigKeyConstant = "BulletinAPI";
+		public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
 
 		/// <summary>
 		/// The ibbs functin app config key constant.
@@ -60,7 +60,7 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The user name claim constant.
 		/// </summary>
-		public const string UserNameClaimConstant = "extension_UserName";
+		public const string UserNameClaimConstant = "User Name";
 
 		/// <summary>
 		/// The user display name constant.
@@ -97,27 +97,32 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string MongoDatabaseNameConstant = "MongoDatabaseName";
 
-		#region AzureADB2CConstants
+		#region Azure AD Constants
 
 		/// <summary>
-		/// The azure ad b2 c constant.
+		/// The IBBS web api client id constant.
 		/// </summary>
-		public const string AzureAdB2CConstant = "AzureAdB2C";
+		public const string IbbsWebApiClientIdConstant = "IbbsWebApiClientId";
 
 		/// <summary>
-		/// The IBBS api client id constant.
+		/// The IBBS Web client id constant.
 		/// </summary>
-		public const string IBBSApiClientIdConstant = "AzureAdB2C:ClientId";
+		public const string IbbsWebClientIdConstant = "IbbsWebClientId";
 
 		/// <summary>
 		/// The IBBS api issuer constant.
 		/// </summary>
-		public const string IBBSApiIssuerConstant = "AzureAdB2C:Issuer";
+		public const string IBBSApiIssuerConstant = "IbbsWebIssuer";
 
 		/// <summary>
 		/// The tenant id constant.
 		/// </summary>
-		public const string TenantIdConstant = "AzureAdB2C:TenantId";
+		public const string TenantIdConstant = "TenantId";
+
+		/// <summary>
+		/// The audience format constant
+		/// </summary>
+		public const string AudienceFormatConstant = "api://{0}";
 
 		#endregion
 
@@ -150,12 +155,12 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The ibbs ai ad client id.
 		/// </summary>
-		public const string IbbsAiAdClientId = "AzureAD:IBBS.AI:ClientId";
+		public const string IbbsAiAdClientId = "IbbsAiApiClientId";
 
 		/// <summary>
 		/// The ibbs ai ad client secret.
 		/// </summary>
-		public const string IbbsAiAdClientSecret = "AzureAD:IBBS.AI:ClientSecret";
+		public const string IbbsAiAdClientSecret = "IbbsAiClientSecret";
 
 		#endregion
 	}
