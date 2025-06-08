@@ -26,6 +26,7 @@ import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
 import { loginRequests } from "@services/auth.config";
+import { UserNameConstant } from "@helpers/config.constants";
 
 /**
  * @component CreatePostComponent
@@ -83,7 +84,7 @@ function CreatePostComponent() {
 
     useEffect(() => {
         if (accounts.length > 0) {
-            const userName = accounts[0].username;
+            const userName = accounts[0].idTokenClaims[UserNameConstant];
             setCurrentLoggedInUser(userName);
         } else {
             setCurrentLoggedInUser();

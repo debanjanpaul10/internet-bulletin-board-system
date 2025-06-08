@@ -31,6 +31,7 @@ import {
 import PostRatingDtoModel from "@models/PostRatingDto";
 import { PostBodyConstants } from "@helpers/ibbs.constants";
 import { loginRequests } from "@services/auth.config";
+import { UserNameConstant } from "@helpers/config.constants";
 
 /**
  * @component
@@ -84,7 +85,8 @@ function PostBody({ post }) {
     useEffect(() => {
         if (accounts.length > 0) {
             setShowEditAndDelete(
-                post.postOwnerUserName == accounts[0].username
+                post.postOwnerUserName ==
+                    accounts[0].idTokenClaims[UserNameConstant]
             );
             setIsUserLoggedIn(true);
         } else {

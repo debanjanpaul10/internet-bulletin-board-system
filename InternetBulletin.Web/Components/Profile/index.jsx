@@ -77,7 +77,7 @@ function ProfileComponent() {
 
     useEffect(() => {
         if (accounts.length > 0) {
-            const userName = accounts[0].username;
+            const userName = accounts[0].idTokenClaims["User Name"];
             setCurrentLoggedInUser(userName);
         } else {
             setCurrentLoggedInUser();

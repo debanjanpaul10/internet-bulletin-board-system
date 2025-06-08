@@ -39,6 +39,7 @@ import {
     StopLoader,
 } from "@store/Posts/Actions";
 import { DrawerMotion } from "./motion";
+import { UserNameConstant } from "@helpers/config.constants";
 
 /**
  * SideDrawerComponent - A responsive side navigation drawer component that provides
@@ -99,7 +100,7 @@ function SideDrawerComponent() {
 
     useEffect(() => {
         if (accounts.length > 0) {
-            const userName = accounts[0].username;
+            const userName = accounts[0].idTokenClaims[UserNameConstant];
             setCurrentLoggedInUser(userName);
         } else {
             setCurrentLoggedInUser();
