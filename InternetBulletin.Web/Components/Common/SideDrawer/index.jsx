@@ -195,15 +195,7 @@ function SideDrawerComponent() {
         dispatch(StartLoader());
         instance
             .logoutRedirect({
-                postLogoutRedirectUri: window.location.origin,
-            })
-            .then(() => {
-                dispatch(
-                    ToggleSuccessToaster({
-                        shouldShow: true,
-                        successMessage: LoginPageConstants.LogoutSuccess,
-                    })
-                );
+                postLogoutRedirectUri: "/",
             })
             .catch((error) => {
                 dispatch(
