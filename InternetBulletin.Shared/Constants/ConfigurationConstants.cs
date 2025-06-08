@@ -131,17 +131,17 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The graph api default scope constant.
 		/// </summary>
-		public const string GraphAPIDefaultScopeConstant = "AzureAD:GraphAPI:DefaultScope";
+		public const string GraphAPIDefaultScopeConstant = "GraphAPIDefaultScope";
 
 		/// <summary>
 		/// The graph a p i client id constant.
 		/// </summary>
-		public const string GraphAPIClientIdConstant = "AzureAD:GraphAPI:ClientId";
+		public const string GraphAPIClientIdConstant = "GraphAPIClientId";
 
 		/// <summary>
 		/// The graph a p i client secret constant.
 		/// </summary>
-		public const string GraphAPIClientSecretConstant = "AzureAD:GraphAPI:ClientSecret";
+		public const string GraphAPIClientSecretConstant = "GraphAPIClientSecret";
 
 		#endregion
 

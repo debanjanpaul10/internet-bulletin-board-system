@@ -11,7 +11,6 @@ namespace InternetBulletin.Business.Services
     using InternetBulletin.Business.Contracts;
     using InternetBulletin.Data.Contracts;
     using InternetBulletin.Shared.Constants;
-    using InternetBulletin.Shared.DTOs.Posts;
     using InternetBulletin.Shared.DTOs.Users;
     using Microsoft.Extensions.Logging;
 
