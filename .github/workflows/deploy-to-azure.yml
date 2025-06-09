@@ -76,12 +76,19 @@ jobs:
     if: ${{ inputs.deploy_api }}
     environment: Production
     steps:
+      - name: Wait for approval before API deployment
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ github.actor }}
+          minimum-approvals: 1
+          issue-title: "Approve API Deployment"
+          issue-body: "Approve to deploy InternetBulletin.API to Production."
       - name: Download API Artifact
         uses: actions/download-artifact@v4
         with:
           name: api-artifact
           path: ./publish-api
-
       - name: Deploy to Azure App Service
         uses: Azure/webapps-deploy@v2
         with:
@@ -131,12 +138,19 @@ jobs:
     if: ${{ inputs.deploy_web }}
     environment: Production
     steps:
+      - name: Wait for approval before Web deployment
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ github.actor }}
+          minimum-approvals: 1
+          issue-title: "Approve Web Deployment"
+          issue-body: "Approve to deploy InternetBulletin.Web to Production."
       - name: Download Web Artifact
         uses: actions/download-artifact@v4
         with:
           name: web-artifact
           path: ./dist
-
       - name: Deploy Web to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -189,20 +203,25 @@ jobs:
     if: ${{ inputs.deploy_database }}
     environment: Production
     steps:
+      - name: Wait for approval before Database deployment
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ github.actor }}
+          minimum-approvals: 1
+          issue-title: "Approve Database Deployment"
+          issue-body: "Approve to deploy InternetBulletin.Database to Production."
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_DB_SECRET }}
-
       - name: Download DB Artifact
         uses: actions/download-artifact@v4
         with:
           name: db-artifact
           path: ./publish-db
-
       - name: Deploy to Azure SQL Server
         uses: azure/sql-action@v2.3
         with:
@@ -255,12 +274,19 @@ jobs:
     if: ${{ inputs.deploy_function }}
     environment: Production
     steps:
+      - name: Wait for approval before Function deployment
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ github.actor }}
+          minimum-approvals: 1
+          issue-title: "Approve Function Deployment"
+          issue-body: "Approve to deploy InternetBulletin.Functions to Production."
       - name: Download Function Artifact
         uses: actions/download-artifact@v4
         with:
           name: function-artifact
           path: ./publish-function
-
       - name: Run Azure Functions action
         uses: Azure/functions-action@v1
         with:
