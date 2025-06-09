@@ -36,35 +36,52 @@ on:
 jobs:
   #region API
 
-  build-and-deploy-api:
-    name: Build and Deploy InternetBulletin.API
-    if: ${{ inputs.deploy_api }}
+  build-api:
+    name: Build InternetBulletin.API
     runs-on: ubuntu-latest
-    environment: Production
-
+    outputs:
+      artifact-path: ${{ steps.set-artifact-path.outputs.path }}
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "9.0.x"
 
-      # Install dependencies
       - name: Install dependencies and Build solution
         run: |
           dotnet restore ${{ env.API_PROJECT_PATH }}
           dotnet build ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore
 
-      # Publish the project to a folder
       - name: Publish the project
         run: |
           dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-api
 
-      # Deploy to Azure App Service
+      - name: Set artifact path
+        id: set-artifact-path
+        run: echo "path=./publish-api" >> $GITHUB_OUTPUT
+
+      - name: Upload API Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-artifact
+          path: ./publish-api
+
+  deploy-api:
+    name: Deploy InternetBulletin.API
+    runs-on: ubuntu-latest
+    needs: build-api
+    if: ${{ inputs.deploy_api }}
+    environment: Production
+    steps:
+      - name: Download API Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-artifact
+          path: ./publish-api
+
       - name: Deploy to Azure App Service
         uses: Azure/webapps-deploy@v2
         with:
@@ -77,78 +94,115 @@ jobs:
 
   #region WEB
 
-  build-and-deploy-web:
-    name: Build and Deploy InternetBulletin.Web
-    if: ${{ inputs.deploy_web }}
+  build-web:
+    name: Build InternetBulletin.Web
     runs-on: ubuntu-latest
-    environment: Production
-
+    outputs:
+      artifact-path: ${{ steps.set-artifact-path.outputs.path }}
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
 
-      # Install dependencies and build React-vite project
       - name: Install dependencies and build web
         run: |
           cd ${{ env.WEB_PROJECT_PATH }}
           npm install
           npm run build
 
-        # Deploy the React-Vite project to Azure Web App
+      - name: Set artifact path
+        id: set-artifact-path
+        run: echo "path=${{ env.WEB_PROJECT_PATH }}/dist" >> $GITHUB_OUTPUT
+
+      - name: Upload Web Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-artifact
+          path: ${{ env.WEB_PROJECT_PATH }}/dist
+
+  deploy-web:
+    name: Deploy InternetBulletin.Web
+    runs-on: ubuntu-latest
+    needs: build-web
+    if: ${{ inputs.deploy_web }}
+    environment: Production
+    steps:
+      - name: Download Web Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-artifact
+          path: ./dist
+
       - name: Deploy Web to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_IBBS_WEB_DEPLOYMENT_SECRET }}
           action: "upload"
-          app_location: ${{ env.WEB_PROJECT_PATH }}
+          app_location: "."
           output_location: "dist"
 
   #endregion
 
   #region Database
 
-  build-and-deploy-database:
-    name: Build and Deploy InternetBulletin.Database
-    if: ${{ inputs.deploy_database }}
+  build-database:
+    name: Build InternetBulletin.Database
     runs-on: windows-latest
-    environment: Production
-
+    outputs:
+      artifact-path: ${{ steps.set-artifact-path.outputs.path }}
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Azure Login
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_DB_SECRET }}
-
-      # Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "9.0.x"
 
-      # Install dependencies
       - name: Install dependencies and Build solution
         run: |
           dotnet restore ${{ env.DATABASE_PROJECT_PATH }}
           dotnet build ${{ env.DATABASE_PROJECT_PATH }} --configuration Release --no-restore
 
-      # Publish the project to a folder
       - name: Publish the project
         run: |
           dotnet publish ${{ env.DATABASE_PROJECT_PATH }} --configuration Release --output ./publish-db
 
-      # Deploy to Azure SQL Server
+      - name: Set artifact path
+        id: set-artifact-path
+        run: echo "path=./publish-db" >> $GITHUB_OUTPUT
+
+      - name: Upload DB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-artifact
+          path: ./publish-db
+
+  deploy-database:
+    name: Deploy InternetBulletin.Database
+    runs-on: windows-latest
+    needs: build-database
+    if: ${{ inputs.deploy_database }}
+    environment: Production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_DB_SECRET }}
+
+      - name: Download DB Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: db-artifact
+          path: ./publish-db
+
       - name: Deploy to Azure SQL Server
         uses: azure/sql-action@v2.3
         with:
@@ -161,35 +215,52 @@ jobs:
 
   #region Azure Function
 
-  build-and-deploy-function:
-    name: Build and Deploy InternetBulletin.Functions
-    if: ${{inputs.deploy_function}}
+  build-function:
+    name: Build InternetBulletin.Functions
     runs-on: ubuntu-latest
-    environment: Production
-
+    outputs:
+      artifact-path: ${{ steps.set-artifact-path.outputs.path }}
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "9.0.x"
 
-      # Install dependencies
       - name: Install dependencies and Build solution
         run: |
           dotnet restore ${{ env.FUNCTION_PROJECT_PATH }}
           dotnet build ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --no-restore
 
-      # Publish the project to a folder
       - name: Publish the project
         run: |
           dotnet publish ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --no-build --output ./publish-function
 
-      # Run Azure Functions action
+      - name: Set artifact path
+        id: set-artifact-path
+        run: echo "path=./publish-function" >> $GITHUB_OUTPUT
+
+      - name: Upload Function Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: function-artifact
+          path: ./publish-function
+
+  deploy-function:
+    name: Deploy InternetBulletin.Functions
+    runs-on: ubuntu-latest
+    needs: build-function
+    if: ${{ inputs.deploy_function }}
+    environment: Production
+    steps:
+      - name: Download Function Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: function-artifact
+          path: ./publish-function
+
       - name: Run Azure Functions action
         uses: Azure/functions-action@v1
         with:
