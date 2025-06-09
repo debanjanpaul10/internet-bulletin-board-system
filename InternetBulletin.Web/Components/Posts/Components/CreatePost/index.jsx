@@ -114,7 +114,7 @@ function CreatePostComponent() {
             account: accounts[0],
         });
 
-        return tokenResponse.accessToken;
+        return tokenResponse.idToken;
     };
 
     /**

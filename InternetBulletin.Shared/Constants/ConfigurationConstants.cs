@@ -110,9 +110,9 @@ namespace InternetBulletin.Shared.Constants
 		public const string IbbsWebClientIdConstant = "IbbsWebClientId";
 
 		/// <summary>
-		/// The IBBS api issuer constant.
+		/// The IBBS web token issuer constant.
 		/// </summary>
-		public const string IBBSApiIssuerConstant = "IbbsWebIssuer";
+		public const string IBBSWebIssuerConstant = "IbbsWebIssuer";
 
 		/// <summary>
 		/// The tenant id constant.
@@ -120,9 +120,9 @@ namespace InternetBulletin.Shared.Constants
 		public const string TenantIdConstant = "TenantId";
 
 		/// <summary>
-		/// The audience format constant
+		/// The ibbs ai FICC token audience.
 		/// </summary>
-		public const string AudienceFormatConstant = "api://{0}";
+		public const string IbbsAiFICCTokenAudience = "api://AzureADTokenExchange";
 
 		#endregion
 

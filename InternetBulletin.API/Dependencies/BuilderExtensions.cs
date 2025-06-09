@@ -109,7 +109,7 @@ namespace InternetBulletin.API.Dependencies
 					RequireExpirationTime = true,
 					RequireSignedTokens = true,
 					ValidAudience = configuration[IbbsWebClientIdConstant],
-					ValidIssuer = configuration[IBBSApiIssuerConstant],
+					ValidIssuer = configuration[IBBSWebIssuerConstant],
 					SignatureValidator = (token, _) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token)
 				};
 				options.Events = new JwtBearerEvents
