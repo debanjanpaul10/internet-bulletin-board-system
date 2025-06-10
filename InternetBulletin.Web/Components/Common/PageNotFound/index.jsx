@@ -1,5 +1,4 @@
 import React from "react";
-import { LargeTitle } from "@fluentui/react-components";
 
 import { ErrorPageConstants } from "@helpers/ibbs.constants";
 import { useStyles } from "./styles";

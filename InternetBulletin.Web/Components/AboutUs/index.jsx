@@ -7,10 +7,7 @@ import {
     CarouselNavContainer,
     CarouselSlider,
     CarouselViewport,
-    LargeTitle,
-    Title3,
 } from "@fluentui/react-components";
-import { HeartFilled } from "@fluentui/react-icons";
 
 import { useStyles } from "@components/AboutUs/styles";
 import BannerCardComponent from "@components/AboutUs/Components/BannerCard";
@@ -86,11 +83,13 @@ function AboutUsComponent() {
                     </div>
                     <div className="row">
                         <div className="col-12">
-                            <Title3 className={styles.subHeading}>
-                                {AboutUsPageConstants.Subtitle}&nbsp;
-                                <HeartFilled className={styles.heart} />
-                                &nbsp; and
-                            </Title3>
+                            <BlurText
+                                text={`${AboutUsPageConstants.Subtitle}`}
+                                delay={150}
+                                animateBy="words"
+                                direction="top"
+                                className={styles.subHeading}
+                            />
                         </div>
                     </div>
 

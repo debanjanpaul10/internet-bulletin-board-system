@@ -20,6 +20,8 @@ const useStyles = makeStyles({
         justifyContent: "center",
         alignItems: "center",
         marginTop: "10px",
+        fontSize: tokens.fontSizeHero800,
+        lineHeight: 1.0,
     },
     container: {
         maxHeight: "90vh",
