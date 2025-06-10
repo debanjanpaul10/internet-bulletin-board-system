@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMsal } from "@azure/msal-react";
 import { useDispatch, useSelector } from "react-redux";
-import { LargeTitle, Skeleton, SkeletonItem } from "@fluentui/react-components";
+import { Skeleton, SkeletonItem } from "@fluentui/react-components";
 
 import { loginRequests } from "@services/auth.config";
 import { GetUserProfileDataAsync } from "@store/Users/Actions";
