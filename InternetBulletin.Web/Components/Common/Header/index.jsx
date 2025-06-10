@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { PanelLeftExpand28Regular } from "@fluentui/react-icons";
+import { BugRegular, PanelLeftExpand28Regular } from "@fluentui/react-icons";
 import { useDispatch } from "react-redux";
 import {
     Button,
@@ -55,6 +55,15 @@ function HeaderComponent() {
         dispatch(ToggleSideBar(true));
     };
 
+    /**
+     * Handles the bug reporting event.
+     */
+    const handleBugReportSubmission = () => {
+        alert(
+            "This feature is being actively worked upon and is not yet ready!"
+        );
+    };
+
     return (
         <nav className={styles.navbar}>
             <div className={styles.navContent}>
@@ -89,6 +98,22 @@ function HeaderComponent() {
                         >
                             <img src={AppLogo} height={"30px"} />
                             &nbsp; {HomePageConstants.Headings.IBBS}
+                        </Button>
+                    </Tooltip>
+                </div>
+
+                {/* REPORT A BUG */}
+                <div className="navbar-nav mr-auto">
+                    <Tooltip
+                        content={ButtonTitles.BugButton}
+                        relationship="label"
+                    >
+                        <Button
+                            onClick={handleBugReportSubmission}
+                            appearance="subtle"
+                            className={styles.bugButton}
+                        >
+                            <BugRegular fontSize={30} />
                         </Button>
                     </Tooltip>
                 </div>
