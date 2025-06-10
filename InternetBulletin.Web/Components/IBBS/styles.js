@@ -9,7 +9,6 @@ const useStyles = makeStyles({
         zIndex: 1000,
     },
     bodyContent: {
-        marginTop: "64px",
         overflow: "auto",
         minHeight: "calc(100vh)",
         position: "relative",

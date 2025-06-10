@@ -12,7 +12,7 @@ import AboutUsComponent from "@components/AboutUs";
 import FooterComponent from "@components/Common/Footer";
 import HeaderComponent from "@components/Common/Header";
 import LandingPageComponent from "@components/LandingPage";
-import Aurora from "@components/Common/Animations/AuroraBackground";
+import Aurora from "@components/Animations/AuroraBackground";
 
 /**
  * @component

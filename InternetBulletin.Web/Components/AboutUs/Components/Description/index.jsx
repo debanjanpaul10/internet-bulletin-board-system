@@ -16,8 +16,8 @@ import {
 } from "@fluentui/react-icons";
 
 import { useStyles } from "./styles";
-import BlurText from "@components/Common/Animations/BlurText";
-import SpotlightCard from "@components/Common/Animations/SpotlightCard";
+import BlurText from "@components/Animations/BlurText";
+import SpotlightCard from "@components/Animations/SpotlightCard";
 
 /**
  * @component DescriptionComponent

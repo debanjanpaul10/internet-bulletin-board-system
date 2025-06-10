@@ -21,7 +21,7 @@ import {
 import DescriptionComponent from "@components/AboutUs/Components/Description";
 import { GetApplicationInformationDataAsync } from "@store/Common/Actions";
 import Spinner from "@components/Common/Spinner";
-import BlurText from "@components/Common/Animations/BlurText";
+import BlurText from "@components/Animations/BlurText";
 
 /**
  * AboutUsComponent - A React component that displays the About Us section of the application.
@@ -65,13 +65,13 @@ function AboutUsComponent() {
     };
 
     return (
-        <div className="container">
+        <div className="container mt-5">
             {IsAboutUsLoading ? (
                 <Spinner isLoading={IsAboutUsLoading} />
             ) : (
                 <>
                     <div className="row">
-                        <div className="col-sm-12 mt-4">
+                        <div className="col-sm-12">
                             <BlurText
                                 text={
                                     MyProfilePageConstants.Headings

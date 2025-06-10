@@ -11,7 +11,7 @@ import {
 
 import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
-import SpotlightCard from "@components/Common/Animations/SpotlightCard";
+import SpotlightCard from "@components/Animations/SpotlightCard";
 
 /**
  * UserDetailsComponent displays the user's personal information in a formatted layout.

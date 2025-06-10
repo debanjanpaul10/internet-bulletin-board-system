@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import PostBody from "@components/Posts/Components/PostBody";
 import NoPostsContainer from "@components/Posts/Components/NoPosts";
-import AnimatedContent from "@components/Common/Animations/AnimatedFadeInContent";
+import AnimatedContent from "@components/Animations/AnimatedFadeInContent";
 import { useStyles } from "./styles";
 
 /**

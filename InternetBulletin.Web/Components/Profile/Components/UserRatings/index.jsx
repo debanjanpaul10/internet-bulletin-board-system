@@ -14,7 +14,7 @@ import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 import { SparkleCircle28Regular } from "@fluentui/react-icons";
 import { formatDate } from "@helpers/common.utility";
-import SpotlightCard from "@components/Common/Animations/SpotlightCard";
+import SpotlightCard from "@components/Animations/SpotlightCard";
 
 /**
  * UserRatingsComponent displays a user's post ratings in a card-based table layout.

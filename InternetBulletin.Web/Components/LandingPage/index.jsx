@@ -9,7 +9,7 @@ import { GetAllPostsAsync } from "@store/Posts/Actions";
 import { loginRequests } from "@services/auth.config";
 import EditPostComponent from "@components/Posts/Components/EditPost";
 import { useStyles } from "./styles";
-import BlurText from "@components/Common/Animations/BlurText";
+import BlurText from "@components/Animations/BlurText";
 
 /**
  * @component
@@ -92,10 +92,10 @@ function LandingPageComponent() {
     };
 
     return (
-        <div className="container">
+        <div className="container mt-5">
             <Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
             <div className="row">
-                <div className="col-sm-12 mt-4">
+                <div className="col-sm-12">
                     <BlurText
                         text={HomePageConstants.Headings.WelcomeMessage}
                         delay={150}

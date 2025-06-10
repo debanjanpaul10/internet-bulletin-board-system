@@ -27,8 +27,8 @@ import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
 import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
-import SpotlightCard from "@components/Common/Animations/SpotlightCard";
-import BlurText from "@components/Common/Animations/BlurText";
+import SpotlightCard from "@components/Animations/SpotlightCard";
+import BlurText from "@components/Animations/BlurText";
 
 /**
  * @component CreatePostComponent
@@ -266,7 +266,7 @@ function CreatePostComponent() {
     };
 
     return isUserLoggedIn() ? (
-        <div className="container d-flex flex-column">
+        <div className="container d-flex flex-column mt-5">
             <Spinner isLoading={IsCreatePostLoadingStoreData} />
             <div className="row">
                 <div className="col-sm-12">

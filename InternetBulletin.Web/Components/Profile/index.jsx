@@ -12,7 +12,7 @@ import AlienImage from "@assets/Images/alien-pfp.jpg";
 import PageNotFound from "@components/Common/PageNotFound";
 import UserPostsComponent from "./Components/UserPosts";
 import UserRatingsComponent from "./Components/UserRatings";
-import BlurText from "@components/Common/Animations/BlurText";
+import BlurText from "@components/Animations/BlurText";
 
 /**
  * Renders the user's profile page, displaying their personal information,
@@ -113,7 +113,7 @@ function ProfileComponent() {
     };
 
     return isUserLoggedIn() ? (
-        <div className="container">
+        <div className="container mt-5">
             <div className="row">
                 <div className="col-sm-12">
                     <BlurText

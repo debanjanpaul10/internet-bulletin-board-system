@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { FooterConstants } from "@helpers/ibbs.constants";
-import Dock from "../Animations/Dock";
+import Dock from "../../Animations/Dock";
 
 /**
  * FooterComponent - A React component that renders a footer section with social media and contact links.

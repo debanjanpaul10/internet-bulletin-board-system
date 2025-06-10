@@ -31,7 +31,7 @@ import PostRatingDtoModel from "@models/PostRatingDto";
 import { PostBodyConstants } from "@helpers/ibbs.constants";
 import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
-import SpotlightCard from "@components/Common/Animations/SpotlightCard";
+import SpotlightCard from "@components/Animations/SpotlightCard";
 
 /**
  * @component

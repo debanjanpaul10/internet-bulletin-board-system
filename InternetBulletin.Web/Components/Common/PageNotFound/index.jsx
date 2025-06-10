@@ -3,6 +3,8 @@ import { LargeTitle } from "@fluentui/react-components";
 
 import { ErrorPageConstants } from "@helpers/ibbs.constants";
 import { useStyles } from "./styles";
+import Noise from "@components/Animations/Noise";
+import BlurText from "@components/Animations/BlurText";
 
 /**
  * @component
@@ -11,19 +13,26 @@ import { useStyles } from "./styles";
  * @returns {JSX.Element} The page not found component JSX element.
  */
 function PageNotFound() {
-	const styles = useStyles();
+    const styles = useStyles();
 
-	return (
-		<div className="container">
-			<div className="row">
-				<div className="col-sm-12 mt-5">
-					<LargeTitle className={styles.notFoundHeader}>
-						{ErrorPageConstants.PageNotFoundMessage}
-					</LargeTitle>
-				</div>
-			</div>
-		</div>
-	);
+    return (
+        <div className={styles.noiseDiv}>
+            <Noise
+                patternSize={250}
+                patternScaleX={2}
+                patternScaleY={2}
+                patternRefreshInterval={2}
+                patternAlpha={25}
+            />
+            <BlurText
+                text={ErrorPageConstants.PageNotFoundMessage}
+                delay={150}
+                animateBy="words"
+                direction="top"
+                className={styles.notFoundHeader}
+            />
+        </div>
+    );
 }
 
 export default PageNotFound;
