@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
     Card,
-    LargeTitle,
     Text,
     Title1,
     Title2,
@@ -17,6 +16,8 @@ import {
 } from "@fluentui/react-icons";
 
 import { useStyles } from "./styles";
+import BlurText from "@components/Common/Animations/BlurText";
+import SpotlightCard from "@components/Common/Animations/SpotlightCard";
 
 /**
  * @component DescriptionComponent
@@ -89,12 +90,16 @@ function DescriptionComponent({ applicationDescriptionData }) {
                 openItems={openItems}
                 onOpenChange={handleOpenChange}
             >
-                <Card className={styles.treeCard}>
+                <SpotlightCard
+                    className={styles.card}
+                    spotlightColor="rgba(0, 229, 255, 0.2)"
+                >
                     <TreeItem
                         itemType="branch"
                         value={`tree-item-${startIndex}`}
                     >
                         <TreeItemLayout
+                            className={styles.treeLayout}
                             expandIcon={
                                 openItems.includes(
                                     `tree-item-${startIndex}`
@@ -126,6 +131,7 @@ function DescriptionComponent({ applicationDescriptionData }) {
                                     }`}
                                 >
                                     <TreeItemLayout
+                                        className={styles.treeLayout}
                                         expandIcon={
                                             openItems.includes(
                                                 `tree-item-${
@@ -146,7 +152,9 @@ function DescriptionComponent({ applicationDescriptionData }) {
                                     </TreeItemLayout>
                                     <Tree>
                                         <TreeItem itemType="leaf">
-                                            <TreeItemLayout>
+                                            <TreeItemLayout
+                                                className={styles.treeLayout}
+                                            >
                                                 {section.items ? (
                                                     <ul>
                                                         {section.items.map(
@@ -191,7 +199,7 @@ function DescriptionComponent({ applicationDescriptionData }) {
                             ))}
                         </Tree>
                     </TreeItem>
-                </Card>
+                </SpotlightCard>
             </Tree>
         );
     };
@@ -199,26 +207,35 @@ function DescriptionComponent({ applicationDescriptionData }) {
     return (
         Object.values(descriptionData).length > 0 && (
             <div className={`row ${styles.descriptionContainer}`}>
-                <LargeTitle className={styles.titles}>
-                    {descriptionData.title}
-                </LargeTitle>
-
-                <div className="row">
+                <BlurText
+                    text={descriptionData.title}
+                    delay={150}
+                    animateBy="words"
+                    direction="top"
+                    className={styles.mainTitle}
+                />
+                <div className="row mb-4">
                     <div className="col-6 col-sm-6">
-                        <Card className={styles.card}>
+                        <SpotlightCard
+                            className={styles.card}
+                            spotlightColor="rgba(0, 229, 255, 0.2)"
+                        >
                             <Title1 className={styles.introTitle}>
                                 {descriptionData.introduction.title}
                             </Title1>
                             <p>{descriptionData.introduction.content}</p>
-                        </Card>
+                        </SpotlightCard>
                     </div>
                     <div className="col-6 col-sm-6">
-                        <Card className={styles.card}>
+                        <SpotlightCard
+                            className={styles.card}
+                            spotlightColor="rgba(0, 229, 255, 0.2)"
+                        >
                             <Title1 className={styles.introTitle}>
                                 {descriptionData.whatIsIBBS.title}
                             </Title1>
                             <p>{descriptionData.whatIsIBBS.content}</p>
-                        </Card>
+                        </SpotlightCard>
                     </div>
                 </div>
 

@@ -53,8 +53,8 @@ function FooterComponent() {
     return (
         <Dock
             items={dockItems}
-            panelHeight={68}
-            baseItemSize={50}
+            panelHeight={30}
+            baseItemSize={30}
             magnification={70}
         />
     );

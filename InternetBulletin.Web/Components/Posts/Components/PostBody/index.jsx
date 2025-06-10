@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     Body1,
     Caption1,
-    Card,
     CardHeader,
     CardPreview,
     Body2,

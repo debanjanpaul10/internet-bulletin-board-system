@@ -7,9 +7,11 @@ const useStyles = makeStyles({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        fontSize: tokens.fontSizeHero1000,
+        lineHeight: 1.0,
     },
     carouselNavButton: {
-        backgroundColor: tokens.colorNeutralBackground1,
+        backgroundColor: "none",
         marginTop: "-15px",
     },
     subHeading: {

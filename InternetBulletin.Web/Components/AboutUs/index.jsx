@@ -21,6 +21,7 @@ import {
 import DescriptionComponent from "@components/AboutUs/Components/Description";
 import { GetApplicationInformationDataAsync } from "@store/Common/Actions";
 import Spinner from "@components/Common/Spinner";
+import BlurText from "@components/Common/Animations/BlurText";
 
 /**
  * AboutUsComponent - A React component that displays the About Us section of the application.
@@ -71,9 +72,16 @@ function AboutUsComponent() {
                 <>
                     <div className="row">
                         <div className="col-sm-12 mt-4">
-                            <LargeTitle className={styles.aboutUsHeading}>
-                                {MyProfilePageConstants.Headings.AboutUsMessage}
-                            </LargeTitle>
+                            <BlurText
+                                text={
+                                    MyProfilePageConstants.Headings
+                                        .AboutUsMessage
+                                }
+                                delay={150}
+                                animateBy="words"
+                                direction="top"
+                                className={styles.aboutUsHeading}
+                            />
                         </div>
                     </div>
                     <div className="row">
