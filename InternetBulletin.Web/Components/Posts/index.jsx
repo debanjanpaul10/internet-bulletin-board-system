@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 
 import PostBody from "@components/Posts/Components/PostBody";
 import NoPostsContainer from "@components/Posts/Components/NoPosts";
+import AnimatedContent from "@components/Common/Animations/AnimatedFadeInContent";
+import { useStyles } from "./styles";
 
 /**
  * @component
@@ -11,44 +13,59 @@ import NoPostsContainer from "@components/Posts/Components/NoPosts";
  * @returns {JSX.Element} The posts container jsx element.
  */
 function PostsContainer() {
-	const AllPostsStoreData = useSelector(
-		(state) => state.PostsReducer.allPostsData
-	);
-	const IsPostsDataLoading = useSelector(
-		(state) => state.PostsReducer.isPostsDataLoading
-	);
+    const styles = useStyles();
 
-	const [allPosts, setAllPosts] = useState([]);
+    const AllPostsStoreData = useSelector(
+        (state) => state.PostsReducer.allPostsData
+    );
+    const IsPostsDataLoading = useSelector(
+        (state) => state.PostsReducer.isPostsDataLoading
+    );
 
-	useEffect(() => {
-		if (allPosts !== AllPostsStoreData) {
-			let sortedData = [...AllPostsStoreData].sort(
-				(a, b) =>
-					new Date(b.postCreatedDate) - new Date(a.postCreatedDate)
-			);
-			setAllPosts(sortedData);
-		}
-	}, [AllPostsStoreData]);
+    const [allPosts, setAllPosts] = useState([]);
 
-	if (IsPostsDataLoading) {
-		return <div className="container"></div>;
-	}
+    useEffect(() => {
+        if (allPosts !== AllPostsStoreData) {
+            let sortedData = [...AllPostsStoreData].sort(
+                (a, b) =>
+                    new Date(b.postCreatedDate) - new Date(a.postCreatedDate)
+            );
+            setAllPosts(sortedData);
+        }
+    }, [AllPostsStoreData]);
 
-	return (
-		<div className="container">
-			{allPosts.length > 0 ? (
-				<div className="row">
-					{allPosts.map((post, index) => (
-						<div className="col-md-6 mb-4" key={index}>
-							<PostBody post={post} />
-						</div>
-					))}
-				</div>
-			) : (
-				<NoPostsContainer />
-			)}
-		</div>
-	);
+    if (IsPostsDataLoading) {
+        return <div className="container"></div>;
+    }
+
+    return (
+        <div className={"container"}>
+            {allPosts.length > 0 ? (
+                <div className="row">
+                    {allPosts.map((post, index) => (
+                        <div className="col-md-6 mb-4" key={index}>
+                            <AnimatedContent
+                                distance={150}
+                                direction="vertical"
+                                reverse={false}
+                                duration={1.2}
+                                ease="power3.out"
+                                initialOpacity={0.2}
+                                animateOpacity
+                                scale={1.1}
+                                threshold={0.2}
+                                delay={0.3}
+                            >
+                                <PostBody post={post} />
+                            </AnimatedContent>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <NoPostsContainer />
+            )}
+        </div>
+    );
 }
 
 export default PostsContainer;

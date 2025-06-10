@@ -32,6 +32,7 @@ import PostRatingDtoModel from "@models/PostRatingDto";
 import { PostBodyConstants } from "@helpers/ibbs.constants";
 import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
+import SpotlightCard from "@components/Common/Animations/SpotlightCard";
 
 /**
  * @component
@@ -180,7 +181,10 @@ function PostBody({ post }) {
 
     return (
         Object.keys(postData).length > 0 && (
-            <Card className={styles.card} appearance="filled-alternative">
+            <SpotlightCard
+                className={styles.card}
+                spotlightColor="rgba(0, 229, 255, 0.2)"
+            >
                 <CardHeader
                     className={styles.cardHeader}
                     header={
@@ -320,7 +324,7 @@ function PostBody({ post }) {
                         )}
                     </Body2>
                 </CardPreview>
-            </Card>
+            </SpotlightCard>
         )
     );
 }

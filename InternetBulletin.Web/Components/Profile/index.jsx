@@ -12,6 +12,7 @@ import AlienImage from "@assets/Images/alien-pfp.jpg";
 import PageNotFound from "@components/Common/PageNotFound";
 import UserPostsComponent from "./Components/UserPosts";
 import UserRatingsComponent from "./Components/UserRatings";
+import BlurText from "@components/Common/Animations/BlurText";
 
 /**
  * Renders the user's profile page, displaying their personal information,
@@ -114,10 +115,14 @@ function ProfileComponent() {
     return isUserLoggedIn() ? (
         <div className="container">
             <div className="row">
-                <div className="col-sm-12 mt-4">
-                    <LargeTitle className={styles.profileHeading}>
-                        {Headings.WelcomeMessage}
-                    </LargeTitle>
+                <div className="col-sm-12">
+                    <BlurText
+                        text={Headings.WelcomeMessage}
+                        delay={150}
+                        animateBy="words"
+                        direction="top"
+                        className={styles.profileHeading}
+                    />
                 </div>
 
                 {/* USER DETAILS */}

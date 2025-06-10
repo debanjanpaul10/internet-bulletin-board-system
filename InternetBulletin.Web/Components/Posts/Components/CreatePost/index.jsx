@@ -27,6 +27,8 @@ import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
 import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
+import SpotlightCard from "@components/Common/Animations/SpotlightCard";
+import BlurText from "@components/Common/Animations/BlurText";
 
 /**
  * @component CreatePostComponent
@@ -267,15 +269,19 @@ function CreatePostComponent() {
         <div className="container d-flex flex-column">
             <Spinner isLoading={IsCreatePostLoadingStoreData} />
             <div className="row">
-                <div className="col-sm-12 mt-5">
-                    <LargeTitle className={styles.addNewHeading}>
-                        {CreatePostPageConstants.Headings.Header}
-                    </LargeTitle>
+                <div className="col-sm-12">
+                    <BlurText
+                        text={CreatePostPageConstants.Headings.Header}
+                        delay={150}
+                        animateBy="words"
+                        direction="top"
+                        className={styles.addNewHeading}
+                    />
                 </div>
                 <form onKeyDown={handleKeyDown} className="addpost">
-                    <Card
-                        className={styles.card}
-                        appearance="filled-alternative"
+                    <SpotlightCard
+                        className={`custom-spotlight-card ${styles.card}`}
+                        spotlightColor="rgba(0, 229, 255, 0.2)"
                     >
                         <CardHeader
                             className={styles.cardHeader}
@@ -396,7 +402,7 @@ function CreatePostComponent() {
                                 </div>
                             </div>
                         </CardPreview>
-                    </Card>
+                    </SpotlightCard>
                 </form>
             </div>
         </div>

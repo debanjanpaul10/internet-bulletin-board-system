@@ -12,6 +12,8 @@ const useStyles = makeStyles({
 		marginTop: "64px",
 		overflow: "auto",
 		minHeight: "calc(100vh)",
+		position: "relative",
+		zIndex: 1,
 	},
 	footerContent: {
 		width: "90%",
@@ -20,6 +22,8 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		margin: "0 auto",
 		borderTop: "1px solid",
+		position: "relative",
+		zIndex: 1,
 	},
 });
 

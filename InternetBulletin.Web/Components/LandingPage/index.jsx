@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMsal } from "@azure/msal-react";
-import { LargeTitle } from "@fluentui/react-components";
 
 import { HomePageConstants } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
@@ -10,6 +9,7 @@ import { GetAllPostsAsync } from "@store/Posts/Actions";
 import { loginRequests } from "@services/auth.config";
 import EditPostComponent from "@components/Posts/Components/EditPost";
 import { useStyles } from "./styles";
+import BlurText from "@components/Common/Animations/BlurText";
 
 /**
  * @component
@@ -96,9 +96,13 @@ function LandingPageComponent() {
             <Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
             <div className="row">
                 <div className="col-sm-12 mt-4">
-                    <LargeTitle className={styles.mainHeading}>
-                        {HomePageConstants.Headings.WelcomeMessage}
-                    </LargeTitle>
+                    <BlurText
+                        text={HomePageConstants.Headings.WelcomeMessage}
+                        delay={150}
+                        animateBy="words"
+                        direction="top"
+                        className={styles.mainHeading}
+                    />
                 </div>
             </div>
             <div className="row position-relative">

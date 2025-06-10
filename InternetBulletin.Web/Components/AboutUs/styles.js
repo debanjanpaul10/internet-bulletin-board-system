@@ -2,7 +2,7 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
     aboutUsHeading: {
-        fontFamily: "Architects Daughter",
+        fontFamily: "Concert One",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",
