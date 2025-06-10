@@ -1,13 +1,13 @@
-import { Button } from "@fluentui/react-components";
 import { MailRegular } from "@fluentui/react-icons";
 import {
-	faFacebook,
-	faGithub,
-	faLinkedin,
+    faFacebook,
+    faGithub,
+    faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { FooterConstants } from "@helpers/ibbs.constants";
+import Dock from "../Animations/Dock";
 
 /**
  * FooterComponent - A React component that renders a footer section with social media and contact links.
@@ -24,42 +24,40 @@ import { FooterConstants } from "@helpers/ibbs.constants";
  * @returns {JSX.Element} A div containing social media and contact buttons
  */
 function FooterComponent() {
-	const { EmailLink, FaceBookLink, GithubLink, LinkedinLink } =
-		FooterConstants;
+    const { EmailLink, FaceBookLink, GithubLink, LinkedinLink } =
+        FooterConstants;
 
-	return (
-		<div className="row mt-4 mb-4">
-			<div className="col-12 d-flex justify-content-center gap-3">
-				<Button
-					as="a"
-					appearance="subtle"
-					href={EmailLink}
-					icon={<MailRegular />}
-				/>
-				<Button
-					icon={<FontAwesomeIcon icon={faFacebook} />}
-					appearance="subtle"
-					as="a"
-					href={FaceBookLink}
-					target="_blank"
-				/>
-				<Button
-					icon={<FontAwesomeIcon icon={faGithub} />}
-					appearance="subtle"
-					as="a"
-					href={GithubLink}
-					target="_blank"
-				/>
-				<Button
-					icon={<FontAwesomeIcon icon={faLinkedin} />}
-					appearance="subtle"
-					as="a"
-					href={LinkedinLink}
-					target="_blank"
-				/>
-			</div>
-		</div>
-	);
+    const dockItems = [
+        {
+            icon: <FontAwesomeIcon icon={faFacebook} fontSize={30} />,
+            label: "Facebook",
+            onClick: () => window.open(FaceBookLink, "_blank"),
+        },
+        {
+            icon: <MailRegular fontSize={30} />,
+            label: "Email",
+            onClick: () => window.open(EmailLink, "_blank"),
+        },
+        {
+            icon: <FontAwesomeIcon icon={faGithub} fontSize={30} />,
+            label: "GitHub",
+            onClick: () => window.open(GithubLink, "_blank"),
+        },
+        {
+            icon: <FontAwesomeIcon icon={faLinkedin} fontSize={30} />,
+            label: "LinkedIn",
+            onClick: () => window.open(LinkedinLink, "_blank"),
+        },
+    ];
+
+    return (
+        <Dock
+            items={dockItems}
+            panelHeight={68}
+            baseItemSize={50}
+            magnification={70}
+        />
+    );
 }
 
 export default FooterComponent;
