@@ -1,14 +1,14 @@
 import {
-	GetApplicationInformationDataApiAsync,
-	GetConfigurationApiAsync
+    GetApplicationInformationDataApiAsync,
+    GetConfigurationApiAsync,
 } from "@services/ibbs.apiservice";
 import {
-	GET_APPLICATION_INFORMATION,
-	GET_CONFIGURATION_VALUE,
-	TOGGLE_ABOUT_US_SPINNER,
-	TOGGLE_ERROR_TOASTER,
-	TOGGLE_SIDE_BAR_STATUS,
-	TOGGLE_SUCCESS_TOASTER,
+    GET_APPLICATION_INFORMATION,
+    GET_CONFIGURATION_VALUE,
+    TOGGLE_ABOUT_US_SPINNER,
+    TOGGLE_ERROR_TOASTER,
+    TOGGLE_SIDE_BAR_STATUS,
+    TOGGLE_SUCCESS_TOASTER,
 } from "@store/Common/ActionTypes";
 
 /**
@@ -17,16 +17,22 @@ import {
  * @returns {Promise} The promise from the api response.
  */
 export const GetConfigurationValueAsync = (keyName) => {
-	return async (dispatch) => {
-		try {
-			const response = await GetConfigurationApiAsync(keyName);
-			if (response?.statusCode === 200) {
-				dispatch(GetConfigurationValueSuccess(response.data));
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
+    return async (dispatch) => {
+        try {
+            const response = await GetConfigurationApiAsync(keyName);
+            if (response?.statusCode === 200) {
+                dispatch(GetConfigurationValueSuccess(response.data));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error.data ?? error.title ?? error,
+                })
+            );
+        }
+    };
 };
 
 /**
@@ -35,10 +41,10 @@ export const GetConfigurationValueAsync = (keyName) => {
  * @returns {Object} The action type and payload data.
  */
 const GetConfigurationValueSuccess = (data) => {
-	return {
-		type: GET_CONFIGURATION_VALUE,
-		payload: data,
-	};
+    return {
+        type: GET_CONFIGURATION_VALUE,
+        payload: data,
+    };
 };
 
 /**
@@ -47,13 +53,13 @@ const GetConfigurationValueSuccess = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const ToggleSuccessToaster = (data) => {
-	return {
-		type: TOGGLE_SUCCESS_TOASTER,
-		payload: {
-			shouldShow: data.shouldShow,
-			successMessage: data.successMessage,
-		},
-	};
+    return {
+        type: TOGGLE_SUCCESS_TOASTER,
+        payload: {
+            shouldShow: data.shouldShow,
+            successMessage: data.successMessage,
+        },
+    };
 };
 
 /**
@@ -62,13 +68,13 @@ export const ToggleSuccessToaster = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const ToggleErrorToaster = (data) => {
-	return {
-		type: TOGGLE_ERROR_TOASTER,
-		payload: {
-			shouldShow: data.shouldShow,
-			errorMessage: data.errorMessage,
-		},
-	};
+    return {
+        type: TOGGLE_ERROR_TOASTER,
+        payload: {
+            shouldShow: data.shouldShow,
+            errorMessage: data.errorMessage,
+        },
+    };
 };
 
 /**
@@ -77,10 +83,10 @@ export const ToggleErrorToaster = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const ToggleSideBar = (isOpen) => {
-	return {
-		type: TOGGLE_SIDE_BAR_STATUS,
-		payload: isOpen,
-	};
+    return {
+        type: TOGGLE_SIDE_BAR_STATUS,
+        payload: isOpen,
+    };
 };
 
 /**
@@ -88,30 +94,26 @@ export const ToggleSideBar = (isOpen) => {
  * @returns {Promise} The promise of the api response.
  */
 export const GetApplicationInformationDataAsync = () => {
-	return async (dispatch) => {
-		try {
-			dispatch(
-				ToggleAboutUsSpinner(true)
-			);
-			const response = await GetApplicationInformationDataApiAsync();
-			if (response !== null && response !== undefined) {
-				dispatch(
-					GetApplicationInformationDataSuccess(
-						response
-					)
-				);
-			}
-		}
-		catch (error) {
-			console.error(error);
-		}
-		finally {
-			dispatch(
-				ToggleAboutUsSpinner(false)
-			);
-		}
-	}
-}
+    return async (dispatch) => {
+        try {
+            dispatch(ToggleAboutUsSpinner(true));
+            const response = await GetApplicationInformationDataApiAsync();
+            if (response !== null && response !== undefined) {
+                dispatch(GetApplicationInformationDataSuccess(response));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error.data ?? error.title ?? error,
+                })
+            );
+        } finally {
+            dispatch(ToggleAboutUsSpinner(false));
+        }
+    };
+};
 
 /**
  * Saves the application information data to redux store.
@@ -119,11 +121,11 @@ export const GetApplicationInformationDataAsync = () => {
  * @returns {Object} The action type and payload data.
  */
 const GetApplicationInformationDataSuccess = (data) => {
-	return {
-		type: GET_APPLICATION_INFORMATION,
-		payload: data
-	}
-}
+    return {
+        type: GET_APPLICATION_INFORMATION,
+        payload: data,
+    };
+};
 
 /**
  * Toggles the About Us spinner.
@@ -131,8 +133,8 @@ const GetApplicationInformationDataSuccess = (data) => {
  * @returns {Object} The action type and payload data.
  */
 const ToggleAboutUsSpinner = (isLoading) => {
-	return {
-		type: TOGGLE_ABOUT_US_SPINNER,
-		payload: isLoading,
-	}
-}
+    return {
+        type: TOGGLE_ABOUT_US_SPINNER,
+        payload: isLoading,
+    };
+};

@@ -1,7 +1,9 @@
 import React from "react";
+import { LargeTitle } from "@fluentui/react-components";
+
 import { NoPostsMessageConstant } from "@helpers/ibbs.constants";
 import { useStyles } from "./styles";
-import { LargeTitle } from "@fluentui/react-components";
+import DecryptedText from "@animations/DecryptedText";
 
 /**
  * @component
@@ -15,7 +17,11 @@ function NoPostsContainer() {
     return (
         <div className={styles.noPostsContainer}>
             <LargeTitle className={styles.noPostsHeading}>
-                {NoPostsMessageConstant.Heading}
+                <DecryptedText
+                    text={NoPostsMessageConstant.Heading}
+                    animateOn="view"
+                    revealDirection="center"
+                />
             </LargeTitle>
         </div>
     );

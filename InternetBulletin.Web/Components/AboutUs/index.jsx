@@ -19,6 +19,7 @@ import DescriptionComponent from "@components/AboutUs/Components/Description";
 import { GetApplicationInformationDataAsync } from "@store/Common/Actions";
 import Spinner from "@components/Common/Spinner";
 import BlurText from "@animations/BlurText";
+import PageNotFound from "@components/Common/PageNotFound";
 
 /**
  * `AboutUsComponent` - A React component that displays the About Us section of the application.
@@ -65,7 +66,7 @@ function AboutUsComponent() {
         <div className="container mt-5">
             {IsAboutUsLoading ? (
                 <Spinner isLoading={IsAboutUsLoading} />
-            ) : (
+            ) : Object.values(ApplicationInformationStoreData).length > 0 ? (
                 <>
                     <div className="row">
                         <div className="col-sm-12">
@@ -136,7 +137,6 @@ function AboutUsComponent() {
                             </CarouselNavContainer>
                         </Carousel>
                     </div>
-
                     <div className="row mt-4">
                         <DescriptionComponent
                             applicationDescriptionData={
@@ -145,6 +145,8 @@ function AboutUsComponent() {
                         />
                     </div>
                 </>
+            ) : (
+                <PageNotFound />
             )}
         </div>
     );
