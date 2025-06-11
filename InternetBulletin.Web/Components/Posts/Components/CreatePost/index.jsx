@@ -28,6 +28,7 @@ import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
 import SpotlightCard from "@animations/SpotlightCard";
 import BlurText from "@animations/BlurText";
+import ShinyText from "@animations/ShinyText";
 
 /**
  * @component
@@ -369,14 +370,19 @@ function CreatePostComponent() {
                                                         src={AiButton}
                                                         style={{
                                                             height: "20px",
+                                                            marginRight: "10px",
                                                         }}
-                                                    />{" "}
-                                                    {
-                                                        CreatePostPageConstants
-                                                            .Headings
-                                                            .RewriteAIButtonTexts
-                                                            .ButtonText
-                                                    }
+                                                    />
+                                                    <ShinyText
+                                                        text={
+                                                            CreatePostPageConstants
+                                                                .Headings
+                                                                .RewriteAIButtonTexts
+                                                                .ButtonText
+                                                        }
+                                                        disabled={false}
+                                                        speed={5}
+                                                    />
                                                 </Button>
                                             </Tooltip>
                                         </>
