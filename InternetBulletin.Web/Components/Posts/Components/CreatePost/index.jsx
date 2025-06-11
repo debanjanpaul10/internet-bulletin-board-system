@@ -381,7 +381,7 @@ function CreatePostComponent() {
                                                                 .ButtonText
                                                         }
                                                         disabled={false}
-                                                        speed={5}
+                                                        speed={3}
                                                     />
                                                 </Button>
                                             </Tooltip>
