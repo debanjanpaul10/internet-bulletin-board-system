@@ -17,7 +17,8 @@ import useStyles from "@components/Common/Header/styles";
 import { ToggleSideBar } from "@store/Common/Actions";
 
 /**
- * Header - A React component that renders the main navigation header of the application.
+ * @component
+ * `Header` A React component that renders the main navigation header of the application.
  *
  * The component includes:
  * - A sidebar toggle button with tooltip

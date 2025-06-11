@@ -18,10 +18,10 @@ import {
 import DescriptionComponent from "@components/AboutUs/Components/Description";
 import { GetApplicationInformationDataAsync } from "@store/Common/Actions";
 import Spinner from "@components/Common/Spinner";
-import BlurText from "@components/Animations/BlurText";
+import BlurText from "@animations/BlurText";
 
 /**
- * AboutUsComponent - A React component that displays the About Us section of the application.
+ * `AboutUsComponent` - A React component that displays the About Us section of the application.
  *
  * This component renders:
  * - A main heading using LargeTitle component

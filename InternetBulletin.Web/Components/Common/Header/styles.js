@@ -3,6 +3,10 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 const useStyles = makeStyles({
     sideBarButton: {
         padding: "0px !important",
+        width: "40px",
+        height: "40px",
+        minWidth: "40px",
+        backgroundColor: tokens.colorPaletteSeafoamBackground2,
         "&:hover": {
             backgroundColor: tokens.colorPaletteSeafoamBackground2,
         },

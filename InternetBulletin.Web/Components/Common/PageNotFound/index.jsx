@@ -2,13 +2,12 @@ import React from "react";
 
 import { ErrorPageConstants } from "@helpers/ibbs.constants";
 import { useStyles } from "./styles";
-import Noise from "@components/Animations/Noise";
-import BlurText from "@components/Animations/BlurText";
+import Noise from "@animations/Noise";
+import BlurText from "@animations/BlurText";
 
 /**
  * @component
- * The Page Not Found error component that is shown when an
- * invalid url is accessed.
+ * `PageNotFound` error component that is shown when an invalid url is accessed.
  * @returns {JSX.Element} The page not found component JSX element.
  */
 function PageNotFound() {

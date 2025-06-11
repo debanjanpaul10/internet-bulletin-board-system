@@ -7,7 +7,6 @@ import {
     CardPreview,
     Button,
     CardHeader,
-    LargeTitle,
     Tooltip,
     SkeletonItem,
     Skeleton,
@@ -27,12 +26,12 @@ import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
 import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
-import SpotlightCard from "@components/Animations/SpotlightCard";
-import BlurText from "@components/Animations/BlurText";
+import SpotlightCard from "@animations/SpotlightCard";
+import BlurText from "@animations/BlurText";
 
 /**
- * @component CreatePostComponent
- * @description A React component that provides functionality for creating new posts in the bulletin board system.
+ * @component
+ * `CreatePostComponent` is a React component that provides functionality for creating new posts in the bulletin board system.
  * The component includes features such as:
  * - Rich text editing using ReactQuill
  * - Form validation for title and content
@@ -40,8 +39,8 @@ import BlurText from "@components/Animations/BlurText";
  * - Authentication integration with MSAL
  * - Responsive design with Fluent UI components
  *
- * @requires {Object} React - The React library
- * @requires {Object} ReactQuill - Rich text editor component
+ * @requires {Object} `React` - The React library
+ * @requires {Object} `ReactQuill` - Rich text editor component
  * @requires {Object} `@fluentui/react-components` - UI component library
  * @requires {Object} `@azure/msal-react` - Microsoft Authentication Library
  *

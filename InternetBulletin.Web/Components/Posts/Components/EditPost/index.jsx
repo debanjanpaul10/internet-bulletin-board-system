@@ -30,8 +30,8 @@ import { loginRequests } from "@services/auth.config";
 import RewriteRequestDtoModel from "@models/RewriteRequestDto";
 
 /**
- * @component EditPostComponent
- * @description A dialog component for editing existing posts with AI-powered text rewriting capabilities.
+ * @component
+ * `EditPostComponent` A dialog component for editing existing posts with AI-powered text rewriting capabilities.
  *
  * @features
  * - Edit post title and content

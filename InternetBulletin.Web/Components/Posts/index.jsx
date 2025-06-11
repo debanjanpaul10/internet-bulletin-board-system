@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 
 import PostBody from "@components/Posts/Components/PostBody";
 import NoPostsContainer from "@components/Posts/Components/NoPosts";
-import AnimatedContent from "@components/Animations/AnimatedFadeInContent";
-import { useStyles } from "./styles";
+import AnimatedContent from "@animations/AnimatedFadeInContent";
 
 /**
  * @component
@@ -13,8 +12,6 @@ import { useStyles } from "./styles";
  * @returns {JSX.Element} The posts container jsx element.
  */
 function PostsContainer() {
-    const styles = useStyles();
-
     const AllPostsStoreData = useSelector(
         (state) => state.PostsReducer.allPostsData
     );

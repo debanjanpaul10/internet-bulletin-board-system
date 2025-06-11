@@ -11,13 +11,13 @@ import {
 
 import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
-import SpotlightCard from "@components/Animations/SpotlightCard";
+import SpotlightCard from "@animations/SpotlightCard";
 
 /**
- * UserDetailsComponent displays the user's personal information in a formatted layout.
+ * @component
+ * `UserDetailsComponent` displays the user's personal information in a formatted layout.
  * It receives user details as props and renders them in a structured way.
  *
- * @component
  * @param {Object} props - Component props
  * @param {string} props.displayName - The user's display name
  * @param {string} props.emailAddress - The user's email address

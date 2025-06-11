@@ -12,11 +12,11 @@ import AboutUsComponent from "@components/AboutUs";
 import FooterComponent from "@components/Common/Footer";
 import HeaderComponent from "@components/Common/Header";
 import LandingPageComponent from "@components/LandingPage";
-import Aurora from "@components/Animations/AuroraBackground";
+import Aurora from "@animations/AuroraBackground";
 
 /**
  * @component
- * IBBS (Internet Bulletin Board System) main component.
+ * `IBBS (Internet Bulletin Board System)` main component.
  *
  * @description
  * This component serves as the main interface for the Internet Bulletin Board System,

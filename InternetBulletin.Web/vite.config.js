@@ -53,6 +53,7 @@ export default defineConfig(() => {
                 "@services": path.resolve("./Services"),
                 "@context": path.resolve("./Context"),
                 "@assets": path.resolve("./assets"),
+                "@animations": path.resolve("./Animations"),
             },
         },
         server: {

@@ -19,12 +19,12 @@ import {
 import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 import { formatDate } from "@helpers/common.utility";
-import SpotlightCard from "@components/Animations/SpotlightCard";
+import SpotlightCard from "@animations/SpotlightCard";
 
 /**
- * UserPostsComponent displays a table of user's posts with their titles, creation dates, and ratings.
- *
  * @component
+ * `UserPostsComponent` displays a table of user's posts with their titles, creation dates, and ratings.
+ *
  * @param {Object} props - Component props
  * @param {Array<Object>} props.userPosts - Array of user post objects
  * @param {string} props.userPosts[].postTitle - Title of the post

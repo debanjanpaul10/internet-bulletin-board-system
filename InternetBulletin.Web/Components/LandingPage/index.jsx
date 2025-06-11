@@ -9,7 +9,7 @@ import { GetAllPostsAsync } from "@store/Posts/Actions";
 import { loginRequests } from "@services/auth.config";
 import EditPostComponent from "@components/Posts/Components/EditPost";
 import { useStyles } from "./styles";
-import BlurText from "@components/Animations/BlurText";
+import BlurText from "@animations/BlurText";
 
 /**
  * @component

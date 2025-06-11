@@ -13,7 +13,7 @@ import { CookiesConstants, PageConstants } from "@helpers/ibbs.constants";
 
 /**
  * @component
- * Main entry component that handles theme management and application initialization.
+ * `Main` component that handles theme management and application initialization.
  *
  * @description
  * This component serves as the main wrapper for the application, managing:

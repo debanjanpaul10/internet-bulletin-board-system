@@ -14,15 +14,15 @@ import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
 import { SparkleCircle28Regular } from "@fluentui/react-icons";
 import { formatDate } from "@helpers/common.utility";
-import SpotlightCard from "@components/Animations/SpotlightCard";
+import SpotlightCard from "@animations/SpotlightCard";
 
 /**
- * UserRatingsComponent displays a user's post ratings in a card-based table layout.
+ * @component
+ * `UserRatingsComponent` displays a user's post ratings in a card-based table layout.
  * The component shows a list of posts that the user has rated, including the post name
  * and the date when the rating was given. Each post entry is displayed with a sparkle icon
  * and formatted date.
  *
- * @component
  * @param {Object} props - Component props
  * @param {Array<Object>} props.userPostRatings - Array of user's post ratings
  * @param {string} props.userPostRatings[].postName - Name of the rated post

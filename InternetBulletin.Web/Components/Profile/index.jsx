@@ -12,10 +12,11 @@ import AlienImage from "@assets/Images/alien-pfp.jpg";
 import PageNotFound from "@components/Common/PageNotFound";
 import UserPostsComponent from "./Components/UserPosts";
 import UserRatingsComponent from "./Components/UserRatings";
-import BlurText from "@components/Animations/BlurText";
+import BlurText from "@animations/BlurText";
 
 /**
- * Renders the user's profile page, displaying their personal information,
+ * @component
+ * `ProfileComponent` Renders the user's profile page, displaying their personal information,
  * activity (posts and ratings), and handling authentication states.
  *
  * This component integrates with Azure MSAL for user authentication.
@@ -24,7 +25,6 @@ import BlurText from "@components/Animations/BlurText";
  * It shows a skeleton loading UI while data is being fetched.
  * If the user is not logged in, it renders a PageNotFound component.
  *
- * @component
  * @returns {JSX.Element} The user profile page, or a PageNotFound component
  *                        if the user is not authenticated.
  *
