@@ -230,9 +230,9 @@ namespace InternetBulletin.UnitTests.Helpers
         /// <summary>
         /// Prepares rewrite request dto for user.
         /// </summary>
-        public static RewriteRequestDTO PrepareMockRewriteRequestDTO()
+        public static UserStoryRequestDTO PrepareMockRewriteRequestDTO()
         {
-            return new RewriteRequestDTO
+            return new UserStoryRequestDTO
             {
                 Story = "Some Sample Story"
             };
