@@ -1,5 +1,5 @@
 name: Build and Deploy InternetBulletin
-run-name: ${{ github.head_ref }}
+run-name: ${{ github.event.workflow_run.head_commit.message }}
 
 env:
     API_PROJECT_PATH: InternetBulletin.API/InternetBulletin.API.csproj
