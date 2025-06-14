@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap/dist/css/bootstrap.css";
-import "@fontsource/architects-daughter";
+import "@fontsource/concert-one";
 import { MsalProvider } from "@azure/msal-react";
 import { PublicClientApplication } from "@azure/msal-browser";
 
@@ -20,23 +20,23 @@ import Main from "@components/Main";
 /**
  * Configures the redux store.
  */
-const store = configureStore( {
-	reducer: {
-		PostsReducer: PostsReducer,
-		CommonReducer: CommonReducer,
-		UserReducer: UserReducer,
-	},
-} );
+const store = configureStore({
+    reducer: {
+        PostsReducer: PostsReducer,
+        CommonReducer: CommonReducer,
+        UserReducer: UserReducer,
+    },
+});
 
-const root = ReactDOM.createRoot( document.getElementById( "root" ) );
-const msalInstance = new PublicClientApplication( msalConfig );
+const root = ReactDOM.createRoot(document.getElementById("root"));
+const msalInstance = new PublicClientApplication(msalConfig);
 
 root.render(
-	<MsalProvider instance={ msalInstance }>
-		<Router>
-			<Provider store={ store }>
-				<Main msalInstance={ msalInstance } />
-			</Provider>
-		</Router>
-	</MsalProvider>
+    <MsalProvider instance={msalInstance}>
+        <Router>
+            <Provider store={store}>
+                <Main msalInstance={msalInstance} />
+            </Provider>
+        </Router>
+    </MsalProvider>
 );
