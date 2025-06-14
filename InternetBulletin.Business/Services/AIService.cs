@@ -33,10 +33,12 @@ namespace InternetBulletin.Business.Services
 		private readonly IAIDataService _aiDataService = aiDataService;
 
 		/// <summary>
-		/// Rewrites with ai async.
+		/// Rewrites the provided story using AI processing.
 		/// </summary>
-		/// <param name="story">The story.</param>
-		/// <returns>The AI rewritten response.</returns>
+		/// <param name="userName">The username of the user requesting the rewrite.</param>
+		/// <param name="requestDTO">The story content to be rewritten.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the AI-rewritten story.</returns>
+		/// <exception cref="Exception">Thrown when AI services cannot be availed or when the response is invalid.</exception>
 		public async Task<string> RewriteWithAIAsync(string userName, UserStoryRequestDTO requestDTO)
 		{
 			var rewriteAiUrl = RouteConstants.RewriteTextApi_Route;
@@ -45,11 +47,12 @@ namespace InternetBulletin.Business.Services
 		}
 
 		/// <summary>
-		/// Generates the tag for story asynchronous.
+		/// Generates a genre tag for the provided story using AI processing.
 		/// </summary>
-		/// <param name="userName">The current user name.</param>
-		/// <param name="requestDTO">The story.</param>
-		/// <returns>The genre tag response.</returns>
+		/// <param name="userName">The username of the user requesting the tag generation.</param>
+		/// <param name="requestDTO">The story content for which to generate a tag.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the generated genre tag.</returns>
+		/// <exception cref="Exception">Thrown when AI services cannot be availed or when the response is invalid.</exception>
 		public async Task<string> GenerateTagForStoryAsync(string userName, UserStoryRequestDTO requestDTO)
 		{
 			var generateTagUrl = RouteConstants.GenerateTagApi_Route;
@@ -58,11 +61,12 @@ namespace InternetBulletin.Business.Services
 		}
 
 		/// <summary>
-		/// Moderates the content data asynchronous.
+		/// Moderates the content of the provided story using AI processing.
 		/// </summary>
-		/// <param name="userName">The current user name.</param>
-		/// <param name="requestDTO">The story.</param>
-		/// <returns>The moderation content response.</returns>
+		/// <param name="userName">The username of the user requesting content moderation.</param>
+		/// <param name="requestDTO">The story content to be moderated.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the content rating.</returns>
+		/// <exception cref="Exception">Thrown when AI services cannot be availed or when the response is invalid.</exception>
 		public async Task<string> ModerateContentDataAsync(string userName, UserStoryRequestDTO requestDTO)
 		{
 			var moderateContentUrl = RouteConstants.ModerateContentApi_Route;
@@ -75,12 +79,13 @@ namespace InternetBulletin.Business.Services
 		/// <summary>
 		/// Processes an AI request and handles the response.
 		/// </summary>
-		/// <typeparam name="T">The type of response DTO.</typeparam>
-		/// <param name="requestDTO">The request data.</param>
-		/// <param name="apiUrl">The API URL.</param>
-		/// <param name="userName">The current user name.</param>
-		/// <param name="aiUsage">The type of AI usage.</param>
-		/// <returns>The processed AI response.</returns>
+		/// <typeparam name="T">The type of response DTO expected from the AI service.</typeparam>
+		/// <param name="requestDTO">The request data containing the content to be processed.</param>
+		/// <param name="apiUrl">The API endpoint URL for the AI service.</param>
+		/// <param name="userName">The username of the user making the request.</param>
+		/// <param name="aiUsage">The type of AI usage being performed.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the processed AI response.</returns>
+		/// <exception cref="Exception">Thrown when AI services cannot be availed or when the response is invalid.</exception>
 		private async Task<T> ProcessAIRequestAsync<T>(UserStoryRequestDTO requestDTO, string apiUrl, string userName, AiUsages aiUsage) where T : class
 		{
 			var response = await this._httpClientHelper.GetIbbsAiResponseAsync(data: requestDTO, apiUrl: apiUrl);
@@ -93,6 +98,9 @@ namespace InternetBulletin.Business.Services
 		/// <summary>
 		/// Gets the total tokens consumed from the AI response.
 		/// </summary>
+		/// <typeparam name="T">The type of response DTO.</typeparam>
+		/// <param name="response">The AI response object.</param>
+		/// <returns>The total number of tokens consumed in the AI operation.</returns>
 		private static int GetTotalTokensConsumed<T>(T response) where T : class
 		{
 			return response switch
@@ -107,6 +115,9 @@ namespace InternetBulletin.Business.Services
 		/// <summary>
 		/// Gets the candidates token count from the AI response.
 		/// </summary>
+		/// <typeparam name="T">The type of response DTO.</typeparam>
+		/// <param name="response">The AI response object.</param>
+		/// <returns>The number of tokens used for generating candidates in the AI operation.</returns>
 		private static int GetCandidatesTokenCount<T>(T response) where T : class
 		{
 			return response switch
@@ -121,6 +132,9 @@ namespace InternetBulletin.Business.Services
 		/// <summary>
 		/// Gets the prompt token count from the AI response.
 		/// </summary>
+		/// <typeparam name="T">The type of response DTO.</typeparam>
+		/// <param name="response">The AI response object.</param>
+		/// <returns>The number of tokens used in the prompt for the AI operation.</returns>
 		private static int GetPromptTokenCount<T>(T response) where T : class
 		{
 			return response switch
@@ -135,12 +149,12 @@ namespace InternetBulletin.Business.Services
 		/// <summary>
 		/// Saves the AI usage data for the current user.
 		/// </summary>
-		/// <param name="userName">The current user name.</param>
-		/// <param name="totalTokensConsumed">Total tokens consumed.</param>
-		/// <param name="candidatesTokenCount">Candidates token count.</param>
-		/// <param name="promptTokenCount">Prompt token count.</param>
-		/// <param name="aiUsage">The type of AI usage.</param>
-		/// <returns>A boolean for success/failure.</returns>
+		/// <param name="userName">The username of the user.</param>
+		/// <param name="totalTokensConsumed">The total number of tokens consumed in the AI operation.</param>
+		/// <param name="candidatesTokenCount">The number of tokens used for generating candidates.</param>
+		/// <param name="promptTokenCount">The number of tokens used in the prompt.</param>
+		/// <param name="aiUsage">The type of AI usage being performed.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the save operation was successful.</returns>
 		private async Task<bool> SaveAiUsageDataAsync(string userName, int totalTokensConsumed, int candidatesTokenCount, int promptTokenCount, string aiUsage)
 		{
 			var aiUsageData = new AiUsageDTO
