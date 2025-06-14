@@ -97,6 +97,11 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string MongoDatabaseNameConstant = "MongoDatabaseName";
 
+		/// <summary>
+		/// The Is Development Mode Constant
+		/// </summary>
+		public const string IsDevelopmentModeConstant = "IsDevelopmentMode";
+
 		#region Azure AD Constants
 
 		/// <summary>

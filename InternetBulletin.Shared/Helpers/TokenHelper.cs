@@ -40,7 +40,7 @@ namespace InternetBulletin.Shared.Helpers
                 var clientSecret = configuration[IbbsAiAdClientSecret];
                 var scopes = new[] { string.Format(CultureInfo.CurrentCulture, TokenScopeFormat, clientId) };
 
-                _ = bool.TryParse(Environment.GetEnvironmentVariable("IsDevelopmentMode"), out var isDevelopmentMode);
+                _ = bool.TryParse(Environment.GetEnvironmentVariable(IsDevelopmentModeConstant), out var isDevelopmentMode);
                 if (isDevelopmentMode)
                 {
                     var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
