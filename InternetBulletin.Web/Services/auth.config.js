@@ -1,42 +1,19 @@
 import { UrlConstants } from "../Helpers/config.constants";
 
-const b2cPolicies = {
-	names: {
-		signUpSignIn: "B2C_1_susi",
-		editProfile: "B2C_1_edit_profile",
-		passwordReset: "B2C_1_pass_reset",
-	},
-	authorities: {
-		signUpSignIn: {
-			authority:
-				"https://debanjanlab.b2clogin.com/debanjanlab.onmicrosoft.com/B2C_1_susi",
-		},
-		editProfile: {
-			authority:
-				"https://debanjanlab.b2clogin.com/debanjanlab.onmicrosoft.com/B2C_1_edit_profile",
-		},
-		passwordReset: {
-			authority:
-				"https://debanjanlab.b2clogin.com/debanjanlab.onmicrosoft.com/B2C_1_pass_reset",
-		},
-	},
-	authorityDomain: "debanjanlab.b2clogin.com",
-};
-
 const msalConfig = {
-	auth: {
-		clientId: "12912858-246d-4231-a73a-00f2242379d3",
-		authority: b2cPolicies.authorities.signUpSignIn.authority,
-		redirectUri: UrlConstants.WebUrls.AzureWebUrl,
-		knownAuthorities: [b2cPolicies.authorityDomain],
-	},
+    auth: {
+        clientId: "7f668472-562f-4489-9725-b75308ce1e3f",
+        authority:
+            "https://login.microsoftonline.com/499b9f66-f4dd-4c09-ab36-163bbc38a326",
+        redirectUri: UrlConstants.WebUrls.AzureWebUrl,
+    },
 };
 
 const loginRequests = {
-	scopes: [
-		"https://debanjanlab.onmicrosoft.com/59977ff4-0747-41e8-bd9f-b2719b11865f/Posts.Read",
-		"https://debanjanlab.onmicrosoft.com/59977ff4-0747-41e8-bd9f-b2719b11865f/Posts.Write",
-	],
+    scopes: [
+        "api://b238fa82-27e1-4f22-9005-b8e0fba668b0/Users.Read",
+        "api://b238fa82-27e1-4f22-9005-b8e0fba668b0/Users.Write",
+    ],
 };
 
-export { msalConfig, b2cPolicies, loginRequests };
+export { msalConfig, loginRequests };

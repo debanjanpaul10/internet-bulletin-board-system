@@ -101,7 +101,7 @@ namespace InternetBulletin.Shared.Helpers
                         requestConfiguration.QueryParameters.Select = [
                             IbbsConstants.IdConstant,
                             IbbsConstants.DisplayNameConstant,
-                            IbbsConstants.IdentitiesConstant,
+                            IbbsConstants.EmailAddressConstant,
                             IbbsConstants.UserNameExtensionConstant
                         ];
                     });

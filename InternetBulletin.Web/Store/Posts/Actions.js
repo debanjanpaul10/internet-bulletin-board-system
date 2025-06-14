@@ -1,31 +1,31 @@
 import PostRatingDtoModel from "@models/PostRatingDto";
 import UpdatePostDtoModel from "@models/UpdatePostDto";
 import {
-	AddNewPostApiAsync,
-	DeletePostApiAsync,
-	GetAllPostsApiAsync,
-	GetPostApiAsync,
-	PostRewriteStoryWithAiApiAsync,
-	UpdatePostApiAsync,
-	UpdateRatingApiAsync,
+    AddNewPostApiAsync,
+    DeletePostApiAsync,
+    GetAllPostsApiAsync,
+    GetPostApiAsync,
+    PostRewriteStoryWithAiApiAsync,
+    UpdatePostApiAsync,
+    UpdateRatingApiAsync,
 } from "@services/ibbs.apiservice";
 import { ToggleErrorToaster } from "@store/Common/Actions";
 import {
-	ADD_NEW_POST_DATA,
-	DELETE_POST_DATA,
-	GET_ALL_POSTS_DATA,
-	GET_EDIT_POST_DATA,
-	GET_POST_DATA,
-	IS_CREATE_POST_LOADING,
-	POST_DATA_FAIL,
-	REWRITE_STORY_AI,
-	START_SPINNER,
-	STOP_SPINNER,
-	TOGGLE_EDIT_POST_DIALOG,
-	TOGGLE_EDIT_POST_LOADER,
-	TOGGLE_REWRITE_LOADER,
-	TOGGLE_VOTING_LOADER,
-	UPDATE_POST_RATING,
+    ADD_NEW_POST_DATA,
+    DELETE_POST_DATA,
+    GET_ALL_POSTS_DATA,
+    GET_EDIT_POST_DATA,
+    GET_POST_DATA,
+    IS_CREATE_POST_LOADING,
+    POST_DATA_FAIL,
+    REWRITE_STORY_AI,
+    START_SPINNER,
+    STOP_SPINNER,
+    TOGGLE_EDIT_POST_DIALOG,
+    TOGGLE_EDIT_POST_LOADER,
+    TOGGLE_REWRITE_LOADER,
+    TOGGLE_VOTING_LOADER,
+    UPDATE_POST_RATING,
 } from "@store/Posts/ActionTypes";
 
 /**
@@ -34,10 +34,10 @@ import {
  * @returns {Object} The action type and payload data.
  */
 export const ToggleRewriteLoader = (isLoading) => {
-	return {
-		type: TOGGLE_REWRITE_LOADER,
-		payload: isLoading
-	};
+    return {
+        type: TOGGLE_REWRITE_LOADER,
+        payload: isLoading,
+    };
 };
 
 /**
@@ -45,9 +45,9 @@ export const ToggleRewriteLoader = (isLoading) => {
  * @returns {Object} The action type
  */
 export const StartLoader = () => {
-	return {
-		type: START_SPINNER,
-	};
+    return {
+        type: START_SPINNER,
+    };
 };
 
 /**
@@ -55,9 +55,9 @@ export const StartLoader = () => {
  * @returns {Object} The action type
  */
 export const StopLoader = () => {
-	return {
-		type: STOP_SPINNER,
-	};
+    return {
+        type: STOP_SPINNER,
+    };
 };
 
 /**
@@ -67,26 +67,26 @@ export const StopLoader = () => {
  * @returns {Promise} The promise from the api response.
  */
 export const GetPostAsync = (postId, accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(StartLoader());
-			const response = await GetPostApiAsync(postId, accessToken);
-			if (response?.statusCode === 200) {
-				dispatch(GetPostSuccess(response.data));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(PostDataFailure(error.data));
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error,
-				})
-			);
-		} finally {
-			dispatch(StopLoader());
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(StartLoader());
+            const response = await GetPostApiAsync(postId, accessToken);
+            if (response?.statusCode === 200) {
+                dispatch(GetPostSuccess(response.data));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(PostDataFailure(error.data));
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error,
+                })
+            );
+        } finally {
+            dispatch(StopLoader());
+        }
+    };
 };
 
 /**
@@ -95,10 +95,10 @@ export const GetPostAsync = (postId, accessToken) => {
  * @returns {Object} The action type and payload data.
  */
 const GetPostSuccess = (data) => {
-	return {
-		type: GET_POST_DATA,
-		payload: data,
-	};
+    return {
+        type: GET_POST_DATA,
+        payload: data,
+    };
 };
 
 /**
@@ -106,26 +106,26 @@ const GetPostSuccess = (data) => {
  * @returns {Promise} The promise from the api response.
  */
 export const GetAllPostsAsync = (accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(StartLoader());
-			const response = await GetAllPostsApiAsync(accessToken);
-			if (response?.statusCode === 200) {
-				dispatch(GetAllPostsSuccess(response.data));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(PostDataFailure(error.data ?? error.title));
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error.data ?? error.title,
-				})
-			);
-		} finally {
-			dispatch(StopLoader());
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(StartLoader());
+            const response = await GetAllPostsApiAsync(accessToken);
+            if (response?.statusCode === 200) {
+                dispatch(GetAllPostsSuccess(response.data));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(PostDataFailure(error.data ?? error.title));
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error.data ?? error.title ?? error,
+                })
+            );
+        } finally {
+            dispatch(StopLoader());
+        }
+    };
 };
 
 /**
@@ -134,10 +134,10 @@ export const GetAllPostsAsync = (accessToken) => {
  * @returns {Object} The action type and payload data.
  */
 const GetAllPostsSuccess = (data) => {
-	return {
-		type: GET_ALL_POSTS_DATA,
-		payload: data,
-	};
+    return {
+        type: GET_ALL_POSTS_DATA,
+        payload: data,
+    };
 };
 
 /**
@@ -147,25 +147,25 @@ const GetAllPostsSuccess = (data) => {
  * @returns {Promise} The promise from the api response.
  */
 export const AddNewPostAsync = (postData, accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(HandleCreatePostPageLoader(true));
-			const response = await AddNewPostApiAsync(postData, accessToken);
-			if (response?.statusCode === 200) {
-				dispatch(AddNewPostSuccess(response?.data));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error,
-				})
-			);
-		} finally {
-			dispatch(HandleCreatePostPageLoader(false));
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(HandleCreatePostPageLoader(true));
+            const response = await AddNewPostApiAsync(postData, accessToken);
+            if (response?.statusCode === 200) {
+                dispatch(AddNewPostSuccess(response?.data));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error,
+                })
+            );
+        } finally {
+            dispatch(HandleCreatePostPageLoader(false));
+        }
+    };
 };
 
 /**
@@ -174,10 +174,10 @@ export const AddNewPostAsync = (postData, accessToken) => {
  * @returns {Object} The action type and payload data.
  */
 const AddNewPostSuccess = (data) => {
-	return {
-		type: ADD_NEW_POST_DATA,
-		payload: data,
-	};
+    return {
+        type: ADD_NEW_POST_DATA,
+        payload: data,
+    };
 };
 
 /**
@@ -186,10 +186,10 @@ const AddNewPostSuccess = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const PostDataFailure = (data) => {
-	return {
-		type: POST_DATA_FAIL,
-		payload: data,
-	};
+    return {
+        type: POST_DATA_FAIL,
+        payload: data,
+    };
 };
 
 /**
@@ -199,25 +199,28 @@ export const PostDataFailure = (data) => {
  * @returns {Promise} The promise from the api response.
  */
 export const RewriteStoryWithAiAsync = (requestDto, accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(ToggleRewriteLoader(true));
-			const response = await PostRewriteStoryWithAiApiAsync(requestDto, accessToken);
-			if (response?.statusCode === 200) {
-				dispatch(RewriteStoryWithAiSuccess(response?.data));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error.title,
-				})
-			);
-		} finally {
-			dispatch(ToggleRewriteLoader(false));
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(ToggleRewriteLoader(true));
+            const response = await PostRewriteStoryWithAiApiAsync(
+                requestDto,
+                accessToken
+            );
+            if (response?.statusCode === 200) {
+                dispatch(RewriteStoryWithAiSuccess(response?.data));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error.title,
+                })
+            );
+        } finally {
+            dispatch(ToggleRewriteLoader(false));
+        }
+    };
 };
 
 /**
@@ -226,10 +229,10 @@ export const RewriteStoryWithAiAsync = (requestDto, accessToken) => {
  * @returns {Object} The action type and payload data.
  */
 export const RewriteStoryWithAiSuccess = (data) => {
-	return {
-		type: REWRITE_STORY_AI,
-		payload: data,
-	};
+    return {
+        type: REWRITE_STORY_AI,
+        payload: data,
+    };
 };
 
 /**
@@ -238,10 +241,10 @@ export const RewriteStoryWithAiSuccess = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const HandleCreatePostPageLoader = (isLoading) => {
-	return {
-		type: IS_CREATE_POST_LOADING,
-		payload: isLoading,
-	};
+    return {
+        type: IS_CREATE_POST_LOADING,
+        payload: isLoading,
+    };
 };
 
 /**
@@ -251,27 +254,27 @@ export const HandleCreatePostPageLoader = (isLoading) => {
  * @returns {Promise} Gets the API response.
  */
 export const DeletePostAsync = (postId, accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(StartLoader());
-			const response = await DeletePostApiAsync(postId, accessToken);
-			if (response?.statusCode === 200) {
-				dispatch(DeletePostAsyncSuccess(response?.data));
-				dispatch(GetAllPostsAsync(accessToken));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(PostDataFailure(error.data));
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error,
-				})
-			);
-		} finally {
-			dispatch(StopLoader());
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(StartLoader());
+            const response = await DeletePostApiAsync(postId, accessToken);
+            if (response?.statusCode === 200) {
+                dispatch(DeletePostAsyncSuccess(response?.data));
+                dispatch(GetAllPostsAsync(accessToken));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(PostDataFailure(error.data));
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error,
+                })
+            );
+        } finally {
+            dispatch(StopLoader());
+        }
+    };
 };
 
 /**
@@ -280,10 +283,10 @@ export const DeletePostAsync = (postId, accessToken) => {
  * @returns {Object} The action type and payload data.
  */
 const DeletePostAsyncSuccess = (data) => {
-	return {
-		type: DELETE_POST_DATA,
-		payload: data,
-	};
+    return {
+        type: DELETE_POST_DATA,
+        payload: data,
+    };
 };
 
 /**
@@ -293,30 +296,30 @@ const DeletePostAsyncSuccess = (data) => {
  * @returns {Promise} The promise of the api response.
  */
 export const UpdatePostAsync = (updatePostData, accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(ToggleEditPostSpinner(true));
-			const response = await UpdatePostApiAsync(
-				updatePostData,
-				accessToken
-			);
-			if (response?.statusCode === 200) {
-				dispatch(GetAllPostsAsync(accessToken));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(PostDataFailure(error.data));
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error,
-				})
-			);
-		} finally {
-			dispatch(ToggleEditPostSpinner(false));
-			dispatch(ToggleEditPostDialog(false));
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(ToggleEditPostSpinner(true));
+            const response = await UpdatePostApiAsync(
+                updatePostData,
+                accessToken
+            );
+            if (response?.statusCode === 200) {
+                dispatch(GetAllPostsAsync(accessToken));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(PostDataFailure(error.data));
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error,
+                })
+            );
+        } finally {
+            dispatch(ToggleEditPostSpinner(false));
+            dispatch(ToggleEditPostDialog(false));
+        }
+    };
 };
 
 /**
@@ -327,30 +330,30 @@ export const UpdatePostAsync = (updatePostData, accessToken) => {
  * @returns {Promise} The promise of the api response.
  */
 export const UpdateRatingAsync = (postRatingDtoModel, accessToken) => {
-	return async (dispatch) => {
-		try {
-			dispatch(ToggleRatingLoader(true));
-			const response = await UpdateRatingApiAsync(
-				postRatingDtoModel,
-				accessToken
-			);
-			if (response?.statusCode === 200) {
-				dispatch(UpdateRatingAsyncSuccess(response?.data));
-				dispatch(GetAllPostsAsync(accessToken));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(PostDataFailure(error.data));
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error,
-				})
-			);
-		} finally {
-			dispatch(ToggleRatingLoader(false));
-		}
-	};
+    return async (dispatch) => {
+        try {
+            dispatch(ToggleRatingLoader(true));
+            const response = await UpdateRatingApiAsync(
+                postRatingDtoModel,
+                accessToken
+            );
+            if (response?.statusCode === 200) {
+                dispatch(UpdateRatingAsyncSuccess(response?.data));
+                dispatch(GetAllPostsAsync(accessToken));
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(PostDataFailure(error.data));
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error,
+                })
+            );
+        } finally {
+            dispatch(ToggleRatingLoader(false));
+        }
+    };
 };
 
 /**
@@ -359,10 +362,10 @@ export const UpdateRatingAsync = (postRatingDtoModel, accessToken) => {
  * @returns {Object} The action type and payload data.
  */
 const ToggleRatingLoader = (isLoading) => {
-	return {
-		type: TOGGLE_VOTING_LOADER,
-		payload: isLoading,
-	};
+    return {
+        type: TOGGLE_VOTING_LOADER,
+        payload: isLoading,
+    };
 };
 
 /**
@@ -371,10 +374,10 @@ const ToggleRatingLoader = (isLoading) => {
  * @returns {Object} The action type and payload data.
  */
 const UpdateRatingAsyncSuccess = (data) => {
-	return {
-		type: UPDATE_POST_RATING,
-		payload: data,
-	};
+    return {
+        type: UPDATE_POST_RATING,
+        payload: data,
+    };
 };
 
 /**
@@ -383,10 +386,10 @@ const UpdateRatingAsyncSuccess = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const ToggleEditPostDialog = (isOpen) => {
-	return {
-		type: TOGGLE_EDIT_POST_DIALOG,
-		payload: isOpen,
-	};
+    return {
+        type: TOGGLE_EDIT_POST_DIALOG,
+        payload: isOpen,
+    };
 };
 
 /**
@@ -395,10 +398,10 @@ export const ToggleEditPostDialog = (isOpen) => {
  * @returns {Object} The action type and payload data.
  */
 export const GetEditPostData = (data) => {
-	return {
-		type: GET_EDIT_POST_DATA,
-		payload: data,
-	};
+    return {
+        type: GET_EDIT_POST_DATA,
+        payload: data,
+    };
 };
 
 /**
@@ -407,8 +410,8 @@ export const GetEditPostData = (data) => {
  * @returns {Object} The action type and payload data.
  */
 export const ToggleEditPostSpinner = (isLoading) => {
-	return {
-		type: TOGGLE_EDIT_POST_LOADER,
-		payload: isLoading,
-	};
+    return {
+        type: TOGGLE_EDIT_POST_LOADER,
+        payload: isLoading,
+    };
 };

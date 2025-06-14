@@ -85,9 +85,7 @@ namespace InternetBulletin.Business.Services
                         Id = user.Id ?? string.Empty,
                         DisplayName = user.DisplayName ?? string.Empty,
                         UserName = Convert.ToString(user.AdditionalData[IbbsConstants.UserNameExtensionConstant], CultureInfo.CurrentCulture) ?? string.Empty,
-                        EmailAddress = user.Identities?
-                            .FirstOrDefault(i => i.SignInType == IbbsConstants.EmailAddressConstant)?
-                            .IssuerAssignedId ?? string.Empty
+                        EmailAddress = user.Mail ?? string.Empty,
                     };
 
                     responseDto = filteredUser;

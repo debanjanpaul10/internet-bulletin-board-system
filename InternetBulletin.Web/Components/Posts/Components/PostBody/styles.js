@@ -8,10 +8,6 @@ const useStyles = makeStyles({
         padding: "20px",
         borderRadius: "8px",
         boxShadow: tokens.shadow28,
-        backgroundColor: tokens.colorNeutralCardBackground,
-        "&:hover": {
-            backgroundColor: tokens.colorNeutralCardBackgroundHover,
-        },
     },
     cardHeader: {
         marginBottom: "10px",

@@ -15,12 +15,7 @@ namespace InternetBulletin.Shared.Constants
         /// <summary>
         /// The user name extension constant.
         /// </summary>
-        public const string UserNameExtensionConstant = "extension_3f9fbaaf3aad4b3cae589417139c7220_UserName";
-
-        /// <summary>
-        /// The email address constant.
-        /// </summary>
-        public const string EmailAddressConstant = "emailAddress";
+        public const string UserNameExtensionConstant = "extension_4bf572bc06514b24bd1897cd627697d0_UserName";
 
         /// <summary>
         /// The id constant.
@@ -36,6 +31,11 @@ namespace InternetBulletin.Shared.Constants
         /// The identities constant.
         /// </summary>
         public const string IdentitiesConstant = "identities";
+
+        /// <summary>
+        /// The Email address constant
+        /// </summary>
+        public const string EmailAddressConstant = "mail";
 
         /// <summary>
         /// The ibbs a i constant.

@@ -2,14 +2,16 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
     aboutUsHeading: {
-        fontFamily: "Architects Daughter",
+        fontFamily: "Concert One",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        fontSize: tokens.fontSizeHero1000,
+        lineHeight: 1.0,
     },
     carouselNavButton: {
-        backgroundColor: tokens.colorNeutralBackground1,
+        backgroundColor: "none",
         marginTop: "-15px",
     },
     subHeading: {
@@ -18,6 +20,8 @@ const useStyles = makeStyles({
         justifyContent: "center",
         alignItems: "center",
         marginTop: "10px",
+        fontSize: tokens.fontSizeHero800,
+        lineHeight: 1.0,
     },
     container: {
         maxHeight: "90vh",

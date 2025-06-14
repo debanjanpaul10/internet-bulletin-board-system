@@ -7,10 +7,7 @@ import {
     CarouselNavContainer,
     CarouselSlider,
     CarouselViewport,
-    LargeTitle,
-    Title3,
 } from "@fluentui/react-components";
-import { HeartFilled } from "@fluentui/react-icons";
 
 import { useStyles } from "@components/AboutUs/styles";
 import BannerCardComponent from "@components/AboutUs/Components/BannerCard";
@@ -21,9 +18,11 @@ import {
 import DescriptionComponent from "@components/AboutUs/Components/Description";
 import { GetApplicationInformationDataAsync } from "@store/Common/Actions";
 import Spinner from "@components/Common/Spinner";
+import BlurText from "@animations/BlurText";
+import PageNotFound from "@components/Common/PageNotFound";
 
 /**
- * AboutUsComponent - A React component that displays the About Us section of the application.
+ * `AboutUsComponent` - A React component that displays the About Us section of the application.
  *
  * This component renders:
  * - A main heading using LargeTitle component
@@ -64,25 +63,34 @@ function AboutUsComponent() {
     };
 
     return (
-        <div className="container">
+        <div className="container mt-5">
             {IsAboutUsLoading ? (
                 <Spinner isLoading={IsAboutUsLoading} />
-            ) : (
+            ) : Object.values(ApplicationInformationStoreData).length > 0 ? (
                 <>
                     <div className="row">
-                        <div className="col-sm-12 mt-4">
-                            <LargeTitle className={styles.aboutUsHeading}>
-                                {MyProfilePageConstants.Headings.AboutUsMessage}
-                            </LargeTitle>
+                        <div className="col-sm-12">
+                            <BlurText
+                                text={
+                                    MyProfilePageConstants.Headings
+                                        .AboutUsMessage
+                                }
+                                delay={150}
+                                animateBy="words"
+                                direction="top"
+                                className={styles.aboutUsHeading}
+                            />
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-12">
-                            <Title3 className={styles.subHeading}>
-                                {AboutUsPageConstants.Subtitle}&nbsp;
-                                <HeartFilled className={styles.heart} />
-                                &nbsp; and
-                            </Title3>
+                            <BlurText
+                                text={`${AboutUsPageConstants.Subtitle}`}
+                                delay={150}
+                                animateBy="words"
+                                direction="top"
+                                className={styles.subHeading}
+                            />
                         </div>
                     </div>
 
@@ -129,7 +137,6 @@ function AboutUsComponent() {
                             </CarouselNavContainer>
                         </Carousel>
                     </div>
-
                     <div className="row mt-4">
                         <DescriptionComponent
                             applicationDescriptionData={
@@ -138,6 +145,8 @@ function AboutUsComponent() {
                         />
                     </div>
                 </>
+            ) : (
+                <PageNotFound />
             )}
         </div>
     );

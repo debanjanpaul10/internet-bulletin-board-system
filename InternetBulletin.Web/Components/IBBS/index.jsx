@@ -12,10 +12,11 @@ import AboutUsComponent from "@components/AboutUs";
 import FooterComponent from "@components/Common/Footer";
 import HeaderComponent from "@components/Common/Header";
 import LandingPageComponent from "@components/LandingPage";
+import Aurora from "@animations/AuroraBackground";
 
 /**
  * @component
- * IBBS (Internet Bulletin Board System) main component.
+ * `IBBS (Internet Bulletin Board System)` main component.
  *
  * @description
  * This component serves as the main interface for the Internet Bulletin Board System,
@@ -39,43 +40,48 @@ import LandingPageComponent from "@components/LandingPage";
  * @returns {JSX.Element} The main IBBS interface component with all necessary features and functionality
  */
 function IBBS() {
-	const styles = useStyles();
-	const { Headings } = HeaderPageConstants;
+    const styles = useStyles();
+    const { Headings } = HeaderPageConstants;
 
-	return (
-		<div className="main-content">
-			<div className={styles.headerNav}>
-				<HeaderComponent />
-			</div>
-			<div className={styles.bodyContent}>
-				{" "}
-				<ToasterComponent />
-				<SideDrawerComponent />
-				<Routes>
-					<Route
-						path={Headings.Home.Link}
-						element={<LandingPageComponent />}
-					/>
-					<Route
-						path={Headings.CreatePost.Link}
-						element={<CreatePostComponent />}
-					/>
-					<Route path="*" element={<PageNotFound />} />
-					<Route
-						path={Headings.MyProfile.Link}
-						element={<ProfileComponent />}
-					/>
-					<Route
-						path={Headings.AboutUs.Link}
-						element={<AboutUsComponent />}
-					/>
-				</Routes>
-			</div>
-			<div className={styles.footerContent}>
-				<FooterComponent />
-			</div>
-		</div>
-	);
+    return (
+        <div className="main-content">
+            <Aurora
+                colorStops={["#3A29FF", "#FF94B4", "#FF3232"]}
+                blend={0.8}
+                amplitude={1.5}
+                speed={0.8}
+            />
+            <div className={styles.headerNav}>
+                <HeaderComponent />
+            </div>
+            <div className={styles.bodyContent}>
+                <ToasterComponent />
+                <SideDrawerComponent />
+                <Routes>
+                    <Route
+                        path={Headings.Home.Link}
+                        element={<LandingPageComponent />}
+                    />
+                    <Route
+                        path={Headings.CreatePost.Link}
+                        element={<CreatePostComponent />}
+                    />
+                    <Route path="*" element={<PageNotFound />} />
+                    <Route
+                        path={Headings.MyProfile.Link}
+                        element={<ProfileComponent />}
+                    />
+                    <Route
+                        path={Headings.AboutUs.Link}
+                        element={<AboutUsComponent />}
+                    />
+                </Routes>
+            </div>
+            <div className={styles.footerContent}>
+                <FooterComponent />
+            </div>
+        </div>
+    );
 }
 
 export default IBBS;

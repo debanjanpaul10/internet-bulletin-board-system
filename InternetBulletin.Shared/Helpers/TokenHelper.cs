@@ -14,13 +14,14 @@ namespace InternetBulletin.Shared.Helpers
     using InternetBulletin.Shared.Constants;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Identity.Client;
     using static InternetBulletin.Shared.Constants.ConfigurationConstants;
 
     /// <summary>
     /// Token helper.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public static class TokenHelper
+    public class TokenHelper
     {
         /// <summary>
         /// Gets ibbs ai token async.
@@ -34,22 +35,36 @@ namespace InternetBulletin.Shared.Helpers
             {
                 logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetIbbsAiTokenAsync), DateTime.UtcNow, IbbsConstants.IbbsAIConstant));
 
-
                 var tenantId = configuration[TenantIdConstant];
                 var clientId = configuration[IbbsAiAdClientId];
                 var clientSecret = configuration[IbbsAiAdClientSecret];
                 var scopes = new[] { string.Format(CultureInfo.CurrentCulture, TokenScopeFormat, clientId) };
 
-                var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                var accessToken = await credential.GetTokenAsync(new TokenRequestContext(scopes), CancellationToken.None).ConfigureAwait(false);
-
-                if (string.IsNullOrEmpty(accessToken.Token))
+                _ = bool.TryParse(Environment.GetEnvironmentVariable(IsDevelopmentModeConstant), out var isDevelopmentMode);
+                if (isDevelopmentMode)
                 {
-                    throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);
+                    var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                    var accessToken = await credential.GetTokenAsync(new TokenRequestContext(scopes), CancellationToken.None).ConfigureAwait(false);
+
+                    if (string.IsNullOrEmpty(accessToken.Token))
+                    {
+                        throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);
+                    }
+
+                    return accessToken.Token;
                 }
+                else
+                {
+                    var miClientId = configuration[ManagedIdentityClientIdConstant];
+                    ArgumentException.ThrowIfNullOrEmpty(miClientId);
 
-                return accessToken.Token;
+                    var msal = ConfidentialClientApplicationBuilder.Create(clientId)
+                        .WithClientAssertion((AssertionRequestOptions options) => GetManagedIdentityToken(miClientId, IbbsAiFICCTokenAudience))
+                        .WithAuthority(configuration[IBBSWebIssuerConstant]).Build();
 
+                    var result = await msal.AcquireTokenForClient(scopes).ExecuteAsync();
+                    return result.AccessToken;
+                }
             }
             catch (Exception ex)
             {
@@ -60,6 +75,21 @@ namespace InternetBulletin.Shared.Helpers
             {
                 logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetIbbsAiTokenAsync), DateTime.UtcNow, IbbsConstants.IbbsAIConstant));
             }
+        }
+
+
+        /// <summary>
+        /// Gets the managed identity token.
+        /// </summary>
+        /// <param name="msiClientId">The MSI Client Id.</param>
+        /// <param name="audience">The FICC audience</param>
+        /// <returns>The token data.</returns>
+        public static async Task<string> GetManagedIdentityToken(string msiClientId, string audience)
+        {
+            var miIdentity = Microsoft.Identity.Client.AppConfig.ManagedIdentityId.WithUserAssignedClientId(msiClientId);
+            var miApplication = ManagedIdentityApplicationBuilder.Create(miIdentity).Build();
+            var miResult = await miApplication.AcquireTokenForManagedIdentity($"{audience}/.default").ExecuteAsync().ConfigureAwait(false);
+            return miResult.AccessToken;
         }
     }
 

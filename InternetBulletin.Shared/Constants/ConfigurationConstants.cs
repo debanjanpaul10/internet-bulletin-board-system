@@ -45,7 +45,7 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The ibbs api app config key constant.
 		/// </summary>
-		public const string IbbsAPIAppConfigKeyConstant = "BulletinAPI";
+		public const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
 
 		/// <summary>
 		/// The ibbs functin app config key constant.
@@ -60,7 +60,7 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The user name claim constant.
 		/// </summary>
-		public const string UserNameClaimConstant = "extension_UserName";
+		public const string UserNameClaimConstant = "User Name";
 
 		/// <summary>
 		/// The user display name constant.
@@ -97,27 +97,37 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string MongoDatabaseNameConstant = "MongoDatabaseName";
 
-		#region AzureADB2CConstants
+		/// <summary>
+		/// The Is Development Mode Constant
+		/// </summary>
+		public const string IsDevelopmentModeConstant = "IsDevelopmentMode";
+
+		#region Azure AD Constants
 
 		/// <summary>
-		/// The azure ad b2 c constant.
+		/// The IBBS web api client id constant.
 		/// </summary>
-		public const string AzureAdB2CConstant = "AzureAdB2C";
+		public const string IbbsWebApiClientIdConstant = "IbbsWebApiClientId";
 
 		/// <summary>
-		/// The IBBS api client id constant.
+		/// The IBBS Web client id constant.
 		/// </summary>
-		public const string IBBSApiClientIdConstant = "AzureAdB2C:ClientId";
+		public const string IbbsWebClientIdConstant = "IbbsWebClientId";
 
 		/// <summary>
-		/// The IBBS api issuer constant.
+		/// The IBBS web token issuer constant.
 		/// </summary>
-		public const string IBBSApiIssuerConstant = "AzureAdB2C:Issuer";
+		public const string IBBSWebIssuerConstant = "IbbsWebIssuer";
 
 		/// <summary>
 		/// The tenant id constant.
 		/// </summary>
-		public const string TenantIdConstant = "AzureAdB2C:TenantId";
+		public const string TenantIdConstant = "TenantId";
+
+		/// <summary>
+		/// The ibbs ai FICC token audience.
+		/// </summary>
+		public const string IbbsAiFICCTokenAudience = "api://AzureADTokenExchange";
 
 		#endregion
 
@@ -126,17 +136,17 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The graph api default scope constant.
 		/// </summary>
-		public const string GraphAPIDefaultScopeConstant = "AzureAD:GraphAPI:DefaultScope";
+		public const string GraphAPIDefaultScopeConstant = "GraphAPIDefaultScope";
 
 		/// <summary>
 		/// The graph a p i client id constant.
 		/// </summary>
-		public const string GraphAPIClientIdConstant = "AzureAD:GraphAPI:ClientId";
+		public const string GraphAPIClientIdConstant = "GraphAPIClientId";
 
 		/// <summary>
 		/// The graph a p i client secret constant.
 		/// </summary>
-		public const string GraphAPIClientSecretConstant = "AzureAD:GraphAPI:ClientSecret";
+		public const string GraphAPIClientSecretConstant = "GraphAPIClientSecret";
 
 		#endregion
 
@@ -150,12 +160,12 @@ namespace InternetBulletin.Shared.Constants
 		/// <summary>
 		/// The ibbs ai ad client id.
 		/// </summary>
-		public const string IbbsAiAdClientId = "AzureAD:IBBS.AI:ClientId";
+		public const string IbbsAiAdClientId = "IbbsAiApiClientId";
 
 		/// <summary>
 		/// The ibbs ai ad client secret.
 		/// </summary>
-		public const string IbbsAiAdClientSecret = "AzureAD:IBBS.AI:ClientSecret";
+		public const string IbbsAiAdClientSecret = "IbbsAiClientSecret";
 
 		#endregion
 	}

@@ -1,41 +1,40 @@
 @import "react-quill-new/dist/quill.snow.css";
 
 body {
-	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-		"Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-		"Helvetica Neue", sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-		monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
 }
 
 /* ANIMATIONS START */
 
 @keyframes heartbeat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
 
-	0%,
-	100% {
-		transform: scale(1);
-	}
-
-	50% {
-		transform: scale(1.2);
-	}
+    50% {
+        transform: scale(1.2);
+    }
 }
 
 .heartbeat {
-	animation: heartbeat 1.5s infinite;
+    animation: heartbeat 1.5s infinite;
 }
 
 .icon-large {
-	font-size: 1.5em;
-	/* Adjust the size as needed */
-	transition: transform 0.3s ease-in-out;
+    font-size: 1.5em;
+    /* Adjust the size as needed */
+    transition: transform 0.3s ease-in-out;
 }
 
 /* ANIMATIONS END */
@@ -43,171 +42,166 @@ code {
 /* TEXT EDITOR START */
 
 .ql-toolbar .ql-aiRewrite:hover::after {
-	content: "AI Rewrite";
-	position: absolute;
-	bottom: 100%;
-	left: 50%;
-	transform: translateX(-50%);
-	background-color: #333;
-	color: #fff;
-	padding: 5px;
-	border-radius: 3px;
-	white-space: nowrap;
-	font-size: 12px;
-	z-index: 10;
+    content: "AI Rewrite";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 10;
 }
 
 /* TEXT EDITOR END */
 
 /* CUSTOM CSS */
 li {
-	list-style: none;
+    list-style: none;
 }
 
 a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 input {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 button {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 .navbar {
-	background-color: #ededed !important;
-	color: #1f1f1f
+    background-color: #ededed !important;
+    color: #1f1f1f;
 }
 
 .nav-link {
-	color: #1f1f1f !important;
-	text-decoration: none;
-	padding: 10px;
+    color: #1f1f1f !important;
+    text-decoration: none;
+    padding: 10px;
 }
 
 .nav-link:hover {
-	color: #bbbbbb !important;
+    color: #bbbbbb !important;
 }
 
 .jumbotron {
-	padding: 2rem 1rem;
-	margin-bottom: 2rem;
-	background-color: #e9ecef;
-	border-radius: 0.3rem;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+    border-radius: 0.3rem;
 }
 
 .ml-right {
-	margin-left: auto;
+    margin-left: auto;
 }
 
-.ml-right>.nav-link {
-	margin-right: 10px;
+.ml-right > .nav-link {
+    margin-right: 10px;
 }
 
 .buttonStyle {
-	cursor: pointer;
-	color: #e9ecef;
-	margin: 0px 10px !important;
+    cursor: pointer;
+    color: #e9ecef;
+    margin: 0px 10px !important;
 }
 
 .buttonStyle:hover {
-	background-color: #f5f5f5 !important;
-}
-
-.architectDaughterfont {
-	font-family: "Architects Daughter";
+    background-color: #f5f5f5 !important;
 }
 
 .ml-10 {
-	margin-left: 10px;
+    margin-left: 10px;
 }
 
 .red {
-	color: #ff0000;
+    color: #ff0000;
 }
 
 .footer {
-	position: relative;
-	width: 75%;
-	margin: 2rem auto;
-	padding: 0px 0px 10px 0px;
-	font-size: large;
+    position: relative;
+    width: 75%;
+    margin: 2rem auto;
+    padding: 0px 0px 10px 0px;
+    font-size: large;
 }
 
 .postcontainer {
-	width: 80%;
-	height: auto;
+    width: 80%;
+    height: auto;
 }
 
 .card {
-	border: 1px solid #0000ff;
-	padding: 10px;
+    border: 1px solid #0000ff;
+    padding: 10px;
 }
 
 .card-header {
-	padding: 10px;
+    padding: 10px;
 }
 
 .navbar-nav .mx-auto {
-	margin-left: auto;
-	margin-right: 10px;
+    margin-left: auto;
+    margin-right: 10px;
 }
 
 .post-content {
-	display: -webkit-box;
-	-webkit-line-clamp: 10;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
-	white-space: pre-wrap;
-	line-clamp: 10;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: pre-wrap;
+    line-clamp: 10;
 }
 
 .post-content.full-text {
-	display: block;
-	-webkit-line-clamp: unset;
-	line-clamp: unset;
-	overflow: visible;
-	text-overflow: unset;
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 .rewritebtn {
-	font-size: 1rem;
-	padding: 0.25rem 0.5rem;
-	margin-top: 10px;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    margin-top: 10px;
 }
 
 .custom-modal {
-	background-color: #e9ecef;
-	align-items: center;
+    background-color: #e9ecef;
+    align-items: center;
 }
 
 .label-with-gap {
-	margin-right: 30px;
-	width: auto;
+    margin-right: 30px;
+    width: auto;
 }
 
 .form-control-plaintext {
-	padding: 10px;
+    padding: 10px;
 }
 
 /* Add a new class for the main content wrapper */
 .main-content {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Add padding at the bottom of the main content */
-.main-content>*:last-child {
-	margin-bottom: 2rem;
+.main-content > *:last-child {
+    margin-bottom: 2rem;
 }
 
 /* Add responsive padding for small devices */
 @media screen and (max-width: 768px) {
-
-	.main-content>*:last-child {
-		margin-bottom: 3rem;
-	}
+    .main-content > *:last-child {
+        margin-bottom: 3rem;
+    }
 }

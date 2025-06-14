@@ -16,26 +16,37 @@ import { AboutUsPageConstants } from "@helpers/ibbs.constants";
  * @returns {JSX.Element} A carousel card with banner content
  */
 function BannerCardComponent({ data, index }) {
-	const styles = useStyles();
+    const styles = useStyles();
 
-	return (
-		<CarouselCard
-			className={styles.bannerCard}
-			aria-label={`${index + 1} of ${1}`}
-			id={`test-${index}`}
-		>
-			<Image fit="cover" src={data.image} role="presentation" />
-			<div className={styles.cardContainer}>
-				<div className={styles.title}>{data.heading}</div>
-				<div className={styles.subtext}>{data.description}</div>
-				<div>
-					<Button className={styles.linkButton} size="small" shape="square" onClick={() => window.open(data.link, "_blank", "noopener,noreferrer")}>
-						{AboutUsPageConstants.ButtonTexts.WebsiteNav}
-					</Button>
-				</div>
-			</div>
-		</CarouselCard>
-	);
+    return (
+        <CarouselCard
+            className={styles.bannerCard}
+            aria-label={`${index + 1} of ${1}`}
+            id={`test-${index}`}
+        >
+            <Image fit="cover" src={data.image} role="presentation" />
+            <div className={styles.cardContainer}>
+                <div className={styles.title}>{data.heading}</div>
+                <div className={styles.subtext}>{data.description}</div>
+                <div>
+                    <Button
+                        className={styles.linkButton}
+                        size="small"
+                        shape="square"
+                        onClick={() =>
+                            window.open(
+                                data.link,
+                                "_blank",
+                                "noopener,noreferrer"
+                            )
+                        }
+                    >
+                        {AboutUsPageConstants.ButtonTexts.WebsiteNav}
+                    </Button>
+                </div>
+            </div>
+        </CarouselCard>
+    );
 }
 
 export default BannerCardComponent;

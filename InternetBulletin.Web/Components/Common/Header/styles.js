@@ -1,16 +1,25 @@
 import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
-    themeToggleButton: {
-        width: "50px",
-        minWidth: "50px",
-        padding: "0px",
-    },
     sideBarButton: {
         padding: "0px !important",
+        width: "40px",
+        height: "40px",
+        minWidth: "40px",
+        backgroundColor: tokens.colorPaletteSeafoamBackground2,
         "&:hover": {
             backgroundColor: tokens.colorPaletteSeafoamBackground2,
         },
+    },
+    bugButton: {
+        padding: "0px !important",
+        "&:hover": {
+            backgroundColor: tokens.colorPaletteDarkOrangeBorderActive,
+        },
+        width: "40px",
+        height: "40px",
+        minWidth: "40px",
+        backgroundColor: tokens.colorPaletteDarkOrangeBackground3,
     },
     navbar: {
         padding: "10px 15px",
