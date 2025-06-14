@@ -188,6 +188,8 @@ jobs:
         runs-on: windows-latest
         needs: build-database
         environment: Production
+        permissions:
+            id-token: write
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
