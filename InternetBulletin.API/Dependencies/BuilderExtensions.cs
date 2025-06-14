@@ -43,7 +43,6 @@ namespace InternetBulletin.API.Dependencies
 					.ConfigureKeyVault((options) =>
 					{
 						options.SetCredential(credentials);
-
 					});
 
 			});

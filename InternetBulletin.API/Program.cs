@@ -36,6 +36,7 @@ namespace InternetBulletin.API
                     ManagedIdentityClientId = miCredentials
                 });
 
+            builder.Services.AddApplicationInsightsTelemetry();
             builder.ConfigureAzureAppConfiguration(credentials);
             builder.ConfigureApiServices();
             builder.Services.ConfigureServices();
