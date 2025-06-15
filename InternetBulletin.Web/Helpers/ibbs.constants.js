@@ -119,9 +119,9 @@ export const CreatePostPageConstants = {
                 "You can fix the minor mistakes in your story with GenAI!",
         },
         ModerateWithAIButtonTexts: {
-            ButtonText: "Validate content moderation",
+            ButtonText: "Review Content & Get Genre",
             TooltipText:
-                "Your content will be verified by AI for NSFW material",
+                "AI will review your content for NSFW material and suggest the genre",
         },
     },
     validations: {
