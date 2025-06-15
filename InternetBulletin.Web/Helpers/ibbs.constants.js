@@ -118,11 +118,23 @@ export const CreatePostPageConstants = {
             TooltipText:
                 "You can fix the minor mistakes in your story with GenAI!",
         },
+        ModerateWithAIButtonTexts: {
+            ButtonText: "Validate content moderation",
+            TooltipText:
+                "Your content will be verified by AI for NSFW material",
+        },
     },
     validations: {
         TitleRequired: "Dude! You need a title for your adventure.",
         ContentRequired: "Elaborate your idea please!",
         MaxTitleLength: "The title must not exceed 50 characters, dude!",
+    },
+    DialogContentConstants: {
+        HeadingMessage: "Confirm Cancellation",
+        ConfirmationMessage:
+            "Are you sure you want to cancel? Any unsaved changes will be lost.",
+        YesButtonText: "Yes, cancel",
+        NoButtonText: "No, stay here",
     },
 };
 

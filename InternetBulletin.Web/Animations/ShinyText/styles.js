@@ -11,7 +11,7 @@ const useStyles = makeStyles({
         display: "inline-block",
         animationName: {
             from: { backgroundPosition: "100%" },
-            to: { backgroundPosition: "-100%" }
+            to: { backgroundPosition: "-100%" },
         },
         animationDuration: "5s",
         animationTimingFunction: "linear",

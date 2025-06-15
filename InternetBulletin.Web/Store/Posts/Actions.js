@@ -3,8 +3,10 @@ import UpdatePostDtoModel from "@models/UpdatePostDto";
 import {
     AddNewPostApiAsync,
     DeletePostApiAsync,
+    GenerateTagForStoryApiAsync,
     GetAllPostsApiAsync,
     GetPostApiAsync,
+    ModerateContentDataApiAsync,
     PostRewriteStoryWithAiApiAsync,
     UpdatePostApiAsync,
     UpdateRatingApiAsync,
@@ -16,6 +18,7 @@ import {
     GET_ALL_POSTS_DATA,
     GET_EDIT_POST_DATA,
     GET_POST_DATA,
+    HANDLE_POST_AI_MODERATION,
     IS_CREATE_POST_LOADING,
     POST_DATA_FAIL,
     REWRITE_STORY_AI,
@@ -413,5 +416,58 @@ export const ToggleEditPostSpinner = (isLoading) => {
     return {
         type: TOGGLE_EDIT_POST_LOADER,
         payload: isLoading,
+    };
+};
+
+export const HandlePostAiModerationTasksAsync = (
+    userStoryRequestDto,
+    accessToken
+) => {
+    return async (dispatch) => {
+        try {
+            dispatch(HandleCreatePostPageLoader(true));
+            const tagResponseTask = GenerateTagForStoryApiAsync(
+                userStoryRequestDto,
+                accessToken
+            );
+            const moderateContentResponseTask = ModerateContentDataApiAsync(
+                userStoryRequestDto,
+                accessToken
+            );
+
+            const [tagResponse, moderationContentResponse] = await Promise.all([
+                tagResponseTask,
+                moderateContentResponseTask,
+            ]);
+            if (tagResponse?.data && moderationContentResponse?.data) {
+                dispatch(
+                    HandlePostAiModerationTasksSuccess(
+                        tagResponse?.data,
+                        moderationContentResponse?.data
+                    )
+                );
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(PostDataFailure(error.data));
+            dispatch(
+                ToggleErrorToaster({
+                    shouldShow: true,
+                    errorMessage: error,
+                })
+            );
+        } finally {
+            dispatch(HandleCreatePostPageLoader(false));
+        }
+    };
+};
+
+const HandlePostAiModerationTasksSuccess = (tagData, moderationData) => {
+    return {
+        type: HANDLE_POST_AI_MODERATION,
+        payload: {
+            tagData: tagData,
+            moderationData: moderationData,
+        },
     };
 };

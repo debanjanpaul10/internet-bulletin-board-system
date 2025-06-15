@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ReactQuill from "react-quill-new";
 import { useNavigate } from "react-router-dom";
 import {
-    Card,
     CardPreview,
     Button,
     CardHeader,
     Tooltip,
     SkeletonItem,
     Skeleton,
+    TagGroup,
+    Tag,
 } from "@fluentui/react-components";
 import { useMsal } from "@azure/msal-react";
 
@@ -17,11 +18,15 @@ import {
     CreatePostPageConstants,
     HeaderPageConstants,
 } from "@helpers/ibbs.constants";
-import { AddNewPostAsync, RewriteStoryWithAiAsync } from "@store/Posts/Actions";
+import {
+    AddNewPostAsync,
+    HandlePostAiModerationTasksAsync,
+    RewriteStoryWithAiAsync,
+} from "@store/Posts/Actions";
 import AddPostDtoModel from "@models/AddPostDto";
 import PageNotFound from "@components/Common/PageNotFound";
 import AiButton from "@assets/Images/ai-icon.svg";
-import RewriteRequestDtoModel from "@models/RewriteRequestDto";
+import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
 import { loginRequests } from "@services/auth.config";
@@ -29,6 +34,7 @@ import { UserNameConstant } from "@helpers/config.constants";
 import SpotlightCard from "@animations/SpotlightCard";
 import BlurText from "@animations/BlurText";
 import ShinyText from "@animations/ShinyText";
+import CancelModalComponent from "./Components/CancelModal";
 
 /**
  * @component
@@ -48,12 +54,14 @@ import ShinyText from "@animations/ShinyText";
  * @state {Object} postData - Contains the post information (Title, Content, CreatedBy)
  * @state {Object} errors - Contains validation errors for the form
  * @state {Object} currentLoggedInUser - Stores the current authenticated user information
+ * @state {Object} isDialogOpen - Indicates whether the confirmation dialog is open
  *
  * @function handleCreatePost - Handles form submission and post creation
  * @function handleFormChange - Manages form input changes
  * @function handleContentChange - Manages rich text editor content changes
  * @function handleAiRewrite - Handles AI-powered content rewriting
  * @function handleCancelClick - Handles navigation back to home page
+ * @function handleConfirmCancel - Handles confirmation of cancellation
  *
  * @returns {JSX.Element} Returns either the post creation form or a PageNotFound component based on authentication status
  */
@@ -72,17 +80,24 @@ function CreatePostComponent() {
     const IsRewriteLoadingStoreData = useSelector(
         (state) => state.PostsReducer.isRewriteLoading
     );
+    const AIModerationStoreData = useSelector(
+        (state) => state.PostsReducer.aiModerationData
+    );
 
     const [postData, setPostData] = useState({
         Title: "",
         Content: "",
         CreatedBy: "",
+        isNsfw: false,
+        genreTag: "",
     });
     const [errors, setErrors] = useState({
         Title: "",
         Content: "",
     });
     const [currentLoggedInUser, setCurrentLoggedInUser] = useState({});
+
+    // #region Side Effects
 
     useEffect(() => {
         if (accounts.length > 0) {
@@ -107,8 +122,54 @@ function CreatePostComponent() {
     }, [AiRewrittenStoryStoreData]);
 
     /**
+     * Memoized function to process moderation data from AI.
+     * @returns {Object|null} Processed moderation data containing nsfwTag and genreTag, or null if no data.
+     */
+    const processModerationData = useMemo(() => {
+        if (
+            !AIModerationStoreData ||
+            Object.values(AIModerationStoreData).length === 0
+        ) {
+            return null;
+        }
+
+        const nsfwTag = AIModerationStoreData?.moderationData
+            ?.replace(/<[^>]*>?/gm, "")
+            .trim();
+        const genreTag = AIModerationStoreData?.tagData
+            ?.replace(/<[^>]*>?/gm, "")
+            .trim();
+
+        return { nsfwTag, genreTag };
+    }, [AIModerationStoreData]);
+
+    useEffect(() => {
+        if (!processModerationData) return;
+
+        const { nsfwTag, genreTag } = processModerationData;
+
+        setPostData((prevState) => {
+            const updates = {};
+
+            if (nsfwTag && prevState.isNsfw !== (nsfwTag === "NSFW")) {
+                updates.isNsfw = nsfwTag === "NSFW";
+            }
+
+            if (genreTag && prevState.genreTag !== genreTag) {
+                updates.genreTag = genreTag;
+            }
+
+            return Object.keys(updates).length > 0
+                ? { ...prevState, ...updates }
+                : prevState;
+        });
+    }, [processModerationData]);
+
+    // #endregion
+
+    /**
      * Gets the access token silently using msal.
-     * @returns {string} The access token.
+     * @returns {Promise<string>} The access token.
      */
     const getAccessToken = async () => {
         const tokenResponse = await instance.acquireTokenSilent({
@@ -120,8 +181,8 @@ function CreatePostComponent() {
     };
 
     /**
-     * Checks if user logged in.
-     * @returns {boolean} The boolean value of user login.
+     * Checks if user is logged in.
+     * @returns {boolean} True if user is logged in, false otherwise.
      */
     const isUserLoggedIn = () => {
         return (
@@ -132,8 +193,9 @@ function CreatePostComponent() {
     };
 
     /**
-     * Handles the form submit event.
-     * @param {Event} event The submit event.
+     * Handles the form submit event for creating a new post.
+     * @param {Event} event - The submit event.
+     * @returns {Promise<void>}
      */
     const handleCreatePost = async (event) => {
         event.preventDefault();
@@ -168,8 +230,8 @@ function CreatePostComponent() {
     };
 
     /**
-     * Handles the form change event.
-     * @param {Event} event The on change event.
+     * Handles the form change event for input fields.
+     * @param {Event} event - The change event.
      */
     const handleFormChange = (event) => {
         event.persist();
@@ -201,7 +263,7 @@ function CreatePostComponent() {
 
     /**
      * Handles the key down event to prevent form submission on Enter key press.
-     * @param {Event} event The key down event.
+     * @param {KeyboardEvent} event - The key down event.
      */
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
@@ -211,7 +273,7 @@ function CreatePostComponent() {
 
     /**
      * Handles the content change event for the rich text editor.
-     * @param {string} content The content of the editor.
+     * @param {string} content - The content of the editor.
      */
     const handleContentChange = useMemo(
         () => (content) => {
@@ -224,8 +286,9 @@ function CreatePostComponent() {
     );
 
     /**
-     * Handles the ai rewrite event.
-     * @param {Event} event The rewrite event.
+     * Handles the AI rewrite event for content enhancement.
+     * @param {Event} event - The rewrite event.
+     * @returns {Promise<void>}
      */
     const handleAiRewrite = async (event) => {
         event.preventDefault();
@@ -234,7 +297,7 @@ function CreatePostComponent() {
             ""
         ).trim();
         if (strippedContent !== "") {
-            var requestDto = new RewriteRequestDtoModel(postData.Content);
+            var requestDto = new UserStoryRequestDtoModel(strippedContent);
             const accessToken = await getAccessToken();
             dispatch(RewriteStoryWithAiAsync(requestDto, accessToken));
         }
@@ -259,10 +322,92 @@ function CreatePostComponent() {
     );
 
     /**
-     * Handles the cancel click event.
+     * Handles the moderation button click event to process content through AI moderation.
+     * @param {Event} event - The click event.
+     * @returns {Promise<void>}
      */
-    const handleCancelClick = () => {
-        navigate(HeaderPageConstants.Headings.Home.Link);
+    const handleModerateButtonClick = async (event) => {
+        event.preventDefault();
+
+        const strippedContent = postData.Content.replace(
+            /<[^>]*>?/gm,
+            ""
+        ).trim();
+        if (strippedContent !== "") {
+            var requestDto = new UserStoryRequestDtoModel(strippedContent);
+            const accessToken = await getAccessToken();
+            dispatch(HandlePostAiModerationTasksAsync(requestDto, accessToken));
+        }
+    };
+
+    /**
+     * Renders the create post action buttons based on moderation state.
+     * @returns {JSX.Element} The rendered buttons component.
+     */
+    const renderCreatePostButtons = () => {
+        return (
+            <div className="text-center">
+                {Object.values(AIModerationStoreData).length <= 0 ? (
+                    <Tooltip
+                        content={
+                            CreatePostPageConstants.Headings
+                                .ModerateWithAIButtonTexts.TooltipText
+                        }
+                        relationship="label"
+                        positioning="top"
+                    >
+                        <Button
+                            type="submit"
+                            onClick={handleModerateButtonClick}
+                            className={styles.moderateWithAiButton}
+                        >
+                            <ShinyText
+                                text={
+                                    CreatePostPageConstants.Headings
+                                        .ModerateWithAIButtonTexts.ButtonText
+                                }
+                                disabled={false}
+                                speed={3}
+                                className={styles.moderateWithAiButtonText}
+                            />
+                        </Button>
+                    </Tooltip>
+                ) : (
+                    <Button
+                        type="submit"
+                        onClick={handleCreatePost}
+                        className={styles.createButton}
+                    >
+                        {"Create"}
+                    </Button>
+                )}
+                &nbsp;&nbsp;
+                <CancelModalComponent />
+            </div>
+        );
+    };
+
+    /**
+     * Renders the moderation tags based on AI moderation results.
+     * @returns {JSX.Element} The rendered tags component.
+     */
+    const renderTags = () => {
+        const nsfwTag = AIModerationStoreData?.moderationData
+            ?.replace(/<[^>]*>?/gm, "")
+            .trim();
+        const genreTag = AIModerationStoreData?.tagData
+            ?.replace(/<[^>]*>?/gm, "")
+            .trim();
+        return (
+            <TagGroup>
+                {nsfwTag && (
+                    <Tag className={nsfwTag === "NSFW" ? styles.nsfwTag : null}>
+                        {nsfwTag}
+                    </Tag>
+                )}
+                {genreTag && <Tag className={styles.genreTag}>{genreTag}</Tag>}
+            </TagGroup>
+        );
     };
 
     return isUserLoggedIn() ? (
@@ -385,26 +530,14 @@ function CreatePostComponent() {
                                                     />
                                                 </Button>
                                             </Tooltip>
+                                            &nbsp;
+                                            <span className="ms-3">
+                                                {renderTags()}
+                                            </span>
                                         </>
                                     )}
                                 </div>
-
-                                <div className="text-center">
-                                    <Button
-                                        type="submit"
-                                        onClick={handleCreatePost}
-                                        className={styles.createButton}
-                                    >
-                                        {"Create"}
-                                    </Button>
-                                    &nbsp;
-                                    <Button
-                                        className={styles.cancelButton}
-                                        onClick={handleCancelClick}
-                                    >
-                                        {"Cancel"}
-                                    </Button>
-                                </div>
+                                {renderCreatePostButtons()}
                             </div>
                         </CardPreview>
                     </SpotlightCard>
