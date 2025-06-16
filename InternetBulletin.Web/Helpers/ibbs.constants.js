@@ -1,4 +1,4 @@
-export const PageConstants = {
+﻿export const PageConstants = {
     DarkModeConstant: "dark-mode",
     DarkConstant: "dark",
     LightConstant: "light",
@@ -173,7 +173,7 @@ export const AboutUsPageConstants = {
     ButtonTexts: {
         WebsiteNav: "Visit the official website",
     },
-    Subtitle: "Made with ❤️ and",
+    Subtitle: "Made with ❤ and",
 };
 
 export const FooterConstants = {
@@ -182,3 +182,6 @@ export const FooterConstants = {
     GithubLink: "https://github.com/debanjanpaul10",
     LinkedinLink: "https://www.linkedin.com/in/debanjan-paul/",
 };
+
+export const NSFWConstant = "NSFW";
+export const BlankTextErrorMessageConstant = "Atleast enter something in the text box boss!";

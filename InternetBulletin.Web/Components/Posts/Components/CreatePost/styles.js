@@ -63,7 +63,7 @@ const useStyles = makeStyles({
         boxShadow: tokens.shadow16,
     },
     moderateWithAiButtonText: {
-        color: tokens.colorBrandBackground,
+        color: tokens.colorPaletteSeafoamBackground2,
     },
     nsfwTag: {
         color: tokens.colorStatusDangerBackground3,

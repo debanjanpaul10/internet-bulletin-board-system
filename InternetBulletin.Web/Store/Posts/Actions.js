@@ -419,6 +419,12 @@ export const ToggleEditPostSpinner = (isLoading) => {
     };
 };
 
+/**
+ * Handles the AI moderation task api calls.
+ * @param {Object} userStoryRequestDto The user story request dto.
+ * @param {string} accessToken The access token.
+ * @returns {Promise} The promise of the api response.
+ */
 export const HandlePostAiModerationTasksAsync = (
     userStoryRequestDto,
     accessToken
@@ -462,7 +468,13 @@ export const HandlePostAiModerationTasksAsync = (
     };
 };
 
-const HandlePostAiModerationTasksSuccess = (tagData, moderationData) => {
+/**
+ * Stores the AI moderation data to redux store.
+ * @param {string} tagData The tag data.
+ * @param {string} moderationData The NSFW flag.
+ * @returns {Object} The action type and payload data.
+ */
+export const HandlePostAiModerationTasksSuccess = (tagData, moderationData) => {
     return {
         type: HANDLE_POST_AI_MODERATION,
         payload: {

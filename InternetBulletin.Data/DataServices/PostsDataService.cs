@@ -95,7 +95,10 @@ namespace InternetBulletin.Data.DataServices
 						IsActive = true,
 						PostCreatedDate = DateTime.UtcNow,
 						PostOwnerUserName = userName,
-						Ratings = 0
+						Ratings = 0,
+						PostModifiedDate = DateTime.UtcNow,
+						GenreTag = newPost.GenreTag,
+						IsNSFW = newPost.IsNSFW,
 					};
 					await this._dbContext.Posts.AddAsync(dbPostData);
 					await this._dbContext.SaveChangesAsync();
@@ -149,6 +152,9 @@ namespace InternetBulletin.Data.DataServices
 					{
 						dbPostData.PostTitle = updatedPost.PostTitle;
 						dbPostData.PostContent = updatedPost.PostContent;
+						dbPostData.IsNSFW = updatedPost.IsNSFW;
+						dbPostData.GenreTag = updatedPost.GenreTag;
+						dbPostData.PostModifiedDate = DateTime.UtcNow;
 
 						await this._dbContext.SaveChangesAsync();
 						return dbPostData;
