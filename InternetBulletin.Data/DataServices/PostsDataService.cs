@@ -81,7 +81,7 @@ namespace InternetBulletin.Data.DataServices
 		{
 			try
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, userName));
 
 				var postId = Guid.NewGuid();
 				var existingPost = await this._dbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
@@ -124,7 +124,7 @@ namespace InternetBulletin.Data.DataServices
 			}
 			finally
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
+				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, userName));
 			}
 		}
 

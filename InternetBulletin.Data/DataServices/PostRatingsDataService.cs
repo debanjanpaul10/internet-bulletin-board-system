@@ -158,7 +158,7 @@ namespace InternetBulletin.Data.DataServices
         {
             try
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, string.Empty));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, userName));
 
                 var query = from post in this._dbContext.Posts
                             where post.IsActive
@@ -189,7 +189,7 @@ namespace InternetBulletin.Data.DataServices
             }
             finally
             {
-                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, string.Empty));
+                this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsWithRatingsAsync), DateTime.UtcNow, userName));
             }
         }
     }
