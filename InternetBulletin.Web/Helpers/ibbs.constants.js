@@ -136,6 +136,11 @@ export const CreatePostPageConstants = {
         YesButtonText: "Yes, cancel",
         NoButtonText: "No, stay here",
     },
+    AiContentConstants: {
+        DialogHeader: "AI Response",
+        CancelButton: "Cancel changes",
+        AcceptButton: "Accept Changes"
+    }
 };
 
 export const NoPostsMessageConstant = {

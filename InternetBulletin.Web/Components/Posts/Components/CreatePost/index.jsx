@@ -7,8 +7,6 @@ import {
 	Button,
 	CardHeader,
 	Tooltip,
-	SkeletonItem,
-	Skeleton,
 	TagGroup,
 	Tag,
 } from "@fluentui/react-components";
@@ -19,11 +17,9 @@ import {
 	AddNewPostAsync,
 	HandlePostAiModerationTasksAsync,
 	HandlePostAiModerationTasksSuccess,
-	RewriteStoryWithAiAsync,
 } from "@store/Posts/Actions";
 import AddPostDtoModel from "@models/AddPostDto";
 import PageNotFound from "@components/Common/PageNotFound";
-import AiButton from "@assets/Images/ai-icon.svg";
 import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@components/Posts/Components/CreatePost/styles";
@@ -31,8 +27,9 @@ import { loginRequests } from "@services/auth.config";
 import { UserNameConstant } from "@helpers/config.constants";
 import SpotlightCard from "@animations/SpotlightCard";
 import BlurText from "@animations/BlurText";
-import ShinyText from "@animations/ShinyText";
 import CancelModalComponent from "../CancelModal";
+import RewriteTextComponent from "../RewriteText";
+import GradientText from "@animations/GradientText";
 
 /**
  * @component
@@ -57,7 +54,6 @@ import CancelModalComponent from "../CancelModal";
  * @function handleCreatePost - Handles form submission and post creation
  * @function handleFormChange - Manages form input changes
  * @function handleContentChange - Manages rich text editor content changes
- * @function handleAiRewrite - Handles AI-powered content rewriting
  * @function handleCancelClick - Handles navigation back to home page
  * @function handleConfirmCancel - Handles confirmation of cancellation
  *
@@ -105,19 +101,6 @@ function CreatePostComponent() {
 			setCurrentLoggedInUser();
 		}
 	}, [instance, accounts]);
-
-	useEffect(() => {
-		if (
-			AiRewrittenStoryStoreData !== "" &&
-			postData.Content !== "" &&
-			AiRewrittenStoryStoreData !== postData.Content
-		) {
-			setPostData({
-				...postData,
-				Content: AiRewrittenStoryStoreData,
-			});
-		}
-	}, [AiRewrittenStoryStoreData]);
 
 	useEffect(() => {
 		return () => {
@@ -212,12 +195,14 @@ function CreatePostComponent() {
 		event.preventDefault();
 
 		const validations = CreatePostPageConstants.validations;
+		const postTitleValidation = postData.Title.length > 50
+			? validations.MaxTitleLength
+			: "";
+
 		errors.Title =
 			postData.Title === ""
 				? validations.TitleRequired
-				: postData.Title.length > 50
-					? validations.MaxTitleLength
-					: "";
+				: postTitleValidation;
 		errors.Content =
 			postData.Content === "" ? validations.ContentRequired : "";
 		setErrors({ ...errors });
@@ -300,26 +285,6 @@ function CreatePostComponent() {
 	);
 
 	/**
-	 * Handles the AI rewrite event for content enhancement.
-	 * @param {Event} event - The rewrite event.
-	 * @returns {Promise<void>}
-	 */
-	const handleAiRewrite = async (event) => {
-		event.preventDefault();
-		const strippedContent = postData.Content.replace(
-			/<[^>]*>?/gm,
-			""
-		).trim();
-		if (strippedContent !== "") {
-			var requestDto = new UserStoryRequestDtoModel(strippedContent);
-			const accessToken = await getAccessToken();
-			dispatch(RewriteStoryWithAiAsync(requestDto, accessToken));
-		} else {
-			alert(BlankTextErrorMessageConstant);
-		}
-	};
-
-	/**
 	 * The modules for React Quill
 	 */
 	const modules = useMemo(
@@ -336,27 +301,6 @@ function CreatePostComponent() {
 		}),
 		[]
 	);
-
-	/**
-	 * Handles the moderation button click event to process content through AI moderation.
-	 * @param {Event} event - The click event.
-	 * @returns {Promise<void>}
-	 */
-	const handleModerateButtonClick = async (event) => {
-		event.preventDefault();
-
-		const strippedContent = postData.Content.replace(
-			/<[^>]*>?/gm,
-			""
-		).trim();
-		if (strippedContent !== "") {
-			var requestDto = new UserStoryRequestDtoModel(strippedContent);
-			const accessToken = await getAccessToken();
-			dispatch(HandlePostAiModerationTasksAsync(requestDto, accessToken));
-		} else {
-			alert(BlankTextErrorMessageConstant);
-		}
-	};
 
 	/**
 	 * Renders the create post action buttons based on moderation state.
@@ -388,15 +332,8 @@ function CreatePostComponent() {
 							onClick={handleModerateButtonClick}
 							className={styles.moderateWithAiButton}
 						>
-							<ShinyText
-								text={
-									CreatePostPageConstants.Headings
-										.ModerateWithAIButtonTexts.ButtonText
-								}
-								disabled={false}
-								speed={3}
-								className={styles.moderateWithAiButtonText}
-							/>
+							<GradientText>{CreatePostPageConstants.Headings
+								.ModerateWithAIButtonTexts.ButtonText}</GradientText>
 						</Button>
 					</Tooltip>
 				)}
@@ -421,6 +358,27 @@ function CreatePostComponent() {
 				{tagData && <Tag className={styles.genreTag}>{tagData}</Tag>}
 			</TagGroup>
 		);
+	};
+
+	/**
+	 * Handles the moderation button click event to process content through AI moderation.
+	 * @param {Event} event - The click event.
+	 * @returns {Promise<void>}
+	 */
+	const handleModerateButtonClick = async (event) => {
+		event.preventDefault();
+
+		const strippedContent = postData.Content.replace(
+			/<[^>]*>?/gm,
+			""
+		).trim();
+		if (strippedContent !== "") {
+			const requestDto = new UserStoryRequestDtoModel(strippedContent);
+			const accessToken = await getAccessToken();
+			dispatch(HandlePostAiModerationTasksAsync(requestDto, accessToken));
+		} else {
+			alert(BlankTextErrorMessageConstant);
+		}
 	};
 
 	return isUserLoggedIn() ? (
@@ -451,7 +409,7 @@ function CreatePostComponent() {
 											name="Title"
 											onChange={handleFormChange}
 											value={postData.Title}
-											className="form-control mt-0"
+											className={`form-control mt-0 ${styles.cardHeaderText}`}
 											id="Title"
 											placeholder={
 												CreatePostPageConstants.Headings
@@ -470,85 +428,37 @@ function CreatePostComponent() {
 						<CardPreview className={styles.cardPreview}>
 							<div className="form-group row mt-3">
 								<div className="col sm-12 mb-3 mb-sm-0 p-3">
-									{IsRewriteLoadingStoreData ? (
-										<Skeleton
-											aria-label="Profile data loading"
-											as="div"
-											className="row"
-										>
-											<div className="col-12 col-sm-12">
-												<SkeletonItem
-													className={
-														styles.rewriteTextSkeleton
-													}
-													appearance="translucent"
-													animation="pulse"
-													as="div"
-													size={128}
-												/>
-											</div>
-										</Skeleton>
-									) : (
-										<>
-											<ReactQuill
-												value={postData.Content}
-												onChange={handleContentChange}
-												id="Content"
-												className="text-editor"
-												placeholder={
-													CreatePostPageConstants
-														.Headings
-														.ContentBoxPlaceholder
-												}
-												modules={modules}
-											/>
-											{errors.Content && (
-												<span className="alert alert-danger ml-10 mt-3">
-													{errors.Content}
-												</span>
-											)}
-											<Tooltip
-												content={
-													CreatePostPageConstants
-														.Headings
-														.RewriteAIButtonTexts
-														.TooltipText
-												}
-												relationship="label"
-												positioning="after"
-											>
-												<Button
-													type="button"
-													className={
-														styles.aiEditButton
-													}
-													onClick={handleAiRewrite}
-												>
-													<img
-														src={AiButton}
-														style={{
-															height: "20px",
-															marginRight: "10px",
-														}}
-													/>
-													<ShinyText
-														text={
-															CreatePostPageConstants
-																.Headings
-																.RewriteAIButtonTexts
-																.ButtonText
-														}
-														disabled={false}
-														speed={3}
-													/>
-												</Button>
-											</Tooltip>
-											&nbsp;
-											<span className="ms-3">
-												{renderTags()}
-											</span>
-										</>
+									<ReactQuill
+										value={postData.Content}
+										onChange={handleContentChange}
+										id="Content"
+										className={styles.textEditor}
+										placeholder={
+											CreatePostPageConstants
+												.Headings
+												.ContentBoxPlaceholder
+										}
+										modules={modules}
+									/>
+									{errors.Content && (
+										<span className="alert alert-danger ml-10 mt-3">
+											{errors.Content}
+										</span>
 									)}
+									<RewriteTextComponent
+										originalText={postData.Content}
+										onTextChange={(newText) => {
+											setPostData({
+												...postData,
+												Content: newText
+											});
+										}}
+									/>
+									&nbsp;
+									<span className="ms-3">
+										{renderTags()}
+									</span>
+
 								</div>
 								{renderCreatePostButtons()}
 							</div>

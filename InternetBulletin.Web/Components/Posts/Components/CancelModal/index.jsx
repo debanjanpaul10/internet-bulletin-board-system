@@ -17,6 +17,17 @@ import {
 } from "@helpers/ibbs.constants";
 import { useStyles } from "./styles";
 
+/**
+ * A React component that provides a confirmation dialog for canceling the current operation.
+ * This component is typically used in forms or creation flows to confirm user's intention to cancel
+ * and navigate away from the current page.
+ * 
+ * @component
+ * @returns {JSX.Element} A button that triggers a confirmation dialog with options to confirm or cancel navigation
+ * 
+ * @example
+ * <CancelModalComponent />
+ */
 function CancelModalComponent() {
     const styles = useStyles();
     const navigate = useNavigate();
@@ -26,6 +37,7 @@ function CancelModalComponent() {
 
     /**
      * Handles the cancel click event to show confirmation dialog.
+     * Sets the dialog state to open when the cancel button is clicked.
      */
     const handleCancelClick = () => {
         setIsDialogOpen(true);
@@ -33,6 +45,7 @@ function CancelModalComponent() {
 
     /**
      * Handles the confirmation of cancellation and navigates to home page.
+     * Closes the dialog and navigates to the home page when user confirms cancellation.
      */
     const handleConfirmCancel = () => {
         setIsDialogOpen(false);

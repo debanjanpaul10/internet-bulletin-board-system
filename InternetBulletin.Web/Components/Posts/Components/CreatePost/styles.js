@@ -10,6 +10,9 @@ const useStyles = makeStyles({
         borderRadius: "8px",
         backgroundColor: tokens.colorNeutralCardBackground,
     },
+    cardHeaderText: {
+        boxShadow: tokens.shadow16,
+    },
     cardPreview: {
         marginTop: "auto",
         padding: "0px 10px 0px 10px",
@@ -79,6 +82,9 @@ const useStyles = makeStyles({
         },
         boxShadow: tokens.shadow16,
     },
+    textEditor: {
+        boxShadow: tokens.shadow16,
+    }
 });
 
 export { useStyles };
