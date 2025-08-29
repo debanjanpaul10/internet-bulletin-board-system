@@ -8,6 +8,7 @@
 namespace InternetBulletin.UnitTests.Business
 {
     using InternetBulletin.Shared.DTOs.ApplicationInfo;
+    using InternetBulletin.Shared.ExceptionHelpers;
     using MongoDB.Driver;
 
     /// <summary>
@@ -141,7 +142,7 @@ namespace InternetBulletin.UnitTests.Business
             this._mockMongoDb.Setup(db => db.GetCollection<ApplicationTechnologies>(It.IsAny<string>(), It.IsAny<MongoCollectionSettings>())).Returns((IMongoCollection<ApplicationTechnologies>)null!);
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => this._bulletinService.GetAboutUsDataAsync());
+            var exception = await Assert.ThrowsAsync<InternetBulletinBusinessException>(() => this._bulletinService.GetAboutUsDataAsync());
             Assert.Equal(ExceptionConstants.SomethingWentWrongMessageConstant, exception.Message);
             this._mockCacheService.Verify(x => x.GetCachedData<AboutUsAppInfoDataDTO>(CacheKeys.AboutUsDataCacheKey), Times.Once);
             this._mockMongoDb.Verify(x => x.GetCollection<ApplicationInformation>(It.IsAny<string>(), It.IsAny<MongoCollectionSettings>()), Times.Once);
