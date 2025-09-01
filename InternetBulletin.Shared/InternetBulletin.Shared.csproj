@@ -18,4 +18,10 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="ExceptionHelpers\" />
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>

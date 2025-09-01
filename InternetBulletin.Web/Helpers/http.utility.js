@@ -9,7 +9,7 @@ class HttpUtility {
     /**
      * The Web api base url endpoint.
      */
-    static WebApiEndpoint = UrlConstants.WebApiUrls.AzureWebApiUrl;
+    static WebApiEndpoint = UrlConstants.WebApiUrls.LocalUrl;
 
     /**
      * The Get API data function.

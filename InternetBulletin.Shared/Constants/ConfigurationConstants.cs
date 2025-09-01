@@ -57,15 +57,7 @@ namespace InternetBulletin.Shared.Constants
 		/// </summary>
 		public const string LocalAppsettingsFileConstant = "appsettings.development.json";
 
-		/// <summary>
-		/// The user name claim constant.
-		/// </summary>
-		public const string UserNameClaimConstant = "User Name";
 
-		/// <summary>
-		/// The user display name constant.
-		/// </summary>
-		public const string UserDisplayNameConstant = "name";
 
 		/// <summary>
 		/// The authorization constant.

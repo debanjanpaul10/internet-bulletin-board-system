@@ -53,26 +53,7 @@ namespace InternetBulletin.Shared.Constants
         public const string ApplicationTechnologiesCollectionConstant = "ApplicationTechnologies";
     }
 
-    /// <summary>
-    /// The enum for AI Usage details
-    /// </summary>
-    public enum AiUsages
-    {
-        /// <summary>
-        /// The rewrite story enum.
-        /// </summary>
-        RewriteStory = 1,
-
-        /// <summary>
-        /// The moderate content enum.
-        /// </summary>
-        ModerateContent = 2,
-
-        /// <summary>
-        /// The genre tag enum.
-        /// </summary>
-        GenreTag = 3,
-    }
+    
 }
 
 
