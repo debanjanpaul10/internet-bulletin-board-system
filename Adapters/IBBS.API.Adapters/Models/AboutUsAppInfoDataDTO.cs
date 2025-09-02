@@ -8,18 +8,18 @@ public class AboutUsAppInfoDataDTO
 	/// <summary>
 	/// The application information data.
 	/// </summary>
-	public ApplicationInformation ApplicationInformationData { get; set; } = new();
+	public ApplicationInformationDTO ApplicationInformationData { get; set; } = new();
 
 	/// <summary>
 	/// The application technologies data.
 	/// </summary>
-	public List<ApplicationTechnologies> ApplicationTechnologiesData { get; set; } = [];
+	public List<ApplicationTechnologiesDTO> ApplicationTechnologiesData { get; set; } = [];
 }
 
 /// <summary>
 /// The Application Information Data DTO.
 /// </summary>
-public class ApplicationInformation
+public class ApplicationInformationDTO
 {
 	/// <summary>
 	/// The Id.
@@ -34,38 +34,38 @@ public class ApplicationInformation
 	/// <summary>
 	/// The IntroductionDomain
 	/// </summary>
-	public Introduction Introduction { get; set; } = new();
+	public IntroductionDTO Introduction { get; set; } = new();
 
 	/// <summary>
 	/// The data object for what is IBBS.
 	/// </summary>
-	public WhatIsIBBS WhatIsIBBS { get; set; } = new();
+	public WhatIsIBBSDTO WhatIsIBBS { get; set; } = new();
 
 	/// <summary>
 	/// The key features object.
 	/// </summary>
-	public KeyFeatures KeyFeatures { get; set; } = new();
+	public KeyFeaturesDTO KeyFeatures { get; set; } = new();
 
 	/// <summary>
 	/// How to use object.
 	/// </summary>
-	public HowToUse HowToUse { get; set; } = new();
+	public HowToUseDTO HowToUse { get; set; } = new();
 
 	/// <summary>
 	/// The technical excellence object.
 	/// </summary>
-	public TechnicalExcellence TechnicalExcellence { get; set; } = new();
+	public TechnicalExcellenceDTO TechnicalExcellence { get; set; } = new();
 
 	/// <summary>
 	/// The upcoming features object.
 	/// </summary>
-	public UpcomingFeatures UpcomingFeatures { get; set; } = new();
+	public UpcomingFeaturesDTO UpcomingFeatures { get; set; } = new();
 }
 
 /// <summary>
 /// The application technologies data dto.
 /// </summary>
-public class ApplicationTechnologies
+public class ApplicationTechnologiesDTO
 {
 	/// <summary>
 	/// The Id.
@@ -96,7 +96,7 @@ public class ApplicationTechnologies
 /// <summary>
 /// The feature section.
 /// </summary>
-public class FeatureSection
+public class FeatureSectionDTO
 {
 	/// <summary>
 	/// The feature section title.
@@ -112,7 +112,7 @@ public class FeatureSection
 /// <summary>
 /// How to use data.
 /// </summary>
-public class HowToUse
+public class HowToUseDTO
 {
 	/// <summary>
 	/// The how to use title.
@@ -122,13 +122,13 @@ public class HowToUse
 	/// <summary>
 	/// The how to use sections.
 	/// </summary>
-	public List<UsageSection> Sections { get; set; } = [];
+	public List<UsageSectionDTO> Sections { get; set; } = [];
 }
 
 /// <summary>
 /// The introduction.
 /// </summary>
-public class Introduction
+public class IntroductionDTO
 {
 	/// <summary>
 	/// The title of introduction.
@@ -144,7 +144,7 @@ public class Introduction
 /// <summary>
 /// The Key features.
 /// </summary>
-public class KeyFeatures
+public class KeyFeaturesDTO
 {
 	/// <summary>
 	/// The key features title.
@@ -154,13 +154,13 @@ public class KeyFeatures
 	/// <summary>
 	/// The key features section.
 	/// </summary>
-	public List<FeatureSection> Sections { get; set; } = [];
+	public List<FeatureSectionDTO> Sections { get; set; } = [];
 }
 
 /// <summary>
 /// The Technical Excellence.
 /// </summary>
-public class TechnicalExcellence
+public class TechnicalExcellenceDTO
 {
 	/// <summary>
 	/// The technical excellence title.
@@ -170,13 +170,13 @@ public class TechnicalExcellence
 	/// <summary>
 	/// The technical excellence sections.
 	/// </summary>
-	public List<FeatureSection> Sections { get; set; } = [];
+	public List<FeatureSectionDTO> Sections { get; set; } = [];
 }
 
 /// <summary>
 /// The upcoming features.
 /// </summary>
-public class UpcomingFeatures
+public class UpcomingFeaturesDTO
 {
 	/// <summary>
 	/// The upcoming features title
@@ -186,13 +186,13 @@ public class UpcomingFeatures
 	/// <summary>
 	/// The upocoming features sections.
 	/// </summary>
-	public List<FeatureSection> Sections { get; set; } = [];
+	public List<FeatureSectionDTO> Sections { get; set; } = [];
 }
 
 /// <summary>
 /// The usage section.
 /// </summary>
-public class UsageSection
+public class UsageSectionDTO
 {
 	/// <summary>
 	/// The usage section title.
@@ -213,7 +213,7 @@ public class UsageSection
 /// <summary>
 /// What is IBBS data.
 /// </summary>
-public class WhatIsIBBS
+public class WhatIsIBBSDTO
 {
 	/// <summary>
 	/// The title for what is ibbs.

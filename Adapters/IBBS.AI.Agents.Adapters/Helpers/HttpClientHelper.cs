@@ -51,7 +51,7 @@ public class HttpClientHelper(ILogger<HttpClientHelper> logger, IConfiguration c
 
 			var client = httpClientFactory.CreateClient(ConfigurationConstants.AiAgentsHttpClient);
 			ArgumentException.ThrowIfNullOrEmpty(apiUrl);
-			await PrepareHttpClientFactoryAsync(client, TokenHelper.GetIbbsAiTokenAsync(configuration, logger));
+			await PrepareHttpClientFactoryAsync(client, TokenHelper.GetAiAgentsLabTokenAsync(configuration, logger));
 
 			var inputJson = JsonConvert.SerializeObject(data);
 			var contentData = new StringContent(content: inputJson, encoding: Encoding.UTF8, ConfigurationConstants.ApplicationJsonConstant);

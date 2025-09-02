@@ -25,8 +25,7 @@ public static class DIContainer
 	public static void ConfigureApiServices(this WebApplicationBuilder builder)
 	{
 		builder.ConfigureAuthenticationServices();
-		builder.Services.AddMemoryCache();
-		builder.Services.AddAPIHandlers()
+		builder.Services.AddMemoryCache().AddAPIHandlers()
 			.AddDataDependencies(builder.Configuration, builder.Environment.IsDevelopment())
 			.AddDomainServices().AddAiAgentsServices(builder.Configuration)
 			.AddMongoDbAdapterDependencies(builder.Configuration);
@@ -76,12 +75,21 @@ public static class DIContainer
 			options.TokenValidationParameters = new TokenValidationParameters
 			{
 				ValidateLifetime = true,
+				ValidateIssuer = true,
 				ValidateAudience = true,
 				RequireExpirationTime = true,
 				RequireSignedTokens = true,
+				ValidAudience = configuration[ConfigurationConstants.Auth0ApiAudience],
+				ValidIssuer = configuration[ConfigurationConstants.Auth0Domain],
+				SignatureValidator = (token, _) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token)
 			};
-			options.Authority = configuration[ConfigurationConstants.Auth0Domain];
-			options.Audience = configuration[ConfigurationConstants.Auth0ApiAudience];
+
+			// For development: disable HTTPS requirement
+			if (builder.Environment.IsDevelopment())
+			{
+				options.RequireHttpsMetadata = false;
+			}
+
 			options.Events = new JwtBearerEvents
 			{
 				OnTokenValidated = HandleAuthTokenValidationSuccessAsync,

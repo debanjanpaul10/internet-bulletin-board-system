@@ -62,7 +62,7 @@ internal static class Constants
 		/// <summary>
 		/// The mongo database name constant
 		/// </summary>
-		internal const string IbbsDatabase = "ibbs-database";
+		internal const string IbbsDatabase = "ibbs-mongo-db";
 
 		/// <summary>
 		/// The Application Information Collection

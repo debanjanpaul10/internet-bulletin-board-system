@@ -20,10 +20,21 @@ public class DomainMapperProfile : Profile
 	/// </summary>
 	public DomainMapperProfile()
 	{
-		CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
-		CreateMap<AboutUsAppInfoDataDomain, AboutUsAppInfoDataDTO>();
 		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
-		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
 		CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
+		CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
+		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
+
+		CreateMap<AboutUsAppInfoDataDomain, AboutUsAppInfoDataDTO>();
+		CreateMap<ApplicationInformationDomain, ApplicationInformationDTO>();
+		CreateMap<ApplicationTechnologiesDomain, ApplicationTechnologiesDTO>();
+		CreateMap<IntroductionDomain, IntroductionDTO>();
+		CreateMap<WhatIsIBBSDomain, WhatIsIBBSDTO>();
+		CreateMap<KeyFeaturesDomain, KeyFeaturesDTO>();
+		CreateMap<HowToUseDomain, HowToUseDTO>();
+		CreateMap<TechnicalExcellenceDomain, TechnicalExcellenceDTO>();
+		CreateMap<UpcomingFeaturesDomain, UpcomingFeaturesDTO>();
+		CreateMap<UsageSectionDomain, UsageSectionDTO>();
+		CreateMap<FeatureSectionDomain, FeatureSectionDTO>();
 	}
 }

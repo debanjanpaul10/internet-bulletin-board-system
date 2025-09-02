@@ -3,7 +3,9 @@ using IBBS.API.Adapters.Models.Posts;
 using IBBS.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
+using static IBBS.API.Helpers.SwaggerConstants.PostsController;
 
 namespace IBBS.API.Controllers;
 
@@ -22,9 +24,13 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 	/// Gets all posts data asynchronous.
 	/// </summary>
 	/// <returns>The action result.</returns>
-	[HttpGet]
+	[HttpGet(RouteConstants.PostsController.GetAllPosts_Route)]
 	[AllowAnonymous]
-	[Route(RouteConstants.PostsController.GetAllPosts_Route)]
+	[ProducesResponseType(typeof(IEnumerable<PostWithRatingsDTO>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = GetAllPostsDataAction.Summary, Description = GetAllPostsDataAction.Description, OperationId = GetAllPostsDataAction.OperationId)]
 	public async Task<IActionResult> GetAllPostsDataAsync()
 	{
 		try
@@ -57,8 +63,12 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 	/// </summary>
 	/// <param name="postId">The post identifier.</param>
 	/// <returns>The action result.</returns>
-	[HttpGet]
-	[Route(RouteConstants.PostsController.GetPost_Route)]
+	[HttpGet(RouteConstants.PostsController.GetPost_Route)]
+	[ProducesResponseType(typeof(PostDTO), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = GetPostAction.Summary, Description = GetPostAction.Description, OperationId = GetPostAction.OperationId)]
 	public async Task<IActionResult> GetPostAsync(string postId)
 	{
 		try
@@ -96,8 +106,12 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 	/// </summary>
 	/// <param name="newPost">The new post.</param>
 	/// <returns>The action result of JSON response.</returns>
-	[HttpPost]
-	[Route(RouteConstants.PostsController.NewPost_Route)]
+	[HttpPost(RouteConstants.PostsController.NewPost_Route)]
+	[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = AddNewPostAction.Summary, Description = AddNewPostAction.Description, OperationId = AddNewPostAction.OperationId)]
 	public async Task<IActionResult> AddNewPostAsync(AddPostDTO newPost)
 	{
 		try
@@ -134,8 +148,12 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 	/// </summary>
 	/// <param name="updatePost">The update post.</param>
 	/// <returns>The action result of the JSON response.</returns>
-	[HttpPost]
-	[Route(RouteConstants.PostsController.UpdatePost_Route)]
+	[HttpPost(RouteConstants.PostsController.UpdatePost_Route)]
+	[ProducesResponseType(typeof(PostDTO), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = UpdatePostAction.Summary, Description = UpdatePostAction.Description, OperationId = UpdatePostAction.OperationId)]
 	public async Task<IActionResult> UpdatePostAsync(UpdatePostDTO updatePost)
 	{
 		try
@@ -172,8 +190,12 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 	/// </summary>
 	/// <param name="postId">The post identifier.</param>
 	/// <returns>The action result of the JSON response.</returns>
-	[HttpPost]
-	[Route(RouteConstants.PostsController.DeletePost_Route)]
+	[HttpPost(RouteConstants.PostsController.DeletePost_Route)]
+	[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = DeletePostAction.Summary, Description = DeletePostAction.Description, OperationId = DeletePostAction.OperationId)]
 	public async Task<IActionResult> DeletePostAsync(string postId)
 	{
 		try

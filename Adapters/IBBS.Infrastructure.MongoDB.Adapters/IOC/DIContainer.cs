@@ -32,7 +32,7 @@ public static class DIContainer
 	private static IServiceCollection ConfigureMongoDbServer(this IServiceCollection services, IConfiguration configuration)
 	{
 		var mongoDbConnectionString = configuration[ConfigurationConstants.MongoDbConnectionStringConstant];
-		ArgumentException.ThrowIfNullOrWhiteSpace(mongoDbConnectionString);
+		ArgumentException.ThrowIfNullOrWhiteSpace(mongoDbConnectionString, nameof(mongoDbConnectionString));
 
 		try
 		{
@@ -43,11 +43,12 @@ public static class DIContainer
 				EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13,
 				CheckCertificateRevocation = false
 			};
+
 			services.AddSingleton<IMongoClient>(new MongoClient(settings));
 		}
 		catch (Exception ex)
 		{
-			throw new InvalidOperationException($"Failed to configure MongoDB client: {ex.Message}", ex);
+			throw new InvalidOperationException($"Failed to configure MongoDB client. Connection string format may be incorrect. Error: {ex.Message}", ex);
 		}
 
 		return services;

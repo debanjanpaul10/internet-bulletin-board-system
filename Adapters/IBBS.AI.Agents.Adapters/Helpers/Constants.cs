@@ -49,7 +49,7 @@ internal static class Constants
 		/// <summary>
 		/// The bearer constant
 		/// </summary>
-		internal const string BearerConstant = "Bearer ";
+		internal const string BearerConstant = "Bearer";
 
 		/// <summary>
 		/// The ai agents HTTP client
@@ -65,6 +65,31 @@ internal static class Constants
 		/// The local ai agents base URL
 		/// </summary>
 		internal const string LocalAiAgentsBaseUrl = "LocalAiAgentsBaseUrl";
+
+		/// <summary>
+		/// The ai agents web issuer constant
+		/// </summary>
+		internal const string AiAgentsWebIssuerConstant = "AiAgentsLab:WebIssuer";
+
+		/// <summary>
+		/// The ai agents ad client identifier
+		/// </summary>
+		internal const string AiAgentsAdClientId = "AiAgentsLab:ClientId";
+
+		/// <summary>
+		/// The ai agents ad client secret
+		/// </summary>
+		internal const string AiAgentsAdClientSecret = "AiAgentsLab:ClientSecret";
+
+		/// <summary>
+		/// The ai agents lab tenant identifier
+		/// </summary>
+		internal const string AiAgentsLabTenantId = "AiAgentsLab:TenantId";
+
+		/// <summary>
+		/// The token scope format
+		/// </summary>
+		internal const string TokenScopeFormat = "{0}/.default";
 	}
 
 	/// <summary>
