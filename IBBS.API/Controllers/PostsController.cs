@@ -37,14 +37,7 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 		{
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
 			var result = await postsHandler.GetAllPostsAsync(UserName ?? string.Empty);
-			if (result is not null && result.Any())
-			{
-				return HandleSuccessResult(result);
-			}
-			else
-			{
-				return this.HandleBadRequest(ExceptionConstants.PostsNotPresentMessageConstant);
-			}
+			return HandleSuccessResult(result);
 		}
 		catch (Exception ex)
 		{

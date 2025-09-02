@@ -1,4 +1,5 @@
 import React from "react";
+import { Spinner as FluentSpinner } from "@fluentui/react-components";
 
 import AppLogo from "@assets/Images/IBBS_logo.png";
 import { useStyles } from "./styles";
@@ -17,13 +18,19 @@ function Spinner({ isLoading }) {
 
     return (
         isLoading && (
-            <div className={styles.spinnerPageDark}>
-                <img
-                    src={AppLogo}
-                    height={"100px"}
-                    className="heartbeat"
-                    alt="Loading..."
-                />
+            <div className={styles.spinnerOverlay}>
+                <div className={styles.spinnerContent}>
+                    <img
+                        src={AppLogo}
+                        height={"60px"}
+                        className={styles.spinnerLogo}
+                        alt="IBBS Logo"
+                    />
+                    <FluentSpinner size="large" className={styles.spinner} />
+                    <p className={styles.loadingText}>
+                        Loading amazing content...
+                    </p>
+                </div>
             </div>
         )
     );

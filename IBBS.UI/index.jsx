@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fontsource/concert-one";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 import "@styles/App.css";
 import "@styles/App_Dark.css";
@@ -13,8 +14,7 @@ import { PostsReducer } from "@store/Posts/Reducers";
 import { CommonReducer } from "@store/Common/Reducers";
 import { UserReducer } from "@store/Users/Reducer";
 import Main from "@components/Main";
-import { Auth0Provider } from "@auth0/auth0-react";
-import { environment } from "environments/environment";
+import { environment } from "@environment";
 
 /**
  * Configures the redux store.
@@ -34,12 +34,22 @@ root.render(
         domain={environment.auth0Config.domain}
         clientId={environment.auth0Config.clientId}
         authorizationParams={{
-            redirect_uri: window.location.origin,
+            redirect_uri:
+                environment.auth0Config.redirectUri || window.location.origin,
+        }}
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
+        onRedirectCallback={(appState) => {
+            window.history.replaceState(
+                {},
+                document.title,
+                appState?.returnTo || window.location.pathname
+            );
         }}
     >
         <Router>
             <Provider store={store}>
-                <Main msalInstance={msalInstance} />
+                <Main />
             </Provider>
         </Router>
     </Auth0Provider>

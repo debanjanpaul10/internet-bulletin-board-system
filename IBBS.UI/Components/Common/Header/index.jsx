@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BugRegular, PanelLeftExpand28Regular } from "@fluentui/react-icons";
+import { BugRegular, Form28Color } from "@fluentui/react-icons";
 import { useDispatch } from "react-redux";
 import {
     Button,
@@ -68,8 +68,8 @@ function HeaderComponent() {
     return (
         <nav className={styles.navbar}>
             <div className={styles.navContent}>
-                {/* SIDE BAR */}
-                <div className="navbar-nav mr-auto">
+                {/* LEFT SIDE - SIDEBAR BUTTON */}
+                <div className={styles.leftSection}>
                     <Tooltip
                         content={ButtonTitles.SideDrawer}
                         relationship="label"
@@ -81,13 +81,13 @@ function HeaderComponent() {
                             onClick={toggleSideBar}
                             {...restoreFocusTargetAttributes}
                         >
-                            <PanelLeftExpand28Regular />
+                            <Form28Color />
                         </Button>
                     </Tooltip>
                 </div>
 
-                {/* IBBS LOGO */}
-                <div className="navbar-nav mx-auto">
+                {/* CENTER - IBBS LOGO */}
+                <div className={styles.centerSection}>
                     <Tooltip
                         content={ButtonTitles.HomeButton}
                         relationship="label"
@@ -97,14 +97,14 @@ function HeaderComponent() {
                             className={styles.homeButton}
                             appearance="subtle"
                         >
-                            <img src={AppLogo} height={"30px"} />
-                            &nbsp; {HomePageConstants.Headings.IBBS}
+                            <img src={AppLogo} height={"24px"} />
+                            {HomePageConstants.Headings.IBBS}
                         </Button>
                     </Tooltip>
                 </div>
 
-                {/* REPORT A BUG */}
-                <div className="navbar-nav mr-auto">
+                {/* RIGHT SIDE - BUG REPORT BUTTON */}
+                <div className={styles.rightSection}>
                     <Tooltip
                         content={ButtonTitles.BugButton}
                         relationship="label"
@@ -114,7 +114,7 @@ function HeaderComponent() {
                             appearance="subtle"
                             className={styles.bugButton}
                         >
-                            <BugRegular fontSize={30} />
+                            <BugRegular fontSize={24} />
                         </Button>
                     </Tooltip>
                 </div>

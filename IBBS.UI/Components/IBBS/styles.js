@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
     headerNav: {
@@ -10,19 +10,23 @@ const useStyles = makeStyles({
     },
     bodyContent: {
         overflow: "auto",
-        minHeight: "calc(100vh)",
+        minHeight: "calc(100vh - 80px)",
         position: "relative",
         zIndex: 1,
+        paddingBottom: "100px",
     },
     footerContent: {
-        width: "90%",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: "100%",
         height: "60px",
         display: "flex",
         justifyContent: "center",
-        position: "relative",
-        zIndex: 1,
-        margin: "50px auto 0 auto",
-        marginBottom: "-50px !imporant",
+        alignItems: "flex-end",
+        zIndex: 999,
+        padding: "0 20px 10px 20px",
     },
 });
 

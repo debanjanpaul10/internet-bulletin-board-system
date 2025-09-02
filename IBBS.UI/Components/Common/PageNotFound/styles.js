@@ -2,7 +2,7 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
     notFoundHeader: {
-        fontFamily: "Concert One",
+        fontFamily: "",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",

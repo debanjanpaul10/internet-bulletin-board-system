@@ -63,23 +63,19 @@ function AboutUsComponent() {
     };
 
     return (
-        <div className="container mt-5">
+        <div
+            className="container"
+            style={{ marginTop: "76px", paddingTop: "20px" }}
+        >
             {IsAboutUsLoading ? (
                 <Spinner isLoading={IsAboutUsLoading} />
             ) : Object.values(ApplicationInformationStoreData).length > 0 ? (
                 <>
                     <div className="row">
                         <div className="col-sm-12">
-                            <BlurText
-                                text={
-                                    MyProfilePageConstants.Headings
-                                        .AboutUsMessage
-                                }
-                                delay={150}
-                                animateBy="words"
-                                direction="top"
-                                className={styles.aboutUsHeading}
-                            />
+                            <h1 className={styles.aboutUsHeading}>
+                                {MyProfilePageConstants.Headings.AboutUsMessage}
+                            </h1>
                         </div>
                     </div>
                     <div className="row">
@@ -94,7 +90,7 @@ function AboutUsComponent() {
                         </div>
                     </div>
 
-                    <div className="row mt-4">
+                    <div className="row" style={{ marginTop: "20px" }}>
                         <Carousel
                             groupSize={1}
                             circular

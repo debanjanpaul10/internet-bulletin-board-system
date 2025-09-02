@@ -64,7 +64,7 @@ export const useStyles = makeStyles({
         },
     },
     heading: {
-        fontFamily: "Concert One",
+        fontFamily: "",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",

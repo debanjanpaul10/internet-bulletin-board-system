@@ -11,13 +11,15 @@ import {
 } from "@fluentui/react-components";
 import {
     SignOut24Regular,
-    AddCircle28Regular,
-    PersonAdd28Regular,
     Person28Regular,
     BookOpen28Regular,
-    PanelLeftContract28Regular,
+    Dismiss28Filled,
+    AddStarburst28Color,
+    Person28Color,
+    BookOpen28Color,
+    PersonAdd28Color,
 } from "@fluentui/react-icons";
-import { useMsal } from "@azure/msal-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
 import { useStyles } from "./styles";
@@ -32,7 +34,6 @@ import {
     LoginPageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
-import { loginRequests } from "@services/auth.config";
 import {
     GetAllPostsAsync,
     StartLoader,
@@ -53,7 +54,7 @@ import { UserNameConstant } from "@helpers/config.constants";
  * - Login/Logout functionality
  * - User profile access
  *
- * The drawer integrates with Microsoft Authentication Library (MSAL) for authentication
+ * The drawer integrates with Auth0 for authentication
  * and uses Redux for state management.
  *
  * @example
@@ -67,21 +68,27 @@ import { UserNameConstant } from "@helpers/config.constants";
  * @property {Function} navigate - React Router navigation function
  * @property {Function} dispatch - Redux dispatch function
  * @property {Object} restoreFocusSourceAttributes - Focus management attributes
- * @property {Object} accounts - MSAL accounts information
- * @property {Object} instance - MSAL instance
+ * @property {Object} user - Auth0 user information
+ * @property {boolean} isAuthenticated - Auth0 authentication status
  * @property {boolean} IsSideBarOpen - Redux state for drawer open/close
  * @property {boolean} isSideBarOpenState - Local state for drawer open/close
  * @property {Object} currentLoggedInUser - Current user information
  *
  * @see {@link https://react.fluentui.dev/?path=/docs/components-overlaydrawer--default OverlayDrawer Documentation}
- * @see {@link https://github.com/AzureAD/microsoft-authentication-library-for-js MSAL Documentation}
+ * @see {@link https://auth0.com/docs/libraries/auth0-react Auth0 React Documentation}
  */
 function SideDrawerComponent() {
     const styles = useStyles();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const restoreFocusSourceAttributes = useRestoreFocusSource();
-    const { accounts, instance } = useMsal();
+    const {
+        user,
+        isAuthenticated,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+    } = useAuth0();
 
     const { Headings, ButtonTitles } = HeaderPageConstants;
 
@@ -99,25 +106,26 @@ function SideDrawerComponent() {
     }, [IsSideBarOpen]);
 
     useEffect(() => {
-        if (accounts.length > 0) {
-            const userName = accounts[0].idTokenClaims[UserNameConstant];
-            setCurrentLoggedInUser(userName);
+        if (isAuthenticated && user) {
+            setCurrentLoggedInUser(user);
+            handleLoginSuccess();
         } else {
             setCurrentLoggedInUser();
         }
-    }, [instance, accounts]);
+    }, [isAuthenticated, user]);
 
     /**
-     * Gets the access token silently using msal.
+     * Gets the access token silently using Auth0.
      * @returns {string} The access token.
      */
     const getAccessToken = async () => {
-        const tokenData = await instance.acquireTokenSilent({
-            ...loginRequests,
-            account: accounts[0],
-        });
-
-        return tokenData.idToken;
+        try {
+            const token = await getAccessTokenSilently();
+            return token;
+        } catch (error) {
+            console.error("Error getting access token:", error);
+            return null;
+        }
     };
 
     /**
@@ -125,11 +133,7 @@ function SideDrawerComponent() {
      * @returns {boolean} The boolean value of user login.
      */
     const isUserLoggedIn = () => {
-        return (
-            currentLoggedInUser !== null &&
-            currentLoggedInUser !== undefined &&
-            currentLoggedInUser?.username !== ""
-        );
+        return isAuthenticated && user;
     };
 
     const handleSideBarClose = () => {
@@ -149,16 +153,12 @@ function SideDrawerComponent() {
      */
     const handleLoginEvent = () => {
         dispatch(StartLoader());
-        instance
-            .loginRedirect(loginRequests)
-            .then(async () => {
-                await handleLoginSuccess();
-            })
+        loginWithRedirect()
             .catch((error) => {
                 dispatch(
                     ToggleErrorToaster({
                         shouldShow: true,
-                        errorMessage: error,
+                        errorMessage: error.message,
                     })
                 );
                 console.error(error);
@@ -174,15 +174,8 @@ function SideDrawerComponent() {
      * Handles the successful login event.
      */
     async function handleLoginSuccess() {
-        dispatch(
-            ToggleSuccessToaster({
-                shouldShow: true,
-                successMessage: LoginPageConstants.LoginSuccess,
-            })
-        );
-
         let token = "";
-        if (accounts.length > 0) {
+        if (isAuthenticated) {
             token = await getAccessToken();
         }
         dispatch(GetAllPostsAsync(token));
@@ -193,15 +186,16 @@ function SideDrawerComponent() {
      */
     const handleLogout = () => {
         dispatch(StartLoader());
-        instance
-            .logoutRedirect({
-                postLogoutRedirectUri: "/",
-            })
+        logout({
+            logoutParams: {
+                returnTo: window.location.origin,
+            },
+        })
             .catch((error) => {
                 dispatch(
                     ToggleErrorToaster({
                         shouldShow: true,
-                        errorMessage: error,
+                        errorMessage: error.message,
                     })
                 );
                 console.error(error);
@@ -241,11 +235,15 @@ function SideDrawerComponent() {
             {...restoreFocusSourceAttributes}
             as="aside"
             open={isSideBarOpenState}
-            onOpenChange={(_, { open }) => setIsSideBarOpenState(open)}
+            onOpenChange={(_, { open, type }) => {
+                if (type !== "backdropClick") {
+                    setIsSideBarOpenState(open);
+                }
+            }}
             surfaceMotion={{
                 children: (_, props) => <DrawerMotion {...props} />,
             }}
-            size="medium"
+            size="small"
         >
             <DrawerHeader className={styles.drawerHeader}>
                 <DrawerHeaderTitle
@@ -254,8 +252,9 @@ function SideDrawerComponent() {
                             appearance="subtle"
                             aria-label="Close"
                             onClick={handleSideBarClose}
+                            className={styles.closeButton}
                         >
-                            <PanelLeftContract28Regular />
+                            <Dismiss28Filled />
                         </Button>
                     }
                 >
@@ -266,7 +265,10 @@ function SideDrawerComponent() {
                         appearance="subtle"
                     >
                         <img src={AppLogo} height={"30px"} />
-                        &nbsp; {HomePageConstants.Headings.IBBS}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span className="text-dark">
+                            {HomePageConstants.Headings.IBBS}
+                        </span>
                     </Button>
                 </DrawerHeaderTitle>
             </DrawerHeader>
@@ -283,10 +285,10 @@ function SideDrawerComponent() {
                             >
                                 <Button
                                     onClick={handleAddNewPostPageRedirect}
-                                    className={styles.button}
+                                    className={`${styles.button} ${styles.buttonOverride}`}
                                     appearance="transparent"
                                 >
-                                    <AddCircle28Regular />
+                                    <AddStarburst28Color />
                                     <span>{Headings.CreatePost.Name}</span>
                                 </Button>
                             </Tooltip>
@@ -304,11 +306,11 @@ function SideDrawerComponent() {
                                 positioning="after"
                             >
                                 <Button
-                                    className={styles.button}
+                                    className={`${styles.button} ${styles.buttonOverride}`}
                                     onClick={handleProfileRedirect}
                                     appearance="transparent"
                                 >
-                                    <Person28Regular />
+                                    <Person28Color />
                                     <span>{Headings.MyProfile.Name}</span>
                                 </Button>
                             </Tooltip>
@@ -326,10 +328,10 @@ function SideDrawerComponent() {
                         >
                             <Button
                                 onClick={handleAboutUsPageRedirect}
-                                className={styles.button}
+                                className={`${styles.button} ${styles.buttonOverride}`}
                                 appearance="transparent"
                             >
-                                <BookOpen28Regular />
+                                <BookOpen28Color />
                                 <span>{Headings.AboutUs.Name}</span>
                             </Button>
                         </Tooltip>
@@ -345,11 +347,11 @@ function SideDrawerComponent() {
                             positioning="after"
                         >
                             <Button
-                                className={styles.button}
+                                className={`${styles.button} ${styles.buttonOverride}`}
                                 onClick={handleLoginEvent}
                                 appearance="transparent"
                             >
-                                <PersonAdd28Regular />
+                                <PersonAdd28Color />
                                 <span>{Headings.Login.Name}</span>
                             </Button>
                         </Tooltip>
@@ -360,7 +362,7 @@ function SideDrawerComponent() {
                             positioning="after"
                         >
                             <Button
-                                className={styles.button}
+                                className={`${styles.button} ${styles.buttonOverride}`}
                                 onClick={handleLogout}
                                 appearance="transparent"
                             >

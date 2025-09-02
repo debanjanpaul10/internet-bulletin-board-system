@@ -17,7 +17,8 @@ public static class DIContainer
 	/// <returns>The service collection interface.</returns>
 	public static IServiceCollection AddAPIHandlers(this IServiceCollection services) =>
 		services.AddScoped<IAiServicesHandler, AiServicesHandler>()
+			.AddScoped<IPostsHandler, PostsHandler>()
 			.AddScoped<IPostRatingsHandler, PostRatingsHandler>()
 			.AddAutoMapper(mapperConfig => mapperConfig.AddProfile<DomainMapperProfile>());
-	
+
 }

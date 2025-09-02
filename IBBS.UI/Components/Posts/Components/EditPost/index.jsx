@@ -13,7 +13,7 @@ import {
     Skeleton,
     SkeletonItem,
 } from "@fluentui/react-components";
-import { useMsal } from "@azure/msal-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import ReactQuill from "react-quill-new";
 
 import AiButton from "@assets/Images/ai-icon.svg";
@@ -26,7 +26,6 @@ import {
 import { useStyles } from "@components/Posts/Components/EditPost/styles";
 import { CreatePostPageConstants } from "@helpers/ibbs.constants";
 import UpdatePostDtoModel from "@models/UpdatePostDto";
-import { loginRequests } from "@services/auth.config";
 import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 
 /**
@@ -60,7 +59,7 @@ import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 function EditPostComponent() {
     const dispatch = useDispatch();
     const styles = useStyles();
-    const { instance, accounts } = useMsal();
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     const IsEditModelOpenStoreData = useSelector(
         (state) => state.PostsReducer.isEditModalOpen
@@ -133,16 +132,17 @@ function EditPostComponent() {
     // #endregion
 
     /**
-     * Gets the access token silently using msal.
+     * Gets the access token silently using Auth0.
      * @returns {string} The access token.
      */
     const getAccessToken = async () => {
-        const tokenData = await instance.acquireTokenSilent({
-            ...loginRequests,
-            account: accounts[0],
-        });
-
-        return tokenData.idToken;
+        try {
+            const token = await getAccessTokenSilently();
+            return token;
+        } catch (error) {
+            console.error("Error getting access token:", error);
+            return null;
+        }
     };
 
     /**

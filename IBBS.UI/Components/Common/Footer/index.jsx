@@ -52,12 +52,14 @@ function FooterComponent() {
     ];
 
     return (
-        <Dock
-            items={dockItems}
-            panelHeight={30}
-            baseItemSize={30}
-            magnification={70}
-        />
+        <div className="mb-0">
+            <Dock
+                items={dockItems}
+                panelHeight={30}
+                baseItemSize={30}
+                magnification={70}
+            />
+        </div>
     );
 }
 

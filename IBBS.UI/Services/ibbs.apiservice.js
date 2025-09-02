@@ -146,7 +146,7 @@ export const ModerateContentDataApiAsync = async (storyText, accessToken) => {
  * @returns {Promise} The promise of the response from api.
  */
 export const GetApplicationInformationDataApiAsync = async () => {
-    return await HttpUtility.GetAsync("BulletinServices/GetAboutUsData", null);
+    return await HttpUtility.GetAsync("AiServices/GetAboutUsData", null);
 };
 
 // #endregion

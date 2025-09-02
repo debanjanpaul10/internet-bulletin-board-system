@@ -33,7 +33,6 @@ const useStyles = makeStyles({
         width: "100%",
     },
     yourPostsHeader: {
-        fontFamily: "Concert One",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",

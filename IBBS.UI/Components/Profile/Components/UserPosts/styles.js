@@ -49,7 +49,7 @@ const useStyles = makeStyles({
         paddingRight: "20px",
     },
     yourStoriesHeader: {
-        fontFamily: "Concert One",
+        fontFamily: "",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",

@@ -77,9 +77,6 @@ function IBBS() {
                     />
                 </Routes>
             </div>
-            <div className={styles.footerContent}>
-                <FooterComponent />
-            </div>
         </div>
     );
 }

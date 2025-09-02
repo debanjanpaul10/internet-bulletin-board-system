@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useMsal } from "@azure/msal-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Skeleton, SkeletonItem } from "@fluentui/react-components";
 
-import { loginRequests } from "@services/auth.config";
 import { GetUserProfileDataAsync } from "@store/Users/Actions";
 import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
@@ -20,7 +19,7 @@ import Magnet from "@animations/Magnet";
  * `ProfileComponent` Renders the user's profile page, displaying their personal information,
  * activity (posts and ratings), and handling authentication states.
  *
- * This component integrates with Azure MSAL for user authentication.
+ * This component integrates with Auth0 for user authentication.
  * On successful login, it fetches and displays the user's display name,
  * email address, username, their posts, and their ratings.
  * It shows a skeleton loading UI while data is being fetched.
@@ -36,7 +35,7 @@ import Magnet from "@animations/Magnet";
 function ProfileComponent() {
     const dispatch = useDispatch();
     const styles = useStyles();
-    const { instance, accounts } = useMsal();
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
     const { Headings } = MyProfilePageConstants;
 
     const UserProfileStoreData = useSelector(
@@ -78,56 +77,54 @@ function ProfileComponent() {
     }, [IsUserProfileDataLoadingStoreData]);
 
     useEffect(() => {
-        if (accounts.length > 0) {
-            const userName = accounts[0].idTokenClaims["User Name"];
-            setCurrentLoggedInUser(userName);
+        if (isAuthenticated && user) {
+            setCurrentLoggedInUser(user);
         } else {
             setCurrentLoggedInUser();
         }
-    }, [instance, accounts]);
+    }, [isAuthenticated, user]);
 
     /**
      * Checks if user is logged in.
      * @returns {boolean} The boolean value for logged in status.
      */
     const isUserLoggedIn = () => {
-        return (
-            currentLoggedInUser !== null &&
-            currentLoggedInUser !== undefined &&
-            currentLoggedInUser?.username !== ""
-        );
+        return isAuthenticated && user;
     };
 
     // #endregion
 
     /**
-     * Gets the access token silently using msal.
+     * Gets the access token silently using Auth0.
      * @returns {string} The access token.
      */
     const getAccessToken = async () => {
-        const tokenData = await instance.acquireTokenSilent({
-            ...loginRequests,
-            account: accounts[0],
-        });
-
-        return tokenData.idToken;
+        try {
+            const token = await getAccessTokenSilently();
+            return token;
+        } catch (error) {
+            console.error("Error getting access token:", error);
+            return null;
+        }
     };
 
     return isUserLoggedIn() ? (
-        <div className="container mt-5">
+        <div
+            className="container"
+            style={{ marginTop: "76px", paddingTop: "20px" }}
+        >
             <div className="row">
                 <div className="col-sm-12">
-                    <BlurText
-                        text={Headings.WelcomeMessage}
-                        delay={150}
-                        animateBy="words"
-                        direction="top"
-                        className={styles.profileHeading}
-                    />
+                    <h1 className={styles.profileHeading}>
+                        {Headings.WelcomeMessage}
+                    </h1>
                 </div>
 
                 {/* USER DETAILS */}
-                <div className="row position-relative mt-4">
+                <div
+                    className="row position-relative"
+                    style={{ marginTop: "20px" }}
+                >
                     {isUserDataLoading || !userStateData?.displayName ? (
                         <Skeleton
                             aria-label="Profile data loading"

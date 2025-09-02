@@ -1,5 +1,6 @@
 ﻿using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.UseCases;
+using InternetBulletin.Business.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IBBS.Domain.IOC;
@@ -15,6 +16,7 @@ public static class DIContainer
 	/// <param name="services">The services.</param>
 	/// <returns>The service collection.</returns>
 	public static IServiceCollection AddDomainServices(this IServiceCollection services) =>
-		 services.AddScoped<IAIService, AIService>().AddScoped<IPostRatingsService, PostRatingsService>();
+		 services.AddScoped<IAIService, AIService>().AddScoped<IPostRatingsService, PostRatingsService>()
+		.AddScoped<IPostsService, PostsService>().AddScoped<ICacheService, CacheService>();
 
 }

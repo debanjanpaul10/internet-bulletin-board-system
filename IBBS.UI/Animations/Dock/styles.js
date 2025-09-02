@@ -17,8 +17,6 @@ const useStyles = makeStyles({
         alignItems: "flex-end",
         width: "fit-content",
         gap: "1rem",
-        borderRadius: "1rem",
-        border: "1px solid #222",
         padding: "0 0.5rem 0.5rem",
     },
 
@@ -28,9 +26,6 @@ const useStyles = makeStyles({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: "10px",
-        backgroundColor: tokens.colorNeutralCardBackground,
-        border: "1px solid #222",
-        boxShadow: tokens.shadow28,
         cursor: "pointer",
         outline: "none",
     },
