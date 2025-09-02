@@ -76,14 +76,12 @@ public static class DIContainer
 			options.TokenValidationParameters = new TokenValidationParameters
 			{
 				ValidateLifetime = true,
-				ValidateIssuer = true,
 				ValidateAudience = true,
 				RequireExpirationTime = true,
 				RequireSignedTokens = true,
-				ValidAudience = configuration[ConfigurationConstants.IbbsWebClientIdConstant],
-				ValidIssuer = configuration[ConfigurationConstants.IBBSWebIssuerConstant],
-				SignatureValidator = (token, _) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token)
 			};
+			options.Authority = configuration[ConfigurationConstants.Auth0Domain];
+			options.Audience = configuration[ConfigurationConstants.Auth0ApiAudience];
 			options.Events = new JwtBearerEvents
 			{
 				OnTokenValidated = HandleAuthTokenValidationSuccessAsync,

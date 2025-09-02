@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBBS.AI.Agents.Adapters", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBBS.Infrastructure.MongoDB.Adapters", "Adapters\IBBS.Infrastructure.MongoDB.Adapters\IBBS.Infrastructure.MongoDB.Adapters.csproj", "{26DAE527-7747-4976-858A-9768FD0C6BC9}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "IBBS.Database", "IBBS.Database\IBBS.Database.sqlproj", "{849DF4E7-F43F-4238-ABAF-E3B145098584}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,23 @@ Global
 		{26DAE527-7747-4976-858A-9768FD0C6BC9}.Release|x64.Build.0 = Release|Any CPU
 		{26DAE527-7747-4976-858A-9768FD0C6BC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{26DAE527-7747-4976-858A-9768FD0C6BC9}.Release|x86.Build.0 = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.Build.0 = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.Build.0 = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.ActiveCfg = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.Build.0 = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.Deploy.0 = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.ActiveCfg = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.Build.0 = Release|Any CPU
+		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

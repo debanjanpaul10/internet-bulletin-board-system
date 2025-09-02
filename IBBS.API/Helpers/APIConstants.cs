@@ -36,14 +36,14 @@ internal static class APIConstants
 		internal const string IbbsAPIAppConfigKeyConstant = "IBBS.API";
 
 		/// <summary>
-		/// The ibbs web client identifier constant
+		/// The auth0 domain
 		/// </summary>
-		internal const string IbbsWebClientIdConstant = "IBBSWebClientId";
+		internal const string Auth0Domain = "Auth0:Domain";
 
 		/// <summary>
-		/// The ibbs web issuer constant
+		/// The auth0 API audience
 		/// </summary>
-		internal const string IBBSWebIssuerConstant = "IBBSWebIssuer";
+		internal const string Auth0ApiAudience = "Auth0:ApiAudience";
 
 		/// <summary>
 		/// The application json constant
