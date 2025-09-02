@@ -1,8 +1,6 @@
 ﻿using IBBS.Domain.DrivenPorts;
 using IBBS.Infrastructure.Persistence.Adapters.DataServices;
-using InternetBulletin.Data;
 using InternetBulletin.Data.Contracts;
-using InternetBulletin.Data.DataServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,10 +19,8 @@ public static class DIContainer
 	/// <param name="services">The services.</param>
 	/// <param name="configuration">The configuration.</param>
 	/// <param name="isDevelopmentMode">if set to <c>true</c> [is development mode].</param>
-	public static IServiceCollection AddDataDependencies(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode)
-	{
-		return services.ConfigureSqlDatabase(configuration, isDevelopmentMode).AddDataManagers();
-	}
+	public static IServiceCollection AddDataDependencies(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode) =>
+		 services.ConfigureSqlDatabase(configuration, isDevelopmentMode).AddDataManagers();
 
 	/// <summary>
 	/// Configures the SQL database.
@@ -51,13 +47,8 @@ public static class DIContainer
 	/// Configures the data manager dependencies.
 	/// </summary>
 	/// <param name="services">The services.</param>
-	private static IServiceCollection AddDataManagers(this IServiceCollection services)
-	{
-		return services.AddScoped<IPostsDataService, PostsDataService>()
-			.AddScoped<IProfilesDataService, ProfilesDataService>()
-			.AddScoped<IPostRatingsDataService, PostRatingsDataService>()
-			.AddScoped<IUsersDataService, UsersDataService>();
-	}
-
+	private static IServiceCollection AddDataManagers(this IServiceCollection services) =>
+		services.AddScoped<IPostsDataService, PostsDataService>()
+			.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
 
 }

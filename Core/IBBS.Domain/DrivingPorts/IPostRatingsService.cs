@@ -1,9 +1,10 @@
 namespace IBBS.Domain.DrivingPorts;
 
 using IBBS.Domain.DomainEntities;
+using IBBS.Domain.DomainEntities.Posts;
 
 /// <summary>
-/// Post ratings service interface.
+/// PostDomain ratings service interface.
 /// </summary>
 public interface IPostRatingsService
 {

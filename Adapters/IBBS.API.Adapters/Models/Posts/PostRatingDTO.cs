@@ -1,7 +1,7 @@
 namespace IBBS.API.Adapters.Models.Posts;
 
 /// <summary>
-/// The Post Ratings DTO.
+/// The PostDomain Ratings DTO.
 /// </summary>
 public class PostRatingDTO
 {

@@ -37,7 +37,8 @@ public class AiServicesHandler(IAIService aiServices, IMapper mapper) : IAiServi
 	/// </returns>
 	public async Task<AboutUsAppInfoDataDTO> GetAboutUsDataAsync()
 	{
-		throw new NotImplementedException();
+		var domainResult = await aiServices.GetAboutUsDataAsync().ConfigureAwait(false);
+		return mapper.Map<AboutUsAppInfoDataDTO>(domainResult);
 	}
 
 	/// <summary>

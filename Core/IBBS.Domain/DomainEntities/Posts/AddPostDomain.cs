@@ -1,18 +1,10 @@
-﻿namespace IBBS.Domain.DomainEntities;
+﻿namespace IBBS.Domain.DomainEntities.Posts;
 
 /// <summary>
-/// The Update post domain model.
+/// The add post domain model.
 /// </summary>
-public class UpdatePostDomain
+public class AddPostDomain
 {
-	/// <summary>
-	/// Gets or sets the post identifier.
-	/// </summary>
-	/// <value>
-	/// The post identifier.
-	/// </value>
-	public Guid PostId { get; set; }
-
 	/// <summary>
 	/// Gets or sets the post title.
 	/// </summary>
@@ -30,10 +22,10 @@ public class UpdatePostDomain
 	public string PostContent { get; set; } = string.Empty;
 
 	/// <summary>
-	/// Gets or sets the post rating.
+	/// Gets or sets the post created by.
 	/// </summary>
 	/// <value>
-	/// The post rating.
+	/// The post created by.
 	/// </value>
-	public int? PostRating { get; set; }
+	public string PostCreatedBy { get; set; } = string.Empty;
 }

@@ -56,5 +56,66 @@ internal static class Constants
 		/// The unable to get user post ratings message constant
 		/// </summary>
 		internal const string UnableToGetUserPostRatingsMessageConstant = "Unable to retrieve user's post ratings as of this moment!";
+
+		/// <summary>
+		/// The post exists message constant
+		/// </summary>
+		internal const string PostExistsMessageConstant = "A post with the generated ID already exists.";
+	}
+
+	/// <summary>
+	/// The database constants class.
+	/// </summary>
+	public static class DatabaseConstants
+	{
+		/// <summary>
+		/// The integer data type constant
+		/// </summary>
+		public const string IntegerDataTypeConstant = "int";
+
+		/// <summary>
+		/// The n variable character maximum data type constant
+		/// </summary>
+		public const string NVarCharMaxDataTypeConstant = "nvarchar(max)";
+
+		/// <summary>
+		/// The bit data type constant
+		/// </summary>
+		public const string BitDataTypeConstant = "bit";
+
+		/// <summary>
+		/// The unique identifier data type constant.
+		/// </summary>
+		public const string UniqueIdentifierDataTypeConstant = "uniqueidentifier";
+
+		/// <summary>
+		/// The date time data type constant.
+		/// </summary>
+		public const string DateTimeDataTypeConstant = "datetime";
+
+		/// <summary>
+		/// The users table constant
+		/// </summary>
+		public const string UsersTableConstant = "Users";
+
+		/// <summary>
+		/// The posts table constant.
+		/// </summary>
+		public const string PostsTableConstant = "Posts";
+
+		/// <summary>
+		/// The primary key posts constant.
+		/// </summary>
+		public const string PrimaryKeyPostsConstant = "PK_Posts";
+
+		/// <summary>
+		/// The post ratings table name constant.
+		/// </summary>
+		public const string PostRatingsTableNameConstant = "PostRatings";
+
+		/// <summary>
+		/// The AI Usages table name constant.
+		/// </summary>
+		public const string AiUsagesTableNameConstant = "AiUsages";
 	}
 }

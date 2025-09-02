@@ -26,6 +26,16 @@ internal class DomainConstants
 		/// </summary>
 		/// <returns>{0} failed at {1} with {2}</returns>
 		public const string MethodFailedWithMessageConstant = "Method {0} failed at {1} with {2}";
+
+		/// <summary>
+		/// The cache key not found message constant.
+		/// </summary>
+		internal const string CacheKeyNotFoundMessageConstant = "Cache service could not find the key: {0}";
+
+		/// <summary>
+		/// The cache key found message constant.
+		/// </summary>
+		internal const string CacheKeyFoundMessageConstant = "Cache service found the existing key: {0}";
 	}
 
 	/// <summary>
@@ -47,6 +57,16 @@ internal class DomainConstants
 		/// The post unique identifier not exists message constant
 		/// </summary>
 		internal const string PostGuidNotValidMessageConstant = "The provided postId is not a valid GUID.";
+
+		/// <summary>
+		/// The key name is null message constant
+		/// </summary>
+		internal const string KeyNameIsNullMessageConstant = "Key name is null or empty";
+
+		/// <summary>
+		/// The null post message constant
+		/// </summary>
+		internal const string NullPostMessageConstant = "Attempted to add a null post.";
 	}
 }
 

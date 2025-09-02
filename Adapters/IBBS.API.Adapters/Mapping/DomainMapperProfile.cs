@@ -3,7 +3,9 @@ using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.Posts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
+using IBBS.Domain.DomainEntities.Posts;
 using InternetBulletin.Shared.DTOs.AI;
+using InternetBulletin.Shared.DTOs.Users;
 
 namespace IBBS.API.Adapters.Mapping;
 
@@ -22,5 +24,6 @@ public class DomainMapperProfile : Profile
 		CreateMap<AboutUsAppInfoDataDomain, AboutUsAppInfoDataDTO>();
 		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
 		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
+		CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
 	}
 }

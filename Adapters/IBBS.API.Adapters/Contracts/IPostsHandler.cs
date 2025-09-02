@@ -1,11 +1,11 @@
-﻿namespace IBBS.Domain.DrivingPorts;
+﻿using IBBS.API.Adapters.Models.Posts;
 
-using IBBS.Domain.DomainEntities.Posts;
+namespace IBBS.API.Adapters.Contracts;
 
 /// <summary>
-/// The Posts BusinessManager Interface Class.
+/// The posts api adapter handler interface.
 /// </summary>
-public interface IPostsService
+public interface IPostsHandler
 {
 	/// <summary>
 	/// Gets the post asynchronous.
@@ -13,7 +13,7 @@ public interface IPostsService
 	/// <param name="postId">The post identifier.</param>
 	/// <param name="userName"The user name.</param>
 	/// <returns>The specific post.</returns>
-	Task<PostDomain> GetPostAsync(string postId, string userName);
+	Task<PostDTO> GetPostAsync(string postId, string userName);
 
 	/// <summary>
 	/// Adds the new post asynchronous.
@@ -21,7 +21,7 @@ public interface IPostsService
 	/// <param name="newPost">The new post.</param>
 	/// <param name="userName">The User name.</param>
 	/// <returns>The boolean for success or failure.</returns>
-	Task<bool> AddNewPostAsync(AddPostDomain newPost, string userName);
+	Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName);
 
 	/// <summary>
 	/// Updates the post asynchronous.
@@ -29,7 +29,7 @@ public interface IPostsService
 	/// <param name="updatedPost">The updated post.</param>
 	/// <param name="userName">The user name.</param>
 	/// <returns>The updated post data.</returns>
-	Task<PostDomain> UpdatePostAsync(UpdatePostDomain updatedPost, string userName);
+	Task<PostDTO> UpdatePostAsync(UpdatePostDTO updatedPost, string userName);
 
 	/// <summary>
 	/// Deletes the post asynchronous.
@@ -44,5 +44,5 @@ public interface IPostsService
 	/// </summary>
 	/// <param name="userName">The user name</param>
 	/// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
-	Task<List<PostWithRatingsDomain>> GetAllPostsAsync(string userName);
+	Task<IEnumerable<PostWithRatingsDTO>> GetAllPostsAsync(string userName);
 }

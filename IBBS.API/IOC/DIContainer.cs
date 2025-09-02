@@ -1,5 +1,10 @@
 ﻿using Azure.Identity;
+using IBBS.AI.Agents.Adapters.IOC;
+using IBBS.API.Adapters.IOC;
 using IBBS.API.Controllers;
+using IBBS.Domain.IOC;
+using IBBS.Infrastructure.MongoDB.Adapters.IOC;
+using IBBS.Infrastructure.Persistence.Adapters.IOC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +26,10 @@ public static class DIContainer
 	{
 		builder.ConfigureAuthenticationServices();
 		builder.Services.AddMemoryCache();
+		builder.Services.AddAPIHandlers()
+			.AddDataDependencies(builder.Configuration, builder.Environment.IsDevelopment())
+			.AddDomainServices().AddAiAgentsServices(builder.Configuration)
+			.AddMongoDbAdapterDependencies(builder.Configuration);
 	}
 
 	/// <summary>

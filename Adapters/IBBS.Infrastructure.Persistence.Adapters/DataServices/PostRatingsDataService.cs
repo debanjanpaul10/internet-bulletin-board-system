@@ -1,14 +1,14 @@
 namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
 
-using IBBS.Domain.DomainEntities;
-using InternetBulletin.Data;
+using IBBS.Domain.DomainEntities.Posts;
+using IBBS.Infrastructure.Persistence.Adapters;
 using InternetBulletin.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
 
 /// <summary>
-/// Post ratings data service class.
+/// PostDomain ratings data service class.
 /// </summary>
 /// <param name="logger">The application logger</param>
 /// <param name="sqlDbContext">The sql db context</param>

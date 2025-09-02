@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models.Posts;
-using IBBS.Domain.DomainEntities;
+using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivingPorts;
 
 namespace IBBS.API.Adapters.Handlers;

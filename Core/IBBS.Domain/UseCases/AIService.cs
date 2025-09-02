@@ -7,13 +7,8 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using static IBBS.Domain.Helpers.DomainConstants;
 
-/// <summary>
-/// The AI Service class.
-/// </summary>
-/// <param name="aiDataService">The AI Data service</param>
-/// <param name="httpClientHelper">The http client helper</param>
-/// <seealso cref="IAIService"/>
-public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logger) : IAIService
+
+public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logger, IMongoDbDatabaseManager mongoDbDatabaseManager) : IAIService
 {
 	/// <summary>
 	/// Rewrites the provided story using AI processing.
@@ -87,9 +82,28 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		}
 	}
 
-	public Task<AboutUsAppInfoDataDomain> GetAboutUsDataAsync()
+	/// <summary>
+	/// Gets the application information data asynchronously.
+	/// </summary>
+	/// <returns>
+	/// The about us details data <see cref="AboutUsAppInfoDataDomain" />
+	/// </returns>
+	public async Task<AboutUsAppInfoDataDomain> GetAboutUsDataAsync()
 	{
-		throw new NotImplementedException();
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetAboutUsDataAsync), DateTime.UtcNow, string.Empty));
+			return await mongoDbDatabaseManager.GetAboutUsDataAsync().ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetAboutUsDataAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetAboutUsDataAsync), DateTime.UtcNow, string.Empty));
+		}
 	}
 
 

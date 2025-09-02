@@ -1,4 +1,4 @@
-﻿namespace IBBS.Domain.DomainEntities;
+﻿namespace IBBS.Domain.DomainEntities.Posts;
 
 /// <summary>
 /// The post with ratings domain model.

@@ -146,10 +146,7 @@ internal static class APIConstants
 		/// </summary>
 		public const string UserIdCannotBeNullMessageConstant = "The user id passed must be a valid integer boss!";
 
-		/// <summary>
-		/// The key name is null message constant
-		/// </summary>
-		public const string KeyNameIsNullMessageConstant = "Key name is null or empty";
+
 
 		/// <summary>
 		/// The un authorized constant

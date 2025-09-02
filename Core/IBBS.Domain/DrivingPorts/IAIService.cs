@@ -1,6 +1,6 @@
-﻿namespace IBBS.Domain.DrivingPorts;
+﻿using IBBS.Domain.DomainEntities.AI;
 
-using IBBS.Domain.DomainEntities.AI;
+namespace IBBS.Domain.DrivingPorts;
 
 /// <summary>
 /// AI Services interface.
@@ -34,6 +34,6 @@ public interface IAIService
 	/// <summary>
 	/// Gets the application information data asynchronously.
 	/// </summary>
-	/// <returns>The about us details data <see cref="AboutUsAppInfoDataDTO"/></returns>
+	/// <returns>The about us details data <see cref="AboutUsAppInfoDataDomain"/></returns>
 	Task<AboutUsAppInfoDataDomain> GetAboutUsDataAsync();
 }

@@ -7,7 +7,7 @@ using static IBBS.API.Helpers.APIConstants;
 namespace IBBS.API.Controllers;
 
 /// <summary>
-/// The Post Ratings Controller Class.
+/// The PostDomain Ratings Controller Class.
 /// </summary>
 /// <seealso cref="BaseController" />
 /// <param name="httpContextAccessor">The http context accessor.</param>

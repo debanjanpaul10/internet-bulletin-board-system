@@ -15,10 +15,9 @@ public static class DIContainer
 	/// </summary>
 	/// <param name="services">The services.</param>
 	/// <returns>The service collection interface.</returns>
-	public static IServiceCollection AddAPIHandlers(this IServiceCollection services)
-	{
-		return services.AddScoped<IAiServicesHandler, AiServicesHandler>()
+	public static IServiceCollection AddAPIHandlers(this IServiceCollection services) =>
+		services.AddScoped<IAiServicesHandler, AiServicesHandler>()
 			.AddScoped<IPostRatingsHandler, PostRatingsHandler>()
 			.AddAutoMapper(mapperConfig => mapperConfig.AddProfile<DomainMapperProfile>());
-	}
+	
 }

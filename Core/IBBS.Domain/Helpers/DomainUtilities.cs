@@ -1,5 +1,4 @@
-﻿using IBBS.Domain.DomainEntities;
-using InternetBulletin.Data.Entities;
+﻿using IBBS.Domain.DomainEntities.Posts;
 using Microsoft.Extensions.Logging;
 using static IBBS.Domain.Helpers.DomainConstants;
 
@@ -65,7 +64,7 @@ internal static class DomainUtilities
 	/// Creates update post dto.
 	/// </summary>
 	/// <param name="post">The post.</param>
-	internal static UpdatePostDomain CreateUpdatePostDTO(Post post)
+	internal static UpdatePostDomain CreateUpdatePostDTO(PostDomain post)
 	{
 		return new UpdatePostDomain
 		{

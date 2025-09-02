@@ -1,281 +1,258 @@
-﻿// *********************************************************************************
-//	<copyright file="PostsDataService.cs" company="Personal">
-//		Copyright (c) 2025 Personal
-//	</copyright>
-// <summary>The Posts Data Manager Class.</summary>
-// *********************************************************************************
+﻿using IBBS.Domain.DomainEntities.Posts;
+using IBBS.Domain.DrivenPorts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
 
-namespace InternetBulletin.Data.DataServices
+namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
+
+/// <summary>
+/// The posts data service.
+/// </summary>
+/// <param name="dbContext">The database context.</param>
+/// <param name="logger">The logger service.</param>
+/// <seealso cref="IBBS.Domain.DrivenPorts.IPostsDataService" />
+public class PostsDataService(SqlDbContext dbContext, ILogger<PostsDataService> logger) : IPostsDataService
 {
-	using InternetBulletin.Data.Contracts;
-	using InternetBulletin.Data.Entities;
-	using InternetBulletin.Shared.Constants;
-	using InternetBulletin.Shared.DTOs.Posts;
-	using Microsoft.EntityFrameworkCore;
-	using Microsoft.Extensions.Logging;
-	using System.Collections.Generic;
-	using System.Threading.Tasks;
+	/// <summary>
+	/// Gets the post asynchronous.
+	/// </summary>
+	/// <param name="postId">The post identifier.</param>
+	/// <param name="userName">The user name.</param>
+	/// <param name="isForCurrentUser">Checks if requested for the current user</param>
+	/// <returns>
+	/// The specific post.
+	/// </returns>
+	public async Task<PostDomain> GetPostAsync(Guid postId, string userName, bool isForCurrentUser)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
+
+			var query = dbContext.Posts.Where(p => p.PostId == postId && p.IsActive);
+			query = isForCurrentUser
+				? query.Where(p => p.PostOwnerUserName == userName)
+				: query.Where(p => p.PostOwnerUserName != userName);
+
+			var result = await query.FirstOrDefaultAsync() ?? new PostDomain();
+			return result;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetPostAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetPostAsync), DateTime.UtcNow, postId));
+		}
+	}
 
 	/// <summary>
-	/// The Posts DataManager Class.
+	/// Adds the new post asynchronous.
 	/// </summary>
-	/// <param name="cosmosDbContext">The Cosmos DB Context.</param>
-	/// <param name="logger">The Logger.</param>
-	public class PostsDataService(SqlDbContext dbContext, ILogger<PostsDataService> logger) : IPostsDataService
+	/// <param name="newPost">The new post.</param>
+	/// <returns>
+	/// The boolean for success or failure.
+	/// </returns>
+	public async Task<bool> AddNewPostAsync(AddPostDomain newPost, string userName)
 	{
-		/// <summary>
-		/// The Cosmos database context
-		/// </summary>
-		private readonly SqlDbContext _dbContext = dbContext;
-
-		/// <summary>
-		/// The logger
-		/// </summary>
-		private readonly ILogger<PostsDataService> _logger = logger;
-
-		/// <summary>
-		/// Gets the post asynchronous. 
-		/// </summary>
-		/// <param name="postId">The post identifier.</param>
-		/// <param name="userName">The user name.</param>
-		/// <param name="isForCurrentUser">
-		///     If the flag is true, then the post must belong to the current user
-		///     else if it is false, then the post must not belong to the current user
-		/// </param>
-		/// <returns>
-		/// The specific post.
-		/// </returns>
-		public async Task<Post> GetPostAsync(Guid postId, string userName, bool isForCurrentUser)
+		try
 		{
-			try
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
 
-				var query = _dbContext.Posts.Where(p => p.PostId == postId && p.IsActive);
-				query = isForCurrentUser
-					? query.Where(p => p.PostOwnerUserName == userName)
-					: query.Where(p => p.PostOwnerUserName != userName);
+			var postId = Guid.NewGuid();
+			var existingPost = await dbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
+			if (!existingPost)
+			{
+				var dbPostData = new PostDomain()
+				{
+					PostId = postId,
+					PostContent = newPost.PostContent,
+					PostTitle = newPost.PostTitle,
+					IsActive = true,
+					PostCreatedDate = DateTime.UtcNow,
+					PostOwnerUserName = userName,
+					Ratings = 0
+				};
+				await dbContext.Posts.AddAsync(dbPostData);
+				await dbContext.SaveChangesAsync();
+				return true;
+			}
+			else
+			{
+				var exception = new Exception(ExceptionConstants.PostExistsMessageConstant);
+				logger.LogError(exception, exception.Message);
 
-				var result = await query.FirstOrDefaultAsync() ?? new Post();
-				return result;
-			}
-			catch (Exception ex)
-			{
-				this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetPostAsync), DateTime.UtcNow, ex.Message));
-				throw;
-			}
-			finally
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetPostAsync), DateTime.UtcNow, postId));
+				throw exception;
 			}
 		}
-
-		/// <summary>
-		/// Adds the new post asynchronous.
-		/// </summary>
-		/// <param name="newPost">The new post.</param>
-		/// <returns>
-		/// The boolean for success or failure.
-		/// </returns>
-		public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
+		catch (DbUpdateException dbEx)
 		{
-			try
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-
-				var postId = Guid.NewGuid();
-				var existingPost = await this._dbContext.Posts.AnyAsync(x => x.PostId == postId && x.IsActive);
-				if (!existingPost)
-				{
-					var dbPostData = new Post()
-					{
-						PostId = postId,
-						PostContent = newPost.PostContent,
-						PostTitle = newPost.PostTitle,
-						IsActive = true,
-						PostCreatedDate = DateTime.UtcNow,
-						PostOwnerUserName = userName,
-						Ratings = 0
-					};
-					await this._dbContext.Posts.AddAsync(dbPostData);
-					await this._dbContext.SaveChangesAsync();
-					return true;
-				}
-				else
-				{
-					var exception = new Exception(ExceptionConstants.PostExistsMessageConstant);
-					this._logger.LogError(exception, exception.Message);
-
-					throw exception;
-				}
-			}
-			catch (DbUpdateException dbEx)
-			{
-				this._logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(AddNewPostAsync), DateTime.UtcNow, dbEx.Message));
-				throw;
-			}
-			catch (Exception ex)
-			{
-				this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(AddNewPostAsync), DateTime.UtcNow, ex.Message));
-				throw;
-			}
-			finally
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-			}
+			logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(AddNewPostAsync), DateTime.UtcNow, dbEx.Message));
+			throw;
 		}
-
-		/// <summary>
-		/// Updates the post asynchronous.
-		/// </summary>
-		/// <param name="updatedPost">The updated post.</param>
-		/// <param name="userName">The user name</param>
-		/// <param name="isRatingUpdate">The boolean flag to signify rating update.</param>
-		/// <returns>The updated post data.</returns>
-		public async Task<Post> UpdatePostAsync(UpdatePostDTO updatedPost, string userName, bool isRatingUpdate)
+		catch (Exception ex)
 		{
-			try
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, updatedPost.PostId));
-
-				if (isRatingUpdate)
-				{
-					return await this.HandleRatingUpdateForPostAsync(updatedPost);
-				}
-				else
-				{
-					var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName);
-					if (dbPostData is not null)
-					{
-						dbPostData.PostTitle = updatedPost.PostTitle;
-						dbPostData.PostContent = updatedPost.PostContent;
-
-						await this._dbContext.SaveChangesAsync();
-						return dbPostData;
-					}
-					else
-					{
-						var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-						this._logger.LogError(exception, exception.Message);
-						throw exception;
-					}
-				}
-
-			}
-			catch (DbUpdateException dbEx)
-			{
-				this._logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdatePostAsync), DateTime.UtcNow, dbEx.Message));
-				throw;
-			}
-			catch (Exception ex)
-			{
-				this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdatePostAsync), DateTime.UtcNow, ex.Message));
-				throw;
-			}
-			finally
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdatePostAsync), DateTime.UtcNow, updatedPost.PostId));
-			}
+			logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(AddNewPostAsync), DateTime.UtcNow, ex.Message));
+			throw;
 		}
-
-		/// <summary>
-		/// Deletes the post asynchronous.
-		/// </summary>
-		/// <param name="postId">The post identifier.</param>
-		/// <param name="userName">The user name.</param>
-		/// <returns>
-		/// The boolean for success / failure
-		/// </returns>
-		public async Task<bool> DeletePostAsync(Guid postId, string userName)
+		finally
 		{
-			try
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
+		}
+	}
+
+	/// <summary>
+	/// Updates the post asynchronous.
+	/// </summary>
+	/// <param name="updatedPost">The updated post.</param>
+	/// <param name="userName">The user name</param>
+	/// <param name="isRatingUpdate">The boolean flag to signify rating update.</param>
+	/// <returns>The updated post data.</returns>
+	public async Task<PostDomain> UpdatePostAsync(UpdatePostDomain updatedPost, string userName, bool isRatingUpdate)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, updatedPost.PostId));
+
+			if (isRatingUpdate)
 			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-				var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId && post.IsActive && post.PostOwnerUserName == userName);
+				return await HandleRatingUpdateForPostAsync(updatedPost);
+			}
+			else
+			{
+				var dbPostData = await dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName);
 				if (dbPostData is not null)
 				{
-					dbPostData.IsActive = false;
-					await this._dbContext.SaveChangesAsync();
+					dbPostData.PostTitle = updatedPost.PostTitle;
+					dbPostData.PostContent = updatedPost.PostContent;
 
-					return true;
+					await dbContext.SaveChangesAsync();
+					return dbPostData;
 				}
 				else
 				{
 					var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-					this._logger.LogError(exception, exception.Message);
+					logger.LogError(exception, exception.Message);
 					throw exception;
 				}
+			}
 
-			}
-			catch (DbUpdateException dbEx)
-			{
-				this._logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, dbEx.Message));
-				throw;
-			}
-			catch (Exception ex)
-			{
-				this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, ex.Message));
-				throw;
-			}
-			finally
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-			}
 		}
-
-		/// <summary>
-		/// Gets all posts async.
-		/// </summary>
-		/// <returns>The list of posts</returns>
-		public async Task<List<Post>> GetAllPostsAsync()
+		catch (DbUpdateException dbEx)
 		{
-			try
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
-
-				var result = await this._dbContext.Posts.Where(x => x.IsActive).ToListAsync();
-				return result;
-			}
-			catch (Exception ex)
-			{
-				this._logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsAsync), DateTime.UtcNow, ex.Message));
-				throw;
-			}
-			finally
-			{
-				this._logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
-			}
+			logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdatePostAsync), DateTime.UtcNow, dbEx.Message));
+			throw;
 		}
-
-		#region PRIVATE Methods
-
-		/// <summary>
-		/// Handles rating update for post async.
-		/// </summary>
-		/// <param name="updatedPost">The updated post.</param>
-		/// <returns>The updated post</returns>
-		private async Task<Post> HandleRatingUpdateForPostAsync(UpdatePostDTO updatedPost)
+		catch (Exception ex)
 		{
-			var dbPostData = await this._dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive);
+			logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdatePostAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdatePostAsync), DateTime.UtcNow, updatedPost.PostId));
+		}
+	}
+
+	/// <summary>
+	/// Deletes the post asynchronous.
+	/// </summary>
+	/// <param name="postId">The post identifier.</param>
+	/// <param name="userName">The user name.</param>
+	/// <returns>
+	/// The boolean for success / failure
+	/// </returns>
+	public async Task<bool> DeletePostAsync(Guid postId, string userName)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
+			var dbPostData = await dbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId && post.IsActive && post.PostOwnerUserName == userName);
 			if (dbPostData is not null)
 			{
-				if (updatedPost.PostRating.HasValue)
-				{
-					dbPostData.Ratings = updatedPost.PostRating.Value;
-				}
+				dbPostData.IsActive = false;
+				await dbContext.SaveChangesAsync();
 
-				await this._dbContext.SaveChangesAsync();
-				return dbPostData;
+				return true;
 			}
 			else
 			{
 				var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-				this._logger.LogError(exception, exception.Message);
+				logger.LogError(exception, exception.Message);
 				throw exception;
 			}
+
 		}
-
-		#endregion
-
+		catch (DbUpdateException dbEx)
+		{
+			logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, dbEx.Message));
+			throw;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(DeletePostAsync), DateTime.UtcNow, postId));
+		}
 	}
+
+	/// <summary>
+	/// Gets all posts async.
+	/// </summary>
+	/// <returns>The list of posts</returns>
+	public async Task<List<PostDomain>> GetAllPostsAsync()
+	{
+		try
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
+
+			var result = await dbContext.Posts.Where(x => x.IsActive).ToListAsync();
+			return result;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
+		}
+	}
+
+	#region PRIVATE Methods
+
+	/// <summary>
+	/// Handles rating update for post async.
+	/// </summary>
+	/// <param name="updatedPost">The updated post.</param>
+	/// <returns>The updated post</returns>
+	private async Task<PostDomain> HandleRatingUpdateForPostAsync(UpdatePostDomain updatedPost)
+	{
+		var dbPostData = await dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive);
+		if (dbPostData is not null)
+		{
+			if (updatedPost.PostRating.HasValue)
+			{
+				dbPostData.Ratings = updatedPost.PostRating.Value;
+			}
+
+			await dbContext.SaveChangesAsync();
+			return dbPostData;
+		}
+		else
+		{
+			var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
+			logger.LogError(exception, exception.Message);
+			throw exception;
+		}
+	}
+
+	#endregion
+
 }

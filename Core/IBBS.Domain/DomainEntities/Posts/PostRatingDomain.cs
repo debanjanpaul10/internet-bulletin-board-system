@@ -1,7 +1,7 @@
-namespace IBBS.Domain.DomainEntities;
+namespace IBBS.Domain.DomainEntities.Posts;
 
 /// <summary>
-/// The Post Ratings Entity Class.
+/// The PostDomain Ratings Entity Class.
 /// </summary>
 public class PostRatingDomain
 {

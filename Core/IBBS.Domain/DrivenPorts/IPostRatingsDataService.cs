@@ -2,15 +2,15 @@
 //	<copyright file="IPostRatingsDataService.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>Post ratings data service interface.</summary>
+// <summary>PostDomain ratings data service interface.</summary>
 // *********************************************************************************
 
 namespace InternetBulletin.Data.Contracts
 {
-	using IBBS.Domain.DomainEntities;
+	using IBBS.Domain.DomainEntities.Posts;
 
 	/// <summary>
-	/// Post ratings data service interface.
+	/// PostDomain ratings data service interface.
 	/// </summary>
 	public interface IPostRatingsDataService
 	{

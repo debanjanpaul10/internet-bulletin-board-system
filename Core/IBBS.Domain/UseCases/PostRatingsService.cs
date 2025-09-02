@@ -1,15 +1,16 @@
 using IBBS.Domain.DomainEntities;
+using IBBS.Domain.DomainEntities.Posts;
+using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
 using InternetBulletin.Data.Contracts;
-using InternetBulletin.Data.Entities;
 using Microsoft.Extensions.Logging;
 using static IBBS.Domain.Helpers.DomainConstants;
 
 namespace IBBS.Domain.UseCases;
 
 /// <summary>
-/// Post ratings service.
+/// PostDomain ratings service.
 /// </summary>
 /// <param name="logger">The logger.</param>
 /// <param name="postRatingsDataService">The post ratings data service.</param>
@@ -60,7 +61,7 @@ public class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatings
 	/// <param name="post">The post.</param>
 	/// <param name="userName">Name of the user.</param>
 	/// <returns>The updated rating domain data.</returns>
-	private async Task<UpdateRatingDomain> HandleUpdateExistingPostRatingDataAsync(PostRatingDomain postRating, Post post, string userName)
+	private async Task<UpdateRatingDomain> HandleUpdateExistingPostRatingDataAsync(PostRatingDomain postRating, PostDomain post, string userName)
 	{
 		if (postRating.RatingValue == 0)
 		{
@@ -85,7 +86,7 @@ public class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatings
 	/// <param name="post">The post.</param>
 	/// <param name="userName">Name of the user.</param>
 	/// <returns>The update rating domain data.</returns>
-	private async Task<UpdateRatingDomain> HandleAddNewPostRatingDataAsync(Guid postIdGuid, Post post, string userName)
+	private async Task<UpdateRatingDomain> HandleAddNewPostRatingDataAsync(Guid postIdGuid, PostDomain post, string userName)
 	{
 		post.Ratings += 1;
 		var newRating = new PostRatingDomain

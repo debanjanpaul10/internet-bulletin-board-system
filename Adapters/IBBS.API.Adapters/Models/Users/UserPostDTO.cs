@@ -2,13 +2,13 @@
 //	<copyright file="UserPostDTO.cs" company="Personal">
 //		Copyright (c) 2025 Personal
 //	</copyright>
-// <summary>The User Post DTO.</summary>
+// <summary>The User PostDomain DTO.</summary>
 // *********************************************************************************
 
 namespace InternetBulletin.Shared.DTOs.Users
 {
     /// <summary>
-    /// The User Post DTO.
+    /// The User PostDomain DTO.
     /// </summary>
     public class UserPostDTO
     {
