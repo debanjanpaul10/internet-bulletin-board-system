@@ -33,6 +33,7 @@ const useStyles = makeStyles({
         overflow: "hidden", // Disable scrolling on main container
         paddingTop: "56px",
         position: "relative",
+        scrollBehavior: "smooth",
     },
     heroSection: {
         height: "calc(100vh - 56px)",
@@ -42,6 +43,7 @@ const useStyles = makeStyles({
         padding: "60px 20px 80px",
         textAlign: "center",
         overflow: "hidden",
+        transition: "opacity 0.3s ease-in-out, transform 0.3s ease-in-out",
     },
     heroContent: {
         maxWidth: "800px",
@@ -64,7 +66,7 @@ const useStyles = makeStyles({
         justifyContent: "center",
         alignItems: "center",
         fontSize: tokens.fontSizeHero1000,
-        fontWeight: tokens.fontWeightMedium,
+        fontWeight: tokens.fontWeightBold,
         lineHeight: 1.3,
         marginBottom: "48px",
         paddingTop: "20px",
@@ -90,7 +92,7 @@ const useStyles = makeStyles({
         lineHeight: 1.5,
         margin: "0 auto",
         maxWidth: "700px",
-        fontWeight: tokens.fontWeightMedium,
+        fontWeight: tokens.fontWeightSemibold,
         textAlign: "center",
         background:
             "linear-gradient(135deg, #1A1F71 0%, #8B5CF6 50%, #DC2626 100%)",
@@ -111,11 +113,14 @@ const useStyles = makeStyles({
             animationName: "none",
         },
     },
-    contentSection: {
+    contentWrapper: {
         height: "calc(100vh - 56px)",
-        padding: "80px 20px 80px", // Added bottom padding to account for fixed footer
-        maxWidth: "1200px",
-        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        transition: "opacity 0.3s ease-in-out, transform 0.3s ease-in-out",
+    },
+    contentSection: {
+        flex: "1",
         overflowY: "auto",
         position: "relative",
         // Completely hide scrollbars but keep functionality
@@ -124,6 +129,30 @@ const useStyles = makeStyles({
         "&::-webkit-scrollbar": {
             display: "none", // Chrome, Safari, Opera
         },
+    },
+    contentMain: {
+        padding: "80px 20px 80px",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        minHeight: "calc(100vh - 136px)", // Account for header (56px) and footer (60px) + padding
+    },
+    footerWrapper: {
+        flexShrink: 0,
+        marginTop: "auto",
+    },
+    footerFixed: {
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: "100%",
+        height: "60px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end",
+        zIndex: 999,
+        padding: 0,
+        margin: 0,
     },
 
     downArrowButton: {

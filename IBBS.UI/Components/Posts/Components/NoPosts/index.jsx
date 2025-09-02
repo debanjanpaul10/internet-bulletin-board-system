@@ -58,7 +58,7 @@ function NoPostsContainer() {
                     onClick={handleCreatePost}
                     className={styles.createPostButton}
                 >
-                    Create Your First Post
+                    <span className="text-dark">Create Your First Post</span>
                 </Button>
             </div>
         </div>

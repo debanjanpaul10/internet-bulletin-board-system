@@ -26,7 +26,8 @@ const useStyles = makeStyles({
         justifyContent: "center",
         alignItems: "flex-end",
         zIndex: 999,
-        padding: "0 20px 10px 20px",
+        padding: "0 20px 0 20px",
+        margin: 0,
     },
 });
 

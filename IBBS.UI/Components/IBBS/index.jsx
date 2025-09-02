@@ -8,8 +8,6 @@ import CreatePostComponent from "@components/Posts/Components/CreatePost";
 import ToasterComponent from "@components/Common/Toaster";
 import ProfileComponent from "@components/Profile";
 import SideDrawerComponent from "@components/Common/SideDrawer";
-import AboutUsComponent from "@components/AboutUs";
-import FooterComponent from "@components/Common/Footer";
 import HeaderComponent from "@components/Common/Header";
 import LandingPageComponent from "@components/LandingPage";
 import Aurora from "@animations/AuroraBackground";
@@ -70,10 +68,6 @@ function IBBS() {
                     <Route
                         path={Headings.MyProfile.Link}
                         element={<ProfileComponent />}
-                    />
-                    <Route
-                        path={Headings.AboutUs.Link}
-                        element={<AboutUsComponent />}
                     />
                 </Routes>
             </div>

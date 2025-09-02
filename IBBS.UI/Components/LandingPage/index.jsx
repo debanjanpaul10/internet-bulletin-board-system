@@ -47,6 +47,7 @@ function LandingPageComponent() {
     const [isTokenRetrieved, setIsTokenRetrieved] = useState(false);
     const [currentSection, setCurrentSection] = useState(0); // 0 = hero, 1 = content
     const containerRef = useRef(null);
+    const heroSectionRef = useRef(null);
     const contentSectionRef = useRef(null);
 
     /**
@@ -115,11 +116,16 @@ function LandingPageComponent() {
     };
 
     /**
-     * Allow mouse wheel scrolling only within the content section when it's active
+     * Handle snap scroll behavior for mouse wheel and touch
      */
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
+
+        let isScrolling = false;
+        let scrollTimeout;
+        let touchStartY = 0;
+        let touchEndY = 0;
 
         const handleWheel = (e) => {
             // Don't interfere with button clicks
@@ -127,31 +133,153 @@ function LandingPageComponent() {
                 return;
             }
 
-            // If we're not in the content section, prevent all scrolling
-            if (currentSection !== 1) {
-                e.preventDefault();
-                return;
+            // Debounce scroll events to prevent rapid firing
+            if (isScrolling) return;
+
+            // If we're in the content section
+            if (currentSection === 1) {
+                const contentSection = contentSectionRef.current;
+                if (contentSection && contentSection.contains(e.target)) {
+                    // Check if we're at the top of content and scrolling up
+                    if (e.deltaY < 0 && contentSection.scrollTop <= 5) {
+                        e.preventDefault();
+                        isScrolling = true;
+                        setCurrentSection(0);
+
+                        scrollTimeout = setTimeout(() => {
+                            isScrolling = false;
+                        }, 300);
+                        return;
+                    }
+                    // Allow normal scrolling within content
+                    return;
+                }
+
+                // If scrolling outside content area while in content section
+                if (e.deltaY < 0) {
+                    e.preventDefault();
+                    isScrolling = true;
+                    setCurrentSection(0);
+
+                    scrollTimeout = setTimeout(() => {
+                        isScrolling = false;
+                    }, 300);
+                    return;
+                }
             }
 
-            // If we're in content section, check if the scroll is happening within the content area
-            const contentSection = contentSectionRef.current;
-            if (!contentSection) {
-                e.preventDefault();
-                return;
+            // Hero section - prevent default and handle snap
+            e.preventDefault();
+            isScrolling = true;
+
+            // Clear any existing timeout
+            clearTimeout(scrollTimeout);
+
+            // If scrolling down from hero section, snap to content
+            if (currentSection === 0 && e.deltaY > 0) {
+                setCurrentSection(1);
             }
 
-            // Allow scrolling only if the target is within the content section
-            const isWithinContent = contentSection.contains(e.target);
-            if (!isWithinContent) {
-                e.preventDefault();
-            }
+            // Reset scrolling flag after a short delay
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 300);
         };
 
-        // Disable wheel scrolling on the main container except for content area
+        const handleTouchStart = (e) => {
+            touchStartY = e.touches[0].clientY;
+        };
+
+        const handleTouchMove = (e) => {
+            // If we're in content section and touching within it, allow normal scrolling
+            if (currentSection === 1) {
+                const contentSection = contentSectionRef.current;
+                if (contentSection && contentSection.contains(e.target)) {
+                    return; // Allow normal touch scrolling within content
+                }
+            }
+
+            // Prevent default touch scrolling for hero section
+            e.preventDefault();
+        };
+
+        const handleTouchEnd = (e) => {
+            touchEndY = e.changedTouches[0].clientY;
+            const touchDiff = touchStartY - touchEndY;
+            const minSwipeDistance = 50; // Minimum distance for a swipe
+
+            // Don't interfere with button touches
+            if (e.target.closest("button")) {
+                return;
+            }
+
+            // Debounce touch events
+            if (isScrolling) return;
+
+            // If we're in content section and the touch ended within it
+            if (currentSection === 1) {
+                const contentSection = contentSectionRef.current;
+                if (contentSection && contentSection.contains(e.target)) {
+                    // Check if we're at the top of content and swiping down (up gesture)
+                    if (
+                        touchDiff < -minSwipeDistance &&
+                        contentSection.scrollTop <= 5
+                    ) {
+                        isScrolling = true;
+                        setCurrentSection(0);
+                        setTimeout(() => {
+                            isScrolling = false;
+                        }, 300);
+                        return;
+                    }
+                    return; // Allow normal touch behavior within content
+                }
+
+                // If swiping down outside content area while in content section
+                if (touchDiff < -minSwipeDistance) {
+                    isScrolling = true;
+                    setCurrentSection(0);
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 300);
+                    return;
+                }
+            }
+
+            isScrolling = true;
+
+            // Swipe up (touch diff positive) - go to content section
+            if (currentSection === 0 && touchDiff > minSwipeDistance) {
+                setCurrentSection(1);
+            }
+            // Swipe down (touch diff negative) - go to hero section
+            else if (currentSection === 1 && touchDiff < -minSwipeDistance) {
+                setCurrentSection(0);
+            }
+
+            // Reset scrolling flag
+            setTimeout(() => {
+                isScrolling = false;
+            }, 300);
+        };
+
         container.addEventListener("wheel", handleWheel, { passive: false });
+        container.addEventListener("touchstart", handleTouchStart, {
+            passive: true,
+        });
+        container.addEventListener("touchmove", handleTouchMove, {
+            passive: false,
+        });
+        container.addEventListener("touchend", handleTouchEnd, {
+            passive: true,
+        });
 
         return () => {
             container.removeEventListener("wheel", handleWheel);
+            container.removeEventListener("touchstart", handleTouchStart);
+            container.removeEventListener("touchmove", handleTouchMove);
+            container.removeEventListener("touchend", handleTouchEnd);
+            clearTimeout(scrollTimeout);
         };
     }, [currentSection]);
 
@@ -161,7 +289,7 @@ function LandingPageComponent() {
 
             {/* Hero Section - Always visible when currentSection === 0 */}
             {currentSection === 0 && (
-                <div className={styles.heroSection}>
+                <div ref={heroSectionRef} className={styles.heroSection}>
                     <div className={styles.heroContent}>
                         <div className={styles.mainHeading}>
                             <div className="col-sm-12">
@@ -195,9 +323,23 @@ function LandingPageComponent() {
 
             {/* Content Section - Visible when currentSection === 1 */}
             {currentSection === 1 && (
-                <div ref={contentSectionRef} className={styles.contentSection}>
-                    <PostsContainer />
-                    <EditPostComponent />
+                <div className={styles.contentWrapper}>
+                    <div
+                        ref={contentSectionRef}
+                        className={styles.contentSection}
+                    >
+                        <div className={styles.contentMain}>
+                            <PostsContainer />
+                            <EditPostComponent />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Footer - Fixed to bottom when in content section */}
+            {currentSection === 1 && (
+                <div className={styles.footerFixed}>
+                    <FooterComponent />
                 </div>
             )}
 
@@ -214,13 +356,6 @@ function LandingPageComponent() {
                 >
                     <ArrowUp32Filled />
                 </button>
-            )}
-
-            {/* Footer - Only visible on content section */}
-            {currentSection === 1 && (
-                <div className={ibbs_styles.footerContent}>
-                    <FooterComponent />
-                </div>
             )}
         </div>
     );

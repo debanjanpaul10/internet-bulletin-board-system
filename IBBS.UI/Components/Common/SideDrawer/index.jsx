@@ -318,26 +318,6 @@ function SideDrawerComponent() {
                     </div>
                 )}
 
-                {/* ABOUT US */}
-                <div className="row">
-                    {location.pathname !== Headings.AboutUs.Link && (
-                        <Tooltip
-                            content={ButtonTitles.AboutUs}
-                            relationship="label"
-                            positioning="after"
-                        >
-                            <Button
-                                onClick={handleAboutUsPageRedirect}
-                                className={`${styles.button} ${styles.buttonOverride}`}
-                                appearance="transparent"
-                            >
-                                <BookOpen28Color />
-                                <span>{Headings.AboutUs.Name}</span>
-                            </Button>
-                        </Tooltip>
-                    )}
-                </div>
-
                 {/* LOGIN AND LOGOUT */}
                 <div className="row">
                     {!isUserLoggedIn() ? (

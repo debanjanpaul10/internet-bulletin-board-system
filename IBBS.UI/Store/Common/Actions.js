@@ -98,8 +98,8 @@ export const GetApplicationInformationDataAsync = () => {
         try {
             dispatch(ToggleAboutUsSpinner(true));
             const response = await GetApplicationInformationDataApiAsync();
-            if (response !== null && response !== undefined) {
-                dispatch(GetApplicationInformationDataSuccess(response));
+            if (response?.data !== null) {
+                dispatch(GetApplicationInformationDataSuccess(response?.data));
             }
         } catch (error) {
             console.error(error);
