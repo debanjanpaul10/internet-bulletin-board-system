@@ -79,7 +79,7 @@ public static class DIContainer
 				ValidateAudience = true,
 				RequireExpirationTime = true,
 				RequireSignedTokens = true,
-				ValidAudience = configuration[ConfigurationConstants.Auth0ApiAudience],
+				ValidAudience = configuration[ConfigurationConstants.Auth0WebClientId],
 				ValidIssuer = configuration[ConfigurationConstants.Auth0Domain],
 				SignatureValidator = (token, _) => new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(token)
 			};

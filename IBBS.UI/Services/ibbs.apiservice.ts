@@ -2,6 +2,7 @@
 
 import HttpUtility from "@/Helpers/http.utility";
 import AddPostDtoModel from "@/Models/AddPostDto";
+import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
 import PostRatingDtoModel from "@/Models/PostRatingDto";
 import UpdatePostDtoModel from "@/Models/UpdatePostDto";
 import UserStoryRequestDtoModel from "@/Models/UserStoryRequestDto";
@@ -155,6 +156,17 @@ export const ModerateContentDataApiAsync = async (
     return await HttpUtility.PostAsync(
         "AiServices/ModerateContent",
         storyText,
+        accessToken
+    );
+};
+
+export const GetChatbotResponseAsync = async (
+    userQueryRequest: UserQueryRequestDTO,
+    accessToken: string
+) => {
+    return await HttpUtility.PostAsync(
+        "AiServices/respond",
+        userQueryRequest,
         accessToken
     );
 };

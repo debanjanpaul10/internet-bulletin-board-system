@@ -46,6 +46,11 @@ internal static class APIConstants
 		internal const string Auth0ApiAudience = "Auth0:ApiAudience";
 
 		/// <summary>
+		/// The auth0 web client identifier
+		/// </summary>
+		internal const string Auth0WebClientId = "Auth0:WebClientId";
+
+		/// <summary>
 		/// The application json constant
 		/// </summary>
 		internal const string ApplicationJsonConstant = "application/json";

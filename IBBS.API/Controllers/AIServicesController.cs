@@ -115,7 +115,6 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[AllowAnonymous]
 	[SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
 	public async Task<IActionResult> GetChatbotResponseAsync([FromBody]UserQueryRequestDTO chatMessage)
 	{

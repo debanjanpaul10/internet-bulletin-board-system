@@ -34,327 +34,327 @@ import { useAppDispatch, useAppSelector } from "@/index";
  * @returns The rendered landing page component
  */
 export default function LandingPageComponent() {
-    const styles = useStyles();
+	const styles = useStyles();
 
-    const dispatch = useAppDispatch();
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+	const dispatch = useAppDispatch();
+	const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
 
-    const IsPostsDataLoading = useAppSelector(
-        (state: any) => state.PostsReducer.isPostsDataLoading
-    );
+	const IsPostsDataLoading = useAppSelector(
+		(state: any) => state.PostsReducer.isPostsDataLoading
+	);
 
-    const [isTokenRetrieved, setIsTokenRetrieved] = useState(false);
-    const [currentSection, setCurrentSection] = useState(0); // 0 = hero, 1 = content
-    const containerRef = useRef(null);
-    const heroSectionRef = useRef(null);
-    const contentSectionRef = useRef(null);
+	const [isTokenRetrieved, setIsTokenRetrieved] = useState(false);
+	const [currentSection, setCurrentSection] = useState(0); // 0 = hero, 1 = content
+	const containerRef = useRef(null);
+	const heroSectionRef = useRef(null);
+	const contentSectionRef = useRef(null);
 
-    /**
-     * Initial load -> Check if user is logged in
-     */
-    useEffect(() => {
-        if (!isAuthenticated) {
-            dispatch(GetAllPostsAsync(""));
-            setIsTokenRetrieved(true);
-        }
-    }, []);
+	/**
+	 * Initial load -> Check if user is logged in
+	 */
+	useEffect(() => {
+		if (!isAuthenticated) {
+			dispatch(GetAllPostsAsync(""));
+			setIsTokenRetrieved(true);
+		}
+	}, []);
 
-    useEffect(() => {
-        if (isAuthenticated && user) {
-            fetchPostsWithToken();
-        }
-    }, [isAuthenticated, user]);
+	useEffect(() => {
+		if (isAuthenticated && user) {
+			fetchPostsWithToken();
+		}
+	}, [isAuthenticated, user]);
 
-    /**
-     * Fetches posts with authentication token
-     */
-    const fetchPostsWithToken = async () => {
-        try {
-            setIsTokenRetrieved(false);
-            const token = await getAccessToken();
-            setIsTokenRetrieved(true);
-            dispatch(GetAllPostsAsync(token));
-        } catch (error) {
-            console.error(error);
-            setIsTokenRetrieved(true);
-            dispatch(GetAllPostsAsync(""));
-        }
-    };
+	/**
+	 * Fetches posts with authentication token
+	 */
+	const fetchPostsWithToken = async () => {
+		try {
+			setIsTokenRetrieved(false);
+			const token = await getAccessToken();
+			setIsTokenRetrieved(true);
+			token && dispatch(GetAllPostsAsync(token));
+		} catch (error) {
+			console.error(error);
+			setIsTokenRetrieved(true);
+			dispatch(GetAllPostsAsync(""));
+		}
+	};
 
-    /**
-     * Gets the access token silently using Auth0.
-     * @returns {string} The access token.
-     */
-    const getAccessToken = async () => {
-        try {
-            const token = await getAccessTokenSilently();
-            return token;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
+	/**
+	 * Gets the access token silently using Auth0.
+	 * @returns {string} The access token.
+	 */
+	const getAccessToken = async () => {
+		try {
+			const idToken = await getIdTokenClaims();
+			return idToken?.__raw;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
 
-    /**
-     * Handles down arrow click to navigate to content section
-     */
-    const handleDownArrowClick = (e: React.MouseEvent | React.TouchEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setCurrentSection(1);
-    };
+	/**
+	 * Handles down arrow click to navigate to content section
+	 */
+	const handleDownArrowClick = (e: React.MouseEvent | React.TouchEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setCurrentSection(1);
+	};
 
-    /**
-     * Handles up arrow click to navigate back to hero section
-     */
-    const handleUpArrowClick = (e: React.MouseEvent | React.TouchEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setCurrentSection(0);
-    };
+	/**
+	 * Handles up arrow click to navigate back to hero section
+	 */
+	const handleUpArrowClick = (e: React.MouseEvent | React.TouchEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setCurrentSection(0);
+	};
 
-    /**
-     * Handle snap scroll behavior for mouse wheel and touch
-     */
-    useEffect(() => {
-        const container: any = containerRef.current;
-        if (!container) return;
+	/**
+	 * Handle snap scroll behavior for mouse wheel and touch
+	 */
+	useEffect(() => {
+		const container: any = containerRef.current;
+		if (!container) return;
 
-        let isScrolling = false;
-        let scrollTimeout: any;
-        let touchStartY = 0;
-        let touchEndY = 0;
+		let isScrolling = false;
+		let scrollTimeout: any;
+		let touchStartY = 0;
+		let touchEndY = 0;
 
-        const handleWheel = (e: any) => {
-            // Don't interfere with button clicks
-            if (e.target.closest("button")) {
-                return;
-            }
+		const handleWheel = (e: any) => {
+			// Don't interfere with button clicks
+			if (e.target.closest("button")) {
+				return;
+			}
 
-            // Debounce scroll events to prevent rapid firing
-            if (isScrolling) return;
+			// Debounce scroll events to prevent rapid firing
+			if (isScrolling) return;
 
-            // If we're in the content section
-            if (currentSection === 1) {
-                const contentSection: any = contentSectionRef.current;
-                if (contentSection && contentSection.contains(e.target)) {
-                    // Check if we're at the top of content and scrolling up
-                    if (e.deltaY < 0 && contentSection.scrollTop <= 5) {
-                        e.preventDefault();
-                        isScrolling = true;
-                        setCurrentSection(0);
+			// If we're in the content section
+			if (currentSection === 1) {
+				const contentSection: any = contentSectionRef.current;
+				if (contentSection && contentSection.contains(e.target)) {
+					// Check if we're at the top of content and scrolling up
+					if (e.deltaY < 0 && contentSection.scrollTop <= 5) {
+						e.preventDefault();
+						isScrolling = true;
+						setCurrentSection(0);
 
-                        scrollTimeout = setTimeout(() => {
-                            isScrolling = false;
-                        }, 300);
-                        return;
-                    }
-                    // Allow normal scrolling within content
-                    return;
-                }
+						scrollTimeout = setTimeout(() => {
+							isScrolling = false;
+						}, 300);
+						return;
+					}
+					// Allow normal scrolling within content
+					return;
+				}
 
-                // If scrolling outside content area while in content section
-                if (e.deltaY < 0) {
-                    e.preventDefault();
-                    isScrolling = true;
-                    setCurrentSection(0);
+				// If scrolling outside content area while in content section
+				if (e.deltaY < 0) {
+					e.preventDefault();
+					isScrolling = true;
+					setCurrentSection(0);
 
-                    scrollTimeout = setTimeout(() => {
-                        isScrolling = false;
-                    }, 300);
-                    return;
-                }
-            }
+					scrollTimeout = setTimeout(() => {
+						isScrolling = false;
+					}, 300);
+					return;
+				}
+			}
 
-            // Hero section - prevent default and handle snap
-            e.preventDefault();
-            isScrolling = true;
+			// Hero section - prevent default and handle snap
+			e.preventDefault();
+			isScrolling = true;
 
-            // Clear any existing timeout
-            clearTimeout(scrollTimeout);
+			// Clear any existing timeout
+			clearTimeout(scrollTimeout);
 
-            // If scrolling down from hero section, snap to content
-            if (currentSection === 0 && e.deltaY > 0) {
-                setCurrentSection(1);
-            }
+			// If scrolling down from hero section, snap to content
+			if (currentSection === 0 && e.deltaY > 0) {
+				setCurrentSection(1);
+			}
 
-            // Reset scrolling flag after a short delay
-            scrollTimeout = setTimeout(() => {
-                isScrolling = false;
-            }, 300);
-        };
+			// Reset scrolling flag after a short delay
+			scrollTimeout = setTimeout(() => {
+				isScrolling = false;
+			}, 300);
+		};
 
-        const handleTouchStart = (e: any) => {
-            touchStartY = e.touches[0].clientY;
-        };
+		const handleTouchStart = (e: any) => {
+			touchStartY = e.touches[0].clientY;
+		};
 
-        const handleTouchMove = (e: Event) => {
-            // If we're in content section and touching within it, allow normal scrolling
-            if (currentSection === 1) {
-                const contentSection: any = contentSectionRef.current;
-                if (contentSection && contentSection.contains(e.target)) {
-                    return; // Allow normal touch scrolling within content
-                }
-            }
+		const handleTouchMove = (e: Event) => {
+			// If we're in content section and touching within it, allow normal scrolling
+			if (currentSection === 1) {
+				const contentSection: any = contentSectionRef.current;
+				if (contentSection && contentSection.contains(e.target)) {
+					return; // Allow normal touch scrolling within content
+				}
+			}
 
-            // Prevent default touch scrolling for hero section
-            e.preventDefault();
-        };
+			// Prevent default touch scrolling for hero section
+			e.preventDefault();
+		};
 
-        const handleTouchEnd = (e: any) => {
-            touchEndY = e.changedTouches[0].clientY;
-            const touchDiff = touchStartY - touchEndY;
-            const minSwipeDistance = 50; // Minimum distance for a swipe
+		const handleTouchEnd = (e: any) => {
+			touchEndY = e.changedTouches[0].clientY;
+			const touchDiff = touchStartY - touchEndY;
+			const minSwipeDistance = 50; // Minimum distance for a swipe
 
-            // Don't interfere with button touches
-            if (e.target.closest("button")) {
-                return;
-            }
+			// Don't interfere with button touches
+			if (e.target.closest("button")) {
+				return;
+			}
 
-            // Debounce touch events
-            if (isScrolling) return;
+			// Debounce touch events
+			if (isScrolling) return;
 
-            // If we're in content section and the touch ended within it
-            if (currentSection === 1) {
-                const contentSection: any = contentSectionRef.current;
-                if (contentSection && contentSection.contains(e.target)) {
-                    // Check if we're at the top of content and swiping down (up gesture)
-                    if (
-                        touchDiff < -minSwipeDistance &&
-                        contentSection.scrollTop <= 5
-                    ) {
-                        isScrolling = true;
-                        setCurrentSection(0);
-                        setTimeout(() => {
-                            isScrolling = false;
-                        }, 300);
-                        return;
-                    }
-                    return; // Allow normal touch behavior within content
-                }
+			// If we're in content section and the touch ended within it
+			if (currentSection === 1) {
+				const contentSection: any = contentSectionRef.current;
+				if (contentSection && contentSection.contains(e.target)) {
+					// Check if we're at the top of content and swiping down (up gesture)
+					if (
+						touchDiff < -minSwipeDistance &&
+						contentSection.scrollTop <= 5
+					) {
+						isScrolling = true;
+						setCurrentSection(0);
+						setTimeout(() => {
+							isScrolling = false;
+						}, 300);
+						return;
+					}
+					return; // Allow normal touch behavior within content
+				}
 
-                // If swiping down outside content area while in content section
-                if (touchDiff < -minSwipeDistance) {
-                    isScrolling = true;
-                    setCurrentSection(0);
-                    setTimeout(() => {
-                        isScrolling = false;
-                    }, 300);
-                    return;
-                }
-            }
+				// If swiping down outside content area while in content section
+				if (touchDiff < -minSwipeDistance) {
+					isScrolling = true;
+					setCurrentSection(0);
+					setTimeout(() => {
+						isScrolling = false;
+					}, 300);
+					return;
+				}
+			}
 
-            isScrolling = true;
+			isScrolling = true;
 
-            // Swipe up (touch diff positive) - go to content section
-            if (currentSection === 0 && touchDiff > minSwipeDistance) {
-                setCurrentSection(1);
-            }
-            // Swipe down (touch diff negative) - go to hero section
-            else if (currentSection === 1 && touchDiff < -minSwipeDistance) {
-                setCurrentSection(0);
-            }
+			// Swipe up (touch diff positive) - go to content section
+			if (currentSection === 0 && touchDiff > minSwipeDistance) {
+				setCurrentSection(1);
+			}
+			// Swipe down (touch diff negative) - go to hero section
+			else if (currentSection === 1 && touchDiff < -minSwipeDistance) {
+				setCurrentSection(0);
+			}
 
-            // Reset scrolling flag
-            setTimeout(() => {
-                isScrolling = false;
-            }, 300);
-        };
+			// Reset scrolling flag
+			setTimeout(() => {
+				isScrolling = false;
+			}, 300);
+		};
 
-        container.addEventListener("wheel", handleWheel, { passive: false });
-        container.addEventListener("touchstart", handleTouchStart, {
-            passive: true,
-        });
-        container.addEventListener("touchmove", handleTouchMove, {
-            passive: false,
-        });
-        container.addEventListener("touchend", handleTouchEnd, {
-            passive: true,
-        });
+		container.addEventListener("wheel", handleWheel, { passive: false });
+		container.addEventListener("touchstart", handleTouchStart, {
+			passive: true,
+		});
+		container.addEventListener("touchmove", handleTouchMove, {
+			passive: false,
+		});
+		container.addEventListener("touchend", handleTouchEnd, {
+			passive: true,
+		});
 
-        return () => {
-            container.removeEventListener("wheel", handleWheel);
-            container.removeEventListener("touchstart", handleTouchStart);
-            container.removeEventListener("touchmove", handleTouchMove);
-            container.removeEventListener("touchend", handleTouchEnd);
-            clearTimeout(scrollTimeout);
-        };
-    }, [currentSection]);
+		return () => {
+			container.removeEventListener("wheel", handleWheel);
+			container.removeEventListener("touchstart", handleTouchStart);
+			container.removeEventListener("touchmove", handleTouchMove);
+			container.removeEventListener("touchend", handleTouchEnd);
+			clearTimeout(scrollTimeout);
+		};
+	}, [currentSection]);
 
-    return (
-        <div ref={containerRef} className={styles.landingContainer}>
-            <Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
+	return (
+		<div ref={containerRef} className={styles.landingContainer}>
+			<Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
 
-            {/* Hero Section - Always visible when currentSection === 0 */}
-            {currentSection === 0 && (
-                <div ref={heroSectionRef} className={styles.heroSection}>
-                    <div className={styles.heroContent}>
-                        <div className={styles.mainHeading}>
-                            <div className="col-sm-12">
-                                <h1 className={styles.mainHeadingText}>
-                                    {HomePageConstants.Headings.WelcomeMessage}
-                                </h1>
-                            </div>
-                        </div>
-                        <p className={styles.heroSubtext}>
-                            Connect, share, and discover amazing ideas from our
-                            vibrant community
-                        </p>
-                    </div>
-                </div>
-            )}
+			{/* Hero Section - Always visible when currentSection === 0 */}
+			{currentSection === 0 && (
+				<div ref={heroSectionRef} className={styles.heroSection}>
+					<div className={styles.heroContent}>
+						<div className={styles.mainHeading}>
+							<div className="col-sm-12">
+								<h1 className={styles.mainHeadingText}>
+									{HomePageConstants.Headings.WelcomeMessage}
+								</h1>
+							</div>
+						</div>
+						<p className={styles.heroSubtext}>
+							Connect, share, and discover amazing ideas from our
+							vibrant community
+						</p>
+					</div>
+				</div>
+			)}
 
-            {/* Throbbing Down Arrow Button - Outside sections for better accessibility */}
-            {currentSection === 0 && (
-                <button
-                    className={styles.downArrowButton}
-                    onClick={handleDownArrowClick}
-                    onMouseDown={handleDownArrowClick}
-                    onTouchStart={handleDownArrowClick}
-                    aria-label="Scroll down to content"
-                    type="button"
-                    style={{ pointerEvents: "all" }}
-                >
-                    <ArrowDown32Filled />
-                </button>
-            )}
+			{/* Throbbing Down Arrow Button - Outside sections for better accessibility */}
+			{currentSection === 0 && (
+				<button
+					className={styles.downArrowButton}
+					onClick={handleDownArrowClick}
+					onMouseDown={handleDownArrowClick}
+					onTouchStart={handleDownArrowClick}
+					aria-label="Scroll down to content"
+					type="button"
+					style={{ pointerEvents: "all" }}
+				>
+					<ArrowDown32Filled />
+				</button>
+			)}
 
-            {/* Content Section - Visible when currentSection === 1 */}
-            {currentSection === 1 && (
-                <div className={styles.contentWrapper}>
-                    <div
-                        ref={contentSectionRef}
-                        className={styles.contentSection}
-                    >
-                        <div className={styles.contentMain}>
-                            <PostsContainer />
-                            <EditPostComponent />
-                        </div>
-                    </div>
-                </div>
-            )}
+			{/* Content Section - Visible when currentSection === 1 */}
+			{currentSection === 1 && (
+				<div className={styles.contentWrapper}>
+					<div
+						ref={contentSectionRef}
+						className={styles.contentSection}
+					>
+						<div className={styles.contentMain}>
+							<PostsContainer />
+							<EditPostComponent />
+						</div>
+					</div>
+				</div>
+			)}
 
-            {/* Footer - Fixed to bottom when in content section */}
-            {currentSection === 1 && (
-                <div className={styles.footerFixed}>
-                    <FooterComponent />
-                </div>
-            )}
+			{/* Footer - Fixed to bottom when in content section */}
+			{currentSection === 1 && (
+				<div className={styles.footerFixed}>
+					<FooterComponent />
+				</div>
+			)}
 
-            {/* Throbbing Up Arrow Button - Outside sections for better accessibility */}
-            {currentSection === 1 && (
-                <button
-                    className={styles.upArrowButton}
-                    onClick={handleUpArrowClick}
-                    onMouseDown={handleUpArrowClick}
-                    onTouchStart={handleUpArrowClick}
-                    aria-label="Scroll up to landing section"
-                    type="button"
-                    style={{ pointerEvents: "all" }}
-                >
-                    <ArrowUp32Filled />
-                </button>
-            )}
-        </div>
-    );
+			{/* Throbbing Up Arrow Button - Outside sections for better accessibility */}
+			{currentSection === 1 && (
+				<button
+					className={styles.upArrowButton}
+					onClick={handleUpArrowClick}
+					onMouseDown={handleUpArrowClick}
+					onTouchStart={handleUpArrowClick}
+					aria-label="Scroll up to landing section"
+					type="button"
+					style={{ pointerEvents: "all" }}
+				>
+					<ArrowUp32Filled />
+				</button>
+			)}
+		</div>
+	);
 }

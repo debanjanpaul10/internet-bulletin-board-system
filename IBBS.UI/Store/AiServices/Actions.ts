@@ -1,20 +1,25 @@
 import { Action, Dispatch } from "@reduxjs/toolkit";
 import {
-    GET_APPLICATION_INFORMATION,
-    HANDLE_POST_AI_MODERATION,
-    REWRITE_STORY_AI,
-    TOGGLE_ABOUT_US_SPINNER,
-    TOGGLE_REWRITE_LOADER,
+	GET_APPLICATION_INFORMATION,
+	GET_CHATBOT_RESPONSE,
+	HANDLE_POST_AI_MODERATION,
+	REWRITE_STORY_AI,
+	TOGGLE_ABOUT_US_SPINNER,
+	TOGGLE_CHATBOT_LOADING,
+	TOGGLE_REWRITE_LOADER,
 } from "./ActionTypes";
 import {
-    GenerateTagForStoryApiAsync,
-    GetApplicationInformationDataApiAsync,
-    ModerateContentDataApiAsync,
-    PostRewriteStoryWithAiApiAsync,
+	GenerateTagForStoryApiAsync,
+	GetApplicationInformationDataApiAsync,
+	GetChatbotResponseAsync,
+	ModerateContentDataApiAsync,
+	PostRewriteStoryWithAiApiAsync,
 } from "@/Services/ibbs.apiservice";
 import { ToggleErrorToaster } from "../Common/Actions";
 import UserStoryRequestDtoModel from "@/Models/UserStoryRequestDto";
 import { HandleCreatePostPageLoader, PostDataFailure } from "../Posts/Actions";
+import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
+import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 
 /**
  * Stores the toggle event for rewrite text loading.
@@ -22,10 +27,10 @@ import { HandleCreatePostPageLoader, PostDataFailure } from "../Posts/Actions";
  * @returns The action type and payload data.
  */
 export const ToggleRewriteLoader = (isLoading: boolean) => {
-    return {
-        type: TOGGLE_REWRITE_LOADER,
-        payload: isLoading,
-    };
+	return {
+		type: TOGGLE_REWRITE_LOADER,
+		payload: isLoading,
+	};
 };
 
 /**
@@ -34,31 +39,31 @@ export const ToggleRewriteLoader = (isLoading: boolean) => {
  * @returns The promise of the api response.
  */
 export const GetApplicationInformationDataAsync = (
-    accessToken: string = ""
+	accessToken: string = ""
 ) => {
-    return async (dispatch: Dispatch<Action>) => {
-        try {
-            dispatch(ToggleAboutUsSpinner(true));
-            const response = await GetApplicationInformationDataApiAsync(
-                accessToken
-            );
+	return async (dispatch: Dispatch<Action>) => {
+		try {
+			dispatch(ToggleAboutUsSpinner(true));
+			const response = await GetApplicationInformationDataApiAsync(
+				accessToken
+			);
 
-            dispatch({
-                type: GET_APPLICATION_INFORMATION,
-                payload: response?.data,
-            });
-        } catch (error: any) {
-            console.error(error);
-            dispatch(
-                ToggleErrorToaster({
-                    shouldShow: true,
-                    errorMessage: error.data ?? error.title ?? error,
-                })
-            );
-        } finally {
-            dispatch(ToggleAboutUsSpinner(false));
-        }
-    };
+			dispatch({
+				type: GET_APPLICATION_INFORMATION,
+				payload: response?.data,
+			});
+		} catch (error: any) {
+			console.error(error);
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error.data ?? error.title ?? error,
+				})
+			);
+		} finally {
+			dispatch(ToggleAboutUsSpinner(false));
+		}
+	};
 };
 
 /**
@@ -67,43 +72,43 @@ export const GetApplicationInformationDataAsync = (
  * @returns The action type and payload data.
  */
 const ToggleAboutUsSpinner = (isLoading: boolean) => {
-    return {
-        type: TOGGLE_ABOUT_US_SPINNER,
-        payload: isLoading,
-    };
+	return {
+		type: TOGGLE_ABOUT_US_SPINNER,
+		payload: isLoading,
+	};
 };
 
 /**
  * Rewrites story with AI using createAsyncThunk.
  */
 export const RewriteStoryWithAiAsync = (
-    requestDto: any,
-    accessToken: string
+	requestDto: any,
+	accessToken: string
 ) => {
-    return async (dispatch: Dispatch<Action>) => {
-        try {
-            dispatch(ToggleRewriteLoader(true));
-            const response = await PostRewriteStoryWithAiApiAsync(
-                requestDto,
-                accessToken
-            );
-            if (response?.statusCode === 200) {
-                dispatch(RewriteStoryWithAiSuccess(response.data));
-            }
-            throw new Error("Failed to rewrite story");
-        } catch (error: any) {
-            console.error(error);
-            dispatch(
-                ToggleErrorToaster({
-                    shouldShow: true,
-                    errorMessage: error.title,
-                })
-            );
-            throw error;
-        } finally {
-            dispatch(ToggleRewriteLoader(false));
-        }
-    };
+	return async (dispatch: Dispatch<Action>) => {
+		try {
+			dispatch(ToggleRewriteLoader(true));
+			const response = await PostRewriteStoryWithAiApiAsync(
+				requestDto,
+				accessToken
+			);
+			if (response?.statusCode === 200) {
+				dispatch(RewriteStoryWithAiSuccess(response.data));
+			}
+			throw new Error("Failed to rewrite story");
+		} catch (error: any) {
+			console.error(error);
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error.title,
+				})
+			);
+			throw error;
+		} finally {
+			dispatch(ToggleRewriteLoader(false));
+		}
+	};
 };
 
 /**
@@ -112,59 +117,59 @@ export const RewriteStoryWithAiAsync = (
  * @returns The action type and payload data.
  */
 export const RewriteStoryWithAiSuccess = (data: any) => {
-    return {
-        type: REWRITE_STORY_AI,
-        payload: data,
-    };
+	return {
+		type: REWRITE_STORY_AI,
+		payload: data,
+	};
 };
 
 /**
  * Handles AI moderation tasks using createAsyncThunk.
  */
 export const HandlePostAiModerationTasksAsync = (
-    userStoryRequestDto: UserStoryRequestDtoModel,
-    accessToken: string
+	userStoryRequestDto: UserStoryRequestDtoModel,
+	accessToken: string
 ) => {
-    return async (dispatch: Dispatch<Action>) => {
-        try {
-            dispatch(HandleCreatePostPageLoader(true));
-            const tagResponseTask = GenerateTagForStoryApiAsync(
-                userStoryRequestDto,
-                accessToken
-            );
-            const moderateContentResponseTask = ModerateContentDataApiAsync(
-                userStoryRequestDto,
-                accessToken
-            );
+	return async (dispatch: Dispatch<Action>) => {
+		try {
+			dispatch(HandleCreatePostPageLoader(true));
+			const tagResponseTask = GenerateTagForStoryApiAsync(
+				userStoryRequestDto,
+				accessToken
+			);
+			const moderateContentResponseTask = ModerateContentDataApiAsync(
+				userStoryRequestDto,
+				accessToken
+			);
 
-            const [tagResponse, moderationContentResponse] = await Promise.all([
-                tagResponseTask,
-                moderateContentResponseTask,
-            ]);
+			const [tagResponse, moderationContentResponse] = await Promise.all([
+				tagResponseTask,
+				moderateContentResponseTask,
+			]);
 
-            if (tagResponse?.data && moderationContentResponse?.data) {
-                dispatch(
-                    HandlePostAiModerationTasksSuccess(
-                        tagResponse?.data,
-                        moderationContentResponse?.data
-                    )
-                );
-            }
-            throw new Error("Failed to get AI moderation data");
-        } catch (error: any) {
-            console.error(error);
-            dispatch(PostDataFailure(error.data));
-            dispatch(
-                ToggleErrorToaster({
-                    shouldShow: true,
-                    errorMessage: error,
-                })
-            );
-            throw error;
-        } finally {
-            dispatch(HandleCreatePostPageLoader(false));
-        }
-    };
+			if (tagResponse?.data && moderationContentResponse?.data) {
+				dispatch(
+					HandlePostAiModerationTasksSuccess(
+						tagResponse?.data,
+						moderationContentResponse?.data
+					)
+				);
+			}
+			throw new Error("Failed to get AI moderation data");
+		} catch (error: any) {
+			console.error(error);
+			dispatch(PostDataFailure(error.data));
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error,
+				})
+			);
+			throw error;
+		} finally {
+			dispatch(HandleCreatePostPageLoader(false));
+		}
+	};
 };
 
 /**
@@ -174,14 +179,56 @@ export const HandlePostAiModerationTasksAsync = (
  * @returns The action type and payload data.
  */
 export const HandlePostAiModerationTasksSuccess = (
-    tagData: any,
-    moderationData: any
+	tagData: any,
+	moderationData: any
 ) => {
-    return {
-        type: HANDLE_POST_AI_MODERATION,
-        payload: {
-            tagData: tagData,
-            moderationData: moderationData,
-        },
-    };
+	return {
+		type: HANDLE_POST_AI_MODERATION,
+		payload: {
+			tagData: tagData,
+			moderationData: moderationData,
+		},
+	};
+};
+
+export const HandleChatbotResponseAsync = (
+	userQueryRequest: UserQueryRequestDTO,
+	accessToken: string
+) => {
+	return async (dispatch: Dispatch<Action>) => {
+		try {
+			dispatch(ToggleChatbotLoading(true));
+			const response = await GetChatbotResponseAsync(
+				userQueryRequest,
+				accessToken
+			);
+			if (response?.data) {
+				dispatch(GetChatbotResponseSuccess(response.data));
+			}
+		} catch (error) {
+			console.error(error);
+			dispatch(
+				ToggleErrorToaster({
+					shouldShow: true,
+					errorMessage: error,
+				})
+			);
+		} finally {
+			dispatch(ToggleChatbotLoading(false));
+		}
+	};
+};
+
+export const ToggleChatbotLoading = (isLoading: boolean) => {
+	return {
+		type: TOGGLE_CHATBOT_LOADING,
+		payload: isLoading,
+	};
+};
+
+export const GetChatbotResponseSuccess = (data: AIChatbotResponseDTO) => {
+	return {
+		type: GET_CHATBOT_RESPONSE,
+		payload: data,
+	};
 };
