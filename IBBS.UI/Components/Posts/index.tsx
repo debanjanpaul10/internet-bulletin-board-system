@@ -28,7 +28,7 @@ export default function PostsContainer() {
             );
             setAllPosts(sortedData);
         }
-    }, [AllPostsStoreData, allPosts]);
+    }, [AllPostsStoreData]);
 
     if (IsPostsDataLoading) {
         return <div className="container"></div>;

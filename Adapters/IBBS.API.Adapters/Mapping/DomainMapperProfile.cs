@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using IBBS.API.Adapters.Models;
+using IBBS.API.Adapters.Models.AI;
 using IBBS.API.Adapters.Models.Posts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DomainEntities.Posts;
-using InternetBulletin.Shared.DTOs.AI;
 using InternetBulletin.Shared.DTOs.Users;
 
 namespace IBBS.API.Adapters.Mapping;
@@ -20,21 +19,12 @@ public class DomainMapperProfile : Profile
 	/// </summary>
 	public DomainMapperProfile()
 	{
+		CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
+		CreateMap<UserQueryRequestDTO, UserQueryRequestDomain>();
+
 		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
 		CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
-		CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
 		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
-
-		CreateMap<AboutUsAppInfoDataDomain, AboutUsAppInfoDataDTO>();
-		CreateMap<ApplicationInformationDomain, ApplicationInformationDTO>();
-		CreateMap<ApplicationTechnologiesDomain, ApplicationTechnologiesDTO>();
-		CreateMap<IntroductionDomain, IntroductionDTO>();
-		CreateMap<WhatIsIBBSDomain, WhatIsIBBSDTO>();
-		CreateMap<KeyFeaturesDomain, KeyFeaturesDTO>();
-		CreateMap<HowToUseDomain, HowToUseDTO>();
-		CreateMap<TechnicalExcellenceDomain, TechnicalExcellenceDTO>();
-		CreateMap<UpcomingFeaturesDomain, UpcomingFeaturesDTO>();
-		CreateMap<UsageSectionDomain, UsageSectionDTO>();
-		CreateMap<FeatureSectionDomain, FeatureSectionDTO>();
+		CreateMap<AIChatbotResponseDomain, AIChatbotResponseDTO>();
 	}
 }

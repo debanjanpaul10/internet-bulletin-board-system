@@ -1,7 +1,8 @@
-﻿using IBBS.Domain.DomainEntities.AI;
+﻿using IBBS.Domain.DomainEntities.Knowledgebase;
 using IBBS.Domain.DrivenPorts;
-using MongoDB.Bson;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using System.Globalization;
 using static IBBS.Infrastructure.MongoDB.Adapters.Helpers.Constants;
 
 namespace IBBS.Infrastructure.MongoDB.Adapters.MongoDBManager;
@@ -11,42 +12,106 @@ namespace IBBS.Infrastructure.MongoDB.Adapters.MongoDBManager;
 /// </summary>
 /// <param name="mongoClient">The mongo database client.</param>
 /// <seealso cref="IBBS.Domain.DrivenPorts.IMongoDbDatabaseManager" />
-public class MongoDbDatabaseManager(IMongoClient mongoClient) : IMongoDbDatabaseManager
+public class MongoDbDatabaseManager(IMongoClient mongoClient, ILogger<MongoDbDatabaseManager> logger) : IMongoDbDatabaseManager
 {
-	/// <summary>
-	/// The ibbs database
-	/// </summary>
-	private readonly IMongoDatabase _ibbsDatabase = mongoClient.GetDatabase(MongoDBConstants.IbbsDatabase);
-
 	/// <summary>
 	/// The ai agents database
 	/// </summary>
 	private readonly IMongoDatabase _aiAgentsDatabase = mongoClient.GetDatabase(MongoDBConstants.AiAgentsKnowledgeBaseDatabase);
 
 	/// <summary>
-	/// Gets the application information data asynchronously.
+	/// Gets the database knowledge pieces json asynchronous.
 	/// </summary>
 	/// <returns>
-	/// The about us details data <see cref="T:IBBS.Domain.DomainEntities.AI.AboutUsAppInfoDataDomain" />
+	/// The database knowledge base domain.
 	/// </returns>
-	public async Task<AboutUsAppInfoDataDomain> GetAboutUsDataAsync()
+	/// <exception cref="System.Exception"></exception>
+	public async Task<DatabaseKnowledgebaseDomain> GetDatabaseKnowledgePiecesJsonAsync()
 	{
-		var applicationInformation = _ibbsDatabase.GetCollection<ApplicationInformationDomain>(MongoDBConstants.ApplicationInformationCollectionConstant);
-		var applicationTechnologies = _ibbsDatabase.GetCollection<ApplicationTechnologiesDomain>(MongoDBConstants.ApplicationTechnologiesCollectionConstant);
-		if (applicationInformation is not null && applicationTechnologies is not null)
+		try
 		{
-			var applicationInfoResponseTask = applicationInformation.Find(_ => true).FirstAsync();
-			var applicationTechnolgiesDataTask = applicationTechnologies.Find(new BsonDocument()).ToListAsync();
-			await Task.WhenAll(applicationInfoResponseTask, applicationTechnolgiesDataTask).ConfigureAwait(false);
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetDatabaseKnowledgePiecesJsonAsync), DateTime.UtcNow));
 
-			var finalResult = new AboutUsAppInfoDataDomain
+			var knowledgePieces = _aiAgentsDatabase.GetCollection<DatabaseKnowledgebaseDomain>(MongoDBConstants.IBBSDatabaseKnowledgeBaseCollection);
+			if (knowledgePieces is not null)
 			{
-				ApplicationTechnologiesData = applicationTechnolgiesDataTask.Result,
-				ApplicationInformationData = applicationInfoResponseTask.Result
-			};
-			return finalResult;
-		}
+				return await knowledgePieces.Find(_ => true).FirstAsync().ConfigureAwait(false);
+			}
 
-		throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);
+			throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetDatabaseKnowledgePiecesJsonAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetDatabaseKnowledgePiecesJsonAsync), DateTime.UtcNow));
+		}
+	}
+
+	/// <summary>
+	/// Gets the database schema json asynchronous.
+	/// </summary>
+	/// <returns>
+	/// The database schema domain.
+	/// </returns>
+	/// <exception cref="System.Exception"></exception>
+	public async Task<DatabaseSchemaDomain> GetDatabaseSchemaJsonAsync()
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetDatabaseSchemaJsonAsync), DateTime.UtcNow));
+
+			var dbSchema = _aiAgentsDatabase.GetCollection<DatabaseSchemaDomain>(MongoDBConstants.IBBSDatabaseSchemaCollection);
+			if (dbSchema is not null)
+			{
+				return await dbSchema.Find(_ => true).FirstAsync().ConfigureAwait(false);
+			}
+
+			throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetDatabaseSchemaJsonAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetDatabaseSchemaJsonAsync), DateTime.UtcNow));
+		}
+	}
+
+	/// <summary>
+	/// Gets the rag knowledge pieces json asynchronous.
+	/// </summary>
+	/// <returns>
+	/// The RAG knowledge base domain.
+	/// </returns>
+	/// <exception cref="System.Exception"></exception>
+	public async Task<RAGKnowledgebaseDomain> GetRAGKnowledgePiecesJsonAsync()
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetRAGKnowledgePiecesJsonAsync), DateTime.UtcNow));
+
+			var knowledgePieces = _aiAgentsDatabase.GetCollection<RAGKnowledgebaseDomain>(MongoDBConstants.IBBSRAGKnowledgeBaseCollection);
+			if (knowledgePieces is not null)
+			{
+				return await knowledgePieces.Find(_ => true).FirstAsync().ConfigureAwait(false);
+			}
+
+			throw new Exception(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetRAGKnowledgePiecesJsonAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetRAGKnowledgePiecesJsonAsync), DateTime.UtcNow));
+		}
 	}
 }

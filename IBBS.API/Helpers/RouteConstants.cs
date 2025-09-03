@@ -152,10 +152,11 @@ internal static class RouteConstants
 		/// The moderate content route.
 		/// </summary>
 		internal const string ModerateContent_Route = "ModerateContent";
+
+		/// <summary>
+		/// The chatbot api respond route
+		/// </summary>
+		internal const string ChatbotRespond_Route = "respond";
 	}
-
-
-
-	
 
 }

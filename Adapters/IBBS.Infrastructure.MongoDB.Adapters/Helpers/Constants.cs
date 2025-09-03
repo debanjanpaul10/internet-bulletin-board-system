@@ -11,9 +11,14 @@ internal static class Constants
 	internal static class ConfigurationConstants
 	{
 		/// <summary>
-		/// The mongo database connection string constant
+		/// The mongo database connection string constant for ibbs.
 		/// </summary>
-		internal const string MongoDbConnectionStringConstant = "MongoDbConnectionString";
+		internal const string IbbsMongoDbConnectionString = "IbbsMongoDbConnectionString";
+
+		/// <summary>
+		/// The ai agents lab mongo connection string
+		/// </summary>
+		internal const string AiAgentsLabMongoConnectionString = "AiAgentsLab:MongoDbConnectionString";
 	}
 
 	// <summary>
@@ -73,5 +78,20 @@ internal static class Constants
 		/// The application technologies collection constant.
 		/// </summary>
 		internal const string ApplicationTechnologiesCollectionConstant = "ApplicationTechnologies";
+
+		/// <summary>
+		/// The ibbs database knowledge base collection constant.
+		/// </summary>
+		internal const string IBBSDatabaseKnowledgeBaseCollection = "IBBSDatabaseKnowledgeBase";
+
+		/// <summary>
+		/// The ibbs database schema collection constant.
+		/// </summary>
+		internal const string IBBSDatabaseSchemaCollection = "IBBSDatabaseSchema";
+
+		/// <summary>
+		/// The ibbsrag knowledge base collection
+		/// </summary>
+		internal const string IBBSRAGKnowledgeBaseCollection = "IBBSRAGKnowledgeBase";
 	}
 }

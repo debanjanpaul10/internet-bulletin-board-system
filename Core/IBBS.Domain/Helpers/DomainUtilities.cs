@@ -1,4 +1,5 @@
-﻿using IBBS.Domain.DomainEntities.Posts;
+﻿using IBBS.Domain.DomainEntities.AI;
+using IBBS.Domain.DomainEntities.Posts;
 using Microsoft.Extensions.Logging;
 using static IBBS.Domain.Helpers.DomainConstants;
 
@@ -73,5 +74,22 @@ internal static class DomainUtilities
 			PostId = post.PostId,
 			PostTitle = post.PostTitle
 		};
+	}
+
+	/// <summary>
+	/// Prepares the agent chatbot reponse.
+	/// </summary>
+	/// <param name="aiAgentResponse">The ai agent response.</param>
+	/// <param name="userIntent">The user intent.</param>
+	/// <param name="input">The input.</param>
+	/// <param name="aiResponse">The ai response.</param>
+	/// <returns>The populated agent response domain.</returns>
+	internal static AIChatbotResponseDomain PrepareAgentChatbotReponse(this AIChatbotResponseDomain aiAgentResponse, string userIntent, string input, string aiResponse)
+	{
+		aiAgentResponse.UserIntent = userIntent.Trim();
+		aiAgentResponse.UserQuery = input.Trim();
+		aiAgentResponse.AIResponseData = aiResponse.Trim();
+
+		return aiAgentResponse;
 	}
 }

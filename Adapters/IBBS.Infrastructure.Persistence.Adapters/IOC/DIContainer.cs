@@ -1,4 +1,5 @@
 ﻿using IBBS.Domain.DrivenPorts;
+using IBBS.Domain.DrivingPorts;
 using IBBS.Infrastructure.Persistence.Adapters.DataServices;
 using InternetBulletin.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ public static class DIContainer
 	/// <param name="services">The services.</param>
 	private static IServiceCollection AddDataManagers(this IServiceCollection services) =>
 		services.AddScoped<IPostsDataService, PostsDataService>()
-			.AddScoped<IPostRatingsDataService, PostRatingsDataService>();
+			.AddScoped<IPostRatingsDataService, PostRatingsDataService>()
+			.AddScoped<ICommonDataManager, CommonDataManager>();
 
 }

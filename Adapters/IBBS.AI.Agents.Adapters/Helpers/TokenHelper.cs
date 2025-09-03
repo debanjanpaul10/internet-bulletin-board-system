@@ -36,7 +36,7 @@ internal class TokenHelper
 			var tenantId = configuration[ConfigurationConstants.AiAgentsLabTenantId];
 			var clientId = configuration[ConfigurationConstants.AiAgentsAdClientId];
 			var clientSecret = configuration[ConfigurationConstants.AiAgentsAdClientSecret];
-			var scopes = new[] { string.Format(CultureInfo.CurrentCulture, ConfigurationConstants.TokenScopeFormat), clientId };
+			var scopes = new[] { string.Format(CultureInfo.CurrentCulture, ConfigurationConstants.TokenScopeFormat, clientId) };
 
 			var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
 			var accessToken = await credential.GetTokenAsync(new TokenRequestContext(scopes!), CancellationToken.None);

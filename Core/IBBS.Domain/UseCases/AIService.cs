@@ -5,10 +5,19 @@ using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
+using IBBS.Domain.Helpers;
 
-
-public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logger, IMongoDbDatabaseManager mongoDbDatabaseManager) : IAIService
+/// <summary>
+/// The AI Service.
+/// </summary>
+/// <param name="logger">The logger service.</param>
+/// <param name="aiAgentsService">The ai agent service.</param>
+/// <param name="commonDataManager">The common data manager.</param>
+/// <param name="mongoDbDatabaseManager">The mongo db database manager.</param>
+/// <seealso cref="IBBS.Domain.DrivingPorts.IAIService" />
+public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logger, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager) : IAIService
 {
 	/// <summary>
 	/// Rewrites the provided story using AI processing.
@@ -83,28 +92,134 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 	}
 
 	/// <summary>
-	/// Gets the application information data asynchronously.
+	/// Gets the chatbot response asynchronous.
 	/// </summary>
+	/// <param name="userQueryRequest">The user query request.</param>
+	/// <param name="areFollowupQuestionsEnabled">The boolean flag for followup questions.</param>
 	/// <returns>
-	/// The about us details data <see cref="AboutUsAppInfoDataDomain" />
+	/// The ai agent response.
 	/// </returns>
-	public async Task<AboutUsAppInfoDataDomain> GetAboutUsDataAsync()
+	/// <exception cref="System.Exception"></exception>
+	public async Task<AIChatbotResponseDomain> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest, bool areFollowupQuestionsEnabled)
 	{
 		try
 		{
-			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetAboutUsDataAsync), DateTime.UtcNow, string.Empty));
-			return await mongoDbDatabaseManager.GetAboutUsDataAsync().ConfigureAwait(false);
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, userQueryRequest.UserQuery));
+
+			var aiChatbotResponse = new AIChatbotResponseDomain();
+			var userIntent = await aiAgentsService.DetectUserIntentAsync(userQueryRequest).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(userIntent))
+			{
+				throw new Exception(ExceptionConstants.SomethingWentWrongMessage);
+			}
+
+			var normalizedIntent = userIntent.Trim().ToUpperInvariant();
+			var aiResponse = normalizedIntent switch
+			{
+				IntentConstants.GreetingIntent => await aiAgentsService.HandleUserGreetingIntentAsync().ConfigureAwait(false),
+				IntentConstants.SQLIntent => await InvokeSqlFunctionAsync(userQueryRequest.UserQuery, aiChatbotResponse).ConfigureAwait(false),
+				IntentConstants.RAGIntent => await InvokeRAGFunctionAsync(userQueryRequest.UserQuery).ConfigureAwait(false),
+				IntentConstants.UnclearIntent => "Cannot determine the user intent",
+				_ => string.Empty
+			};
+
+			aiChatbotResponse.PrepareAgentChatbotReponse(userIntent.Trim(), userQueryRequest.UserQuery, aiResponse);
+			if (areFollowupQuestionsEnabled && (normalizedIntent != IntentConstants.GreetingIntent && normalizedIntent != IntentConstants.UnclearIntent))
+			{
+				await HandleFollowupQuestionsDataAsync(aiChatbotResponse).ConfigureAwait(false);
+			}
+
+			return aiChatbotResponse;
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetAboutUsDataAsync), DateTime.UtcNow, ex.Message));
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, ex.Message));
 			throw;
 		}
 		finally
 		{
-			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetAboutUsDataAsync), DateTime.UtcNow, string.Empty));
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, userQueryRequest.UserQuery));
 		}
 	}
 
+	#region PRIVATE METHODS
 
+	/// <summary>
+	/// Invokes the SQL function asynchronous.
+	/// </summary>
+	/// <param name="userInput">The user input.</param>
+	/// <param name="aiChatbotResponse">The ai chatbot response.</param>
+	/// <returns>The AI response data.</returns>
+	private async Task<string> InvokeSqlFunctionAsync(string userInput, AIChatbotResponseDomain aiChatbotResponse)
+	{
+		var databaseSchemaTask = mongoDbDatabaseManager.GetDatabaseSchemaJsonAsync();
+		var databaseKnowledgeBaseTask = mongoDbDatabaseManager.GetDatabaseKnowledgePiecesJsonAsync();
+		await Task.WhenAll(databaseSchemaTask, databaseKnowledgeBaseTask).ConfigureAwait(false);
+
+		var nltosqlInput = new NltosqlInputDomain()
+		{
+			DatabaseSchema = JsonConvert.SerializeObject(databaseSchemaTask.Result),
+			KnowledgeBase = JsonConvert.SerializeObject(databaseKnowledgeBaseTask.Result),
+			Source = ConfigurationConstants.SourceName,
+			UserQuery = userInput
+		};
+
+		var sqlQuery = await aiAgentsService.HandleNLToSQLResponseAsync(nltosqlInput).ConfigureAwait(false);
+		var trimmedQuery = sqlQuery.Replace("```sql", string.Empty).Replace("```", string.Empty).Replace("\n", string.Empty).Trim();
+		var jsonQuery = await commonDataManager.ExecuteAISQLQueryAsync(trimmedQuery).ConfigureAwait(false);
+
+		var sqlQueryResult = new SqlQueryResult() { JsonQuery = jsonQuery };
+		aiChatbotResponse.SqlQuery = trimmedQuery;
+		return await aiAgentsService.GetSQLQueryMarkdownResponseAsync(sqlQueryResult).ConfigureAwait(false);
+	}
+
+	/// <summary>
+	/// Invokes the rag function asynchronous.
+	/// </summary>
+	/// <param name="userInput">The user input.</param>
+	/// <returns>The AI response data.</returns>
+	private async Task<string> InvokeRAGFunctionAsync(string userInput)
+	{
+		var knowledgeBase = await mongoDbDatabaseManager.GetRAGKnowledgePiecesJsonAsync().ConfigureAwait(false);
+		var skillsInput = new SkillsInputDomain()
+		{
+			KnowledgeBase = JsonConvert.SerializeObject(knowledgeBase),
+			Source = ConfigurationConstants.SourceName,
+			UserQuery = userInput
+		};
+
+		return await aiAgentsService.HandleRAGTextResponseAsync(skillsInput).ConfigureAwait(false);
+	}
+
+	/// <summary>
+	/// Handles the followup questions data async.
+	/// </summary>
+	/// <param name="aiResult">The ai result.</param>
+	/// <returns>A task to wait on.</returns>
+	private async Task HandleFollowupQuestionsDataAsync(AIChatbotResponseDomain aiResult)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.InvariantCulture, LoggingConstants.MethodStartedMessageConstant, nameof(HandleFollowupQuestionsDataAsync), DateTime.UtcNow, aiResult.AIResponseData));
+			var followupQuestionsDataDomain = new FollowupQuestionsRequestDomain
+			{
+				AiResponseData = aiResult.UserIntent == IntentConstants.RAGIntent ? aiResult.AIResponseData.Replace("`", "'") : aiResult.AIResponseData,
+				UserIntent = aiResult.UserIntent,
+				UserQuery = aiResult.UserQuery
+			};
+
+			aiResult.FollowupQuestions = await aiAgentsService.GetFollowupQuestionsResponseAsync(followupQuestionsDataDomain).ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.InvariantCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(HandleFollowupQuestionsDataAsync), DateTime.UtcNow, ex.Message));
+			aiResult.FollowupQuestions = [];
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.InvariantCulture, LoggingConstants.MethodEndedMessageConstant, nameof(HandleFollowupQuestionsDataAsync), DateTime.UtcNow, aiResult.AIResponseData));
+		}
+	}
+
+	#endregion
 }

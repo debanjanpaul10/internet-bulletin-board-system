@@ -1,7 +1,7 @@
 ﻿using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models;
+using IBBS.API.Adapters.Models.AI;
 using IBBS.API.Helpers;
-using InternetBulletin.Shared.DTOs.AI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -21,28 +21,6 @@ namespace IBBS.API.Controllers;
 public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiServicesHandler aiServicesHandler) : BaseController(httpContextAccessor)
 {
 	/// <summary>
-	/// Gets the about us data asynchronously.
-	/// </summary>
-	/// <returns>The about us page data <see cref="AboutUsAppInfoDataDTO"/></returns>
-	[HttpGet(RouteConstants.AiServicesController.GetAboutUsData_Route)]
-	[ProducesResponseType(typeof(AboutUsAppInfoDataDTO), StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[AllowAnonymous]
-	[SwaggerOperation(Summary = GetAboutUsDataAction.Summary, Description = GetAboutUsDataAction.Description, OperationId = GetAboutUsDataAction.OperationId)]
-	public async Task<IActionResult> GetAboutUsDataAsync()
-	{
-		var result = await aiServicesHandler.GetAboutUsDataAsync().ConfigureAwait(false);
-		if (result is not null)
-		{
-			return this.HandleSuccessResult(result);
-		}
-
-		return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-	}
-
-	/// <summary>
 	/// Rewrites the with ai asynchronous.
 	/// </summary>
 	/// <param name="requestDto">The request dto.</param>
@@ -61,10 +39,10 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 			var rewrittenStory = await aiServicesHandler.RewriteWithAIAsync(UserName, requestDto).ConfigureAwait(false);
 			if (!string.IsNullOrEmpty(rewrittenStory))
 			{
-				return this.HandleSuccessResult(rewrittenStory);
+				return HandleSuccessResult(rewrittenStory);
 			}
 
-			return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
 		}
 
 		return HandleUnAuthorizedRequest();
@@ -90,10 +68,10 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 			var tagForStory = await aiServicesHandler.GenerateTagForStoryAsync(UserName, requestDto).ConfigureAwait(false);
 			if (!string.IsNullOrEmpty(tagForStory))
 			{
-				return this.HandleSuccessResult(tagForStory);
+				return HandleSuccessResult(tagForStory);
 			}
 
-			return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
 		}
 
 		return HandleUnAuthorizedRequest();
@@ -118,10 +96,39 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 			var tagForStory = await aiServicesHandler.ModerateContentDataAsync(UserName, requestDto).ConfigureAwait(false);
 			if (!string.IsNullOrEmpty(tagForStory))
 			{
-				return this.HandleSuccessResult(tagForStory);
+				return HandleSuccessResult(tagForStory);
 			}
 
-			return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+
+		return HandleUnAuthorizedRequest();
+	}
+
+	/// <summary>
+	/// Gets the chatbot response asynchronous.
+	/// </summary>
+	/// <param name="chatMessage">The chat message.</param>
+	/// <returns>The ai chatbot response dto model.</returns>
+	[HttpPost(RouteConstants.AiServicesController.ChatbotRespond_Route)]
+	[ProducesResponseType(typeof(AIChatbotResponseDTO), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[AllowAnonymous]
+	[SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
+	public async Task<IActionResult> GetChatbotResponseAsync([FromBody]UserQueryRequestDTO chatMessage)
+	{
+		if (IsAuthorized())
+		{
+			ArgumentException.ThrowIfNullOrWhiteSpace(chatMessage.UserQuery);
+			var result = await aiServicesHandler.GetChatbotResponseAsync(chatMessage).ConfigureAwait(false);
+			if (result is not null)
+			{
+				return HandleSuccessResult(result);
+			}
+
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
 		}
 
 		return HandleUnAuthorizedRequest();

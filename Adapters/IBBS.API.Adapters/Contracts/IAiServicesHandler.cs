@@ -1,5 +1,5 @@
 ﻿using IBBS.API.Adapters.Models;
-using InternetBulletin.Shared.DTOs.AI;
+using IBBS.API.Adapters.Models.AI;
 
 namespace IBBS.API.Adapters.Contracts;
 
@@ -33,8 +33,9 @@ public interface IAiServicesHandler
 	Task<string> ModerateContentDataAsync(string userName, UserStoryRequestDTO requestDTO);
 
 	/// <summary>
-	/// Gets the application information data asynchronously.
+	/// Gets the chatbot response asynchronous.
 	/// </summary>
-	/// <returns>The about us details data <see cref="AboutUsAppInfoDataDTO"/></returns>
-	Task<AboutUsAppInfoDataDTO> GetAboutUsDataAsync();
+	/// <param name="chatMessageRequest">The user query request.</param>
+	/// <returns>The ai agent response.</returns>
+	Task<AIChatbotResponseDTO> GetChatbotResponseAsync(UserQueryRequestDTO chatMessageRequest);
 }

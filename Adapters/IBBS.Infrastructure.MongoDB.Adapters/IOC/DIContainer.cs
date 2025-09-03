@@ -31,7 +31,7 @@ public static class DIContainer
 	/// <returns>The service collection.</returns>
 	private static IServiceCollection ConfigureMongoDbServer(this IServiceCollection services, IConfiguration configuration)
 	{
-		var mongoDbConnectionString = configuration[ConfigurationConstants.MongoDbConnectionStringConstant];
+		var mongoDbConnectionString = configuration[ConfigurationConstants.AiAgentsLabMongoConnectionString];
 		ArgumentException.ThrowIfNullOrWhiteSpace(mongoDbConnectionString, nameof(mongoDbConnectionString));
 
 		try

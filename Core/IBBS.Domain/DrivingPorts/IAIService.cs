@@ -32,8 +32,10 @@ public interface IAIService
 	Task<string> ModerateContentDataAsync(string userName, UserStoryRequestDomain requestDTO);
 
 	/// <summary>
-	/// Gets the application information data asynchronously.
+	/// Gets the chatbot response asynchronous.
 	/// </summary>
-	/// <returns>The about us details data <see cref="AboutUsAppInfoDataDomain"/></returns>
-	Task<AboutUsAppInfoDataDomain> GetAboutUsDataAsync();
+	/// <param name="userQueryRequest">The user query request.</param>
+	/// <param name="areFollowupQuestionsEnabled">The boolean flag for followup questions.</param>
+	/// <returns>The ai agent response.</returns>
+	Task<AIChatbotResponseDomain> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest, bool areFollowupQuestionsEnabled);
 }
