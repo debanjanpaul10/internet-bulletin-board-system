@@ -166,19 +166,28 @@ export const GetChatbotResponseAsync = async (
 	accessToken: string
 ) => {
 	return await HttpUtility.PostAsync(
-		"AiServices/respond",
+		"AiServices/Respond",
 		userQueryRequest,
 		accessToken
 	);
 };
 
-export const PostAiResultFeedbackAsync = async (
+export const PostAiResultFeedbackApiAsync = async (
 	aiResponseFeedback: AIResponseFeedbackDTO,
 	accessToken: string
 ) => {
 	return await HttpUtility.PostAsync(
-		"AiServices/aifeedback",
+		"AiServices/AIFeedback",
 		aiResponseFeedback,
+		accessToken
+	);
+};
+
+export const GetSamplePromptsForChatbotApiAsync = async (
+	accessToken: string
+) => {
+	return await HttpUtility.GetAsync(
+		"AiServices/GetSampleAIPrompts",
 		accessToken
 	);
 };

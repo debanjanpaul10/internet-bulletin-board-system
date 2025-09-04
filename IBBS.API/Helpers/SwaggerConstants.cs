@@ -115,6 +115,16 @@ internal static class SwaggerConstants
 			internal const string Description = "Saves the user's feedback for the latest AI response.";
 			internal const string OperationId = nameof(PostAiResultFeedbackAction);
 		}
+
+		/// <summary>
+		/// Swagger documentation for GetSamplePromptsForChatbotAsync.
+		/// </summary>
+		internal static class GetSamplePromptsForChatbotAction
+		{
+			internal const string Summary = "Gets a list of sample prompts.";
+			internal const string Description = "Gets a list of sample prompts for the chatbot that can be asked by the user.";
+			internal const string OperationId = nameof(GetSamplePromptsForChatbotAction);
+		}
 	}
 
 	/// <summary>

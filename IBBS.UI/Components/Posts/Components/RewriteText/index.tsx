@@ -16,7 +16,6 @@ import {
 	CreatePostPageConstants,
 } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
-import GradientText from "@animations/GradientText";
 import AiButton from "@assets/Images/ai-icon.svg";
 import { useStyles } from "./styles";
 import { useAppDispatch, useAppSelector } from "@/index";
@@ -157,7 +156,7 @@ export default function RewriteTextComponent({
 				disabled={isLoading || IsRewriteLoadingStoreData}
 				className={styles.rewriteButton}
 			>
-				<GradientText>
+				<span className={styles.gradientTextButton}>
 					<img
 						src={AiButton}
 						style={{
@@ -170,7 +169,7 @@ export default function RewriteTextComponent({
 						CreatePostPageConstants.Headings.RewriteAIButtonTexts
 							.ButtonText
 					}
-				</GradientText>
+				</span>
 			</Button>
 
 			<Dialog
@@ -207,9 +206,9 @@ export default function RewriteTextComponent({
 								onClick={handleAccept}
 								className={styles.acceptChangeButton}
 							>
-								<GradientText>
+								<span className={styles.gradientTextButton}>
 									{AiContentConstants.AcceptButton}
-								</GradientText>
+								</span>
 							</Button>
 						</DialogActions>
 					</DialogBody>

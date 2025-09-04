@@ -117,5 +117,10 @@ internal static class Constants
 		/// The AI Usages table name constant.
 		/// </summary>
 		public const string AiUsagesTableNameConstant = "AiUsages";
+
+		/// <summary>
+		/// The lookup master table name
+		/// </summary>
+		internal const string LookupMasterTableName = "LookupMaster";
 	}
 }

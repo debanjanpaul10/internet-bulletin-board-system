@@ -1,6 +1,5 @@
 ﻿using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.UseCases;
-using InternetBulletin.Business.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IBBS.Domain.IOC;

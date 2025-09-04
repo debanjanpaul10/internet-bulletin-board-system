@@ -1,6 +1,6 @@
-﻿using IBBS.Domain.DomainEntities.AI;
+﻿using IBBS.Domain.DomainEntities;
+using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DomainEntities.Posts;
-using InternetBulletin.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants.DatabaseConstants;
 
@@ -19,7 +19,7 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 	/// <value>
 	/// The users.
 	/// </value>
-	public DbSet<User> Users { get; set; }
+	public virtual DbSet<User> Users { get; set; }
 
 	/// <summary>
 	/// Gets or sets the posts.
@@ -27,7 +27,7 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 	/// <value>
 	/// The posts.
 	/// </value>
-	public DbSet<PostDomain> Posts { get; set; }
+	public virtual DbSet<PostDomain> Posts { get; set; }
 
 	/// <summary>
 	/// Gets or sets the post ratings.
@@ -35,7 +35,7 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 	/// <value>
 	/// The post ratings.
 	/// </value>
-	public DbSet<PostRatingDomain> PostRatings { get; set; }
+	public virtual DbSet<PostRatingDomain> PostRatings { get; set; }
 
 	/// <summary>
 	/// Gets or sets the AI usages.
@@ -43,7 +43,15 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 	/// <value>
 	/// The usage details.
 	/// </value>
-	public DbSet<AiUsageDomain> AiUsages { get; set; }
+	public virtual DbSet<AiUsageDomain> AiUsages { get; set; }
+
+	/// <summary>
+	/// Gets or sets the lookup master.
+	/// </summary>
+	/// <value>
+	/// The lookup master.
+	/// </value>
+	public virtual DbSet<LookupMasterDomain> LookupMaster { get; set; }
 
 	/// <summary>
 	/// Override this method to further configure the model that was discovered by convention from the entity types
@@ -118,6 +126,11 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 			entity.Property(e => e.CandidatesTokenCount).HasColumnType(IntegerDataTypeConstant);
 			entity.Property(e => e.PromptTokenCount).HasColumnType(IntegerDataTypeConstant);
 			entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+		});
+
+		modelBuilder.Entity<LookupMasterDomain>(entity =>
+		{
+			entity.ToTable(LookupMasterTableName).HasKey(e => e.Id);
 		});
 	}
 }

@@ -23,7 +23,6 @@ import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 import Spinner from "@components/Common/Spinner";
 import { useStyles } from "@/Components/Posts/Components/CreatePost/styles";
 import SpotlightCard from "@animations/SpotlightCard";
-import GradientText from "@animations/GradientText";
 import { useAppDispatch, useAppSelector } from "@/index";
 import {
 	HandlePostAiModerationTasksAsync,
@@ -324,12 +323,12 @@ export default function CreatePostComponent() {
 							onClick={handleModerateButtonClick}
 							className={styles.moderateWithAiButton}
 						>
-							<GradientText>
+							<span className={styles.gradientTextButton}>
 								{
 									CreatePostPageConstants.Headings
 										.ModerateWithAIButtonTexts.ButtonText
 								}
-							</GradientText>
+							</span>
 						</Button>
 					</Tooltip>
 				)}

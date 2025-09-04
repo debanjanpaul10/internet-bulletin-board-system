@@ -1,7 +1,7 @@
-namespace IBBS.Domain.DrivingPorts;
-
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.Posts;
+
+namespace IBBS.Domain.DrivingPorts;
 
 /// <summary>
 /// PostDomain ratings service interface.

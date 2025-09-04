@@ -1,6 +1,6 @@
 namespace IBBS.Domain.UseCases;
 
-using InternetBulletin.Business.Contracts;
+using IBBS.Domain.DrivingPorts;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using static IBBS.Domain.Helpers.DomainConstants;

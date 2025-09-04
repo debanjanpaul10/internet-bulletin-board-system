@@ -1,4 +1,5 @@
-﻿using IBBS.Domain.DomainEntities.AI;
+﻿using IBBS.Domain.DomainEntities;
+using IBBS.Domain.DomainEntities.AI;
 
 namespace IBBS.Domain.DrivingPorts;
 
@@ -46,4 +47,10 @@ public interface IAIService
 	/// <param name="userEmail">The user email address.</param>
 	/// <returns>The boolean for success/failure.</returns>
 	Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDomain aiResponseFeedback, string userEmail);
+
+	/// <summary>
+	/// Gets the sample prompts for chatbot asynchronous.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
+	Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync();
 }

@@ -10,6 +10,7 @@ import EditPostComponent from "@/Components/Posts/Components/EditPost";
 import FooterComponent from "@components/Common/Footer";
 import { useStyles } from "./styles";
 import { useAppDispatch, useAppSelector } from "@/index";
+import { SnapScrollHandler } from "@/Helpers/common.utility";
 
 /**
  * @component
@@ -22,9 +23,7 @@ import { useAppDispatch, useAppSelector } from "@/index";
  * - Falls back to unauthenticated access if token retrieval fails
  * - Displays a loading spinner during data fetching
  * - Renders posts container and edit post components
- *
- * @state
- * @property {boolean} isTokenRetrieved - Tracks the status of token retrieval
+ * - Also has a snap scroll effect on the landing page
  *
  * @dependencies
  * - React Redux for state management
@@ -59,11 +58,46 @@ export default function LandingPageComponent() {
 		}
 	}, []);
 
+	/**
+	 * If user is authenticated then get all the posts with token.
+	 */
 	useEffect(() => {
 		if (isAuthenticated && user) {
 			fetchPostsWithToken();
 		}
 	}, [isAuthenticated, user]);
+
+	/**
+	 * Handle snap scroll behavior for mouse wheel and touch
+	 */
+	useEffect(() => {
+		const container: any = containerRef.current;
+		if (!container) return;
+
+		let snapScrollData = SnapScrollHandler(
+			container,
+			currentSection,
+			setCurrentSection,
+			contentSectionRef
+		);
+
+		return () => {
+			container.removeEventListener("wheel", snapScrollData.handleWheel);
+			container.removeEventListener(
+				"touchstart",
+				snapScrollData.handleTouchStart
+			);
+			container.removeEventListener(
+				"touchmove",
+				snapScrollData.handleTouchMove
+			);
+			container.removeEventListener(
+				"touchend",
+				snapScrollData.handleTouchEnd
+			);
+			clearTimeout(snapScrollData.scrollTimeout);
+		};
+	}, [currentSection]);
 
 	/**
 	 * Fetches posts with authentication token
@@ -112,174 +146,6 @@ export default function LandingPageComponent() {
 		e.stopPropagation();
 		setCurrentSection(0);
 	};
-
-	/**
-	 * Handle snap scroll behavior for mouse wheel and touch
-	 */
-	useEffect(() => {
-		const container: any = containerRef.current;
-		if (!container) return;
-
-		let isScrolling = false;
-		let scrollTimeout: any;
-		let touchStartY = 0;
-		let touchEndY = 0;
-
-		const handleWheel = (e: any) => {
-			// Don't interfere with button clicks
-			if (e.target.closest("button")) {
-				return;
-			}
-
-			// Debounce scroll events to prevent rapid firing
-			if (isScrolling) return;
-
-			// If we're in the content section
-			if (currentSection === 1) {
-				const contentSection: any = contentSectionRef.current;
-				if (contentSection && contentSection.contains(e.target)) {
-					// Check if we're at the top of content and scrolling up
-					if (e.deltaY < 0 && contentSection.scrollTop <= 5) {
-						e.preventDefault();
-						isScrolling = true;
-						setCurrentSection(0);
-
-						scrollTimeout = setTimeout(() => {
-							isScrolling = false;
-						}, 300);
-						return;
-					}
-					// Allow normal scrolling within content
-					return;
-				}
-
-				// If scrolling outside content area while in content section
-				if (e.deltaY < 0) {
-					e.preventDefault();
-					isScrolling = true;
-					setCurrentSection(0);
-
-					scrollTimeout = setTimeout(() => {
-						isScrolling = false;
-					}, 300);
-					return;
-				}
-			}
-
-			// Hero section - prevent default and handle snap
-			e.preventDefault();
-			isScrolling = true;
-
-			// Clear any existing timeout
-			clearTimeout(scrollTimeout);
-
-			// If scrolling down from hero section, snap to content
-			if (currentSection === 0 && e.deltaY > 0) {
-				setCurrentSection(1);
-			}
-
-			// Reset scrolling flag after a short delay
-			scrollTimeout = setTimeout(() => {
-				isScrolling = false;
-			}, 300);
-		};
-
-		const handleTouchStart = (e: any) => {
-			touchStartY = e.touches[0].clientY;
-		};
-
-		const handleTouchMove = (e: Event) => {
-			// If we're in content section and touching within it, allow normal scrolling
-			if (currentSection === 1) {
-				const contentSection: any = contentSectionRef.current;
-				if (contentSection && contentSection.contains(e.target)) {
-					return; // Allow normal touch scrolling within content
-				}
-			}
-
-			// Prevent default touch scrolling for hero section
-			e.preventDefault();
-		};
-
-		const handleTouchEnd = (e: any) => {
-			touchEndY = e.changedTouches[0].clientY;
-			const touchDiff = touchStartY - touchEndY;
-			const minSwipeDistance = 50; // Minimum distance for a swipe
-
-			// Don't interfere with button touches
-			if (e.target.closest("button")) {
-				return;
-			}
-
-			// Debounce touch events
-			if (isScrolling) return;
-
-			// If we're in content section and the touch ended within it
-			if (currentSection === 1) {
-				const contentSection: any = contentSectionRef.current;
-				if (contentSection && contentSection.contains(e.target)) {
-					// Check if we're at the top of content and swiping down (up gesture)
-					if (
-						touchDiff < -minSwipeDistance &&
-						contentSection.scrollTop <= 5
-					) {
-						isScrolling = true;
-						setCurrentSection(0);
-						setTimeout(() => {
-							isScrolling = false;
-						}, 300);
-						return;
-					}
-					return; // Allow normal touch behavior within content
-				}
-
-				// If swiping down outside content area while in content section
-				if (touchDiff < -minSwipeDistance) {
-					isScrolling = true;
-					setCurrentSection(0);
-					setTimeout(() => {
-						isScrolling = false;
-					}, 300);
-					return;
-				}
-			}
-
-			isScrolling = true;
-
-			// Swipe up (touch diff positive) - go to content section
-			if (currentSection === 0 && touchDiff > minSwipeDistance) {
-				setCurrentSection(1);
-			}
-			// Swipe down (touch diff negative) - go to hero section
-			else if (currentSection === 1 && touchDiff < -minSwipeDistance) {
-				setCurrentSection(0);
-			}
-
-			// Reset scrolling flag
-			setTimeout(() => {
-				isScrolling = false;
-			}, 300);
-		};
-
-		container.addEventListener("wheel", handleWheel, { passive: false });
-		container.addEventListener("touchstart", handleTouchStart, {
-			passive: true,
-		});
-		container.addEventListener("touchmove", handleTouchMove, {
-			passive: false,
-		});
-		container.addEventListener("touchend", handleTouchEnd, {
-			passive: true,
-		});
-
-		return () => {
-			container.removeEventListener("wheel", handleWheel);
-			container.removeEventListener("touchstart", handleTouchStart);
-			container.removeEventListener("touchmove", handleTouchMove);
-			container.removeEventListener("touchend", handleTouchEnd);
-			clearTimeout(scrollTimeout);
-		};
-	}, [currentSection]);
 
 	return (
 		<div ref={containerRef} className={styles.landingContainer}>

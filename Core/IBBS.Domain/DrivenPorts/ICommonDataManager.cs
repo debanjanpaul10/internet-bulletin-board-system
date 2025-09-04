@@ -1,6 +1,6 @@
-﻿using IBBS.Domain.DomainEntities.AI;
+﻿using IBBS.Domain.DomainEntities;
 
-namespace IBBS.Domain.DrivingPorts;
+namespace IBBS.Domain.DrivenPorts;
 
 /// <summary>
 /// The common data manager service.
@@ -17,6 +17,6 @@ public interface ICommonDataManager
 	/// <summary>
 	/// Gets the sample prompts for chatbot asynchronous.
 	/// </summary>
-	/// <returns>The list of <see cref="SampleChatbotPromptsDomain"/></returns>
-	Task<IEnumerable<SampleChatbotPromptsDomain>> GetSamplePromptsForChatbotAsync();
+	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
+	Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync();
 }

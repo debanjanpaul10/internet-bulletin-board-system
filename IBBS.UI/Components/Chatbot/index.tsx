@@ -23,7 +23,10 @@ import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 
 import { useAppDispatch, useAppSelector } from "@/index";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
-import { HandleChatbotResponseAsync } from "@/Store/AiServices/Actions";
+import {
+	GetSamplePromptsForChatbotAsync,
+	HandleChatbotResponseAsync,
+} from "@/Store/AiServices/Actions";
 import { useStyles } from "./styles";
 import { ChatbotConstants } from "@/Helpers/ibbs.constants";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
@@ -60,6 +63,10 @@ export default function ChatbotComponent() {
 	);
 
 	useEffect(() => {
+		GetSamplePromptsAsync();
+	}, []);
+
+	useEffect(() => {
 		if (chatResponse !== ChatbotResponseStoreData) {
 			if (Object.values(ChatbotResponseStoreData).length > 0) {
 				setChatResponse(ChatbotResponseStoreData);
@@ -68,6 +75,21 @@ export default function ChatbotComponent() {
 			}
 		}
 	}, [ChatbotResponseStoreData]);
+
+	async function GetAccessTokenAsync() {
+		try {
+			const idToken = await getIdTokenClaims();
+			return idToken?.__raw;
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+	}
+
+	async function GetSamplePromptsAsync() {
+		const accessToken = await GetAccessTokenAsync();
+		accessToken && dispatch(GetSamplePromptsForChatbotAsync(accessToken));
+	}
 
 	const sendMessage = async (text: string) => {
 		if (!text.trim()) return;
@@ -86,7 +108,7 @@ export default function ChatbotComponent() {
 			const userQueryRequest: UserQueryRequestDTO = {
 				userQuery: userMessage.content,
 			};
-			const accessToken = await getAccessToken();
+			const accessToken = await GetAccessTokenAsync();
 			if (accessToken) {
 				const aiData = (await (
 					dispatch as ThunkDispatch<any, any, Action>
@@ -114,16 +136,6 @@ export default function ChatbotComponent() {
 	const sendChatbotResponse = async (event: any) => {
 		event.preventDefault();
 		await sendMessage(userQuery);
-	};
-
-	const getAccessToken = async () => {
-		try {
-			const idToken = await getIdTokenClaims();
-			return idToken?.__raw;
-		} catch (error) {
-			console.error(error);
-			return null;
-		}
 	};
 
 	const toggleChat = () => setIsChatOpen(!isChatOpen);
@@ -384,15 +396,22 @@ export default function ChatbotComponent() {
 							</div>
 						))}
 
-						{lastBotMessage && showFollowups && (
-							<FollowupQuestionsComponent
-								message={lastBotMessage}
-								onSelect={(q) => {
-									setShowFollowups(false);
-									sendMessage(q);
-								}}
-							/>
-						)}
+						{lastBotMessage &&
+							showFollowups &&
+							(lastBotMessage.content as AIChatbotResponseDTO)
+								.followupQuestions!.length > 0 && (
+								<FollowupQuestionsComponent
+									messageList={
+										(
+											lastBotMessage.content as AIChatbotResponseDTO
+										).followupQuestions
+									}
+									onSelect={(question) => {
+										setShowFollowups(false);
+										sendMessage(question);
+									}}
+								/>
+							)}
 
 						{isLoading && (
 							<div className={styles.botMessage}>
@@ -405,7 +424,7 @@ export default function ChatbotComponent() {
 										}}
 									>
 										<Spinner size="tiny" />
-										Typing...
+										Thinking...
 									</div>
 								</div>
 							</div>
@@ -418,13 +437,18 @@ export default function ChatbotComponent() {
 								className={styles.textArea}
 								value={userQuery}
 								disabled={isLoading}
-								onChange={(e) => setUserQuery(e.target.value)}
+								onChange={(event) =>
+									setUserQuery(event.target.value)
+								}
 								placeholder="Type your message here..."
 								resize="none"
-								onKeyDown={(e) => {
-									if (e.key === "Enter" && !e.shiftKey) {
-										e.preventDefault();
-										sendChatbotResponse(e);
+								onKeyDown={(event) => {
+									if (
+										event.key === "Enter" &&
+										!event.shiftKey
+									) {
+										event.preventDefault();
+										sendChatbotResponse(event);
 									}
 								}}
 							/>

@@ -17,15 +17,14 @@
     <Folder Include="Stored Procedures" />
     <Folder Include="Tables" />
   </ItemGroup>
-
   <ItemGroup>
     <Build Include="Tables/Posts.sql" />
     <Build Include="Tables/AiUsages.sql" />
     <Build Include="Tables/PostRatings.sql" />
     <Build Include="Tables/Users.sql" />
     <Build Include="Stored Procedures/GetUserPostsAndRatings.sql" />
+    <Build Include="Tables\LookupMaster.sql" />
   </ItemGroup>
-
   <Target Name="BeforeBuild">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
   </Target>

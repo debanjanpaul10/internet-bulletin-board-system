@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.API.Adapters.Models.Posts;
 using IBBS.Domain.DomainEntities;
@@ -27,5 +28,6 @@ public class DomainMapperProfile : Profile
 		CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
 		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
 		CreateMap<AIChatbotResponseDomain, AIChatbotResponseDTO>();
+		CreateMap<LookupMasterDomain, LookupMasterDTO>();
 	}
 }

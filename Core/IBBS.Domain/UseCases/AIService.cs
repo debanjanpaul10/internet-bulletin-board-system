@@ -1,13 +1,14 @@
-﻿namespace IBBS.Domain.UseCases;
-
+﻿using System.Globalization;
+using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
+using IBBS.Domain.Helpers;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
-using IBBS.Domain.Helpers;
+
+namespace IBBS.Domain.UseCases;
 
 /// <summary>
 /// The AI Service.
@@ -166,6 +167,30 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		finally
 		{
 			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail));
+		}
+	}
+
+	/// <summary>
+	/// Gets the sample prompts for chatbot asynchronous.
+	/// </summary>
+	/// <returns>
+	/// The list of <see cref="LookupMasterDomain" />
+	/// </returns>
+	public async Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync()
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
+			return await commonDataManager.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
 		}
 	}
 

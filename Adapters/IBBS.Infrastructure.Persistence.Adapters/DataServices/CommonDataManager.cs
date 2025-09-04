@@ -1,10 +1,10 @@
-﻿using IBBS.Domain.DomainEntities.AI;
-using IBBS.Domain.DrivingPorts;
+﻿using System.Globalization;
+using System.Text.Json;
+using IBBS.Domain.DomainEntities;
+using IBBS.Domain.DrivenPorts;
 using IBBS.Infrastructure.Persistence.Adapters.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
-using System.Text.Json;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
 
 namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
@@ -14,7 +14,7 @@ namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
 /// </summary>
 /// <param name="dbContext">The database context.</param>
 /// <param name="logger">The logger servoce.</param>
-/// <seealso cref="IBBS.Domain.DrivingPorts.ICommonDataManager" />
+/// <seealso cref="Domain.DrivenPorts.ICommonDataManager" />
 public class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext dbContext) : ICommonDataManager
 {
 	/// <summary>
@@ -43,9 +43,29 @@ public class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext d
 		}
 	}
 
-	public Task<IEnumerable<SampleChatbotPromptsDomain>> GetSamplePromptsForChatbotAsync()
+	/// <summary>
+	/// Gets the sample prompts for chatbot asynchronous.
+	/// </summary>
+	/// <returns>
+	/// The list of <see cref="LookupMasterDomain" />
+	/// </returns>
+	public async Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync()
 	{
-		throw new NotImplementedException();
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
+			var result = await dbContext.LookupMaster.Where(x => x.Type == "SamplePrompts" && x.IsActive).ToListAsync().ConfigureAwait(false);
+			return result;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
+		}
 	}
 
 	/// <summary>

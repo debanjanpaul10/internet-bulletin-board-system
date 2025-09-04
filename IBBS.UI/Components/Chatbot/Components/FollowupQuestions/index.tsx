@@ -1,19 +1,17 @@
-import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 import { Button } from "@fluentui/react-components";
-
 import { useStyles } from "./styles";
 
 export default function FollowupQuestionsComponent({
-	message,
+	messageList,
 	onSelect,
 }: {
-	message: any;
+	messageList: [] | null;
 	onSelect: (question: string) => void;
 }) {
 	const styles = useStyles();
-	const questions = (
-		(message.content as AIChatbotResponseDTO)?.followupQuestions ?? []
-	).filter((q: string) => !!q && q.trim().length > 0);
+	const questions = (messageList ?? []).filter(
+		(q: string) => !!q && q.trim().length > 0
+	);
 
 	if (!questions.length) return null;
 

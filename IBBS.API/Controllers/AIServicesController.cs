@@ -2,7 +2,6 @@
 using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.API.Helpers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
@@ -152,6 +151,32 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 			ArgumentNullException.ThrowIfNull(aiResponseFeedback);
 			var result = await aiServicesHandler.PostAiResultFeedbackAsync(aiResponseFeedback, UserEmail).ConfigureAwait(false);
 			if (result)
+			{
+				return HandleSuccessResult(result);
+			}
+
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+
+		return HandleUnAuthorizedRequest();
+	}
+
+	/// <summary>
+	/// Gets the sample prompts for chatbot asynchronous.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDTO"/></returns>
+	[HttpGet(RouteConstants.AiServicesController.GetSamplePrompts_Route)]
+	[ProducesResponseType(typeof(IEnumerable<LookupMasterDTO>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = GetSamplePromptsForChatbotAction.Summary, Description = GetSamplePromptsForChatbotAction.Description, OperationId = GetSamplePromptsForChatbotAction.OperationId)]
+	public async Task<IActionResult> GetSamplePromptsForChatbotAsync()
+	{
+		if (IsAuthorized())
+		{
+			var result = await aiServicesHandler.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
+			if (result is not null)
 			{
 				return HandleSuccessResult(result);
 			}

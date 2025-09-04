@@ -162,6 +162,11 @@ internal static class RouteConstants
 		/// The handle ai feedback route
 		/// </summary>
 		internal const string HandleAIFeedback_Route = "aifeedback";
+
+		/// <summary>
+		/// The get sample prompts route
+		/// </summary>
+		internal const string GetSamplePrompts_Route = "getsampleaiprompts";
 	}
 
 }

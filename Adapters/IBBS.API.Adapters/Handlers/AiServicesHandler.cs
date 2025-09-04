@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IBBS.API.Adapters.Contracts;
+using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivingPorts;
@@ -45,6 +46,18 @@ public class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfigura
 		var domainInput = mapper.Map<UserQueryRequestDomain>(chatMessageRequest);
 		var domainResponse = await aiServices.GetChatbotResponseAsync(domainInput, areFollowupQuestionsEnabled).ConfigureAwait(false);
 		return mapper.Map<AIChatbotResponseDTO>(domainResponse);
+	}
+
+	/// <summary>
+	/// Gets the sample prompts for chatbot asynchronous.
+	/// </summary>
+	/// <returns>
+	/// The list of <see cref="LookupMasterDTO" />
+	/// </returns>
+	public async Task<IEnumerable<LookupMasterDTO>> GetSamplePromptsForChatbotAsync()
+	{
+		var domainResult = await aiServices.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
+		return mapper.Map<IEnumerable<LookupMasterDTO>>(domainResult);
 	}
 
 	/// <summary>

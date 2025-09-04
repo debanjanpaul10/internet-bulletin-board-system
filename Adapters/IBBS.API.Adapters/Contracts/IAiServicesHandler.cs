@@ -1,4 +1,5 @@
-﻿using IBBS.API.Adapters.Models.AI;
+﻿using IBBS.API.Adapters.Models;
+using IBBS.API.Adapters.Models.AI;
 
 namespace IBBS.API.Adapters.Contracts;
 
@@ -45,4 +46,10 @@ public interface IAiServicesHandler
 	/// <param name="userEmail">The user email.</param>
 	/// <returns>The boolean for success/failure.</returns>
 	Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDTO aiResponseFeedback, string userEmail);
+
+	/// <summary>
+	/// Gets the sample prompts for chatbot asynchronous.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDTO"/></returns>
+	Task<IEnumerable<LookupMasterDTO>> GetSamplePromptsForChatbotAsync();
 }
