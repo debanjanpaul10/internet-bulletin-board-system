@@ -76,7 +76,7 @@ export default function ChatbotComponent() {
 		}
 	}, [ChatbotResponseStoreData]);
 
-	async function GetAccessTokenAsync() {
+	const GetAccessTokenAsync = async () => {
 		try {
 			const idToken = await getIdTokenClaims();
 			return idToken?.__raw;
@@ -84,12 +84,12 @@ export default function ChatbotComponent() {
 			console.error(error);
 			return null;
 		}
-	}
+	};
 
-	async function GetSamplePromptsAsync() {
+	const GetSamplePromptsAsync = async () => {
 		const accessToken = await GetAccessTokenAsync();
 		accessToken && dispatch(GetSamplePromptsForChatbotAsync(accessToken));
-	}
+	};
 
 	const sendMessage = async (text: string) => {
 		if (!text.trim()) return;
