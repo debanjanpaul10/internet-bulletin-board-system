@@ -14,14 +14,9 @@ namespace IBBS.API.Controllers;
 public abstract class BaseController : ControllerBase
 {
 	/// <summary>
-	/// The user name.
+	/// The user email
 	/// </summary>
-	protected string UserName = string.Empty;
-
-	/// <summary>
-	/// The user full name.
-	/// </summary>
-	protected string UserFullName = string.Empty;
+	protected string UserEmail = string.Empty;
 
 	/// <summary>
 	/// The http context accessor.
@@ -37,16 +32,10 @@ public abstract class BaseController : ControllerBase
 		_httpContextAccessor = httpContextAccessor;
 		if (_httpContextAccessor.HttpContext is not null && _httpContextAccessor.HttpContext?.User is not null)
 		{
-			var userName = _httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(ConfigurationConstants.UserNameClaimConstant))?.Value;
-			if (!string.IsNullOrEmpty(userName))
+			var userEmail = _httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(ConfigurationConstants.UserEmailClaimConstant))?.Value;
+			if (!string.IsNullOrEmpty(userEmail))
 			{
-				UserName = userName;
-			}
-
-			var userDisplayName = _httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(ConfigurationConstants.UserDisplayNameConstant))?.Value;
-			if (!string.IsNullOrEmpty(userDisplayName))
-			{
-				UserFullName = userDisplayName;
+				UserEmail = userEmail;
 			}
 		}
 	}
@@ -56,7 +45,7 @@ public abstract class BaseController : ControllerBase
 	/// </summary>
 	protected bool IsAuthorized()
 	{
-		if (string.IsNullOrEmpty(UserName))
+		if (string.IsNullOrEmpty(UserEmail))
 		{
 			throw new UnauthorizedAccessException();
 		}

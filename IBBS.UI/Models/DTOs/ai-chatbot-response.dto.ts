@@ -1,5 +1,5 @@
 export class AIChatbotResponseDTO {
-	aIResponseData: string = "";
+	aiResponseData: string = "";
 	userQuery: string = "";
 	userIntent: string = "";
 	sqlQuery: string | null = null;
@@ -12,7 +12,7 @@ export class AIChatbotResponseDTO {
 		SqlQuery: string | null,
 		FollowupQuestions: [] | null
 	) {
-		this.aIResponseData = AIResponseData;
+		this.aiResponseData = AIResponseData;
 		this.userIntent = UserIntent;
 		this.userQuery = UserQuery;
 		this.sqlQuery = SqlQuery;

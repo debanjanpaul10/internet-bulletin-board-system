@@ -36,7 +36,7 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 		try
 		{
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
-			var result = await postsHandler.GetAllPostsAsync(UserName ?? string.Empty);
+			var result = await postsHandler.GetAllPostsAsync(UserEmail ?? string.Empty);
 			return HandleSuccessResult(result);
 		}
 		catch (Exception ex)
@@ -69,7 +69,7 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
 			if (IsAuthorized())
 			{
-				var result = await postsHandler.GetPostAsync(postId, UserName);
+				var result = await postsHandler.GetPostAsync(postId, UserEmail);
 				if (result is not null && !Equals(result.PostId, Guid.Empty))
 				{
 					return HandleSuccessResult(result);
@@ -112,7 +112,7 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
 			if (IsAuthorized())
 			{
-				var result = await postsHandler.AddNewPostAsync(newPost, UserName);
+				var result = await postsHandler.AddNewPostAsync(newPost, UserEmail);
 				if (result)
 				{
 					return this.HandleSuccessResult(result);
@@ -154,7 +154,7 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
 			if (IsAuthorized())
 			{
-				var result = await postsHandler.UpdatePostAsync(updatePost, UserName);
+				var result = await postsHandler.UpdatePostAsync(updatePost, UserEmail);
 				if (result is not null && result.PostId != Guid.Empty)
 				{
 					return this.HandleSuccessResult(result);
@@ -196,7 +196,7 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
 			if (IsAuthorized())
 			{
-				var result = await postsHandler.DeletePostAsync(postId, UserName);
+				var result = await postsHandler.DeletePostAsync(postId, UserEmail);
 				if (result)
 				{
 					return HandleSuccessResult(result);

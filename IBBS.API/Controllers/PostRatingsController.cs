@@ -32,7 +32,7 @@ public class PostRatingsController(IHttpContextAccessor httpContextAccessor, IPo
 	{
 		if (IsAuthorized())
 		{
-			var result = await postRatingsHandler.GetAllUserPostRatingsAsync(UserName).ConfigureAwait(false);
+			var result = await postRatingsHandler.GetAllUserPostRatingsAsync(UserEmail).ConfigureAwait(false);
 			if (result is not null)
 			{
 				return HandleSuccessResult(result);
@@ -61,7 +61,7 @@ public class PostRatingsController(IHttpContextAccessor httpContextAccessor, IPo
 	{
 		if (IsAuthorized())
 		{
-			var result = await postRatingsHandler.UpdateRatingAsync(postRating, UserName).ConfigureAwait(false);
+			var result = await postRatingsHandler.UpdateRatingAsync(postRating, UserEmail).ConfigureAwait(false);
 			if (result is not null)
 			{
 				return this.HandleSuccessResult(result);

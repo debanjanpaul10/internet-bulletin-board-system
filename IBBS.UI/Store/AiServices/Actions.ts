@@ -204,7 +204,9 @@ export const HandleChatbotResponseAsync = (
 			);
 			if (response?.data) {
 				dispatch(GetChatbotResponseSuccess(response.data));
+				return response.data as AIChatbotResponseDTO;
 			}
+			return null;
 		} catch (error) {
 			console.error(error);
 			dispatch(
@@ -213,6 +215,7 @@ export const HandleChatbotResponseAsync = (
 					errorMessage: error,
 				})
 			);
+			throw error;
 		} finally {
 			dispatch(ToggleChatbotLoading(false));
 		}

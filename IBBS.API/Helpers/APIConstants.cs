@@ -56,14 +56,9 @@ internal static class APIConstants
 		internal const string ApplicationJsonConstant = "application/json";
 
 		/// <summary>
-		/// The user name claim constant.
-		/// </summary>
-		internal const string UserNameClaimConstant = "User Name";
-
-		/// <summary>
 		/// The user display name constant.
 		/// </summary>
-		internal const string UserDisplayNameConstant = "name";
+		internal const string UserEmailClaimConstant = "name";
 	}
 
 	/// <summary>

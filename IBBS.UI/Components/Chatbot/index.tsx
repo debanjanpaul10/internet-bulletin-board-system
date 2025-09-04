@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import {
 	Button,
+	Spinner,
 	Textarea,
 	Tooltip,
 	mergeClasses,
@@ -14,6 +15,7 @@ import {
 	ArrowClockwiseRegular,
 	SendRegular,
 	HandWaveFilled,
+	CopyRegular,
 } from "@fluentui/react-icons";
 
 import { useAppDispatch, useAppSelector } from "@/index";
@@ -22,6 +24,10 @@ import { HandleChatbotResponseAsync } from "@/Store/AiServices/Actions";
 import { useStyles } from "./styles";
 import { ChatbotConstants } from "@/Helpers/ibbs.constants";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
+import { renderSafeMarkdown } from "@/Helpers/markdown.utility";
+import FollowupQuestionsComponent from "./Components/FollowupQuestions";
+import { Action, ThunkDispatch } from "@reduxjs/toolkit";
+import TextType from "@/Animations/TextType";
 
 export default function ChatbotComponent() {
 	const styles = useStyles();
@@ -39,11 +45,15 @@ export default function ChatbotComponent() {
 		Array<{
 			type: "user" | "bot";
 			content: string | AIChatbotResponseDTO;
-			timestamp: Date;
 		}>
 	>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [chatResponse, setChatResponse] = useState({});
+	const [_, setHoveredMessageIndex] = useState<number | null>(null);
+	const [showFollowups, setShowFollowups] = useState<boolean>(true);
+	const [completedMessageIndexes, setCompletedMessageIndexes] = useState<
+		Record<number, boolean>
+	>({});
 
 	useEffect(() => {
 		if (chatResponse !== ChatbotResponseStoreData) {
@@ -55,18 +65,18 @@ export default function ChatbotComponent() {
 		}
 	}, [ChatbotResponseStoreData]);
 
-	const sendChatbotResponse = async (event: any) => {
-		event.preventDefault();
-		if (!userQuery.trim()) return;
+	const sendMessage = async (text: string) => {
+		if (!text.trim()) return;
 
 		const userMessage = {
 			type: "user" as const,
-			content: userQuery,
+			content: text,
 			timestamp: new Date(),
 		};
 		setMessages((prev) => [...prev, userMessage]);
 		setUserQuery("");
 		setIsLoading(true);
+		setShowFollowups(false);
 
 		try {
 			const userQueryRequest: UserQueryRequestDTO = {
@@ -74,22 +84,32 @@ export default function ChatbotComponent() {
 			};
 			const accessToken = await getAccessToken();
 			if (accessToken) {
-				await dispatch(
+				const aiData = (await (
+					dispatch as ThunkDispatch<any, any, Action>
+				)(
 					HandleChatbotResponseAsync(userQueryRequest, accessToken)
-				);
+				)) as AIChatbotResponseDTO | null;
 
-				const botMessage = {
-					type: "bot" as const,
-					content: ChatbotResponseStoreData as AIChatbotResponseDTO,
-					timestamp: new Date(),
-				};
-				setMessages((prev) => [...prev, botMessage]);
+				if (aiData) {
+					const botMessage = {
+						type: "bot" as const,
+						content: aiData,
+						timestamp: new Date(),
+					};
+					setMessages((prev) => [...prev, botMessage]);
+					setShowFollowups(true);
+				}
 				setIsLoading(false);
 			}
 		} catch (error) {
 			console.error(error);
 			setIsLoading(false);
 		}
+	};
+
+	const sendChatbotResponse = async (event: any) => {
+		event.preventDefault();
+		await sendMessage(userQuery);
 	};
 
 	const getAccessToken = async () => {
@@ -107,8 +127,35 @@ export default function ChatbotComponent() {
 	const refreshChat = () => {
 		setMessages([]);
 		setUserQuery("");
+		setShowFollowups(false);
 	};
 	const closeChat = () => setIsChatOpen(false);
+
+	const lastBotMessage = [...messages]
+		.reverse()
+		.find((m) => m.type === "bot");
+
+	const handleCopy = async (message: {
+		type: "user" | "bot";
+		content: string | AIChatbotResponseDTO;
+	}) => {
+		try {
+			const textToCopy =
+				message.type === "user"
+					? String(message.content)
+					: typeof message.content === "string"
+					? message.content
+					: (message.content as AIChatbotResponseDTO)
+							.aiResponseData ?? "";
+			await navigator.clipboard.writeText(textToCopy);
+		} catch (err) {
+			console.error("Failed to copy message", err);
+		}
+	};
+
+	const handleTypingComplete = (index: number) => {
+		setCompletedMessageIndexes((prev) => ({ ...prev, [index]: true }));
+	};
 
 	return (
 		<>
@@ -189,6 +236,12 @@ export default function ChatbotComponent() {
 										? styles.userMessage
 										: styles.botMessage
 								)}
+								onMouseEnter={() =>
+									setHoveredMessageIndex(index)
+								}
+								onMouseLeave={() =>
+									setHoveredMessageIndex(null)
+								}
 							>
 								<div
 									className={mergeClasses(
@@ -198,18 +251,75 @@ export default function ChatbotComponent() {
 											: styles.botBubble
 									)}
 								>
-									{message.type === "user"
-										? String(message.content)
-										: typeof message.content === "string"
-										? message.content
-										: message.content.aIResponseData}
+									{message.type === "user" ? (
+										String(message.content)
+									) : (
+										<>
+											<TextType
+												text={renderSafeMarkdown(
+													typeof message.content ===
+														"string"
+														? message.content
+														: (
+																message.content as AIChatbotResponseDTO
+														  ).aiResponseData ?? ""
+												)}
+												typingSpeed={20}
+												pauseDuration={1500}
+												showCursor={false}
+												cursorCharacter="|"
+												renderHtml={true}
+												onTypingComplete={() =>
+													handleTypingComplete(index)
+												}
+											/>
+										</>
+									)}
 								</div>
+								{message.type === "bot" &&
+									completedMessageIndexes[index] && (
+										<div
+											className={styles.botCopyFooter}
+											style={{ marginLeft: 0 }}
+										>
+											<Tooltip
+												content={
+													ChatbotConstants
+														.ChatbotWindow
+														.CopyTooltip
+												}
+												relationship="label"
+											>
+												<Button
+													appearance="primary"
+													size="small"
+													className={
+														styles.botCopyButton
+													}
+													onClick={() =>
+														handleCopy(message)
+													}
+													icon={<CopyRegular />}
+												></Button>
+											</Tooltip>
+										</div>
+									)}
 							</div>
 						))}
 
+						{lastBotMessage && showFollowups && (
+							<FollowupQuestionsComponent
+								message={lastBotMessage}
+								onSelect={(q) => {
+									setShowFollowups(false);
+									sendMessage(q);
+								}}
+							/>
+						)}
+
 						{isLoading && (
 							<div className={styles.botMessage}>
-								<div className={styles.botBubble}>
+								<div className={styles.loadingBotBubble}>
 									<div
 										style={{
 											display: "flex",
@@ -217,17 +327,7 @@ export default function ChatbotComponent() {
 											gap: "8px",
 										}}
 									>
-										<div
-											style={{
-												width: "16px",
-												height: "16px",
-												border: "2px solid #ccc",
-												borderTop: "2px solid #0078d4",
-												borderRadius: "50%",
-												animation:
-													"spin 1s linear infinite",
-											}}
-										/>
+										<Spinner size="tiny" />
 										Typing...
 									</div>
 								</div>
@@ -237,63 +337,36 @@ export default function ChatbotComponent() {
 
 					<div className={styles.chatInput}>
 						<div className={styles.inputContainer}>
-							{isLoading ? (
-								<div className={styles.thinkingIndicator}>
-									<div
-										style={{
-											display: "flex",
-											alignItems: "center",
-											gap: "8px",
-										}}
-									>
-										<div
-											style={{
-												width: "16px",
-												height: "16px",
-												border: "2px solid #ccc",
-												borderTop: "2px solid #0078d4",
-												borderRadius: "50%",
-												animation:
-													"spin 1s linear infinite",
-											}}
-										/>
-										AI is thinking...
-									</div>
-								</div>
-							) : (
-								<Textarea
-									className={styles.textArea}
-									value={userQuery}
-									onChange={(e) =>
-										setUserQuery(e.target.value)
+							<Textarea
+								className={styles.textArea}
+								value={userQuery}
+								disabled={isLoading}
+								onChange={(e) => setUserQuery(e.target.value)}
+								placeholder="Type your message here..."
+								resize="none"
+								onKeyDown={(e) => {
+									if (e.key === "Enter" && !e.shiftKey) {
+										e.preventDefault();
+										sendChatbotResponse(e);
 									}
-									placeholder="Type your message here..."
-									resize="none"
-									onKeyDown={(e) => {
-										if (e.key === "Enter" && !e.shiftKey) {
-											e.preventDefault();
-											sendChatbotResponse(e);
-										}
-									}}
-								/>
-							)}
+								}}
+							/>
 						</div>
 						<Button
 							className={styles.sendButton}
 							onClick={sendChatbotResponse}
 							disabled={!userQuery.trim() || isLoading}
-							icon={<SendRegular />}
+							icon={
+								!isLoading ? (
+									<SendRegular />
+								) : (
+									<Spinner size="tiny" />
+								)
+							}
 						/>
 					</div>
 				</div>
 			)}
-
-			<style>{`
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `}</style>
 		</>
 	);
 }

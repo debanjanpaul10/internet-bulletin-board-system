@@ -36,7 +36,7 @@ export const useStyles = makeStyles({
 		bottom: "24px",
 		right: "24px",
 		width: "400px",
-		height: "500px",
+		height: "80vh",
 		backgroundColor: "rgba(255, 255, 255, 0.05)",
 		borderRadius: "20px",
 		boxShadow: "0 25px 80px rgba(0, 0, 0, 0.6)",
@@ -126,6 +126,7 @@ export const useStyles = makeStyles({
 	},
 	messageContainer: {
 		marginBottom: "20px",
+		position: "relative",
 	},
 	userMessage: {
 		display: "flex",
@@ -154,6 +155,51 @@ export const useStyles = makeStyles({
 		backgroundColor: "rgba(22, 32, 65, 1)",
 		color: tokens.colorNeutralForeground1,
 		borderRadius: "20px",
+	},
+	loadingBotBubble: {
+		backgroundColor: "rgba(22, 32, 65, 1)",
+		color: tokens.colorNeutralForeground1,
+		borderRadius: "20px",
+		padding: "10px",
+	},
+	copyButton: {
+		position: "absolute",
+		top: "-6px",
+		right: "-6px",
+		opacity: 0,
+		transition: "opacity 0.15s ease",
+		backgroundColor: "rgba(255, 255, 255, 0.08)",
+		borderRadius: "8px",
+		border: "1px solid rgba(255, 255, 255, 0.15)",
+		"&:hover": {
+			opacity: 1,
+		},
+	},
+	copyButtonLeft: {
+		left: "-6px",
+		right: "auto",
+	},
+	copyButtonVisible: {
+		opacity: 1,
+	},
+	botCopyFooter: {
+		marginTop: "8px",
+		display: "flex",
+		gap: "8px",
+		alignItems: "center",
+		justifyContent: "flex-start",
+		maxWidth: "80%",
+		marginLeft: 0,
+	},
+	botCopyButton: {
+		backgroundColor: "rgba(255, 255, 255, 0.08)",
+		border: "1px solid rgba(255, 255, 255, 0.15)",
+		borderRadius: "10px",
+		padding: "6px 10px",
+		color: tokens.colorNeutralForeground1,
+		"&:hover": {
+			backgroundColor: "rgba(255, 255, 255, 0.14)",
+		},
 	},
 	chatInput: {
 		padding: "20px",
@@ -242,6 +288,7 @@ export const useStyles = makeStyles({
 		minHeight: "60px",
 		display: "flex",
 		alignItems: "center",
+		width: "100%",
 	},
 	hidden: {
 		display: "none",

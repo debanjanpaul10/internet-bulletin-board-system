@@ -36,7 +36,7 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 		if (IsAuthorized())
 		{
 			ArgumentNullException.ThrowIfNull(requestDto);
-			var rewrittenStory = await aiServicesHandler.RewriteWithAIAsync(UserName, requestDto).ConfigureAwait(false);
+			var rewrittenStory = await aiServicesHandler.RewriteWithAIAsync(UserEmail, requestDto).ConfigureAwait(false);
 			if (!string.IsNullOrEmpty(rewrittenStory))
 			{
 				return HandleSuccessResult(rewrittenStory);
@@ -65,7 +65,7 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 		if (IsAuthorized())
 		{
 			ArgumentNullException.ThrowIfNull(requestDto);
-			var tagForStory = await aiServicesHandler.GenerateTagForStoryAsync(UserName, requestDto).ConfigureAwait(false);
+			var tagForStory = await aiServicesHandler.GenerateTagForStoryAsync(UserEmail, requestDto).ConfigureAwait(false);
 			if (!string.IsNullOrEmpty(tagForStory))
 			{
 				return HandleSuccessResult(tagForStory);
@@ -93,7 +93,7 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 		if (IsAuthorized())
 		{
 			ArgumentNullException.ThrowIfNull(requestDto);
-			var tagForStory = await aiServicesHandler.ModerateContentDataAsync(UserName, requestDto).ConfigureAwait(false);
+			var tagForStory = await aiServicesHandler.ModerateContentDataAsync(UserEmail, requestDto).ConfigureAwait(false);
 			if (!string.IsNullOrEmpty(tagForStory))
 			{
 				return HandleSuccessResult(tagForStory);

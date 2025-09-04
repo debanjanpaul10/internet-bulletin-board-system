@@ -74,10 +74,10 @@ public static class DIContainer
 		{
 			options.TokenValidationParameters = new TokenValidationParameters
 			{
-				ValidateLifetime = true,
+				ValidateLifetime = false,
 				ValidateIssuer = true,
 				ValidateAudience = true,
-				RequireExpirationTime = true,
+				RequireExpirationTime = false,
 				RequireSignedTokens = true,
 				ValidAudience = configuration[ConfigurationConstants.Auth0WebClientId],
 				ValidIssuer = configuration[ConfigurationConstants.Auth0Domain],
