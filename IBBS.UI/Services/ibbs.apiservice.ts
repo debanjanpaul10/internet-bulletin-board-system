@@ -2,6 +2,7 @@
 
 import HttpUtility from "@/Helpers/http.utility";
 import AddPostDtoModel from "@/Models/AddPostDto";
+import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
 import PostRatingDtoModel from "@/Models/PostRatingDto";
 import UpdatePostDtoModel from "@/Models/UpdatePostDto";
@@ -15,10 +16,10 @@ import UserStoryRequestDtoModel from "@/Models/UserStoryRequestDto";
  * @returns The promise of the response from api.
  */
 export const GetPostApiAsync = async (postId: string, accessToken: string) => {
-    return await HttpUtility.GetAsync(
-        `Posts/GetPost?postId=${postId}`,
-        accessToken
-    );
+	return await HttpUtility.GetAsync(
+		`Posts/GetPost?postId=${postId}`,
+		accessToken
+	);
 };
 
 /**
@@ -26,7 +27,7 @@ export const GetPostApiAsync = async (postId: string, accessToken: string) => {
  * @returns The promise of the response from api.
  */
 export const GetAllPostsApiAsync = async (accessToken: string) => {
-    return await HttpUtility.GetAsync(`Posts/GetAllPosts`, accessToken);
+	return await HttpUtility.GetAsync(`Posts/GetAllPosts`, accessToken);
 };
 
 /**
@@ -37,14 +38,14 @@ export const GetAllPostsApiAsync = async (accessToken: string) => {
  * @returns The promise of the response from api.
  */
 export const AddNewPostApiAsync = async (
-    newPostData: AddPostDtoModel,
-    accessToken: string
+	newPostData: AddPostDtoModel,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        `Posts/AddPost`,
-        newPostData,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		`Posts/AddPost`,
+		newPostData,
+		accessToken
+	);
 };
 
 /**
@@ -55,14 +56,14 @@ export const AddNewPostApiAsync = async (
  * @returns The promise of the response from api.
  */
 export const UpdatePostApiAsync = async (
-    updatedPostData: UpdatePostDtoModel,
-    accessToken: string
+	updatedPostData: UpdatePostDtoModel,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        `Posts/UpdatePost`,
-        updatedPostData,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		`Posts/UpdatePost`,
+		updatedPostData,
+		accessToken
+	);
 };
 
 /**
@@ -73,14 +74,14 @@ export const UpdatePostApiAsync = async (
  * @returns The promise of the response from api.
  */
 export const DeletePostApiAsync = async (
-    postId: string,
-    accessToken: string
+	postId: string,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        `Posts/DeletePost?postId=${postId}`,
-        null,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		`Posts/DeletePost?postId=${postId}`,
+		null,
+		accessToken
+	);
 };
 
 /**
@@ -91,14 +92,14 @@ export const DeletePostApiAsync = async (
  * @returns The promise of the response from api.
  */
 export const UpdateRatingApiAsync = async (
-    postRatingModel: PostRatingDtoModel,
-    accessToken: string
+	postRatingModel: PostRatingDtoModel,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        `PostRatings/UpdateRating`,
-        postRatingModel,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		`PostRatings/UpdateRating`,
+		postRatingModel,
+		accessToken
+	);
 };
 
 // #endregion
@@ -111,10 +112,10 @@ export const UpdateRatingApiAsync = async (
  * @returns The promise of the response from api.
  */
 export const GetConfigurationApiAsync = async (keyName: string) => {
-    return await HttpUtility.GetAsync(
-        `Configuration/GetConfiguration?keyName=${keyName}`,
-        ""
-    );
+	return await HttpUtility.GetAsync(
+		`Configuration/GetConfiguration?keyName=${keyName}`,
+		""
+	);
 };
 
 // #endregion
@@ -128,61 +129,58 @@ export const GetConfigurationApiAsync = async (keyName: string) => {
  * @returns The promise of the response from api.
  */
 export const PostRewriteStoryWithAiApiAsync = async (
-    storyText: string,
-    accessToken: string
+	storyText: string,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        "AiServices/RewriteWithAI",
-        storyText,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		"AiServices/RewriteWithAI",
+		storyText,
+		accessToken
+	);
 };
 
 export const GenerateTagForStoryApiAsync = async (
-    storyText: UserStoryRequestDtoModel,
-    accessToken: string
+	storyText: UserStoryRequestDtoModel,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        "AiServices/GenerateGenreTag",
-        storyText,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		"AiServices/GenerateGenreTag",
+		storyText,
+		accessToken
+	);
 };
 
 export const ModerateContentDataApiAsync = async (
-    storyText: UserStoryRequestDtoModel,
-    accessToken: string
+	storyText: UserStoryRequestDtoModel,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        "AiServices/ModerateContent",
-        storyText,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		"AiServices/ModerateContent",
+		storyText,
+		accessToken
+	);
 };
 
 export const GetChatbotResponseAsync = async (
-    userQueryRequest: UserQueryRequestDTO,
-    accessToken: string
+	userQueryRequest: UserQueryRequestDTO,
+	accessToken: string
 ) => {
-    return await HttpUtility.PostAsync(
-        "AiServices/respond",
-        userQueryRequest,
-        accessToken
-    );
+	return await HttpUtility.PostAsync(
+		"AiServices/respond",
+		userQueryRequest,
+		accessToken
+	);
 };
 
-// #endregion
-
-// #region BULLETIN SERVICES
-
-/**
- * Gets the application information data from api.
- * @returns The promise of the response from api.
- */
-export const GetApplicationInformationDataApiAsync = async (
-    accessToken: string = ""
+export const PostAiResultFeedbackAsync = async (
+	aiResponseFeedback: AIResponseFeedbackDTO,
+	accessToken: string
 ) => {
-    return await HttpUtility.GetAsync("AiServices/GetAboutUsData", accessToken);
+	return await HttpUtility.PostAsync(
+		"AiServices/aifeedback",
+		aiResponseFeedback,
+		accessToken
+	);
 };
 
 // #endregion
@@ -195,10 +193,10 @@ export const GetApplicationInformationDataApiAsync = async (
  * @returns The promise of the response from api.
  */
 export const GetUserProfilesDataApiAsync = async (accessToken: string) => {
-    return await HttpUtility.GetAsync(
-        "Profiles/GetUserProfileData",
-        accessToken
-    );
+	return await HttpUtility.GetAsync(
+		"Profiles/GetUserProfileData",
+		accessToken
+	);
 };
 
 // #endregion

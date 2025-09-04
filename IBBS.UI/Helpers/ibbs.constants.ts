@@ -198,7 +198,8 @@ export const ChatbotConstants = {
 		AgentName: "IBBS AI Assistant",
 		AiAssistantGreetingMessage:
 			"Hello! I'm IBBS AI assistant. How can I help you today?",
-		CopyTooltip: "Copy response.",
+		CopyRequestTooltip: "Copy message",
+		CopyTooltip: "Copy response",
 		LikeTooltip: "Good response",
 		DislikeTooltip: "Bad response",
 	},

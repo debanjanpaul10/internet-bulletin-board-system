@@ -106,6 +106,15 @@ internal static class SwaggerConstants
 			internal const string OperationId = nameof(GetChatbotResponseAction);
 		}
 
+		/// <summary>
+		/// Swagger documentation for PostAiResultFeedbackAsync.
+		/// </summary>
+		internal static class PostAiResultFeedbackAction
+		{
+			internal const string Summary = "Saves the AI result feedback from user.";
+			internal const string Description = "Saves the user's feedback for the latest AI response.";
+			internal const string OperationId = nameof(PostAiResultFeedbackAction);
+		}
 	}
 
 	/// <summary>

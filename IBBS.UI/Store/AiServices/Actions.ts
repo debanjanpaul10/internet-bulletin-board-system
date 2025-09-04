@@ -1,18 +1,18 @@
 import { Action, Dispatch } from "@reduxjs/toolkit";
 import {
-	GET_APPLICATION_INFORMATION,
 	GET_CHATBOT_RESPONSE,
 	HANDLE_POST_AI_MODERATION,
 	REWRITE_STORY_AI,
-	TOGGLE_ABOUT_US_SPINNER,
+	SAVE_AI_FEEDBACK_RESPONSE,
+	TOGGLE_AI_FEEDBACK_SPINNER,
 	TOGGLE_CHATBOT_LOADING,
 	TOGGLE_REWRITE_LOADER,
 } from "./ActionTypes";
 import {
 	GenerateTagForStoryApiAsync,
-	GetApplicationInformationDataApiAsync,
 	GetChatbotResponseAsync,
 	ModerateContentDataApiAsync,
+	PostAiResultFeedbackAsync,
 	PostRewriteStoryWithAiApiAsync,
 } from "@/Services/ibbs.apiservice";
 import { ToggleErrorToaster } from "../Common/Actions";
@@ -20,6 +20,7 @@ import UserStoryRequestDtoModel from "@/Models/UserStoryRequestDto";
 import { HandleCreatePostPageLoader, PostDataFailure } from "../Posts/Actions";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
+import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
 
 /**
  * Stores the toggle event for rewrite text loading.
@@ -29,51 +30,6 @@ import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 export const ToggleRewriteLoader = (isLoading: boolean) => {
 	return {
 		type: TOGGLE_REWRITE_LOADER,
-		payload: isLoading,
-	};
-};
-
-/**
- * Gets the application information data.
- * @param accessToken The access token.
- * @returns The promise of the api response.
- */
-export const GetApplicationInformationDataAsync = (
-	accessToken: string = ""
-) => {
-	return async (dispatch: Dispatch<Action>) => {
-		try {
-			dispatch(ToggleAboutUsSpinner(true));
-			const response = await GetApplicationInformationDataApiAsync(
-				accessToken
-			);
-
-			dispatch({
-				type: GET_APPLICATION_INFORMATION,
-				payload: response?.data,
-			});
-		} catch (error: any) {
-			console.error(error);
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error.data ?? error.title ?? error,
-				})
-			);
-		} finally {
-			dispatch(ToggleAboutUsSpinner(false));
-		}
-	};
-};
-
-/**
- * Toggles the About Us spinner.
- * @param isLoading The is loading flag.
- * @returns The action type and payload data.
- */
-const ToggleAboutUsSpinner = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_ABOUT_US_SPINNER,
 		payload: isLoading,
 	};
 };
@@ -233,5 +189,37 @@ export const GetChatbotResponseSuccess = (data: AIChatbotResponseDTO) => {
 	return {
 		type: GET_CHATBOT_RESPONSE,
 		payload: data,
+	};
+};
+
+export const HandleAiResultFeedbackAsync = (
+	responseFeedback: AIResponseFeedbackDTO,
+	accessToken: string
+) => {
+	return async (dispatch: Dispatch<Action>) => {
+		try {
+			dispatch(ToggleFeedbackSpinner(true));
+			const response = await PostAiResultFeedbackAsync(
+				responseFeedback,
+				accessToken
+			);
+			if (response?.data) {
+				dispatch({
+					type: SAVE_AI_FEEDBACK_RESPONSE,
+					payload: response.data,
+				});
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			dispatch(ToggleFeedbackSpinner(false));
+		}
+	};
+};
+
+export const ToggleFeedbackSpinner = (isLoading: boolean) => {
+	return {
+		type: TOGGLE_AI_FEEDBACK_SPINNER,
+		payload: isLoading,
 	};
 };

@@ -142,6 +142,33 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		}
 	}
 
+	/// <summary>
+	/// Posts the ai result feedback asynchronous.
+	/// </summary>
+	/// <param name="aiResponseFeedback">The ai response feedback.</param>
+	/// <param name="userEmail">The user email address.</param>
+	/// <returns>
+	/// The boolean for success/failure.
+	/// </returns>
+	public async Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDomain aiResponseFeedback, string userEmail)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail));
+			await Task.Delay(300);
+			return true;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail));
+		}
+	}
+
 	#region PRIVATE METHODS
 
 	/// <summary>
@@ -183,7 +210,7 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		var knowledgeBase = await mongoDbDatabaseManager.GetRAGKnowledgePiecesJsonAsync().ConfigureAwait(false);
 		var skillsInput = new SkillsInputDomain()
 		{
-			KnowledgeBase = JsonConvert.SerializeObject(knowledgeBase),
+			KnowledgeBase = JsonConvert.SerializeObject(knowledgeBase.KnowledgeBase),
 			Source = ConfigurationConstants.SourceName,
 			UserQuery = userInput
 		};

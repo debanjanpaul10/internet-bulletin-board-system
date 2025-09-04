@@ -116,13 +116,42 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
-	public async Task<IActionResult> GetChatbotResponseAsync([FromBody]UserQueryRequestDTO chatMessage)
+	public async Task<IActionResult> GetChatbotResponseAsync([FromBody] UserQueryRequestDTO chatMessage)
 	{
 		if (IsAuthorized())
 		{
 			ArgumentException.ThrowIfNullOrWhiteSpace(chatMessage.UserQuery);
 			var result = await aiServicesHandler.GetChatbotResponseAsync(chatMessage).ConfigureAwait(false);
 			if (result is not null)
+			{
+				return HandleSuccessResult(result);
+			}
+
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+
+		return HandleUnAuthorizedRequest();
+	}
+
+	/// <summary>
+	/// Posts the ai result feedback asynchronous.
+	/// </summary>
+	/// <param name="aiResponseFeedback">The ai response feedback.</param>
+	/// <returns>The boolean for success/failure.</returns>
+	/// <exception cref="System.ArgumentNullException"></exception>
+	[HttpPost(RouteConstants.AiServicesController.HandleAIFeedback_Route)]
+	[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = PostAiResultFeedbackAction.Summary, Description = PostAiResultFeedbackAction.Description, OperationId = PostAiResultFeedbackAction.OperationId)]
+	public async Task<IActionResult> PostAiResultFeedbackAsync([FromBody] AIResponseFeedbackDTO aiResponseFeedback)
+	{
+		if (IsAuthorized())
+		{
+			ArgumentNullException.ThrowIfNull(aiResponseFeedback);
+			var result = await aiServicesHandler.PostAiResultFeedbackAsync(aiResponseFeedback, UserEmail).ConfigureAwait(false);
+			if (result)
 			{
 				return HandleSuccessResult(result);
 			}

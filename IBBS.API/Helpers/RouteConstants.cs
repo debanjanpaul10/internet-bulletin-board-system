@@ -157,6 +157,11 @@ internal static class RouteConstants
 		/// The chatbot api respond route
 		/// </summary>
 		internal const string ChatbotRespond_Route = "respond";
+
+		/// <summary>
+		/// The handle ai feedback route
+		/// </summary>
+		internal const string HandleAIFeedback_Route = "aifeedback";
 	}
 
 }

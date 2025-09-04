@@ -1,5 +1,4 @@
-﻿using IBBS.API.Adapters.Models;
-using IBBS.API.Adapters.Models.AI;
+﻿using IBBS.API.Adapters.Models.AI;
 
 namespace IBBS.API.Adapters.Contracts;
 
@@ -38,4 +37,12 @@ public interface IAiServicesHandler
 	/// <param name="chatMessageRequest">The user query request.</param>
 	/// <returns>The ai agent response.</returns>
 	Task<AIChatbotResponseDTO> GetChatbotResponseAsync(UserQueryRequestDTO chatMessageRequest);
+
+	/// <summary>
+	/// Posts the ai result feedback asynchronous.
+	/// </summary>
+	/// <param name="aiResponseFeedback">The ai response feedback.</param>
+	/// <param name="userEmail">The user email.</param>
+	/// <returns>The boolean for success/failure.</returns>
+	Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDTO aiResponseFeedback, string userEmail);
 }

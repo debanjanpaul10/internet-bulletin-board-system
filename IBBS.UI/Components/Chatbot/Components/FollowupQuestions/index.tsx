@@ -1,5 +1,6 @@
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 import { Button } from "@fluentui/react-components";
+
 import { useStyles } from "./styles";
 
 export default function FollowupQuestionsComponent({
@@ -18,15 +19,15 @@ export default function FollowupQuestionsComponent({
 
 	return (
 		<div className={styles.followupQuestionsContainer}>
-			{questions.map((q, i) => (
+			{questions.map((question, index) => (
 				<Button
-					key={`${q}-${i}`}
+					key={`${question}-${index}`}
 					appearance="secondary"
 					size="small"
 					className={styles.questionBubble}
-					onClick={() => onSelect(q)}
+					onClick={() => onSelect(question)}
 				>
-					{q}
+					{question}
 				</Button>
 			))}
 		</div>

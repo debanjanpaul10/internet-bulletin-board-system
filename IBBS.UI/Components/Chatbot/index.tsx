@@ -16,7 +16,10 @@ import {
 	SendRegular,
 	HandWaveFilled,
 	CopyRegular,
+	ThumbLikeRegular,
+	ThumbDislikeRegular,
 } from "@fluentui/react-icons";
+import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 
 import { useAppDispatch, useAppSelector } from "@/index";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
@@ -26,8 +29,9 @@ import { ChatbotConstants } from "@/Helpers/ibbs.constants";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 import { renderSafeMarkdown } from "@/Helpers/markdown.utility";
 import FollowupQuestionsComponent from "./Components/FollowupQuestions";
-import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 import TextType from "@/Animations/TextType";
+import ChatInteractionButtonsComponent from "./Components/ChatInteractionButtons";
+import { ChatMessage } from "@/types/chatmessage";
 
 export default function ChatbotComponent() {
 	const styles = useStyles();
@@ -41,19 +45,19 @@ export default function ChatbotComponent() {
 	const [isChatOpen, setIsChatOpen] = useState(false);
 	const [isMaximized, setIsMaximized] = useState(false);
 	const [userQuery, setUserQuery] = useState("");
-	const [messages, setMessages] = useState<
-		Array<{
-			type: "user" | "bot";
-			content: string | AIChatbotResponseDTO;
-		}>
-	>([]);
+	const [messages, setMessages] = useState<Array<ChatMessage>>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [chatResponse, setChatResponse] = useState({});
-	const [_, setHoveredMessageIndex] = useState<number | null>(null);
+	const [hoveredMessageIndex, setHoveredMessageIndex] = useState<
+		number | null
+	>(null);
 	const [showFollowups, setShowFollowups] = useState<boolean>(true);
 	const [completedMessageIndexes, setCompletedMessageIndexes] = useState<
 		Record<number, boolean>
 	>({});
+	const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(
+		null
+	);
 
 	useEffect(() => {
 		if (chatResponse !== ChatbotResponseStoreData) {
@@ -134,24 +138,6 @@ export default function ChatbotComponent() {
 	const lastBotMessage = [...messages]
 		.reverse()
 		.find((m) => m.type === "bot");
-
-	const handleCopy = async (message: {
-		type: "user" | "bot";
-		content: string | AIChatbotResponseDTO;
-	}) => {
-		try {
-			const textToCopy =
-				message.type === "user"
-					? String(message.content)
-					: typeof message.content === "string"
-					? message.content
-					: (message.content as AIChatbotResponseDTO)
-							.aiResponseData ?? "";
-			await navigator.clipboard.writeText(textToCopy);
-		} catch (err) {
-			console.error("Failed to copy message", err);
-		}
-	};
 
 	const handleTypingComplete = (index: number) => {
 		setCompletedMessageIndexes((prev) => ({ ...prev, [index]: true }));
@@ -252,7 +238,39 @@ export default function ChatbotComponent() {
 									)}
 								>
 									{message.type === "user" ? (
-										String(message.content)
+										<>
+											<div>{String(message.content)}</div>
+											{hoveredMessageIndex === index && (
+												<ChatInteractionButtonsComponent
+													className={mergeClasses(
+														styles.copyButton,
+														styles.copyButtonVisible
+													)}
+													content={
+														ChatbotConstants
+															.ChatbotWindow
+															.CopyRequestTooltip
+													}
+													icon={
+														(<CopyRegular />) as any
+													}
+													setCopiedMessageIndex={
+														setCopiedMessageIndex
+													}
+													aiMessage={message}
+													feedbackValue={null}
+												/>
+											)}
+											{copiedMessageIndex === index && (
+												<span
+													className={
+														styles.copiedBadge
+													}
+												>
+													Copied!
+												</span>
+											)}
+										</>
 									) : (
 										<>
 											<TextType
@@ -264,7 +282,7 @@ export default function ChatbotComponent() {
 																message.content as AIChatbotResponseDTO
 														  ).aiResponseData ?? ""
 												)}
-												typingSpeed={20}
+												typingSpeed={10}
 												pauseDuration={1500}
 												showCursor={false}
 												cursorCharacter="|"
@@ -273,37 +291,96 @@ export default function ChatbotComponent() {
 													handleTypingComplete(index)
 												}
 											/>
+											{message.type === "bot" &&
+												completedMessageIndexes[
+													index
+												] && (
+													<div
+														className={
+															styles.botCopyFooter
+														}
+													>
+														<ChatInteractionButtonsComponent
+															className={
+																styles.botActionsButton
+															}
+															content={
+																ChatbotConstants
+																	.ChatbotWindow
+																	.CopyTooltip
+															}
+															icon={
+																(
+																	<CopyRegular />
+																) as any
+															}
+															setCopiedMessageIndex={
+																setCopiedMessageIndex
+															}
+															aiMessage={message}
+															feedbackValue={null}
+														/>
+														{copiedMessageIndex ===
+															index && (
+															<span
+																className={
+																	styles.copiedInline
+																}
+															>
+																Copied!
+															</span>
+														)}
+														&nbsp;
+														<ChatInteractionButtonsComponent
+															className={
+																styles.botActionsButton
+															}
+															content={
+																ChatbotConstants
+																	.ChatbotWindow
+																	.LikeTooltip
+															}
+															icon={
+																(
+																	<ThumbLikeRegular />
+																) as any
+															}
+															setCopiedMessageIndex={
+																null
+															}
+															aiMessage={message}
+															feedbackValue={
+																"Positive"
+															}
+														/>
+														&nbsp;
+														<ChatInteractionButtonsComponent
+															className={
+																styles.botActionsButton
+															}
+															content={
+																ChatbotConstants
+																	.ChatbotWindow
+																	.DislikeTooltip
+															}
+															icon={
+																(
+																	<ThumbDislikeRegular />
+																) as any
+															}
+															setCopiedMessageIndex={
+																null
+															}
+															aiMessage={message}
+															feedbackValue={
+																"Negative"
+															}
+														/>
+													</div>
+												)}
 										</>
 									)}
 								</div>
-								{message.type === "bot" &&
-									completedMessageIndexes[index] && (
-										<div
-											className={styles.botCopyFooter}
-											style={{ marginLeft: 0 }}
-										>
-											<Tooltip
-												content={
-													ChatbotConstants
-														.ChatbotWindow
-														.CopyTooltip
-												}
-												relationship="label"
-											>
-												<Button
-													appearance="primary"
-													size="small"
-													className={
-														styles.botCopyButton
-													}
-													onClick={() =>
-														handleCopy(message)
-													}
-													icon={<CopyRegular />}
-												></Button>
-											</Tooltip>
-										</div>
-									)}
 							</div>
 						))}
 

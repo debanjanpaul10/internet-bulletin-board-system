@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IBBS.API.Adapters.Contracts;
-using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivingPorts;
@@ -60,6 +59,20 @@ public class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfigura
 	{
 		var domainRequest = mapper.Map<UserStoryRequestDomain>(requestDTO);
 		return await aiServices.ModerateContentDataAsync(userName, domainRequest).ConfigureAwait(false);
+	}
+
+	/// <summary>
+	/// Posts the ai result feedback asynchronous.
+	/// </summary>
+	/// <param name="aiResponseFeedback">The ai response feedback.</param>
+	/// <param name="userEmail">The user email.</param>
+	/// <returns>
+	/// The boolean for success/failure.
+	/// </returns>
+	public async Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDTO aiResponseFeedback, string userEmail)
+	{
+		var domainInput = mapper.Map<AIResponseFeedbackDomain>(aiResponseFeedback);
+		return await aiServices.PostAiResultFeedbackAsync(domainInput, userEmail).ConfigureAwait(false);
 	}
 
 	/// <summary>

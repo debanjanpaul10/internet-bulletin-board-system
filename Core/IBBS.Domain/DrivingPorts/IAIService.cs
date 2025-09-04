@@ -38,4 +38,12 @@ public interface IAIService
 	/// <param name="areFollowupQuestionsEnabled">The boolean flag for followup questions.</param>
 	/// <returns>The ai agent response.</returns>
 	Task<AIChatbotResponseDomain> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest, bool areFollowupQuestionsEnabled);
+
+	/// <summary>
+	/// Posts the ai result feedback asynchronous.
+	/// </summary>
+	/// <param name="aiResponseFeedback">The ai response feedback.</param>
+	/// <param name="userEmail">The user email address.</param>
+	/// <returns>The boolean for success/failure.</returns>
+	Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDomain aiResponseFeedback, string userEmail);
 }

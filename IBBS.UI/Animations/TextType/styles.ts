@@ -6,18 +6,55 @@ export const useStyles = makeStyles({
 		whiteSpace: "pre-wrap",
 	},
 	textTypeContent: {
-		// Remove extra spacing from markdown/html content
-		"& > :last-child": {
-			marginBottom: 0,
+		// Reduce spacing in markdown/html content with higher specificity
+		lineHeight: "1.4 !important",
+		"& p": {
+			marginTop: "0.3em !important",
+			marginBottom: "0.3em !important",
+			lineHeight: "1.4 !important",
+			"&:first-child": {
+				marginTop: "0 !important",
+			},
+			"&:last-child": {
+				marginBottom: "0 !important",
+			},
 		},
-		"& p:last-child": {
-			marginBottom: 0,
+		"& ul, & ol": {
+			marginTop: "0.3em !important",
+			marginBottom: "0.3em !important",
+			lineHeight: "1.4 !important",
+			"&:first-child": {
+				marginTop: "0 !important",
+			},
+			"&:last-child": {
+				marginBottom: "0 !important",
+			},
 		},
-		"& ul:last-child": {
-			marginBottom: 0,
+		"& li": {
+			marginTop: "0.1em !important",
+			marginBottom: "0.1em !important",
+			lineHeight: "1.4 !important",
 		},
-		"& ol:last-child": {
-			marginBottom: 0,
+		"& h1, & h2, & h3, & h4, & h5, & h6": {
+			marginTop: "0.5em !important",
+			marginBottom: "0.3em !important",
+			lineHeight: "1.3 !important",
+			"&:first-child": {
+				marginTop: "0 !important",
+			},
+		},
+		"& blockquote": {
+			marginTop: "0.3em !important",
+			marginBottom: "0.3em !important",
+			lineHeight: "1.4 !important",
+		},
+		"& pre": {
+			marginTop: "0.3em !important",
+			marginBottom: "0.3em !important",
+			lineHeight: "1.4 !important",
+		},
+		"& br": {
+			lineHeight: "1.2 !important",
 		},
 	},
 	textTypeCursor: {
