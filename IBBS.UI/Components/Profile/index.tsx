@@ -99,7 +99,7 @@ export default function ProfileComponent() {
 			const token = await getIdTokenClaims();
 			return token?.__raw;
 		} catch (error) {
-			console.error("Error getting access token:", error);
+			console.error(error);
 			return null;
 		}
 	};
