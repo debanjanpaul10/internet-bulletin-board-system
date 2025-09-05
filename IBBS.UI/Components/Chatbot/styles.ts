@@ -8,8 +8,6 @@ export const useStyles = makeStyles({
 		width: "70px",
 		height: "70px",
 		borderRadius: "50%",
-		background:
-			"linear-gradient(135deg, #3A29FF 0%, #FF94B4 50%, #FF3232 100%)",
 		border: "none",
 		cursor: "pointer",
 		boxShadow: "0 8px 32px rgba(58, 41, 255, 0.3)",
@@ -22,10 +20,6 @@ export const useStyles = makeStyles({
 		minWidth: "70px",
 		minHeight: "70px",
 		padding: "0",
-		"& svg": {
-			width: "32px",
-			height: "32px",
-		},
 		"&:hover": {
 			transform: "scale(1.1)",
 			boxShadow: "0 12px 40px rgba(58, 41, 255, 0.4)",

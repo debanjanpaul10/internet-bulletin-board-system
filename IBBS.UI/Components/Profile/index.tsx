@@ -23,10 +23,6 @@ import UserRatingsComponent from "./Components/UserRatings";
  * email address, username, their posts, and their ratings.
  * It shows a skeleton loading UI while data is being fetched.
  * If the user is not logged in, it renders a PageNotFound component.
- *
- * @returns The user profile page, or a PageNotFound component
- *                        if the user is not authenticated.
- *
  */
 export default function ProfileComponent() {
 	const dispatch = useAppDispatch();
@@ -86,7 +82,7 @@ export default function ProfileComponent() {
 
 	/**
 	 * Checks if user is logged in.
-	 * @returns {boolean} The boolean value for logged in status.
+	 * @returns The boolean value for logged in status.
 	 */
 	const isUserLoggedIn = () => {
 		return isAuthenticated && user;
@@ -103,7 +99,7 @@ export default function ProfileComponent() {
 			const token = await getIdTokenClaims();
 			return token?.__raw;
 		} catch (error) {
-			console.error("Error getting access token:", error);
+			console.error(error);
 			return null;
 		}
 	};
