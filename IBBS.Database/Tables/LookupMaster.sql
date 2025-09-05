@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[LookupMaster]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	[Type] NVARCHAR(MAX) NOT NULL,
+	[KeyName] NVARCHAR(MAX) NOT NULL,
+	[KeyValue] NVARCHAR(MAX) NOT NULL,
+	[IsActive] BIT NOT NULL DEFAULT 1,
+	[DateCreated] DATE NOT NULL DEFAULT GETDATE(),
+	[CreatedBy] NVARCHAR(MAX) NOT NULL DEFAULT 'System',
+	[DateModified] DATE NOT NULL DEFAULT GETDATE(),
+	[ModifiedBy] NVARCHAR(MAX) NOT NULL DEFAULT 'System'
+)
+GO;
+
+CREATE NONCLUSTERED INDEX ix_LookupMaster_Id_IsActive ON [dbo].[LookupMaster]([Id], [IsActive])
+GO;

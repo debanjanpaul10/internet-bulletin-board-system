@@ -1,0 +1,140 @@
+import { makeStyles, tokens } from "@fluentui/react-components";
+
+const useStyles = makeStyles({
+    card: {
+        margin: "0",
+        width: "100%",
+        maxWidth: "100%",
+        padding: "24px",
+        borderRadius: "16px",
+        backgroundColor: tokens.colorNeutralBackground1,
+        border: `1px solid ${tokens.colorNeutralStroke2}`,
+        boxShadow: tokens.shadow16,
+        transition: "all 0.3s ease",
+        "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: tokens.shadow28,
+        },
+    },
+    cardHeader: {
+        marginBottom: "16px",
+        padding: "0",
+    },
+    headerContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        width: "100%",
+        gap: "16px",
+    },
+    headerTitle: {
+        fontSize: tokens.fontSizeBase500,
+        fontWeight: tokens.fontWeightSemibold,
+        marginBottom: "8px",
+        flexGrow: 1,
+        lineHeight: 1.4,
+        wordBreak: "break-word",
+        minWidth: 0,
+        color: tokens.colorNeutralForeground1,
+    },
+    cardPreview: {
+        marginTop: "0",
+        padding: "0",
+    },
+    postContent: {
+        fontSize: tokens.fontSizeBase300,
+        lineHeight: 1.6,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        color: tokens.colorNeutralForeground2,
+        marginBottom: "16px",
+        paddingBottom: "16px",
+        borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    },
+    textSizeButton: {
+        backgroundColor: "transparent",
+        border: `1px solid ${tokens.colorBrandStroke1}`,
+        color: tokens.colorBrandForeground1,
+        borderRadius: "8px",
+        padding: "6px 12px",
+        fontSize: tokens.fontSizeBase200,
+        fontWeight: tokens.fontWeightMedium,
+        transition: "all 0.2s ease",
+        "&:hover": {
+            backgroundColor: tokens.colorBrandBackground,
+            color: tokens.colorNeutralForegroundOnBrand,
+            transform: "translateY(-1px)",
+        },
+    },
+    bottomContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: "0",
+        gap: "12px",
+    },
+    buttonContainer: {
+        display: "flex",
+    },
+    headerButtons: {
+        display: "flex",
+        flexShrink: 0,
+        gap: "8px",
+        alignItems: "center",
+    },
+    editButton: {
+        width: "36px",
+        height: "36px",
+        borderRadius: "8px",
+        backgroundColor: "transparent",
+        border: `1px solid ${tokens.colorPaletteYellowBorder1}`,
+        color: tokens.colorPaletteYellowForeground2,
+        transition: "all 0.2s ease",
+        "&:hover": {
+            backgroundColor: tokens.colorPaletteYellowBackground1,
+            transform: "translateY(-1px)",
+        },
+    },
+    deleteButton: {
+        width: "36px",
+        height: "36px",
+        borderRadius: "8px",
+        backgroundColor: "transparent",
+        border: `1px solid ${tokens.colorPaletteRedBorder1}`,
+        color: tokens.colorPaletteRedForeground2,
+        transition: "all 0.2s ease",
+        "&:hover": {
+            backgroundColor: tokens.colorPaletteRedBackground1,
+            transform: "translateY(-1px)",
+        },
+    },
+    tagsContainer: {
+        display: "flex",
+        gap: "8px",
+        flexWrap: "wrap",
+    },
+    nsfwTag: {
+        backgroundColor: tokens.colorPaletteRedBackground1,
+        color: tokens.colorPaletteRedForeground2,
+        border: `1px solid ${tokens.colorPaletteRedBorder1}`,
+        borderRadius: "6px",
+        fontSize: tokens.fontSizeBase200,
+        fontWeight: tokens.fontWeightMedium,
+        "&:hover": {
+            backgroundColor: tokens.colorPaletteRedBackground2,
+        },
+    },
+    genreTag: {
+        backgroundColor: tokens.colorBrandBackground,
+        color: tokens.colorNeutralForegroundOnBrand,
+        border: `1px solid ${tokens.colorBrandStroke1}`,
+        borderRadius: "6px",
+        fontSize: tokens.fontSizeBase200,
+        fontWeight: tokens.fontWeightMedium,
+        "&:hover": {
+            backgroundColor: tokens.colorBrandBackgroundHover,
+        },
+    },
+});
+
+export { useStyles };
