@@ -1,11 +1,11 @@
 import { Button, Tooltip } from "@fluentui/react-components";
 import { FluentIcon } from "@fluentui/react-icons";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import { useAppDispatch } from "@/index";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 import { ChatMessage } from "@/types/chatmessage";
 import { HandleAiResultFeedbackAsync } from "@/Store/AiServices/Actions";
-import { useAuth0 } from "@auth0/auth0-react";
 import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
 
 export default function ChatInteractionButtonsComponent({
@@ -15,6 +15,7 @@ export default function ChatInteractionButtonsComponent({
 	setCopiedMessageIndex,
 	aiMessage,
 	feedbackValue,
+	hoveredMessageIndex,
 }: {
 	content: string;
 	className: string;
@@ -22,11 +23,12 @@ export default function ChatInteractionButtonsComponent({
 	setCopiedMessageIndex: Function | null;
 	aiMessage: ChatMessage;
 	feedbackValue: string | null;
+	hoveredMessageIndex?: number | null;
 }) {
 	const dispatch = useAppDispatch();
 	const { getIdTokenClaims } = useAuth0();
 
-	async function handleFeedbackRequest(aiMessage: ChatMessage) {
+	const handleFeedbackRequest = async (aiMessage: ChatMessage) => {
 		var aiResponseMessages = aiMessage.content as AIChatbotResponseDTO;
 		const responseFeedbackDto: AIResponseFeedbackDTO = {
 			aiResponse: aiResponseMessages.aiResponseData,
@@ -53,14 +55,14 @@ export default function ChatInteractionButtonsComponent({
 		}
 	};
 
-	async function handleCopyClick(message: ChatMessage, index?: number) {
+	const handleCopyClick = async (message: ChatMessage, index?: number) => {
 		try {
 			const textToCopy =
 				message.type === "user"
 					? String(message.content)
 					: typeof message.content === "string"
-					? message.content
-					: (message.content as AIChatbotResponseDTO)
+						? message.content
+						: (message.content as AIChatbotResponseDTO)
 							.aiResponseData ?? "";
 			await navigator.clipboard.writeText(textToCopy);
 			if (typeof index === "number") {
@@ -81,11 +83,12 @@ export default function ChatInteractionButtonsComponent({
 				appearance="primary"
 				size="small"
 				className={className}
-				onClick={() =>
-					feedbackValue !== null || feedbackValue !== undefined
+				onClick={() => {
+					const messageIndex = hoveredMessageIndex !== null ? hoveredMessageIndex : null;
+					return feedbackValue !== null && feedbackValue !== undefined
 						? handleFeedbackRequest(aiMessage)
-						: handleCopyClick(aiMessage)
-				}
+						: handleCopyClick(aiMessage, messageIndex === null ? undefined : messageIndex);
+				}}
 				icon={icon as any}
 			></Button>
 		</Tooltip>

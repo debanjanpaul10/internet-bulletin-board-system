@@ -1,4 +1,4 @@
-﻿export const PageConstants = {
+export const PageConstants = {
 	DarkModeConstant: "dark-mode",
 	DarkConstant: "dark",
 	LightConstant: "light",
@@ -198,6 +198,7 @@ export const ChatbotConstants = {
 		AgentName: "IBBS AI Assistant",
 		AiAssistantGreetingMessage:
 			"Hello! I'm IBBS AI assistant. How can I help you today?",
+		WelcomeMessage: "Hello! How can I help you today?",
 		CopyRequestTooltip: "Copy message",
 		CopyTooltip: "Copy response",
 		LikeTooltip: "Good response",

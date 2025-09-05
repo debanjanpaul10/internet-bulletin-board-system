@@ -44,6 +44,9 @@ export default function ChatbotComponent() {
 	const ChatbotResponseStoreData = useAppSelector(
 		(state) => state.AiServicesReducer.chatbotResponse
 	);
+	const SamplePromptsStoreData = useAppSelector(
+		(state) => state.AiServicesReducer.sampleAiPrompts
+	);
 
 	const [isChatOpen, setIsChatOpen] = useState(false);
 	const [isMaximized, setIsMaximized] = useState(false);
@@ -55,9 +58,16 @@ export default function ChatbotComponent() {
 		number | null
 	>(null);
 	const [showFollowups, setShowFollowups] = useState<boolean>(true);
+	const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(true);
 	const [completedMessageIndexes, setCompletedMessageIndexes] = useState<
-		Record<number, boolean>
-	>({});
+		Record<string, boolean>
+	>(() => {
+		if (typeof window !== "undefined") {
+			const saved = localStorage.getItem("completedChatMessages");
+			return saved ? JSON.parse(saved) : {};
+		}
+		return {};
+	});
 	const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(
 		null
 	);
@@ -91,10 +101,16 @@ export default function ChatbotComponent() {
 		accessToken && dispatch(GetSamplePromptsForChatbotAsync(accessToken));
 	};
 
+	// Generate a unique ID for messages
+	const generateMessageId = () => {
+		return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+	};
+
 	const sendMessage = async (text: string) => {
 		if (!text.trim()) return;
 
 		const userMessage = {
+			id: generateMessageId(),
 			type: "user" as const,
 			content: text,
 			timestamp: new Date(),
@@ -103,6 +119,7 @@ export default function ChatbotComponent() {
 		setUserQuery("");
 		setIsLoading(true);
 		setShowFollowups(false);
+		setShowSamplePrompts(false);
 
 		try {
 			const userQueryRequest: UserQueryRequestDTO = {
@@ -118,6 +135,7 @@ export default function ChatbotComponent() {
 
 				if (aiData) {
 					const botMessage = {
+						id: generateMessageId(),
 						type: "bot" as const,
 						content: aiData,
 						timestamp: new Date(),
@@ -138,26 +156,24 @@ export default function ChatbotComponent() {
 		await sendMessage(userQuery);
 	};
 
-	const toggleChat = () => setIsChatOpen(!isChatOpen);
-	const toggleMaximize = () => setIsMaximized(!isMaximized);
 	const refreshChat = () => {
 		setMessages([]);
 		setUserQuery("");
 		setShowFollowups(false);
+		setShowSamplePrompts(true);
+		setCompletedMessageIndexes({});
+		if (typeof window !== "undefined") {
+			localStorage.removeItem("completedChatMessages");
+		}
 	};
-	const closeChat = () => setIsChatOpen(false);
 
 	const lastBotMessage = [...messages]
 		.reverse()
 		.find((m) => m.type === "bot");
 
-	const handleTypingComplete = (index: number) => {
-		setCompletedMessageIndexes((prev) => ({ ...prev, [index]: true }));
-	};
-
 	return (
 		<>
-			{/* Floating Chat Icon */}
+			{/* FLOATING CHAT ICON */}
 			<Tooltip
 				content={ChatbotConstants.ChatbotFloatingIconTooltip}
 				relationship="label"
@@ -167,14 +183,14 @@ export default function ChatbotComponent() {
 						styles.chatIcon,
 						isChatOpen && styles.hidden
 					)}
-					onClick={toggleChat}
+					onClick={() => setIsChatOpen(!isChatOpen)}
 					appearance="transparent"
 				>
 					<Chat24Regular />
 				</Button>
 			</Tooltip>
 
-			{/* Chat Window */}
+			{/* CHAT WINDOW */}
 			{isChatOpen && (
 				<div
 					className={mergeClasses(
@@ -190,7 +206,7 @@ export default function ChatbotComponent() {
 							<Button
 								className={styles.headerButton}
 								appearance="transparent"
-								onClick={toggleMaximize}
+								onClick={() => setIsMaximized(!isMaximized)}
 								icon={
 									isMaximized ? (
 										<ArrowMinimizeRegular />
@@ -208,11 +224,13 @@ export default function ChatbotComponent() {
 							<Button
 								className={styles.headerButton}
 								appearance="transparent"
-								onClick={closeChat}
+								onClick={() => setIsChatOpen(false)}
 								icon={<DismissRegular />}
 							/>
 						</div>
 					</div>
+
+					{/* CHAT CONTAINER */}
 					<div className={styles.chatContent}>
 						{messages.length === 0 && (
 							<div className={styles.welcomeMessage}>
@@ -271,6 +289,7 @@ export default function ChatbotComponent() {
 													}
 													aiMessage={message}
 													feedbackValue={null}
+													hoveredMessageIndex={index}
 												/>
 											)}
 											{copiedMessageIndex === index && (
@@ -285,27 +304,72 @@ export default function ChatbotComponent() {
 										</>
 									) : (
 										<>
-											<TextType
-												text={renderSafeMarkdown(
-													typeof message.content ===
-														"string"
-														? message.content
-														: (
-																message.content as AIChatbotResponseDTO
-														  ).aiResponseData ?? ""
-												)}
-												typingSpeed={10}
-												pauseDuration={1500}
-												showCursor={false}
-												cursorCharacter="|"
-												renderHtml={true}
-												onTypingComplete={() =>
-													handleTypingComplete(index)
-												}
-											/>
+											{completedMessageIndexes[
+												message.id
+											] ? (
+												<div
+													dangerouslySetInnerHTML={{
+														__html: renderSafeMarkdown(
+															typeof message.content ===
+																"string"
+																? message.content
+																: (
+																		message.content as AIChatbotResponseDTO
+																  )
+																		.aiResponseData ??
+																		""
+														),
+													}}
+												/>
+											) : (
+												// If message is new, show typing animation
+												<TextType
+													text={renderSafeMarkdown(
+														typeof message.content ===
+															"string"
+															? message.content
+															: (
+																	message.content as AIChatbotResponseDTO
+															  )
+																	.aiResponseData ??
+																	""
+													)}
+													typingSpeed={10}
+													pauseDuration={1500}
+													showCursor={false}
+													cursorCharacter="|"
+													renderHtml={true}
+													onTypingComplete={() => {
+														// Mark this message as completed
+														setCompletedMessageIndexes(
+															(prev) => {
+																const updated =
+																	{
+																		...prev,
+																		[message.id]:
+																			true,
+																	};
+																// Save to localStorage
+																if (
+																	typeof window !==
+																	"undefined"
+																) {
+																	localStorage.setItem(
+																		"completedChatMessages",
+																		JSON.stringify(
+																			updated
+																		)
+																	);
+																}
+																return updated;
+															}
+														);
+													}}
+												/>
+											)}
 											{message.type === "bot" &&
 												completedMessageIndexes[
-													index
+													message.id
 												] && (
 													<div
 														className={
@@ -331,6 +395,9 @@ export default function ChatbotComponent() {
 															}
 															aiMessage={message}
 															feedbackValue={null}
+															hoveredMessageIndex={
+																index
+															}
 														/>
 														{copiedMessageIndex ===
 															index && (
@@ -364,6 +431,9 @@ export default function ChatbotComponent() {
 															feedbackValue={
 																"Positive"
 															}
+															hoveredMessageIndex={
+																index
+															}
 														/>
 														&nbsp;
 														<ChatInteractionButtonsComponent
@@ -387,6 +457,9 @@ export default function ChatbotComponent() {
 															feedbackValue={
 																"Negative"
 															}
+															hoveredMessageIndex={
+																index
+															}
 														/>
 													</div>
 												)}
@@ -395,23 +468,6 @@ export default function ChatbotComponent() {
 								</div>
 							</div>
 						))}
-
-						{lastBotMessage &&
-							showFollowups &&
-							(lastBotMessage.content as AIChatbotResponseDTO)
-								.followupQuestions!.length > 0 && (
-								<FollowupQuestionsComponent
-									messageList={
-										(
-											lastBotMessage.content as AIChatbotResponseDTO
-										).followupQuestions
-									}
-									onSelect={(question) => {
-										setShowFollowups(false);
-										sendMessage(question);
-									}}
-								/>
-							)}
 
 						{isLoading && (
 							<div className={styles.botMessage}>
@@ -431,6 +487,41 @@ export default function ChatbotComponent() {
 						)}
 					</div>
 
+					{/* FOLLOWUP QUESTIONS */}
+					{lastBotMessage &&
+						showFollowups &&
+						(lastBotMessage.content as AIChatbotResponseDTO)
+							.followupQuestions!.length > 0 && (
+							<div className={styles.pinnedPromptsContainer}>
+								<FollowupQuestionsComponent
+									messageList={
+										(
+											lastBotMessage.content as AIChatbotResponseDTO
+										).followupQuestions
+									}
+									onSelect={(question) => {
+										setShowFollowups(false);
+										sendMessage(question);
+									}}
+								/>
+							</div>
+						)}
+
+					{/* PINNED SAMPLE PROMPTS */}
+					{SamplePromptsStoreData.length > 0 && showSamplePrompts && (
+						<div className={styles.pinnedPromptsContainer}>
+							<FollowupQuestionsComponent
+								messageList={SamplePromptsStoreData.map(
+									(prompt: any) => prompt.keyValue
+								)}
+								onSelect={(question) => {
+									sendMessage(question);
+								}}
+							/>
+						</div>
+					)}
+
+					{/* INPUT CONTAINER */}
 					<div className={styles.chatInput}>
 						<div className={styles.inputContainer}>
 							<Textarea

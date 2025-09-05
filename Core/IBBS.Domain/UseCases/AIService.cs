@@ -217,7 +217,7 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		};
 
 		var sqlQuery = await aiAgentsService.HandleNLToSQLResponseAsync(nltosqlInput).ConfigureAwait(false);
-		var trimmedQuery = sqlQuery.Replace("```sql", string.Empty).Replace("```", string.Empty).Replace("\n", string.Empty).Trim();
+		var trimmedQuery = sqlQuery.Replace("```sql", string.Empty).Replace("```", string.Empty).Replace("\n", " ").Trim();
 		var jsonQuery = await commonDataManager.ExecuteAISQLQueryAsync(trimmedQuery).ConfigureAwait(false);
 
 		var sqlQueryResult = new SqlQueryResult() { JsonQuery = jsonQuery };
