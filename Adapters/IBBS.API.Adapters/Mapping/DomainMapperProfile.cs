@@ -25,6 +25,7 @@ public class DomainMapperProfile : Profile
 		CreateMap<AIResponseFeedbackDTO, AIResponseFeedbackDomain>();
 
 		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
+		CreateMap<PostWithRatingsDomain, PostWithRatingsDTO>().ReverseMap();
 		CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
 		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
 		CreateMap<AIChatbotResponseDomain, AIChatbotResponseDTO>();

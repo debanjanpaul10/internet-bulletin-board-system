@@ -8,7 +8,6 @@ import {
 	mergeClasses,
 } from "@fluentui/react-components";
 import {
-	Chat24Regular,
 	DismissRegular,
 	ArrowMaximizeRegular,
 	ArrowMinimizeRegular,
@@ -18,6 +17,8 @@ import {
 	CopyRegular,
 	ThumbLikeRegular,
 	ThumbDislikeRegular,
+	AgentsColor,
+	ChatMultipleColor,
 } from "@fluentui/react-icons";
 import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 
@@ -186,7 +187,7 @@ export default function ChatbotComponent() {
 					onClick={() => setIsChatOpen(!isChatOpen)}
 					appearance="transparent"
 				>
-					<Chat24Regular />
+					<ChatMultipleColor fontSize={40} />
 				</Button>
 			</Tooltip>
 
@@ -200,6 +201,7 @@ export default function ChatbotComponent() {
 				>
 					<div className={styles.chatHeader}>
 						<div className={styles.chatTitle}>
+							<AgentsColor fontSize={30} /> &nbsp;
 							{ChatbotConstants.ChatbotWindow.AgentName}
 						</div>
 						<div className={styles.headerButtons}>

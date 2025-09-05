@@ -87,15 +87,15 @@ export default function RewriteTextComponent({
 	/**
 	 * Acquires an access token silently using Auth0 for authentication.
 	 * @async
-	 * @returns {Promise<string>} A promise that resolves to the access token string
-	 * @throws {Error} If token acquisition fails
+	 * @returns A promise that resolves to the access token string
+	 * @throws If token acquisition fails
 	 */
 	const getAccessToken = async () => {
 		try {
 			const token = await getIdTokenClaims();
 			return token?.__raw;
 		} catch (error) {
-			console.error("Error getting access token:", error);
+			console.error(error);
 			return null;
 		}
 	};

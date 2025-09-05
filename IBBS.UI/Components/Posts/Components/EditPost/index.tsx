@@ -290,7 +290,7 @@ export default function EditPostComponent() {
 
 	return (
 		<Dialog open={isDialogOpen}>
-			<DialogSurface>
+			<DialogSurface className={styles.dialogSurface}>
 				<div style={{ position: "relative" }}>
 					{isEditPostLoading && (
 						<div
@@ -310,14 +310,14 @@ export default function EditPostComponent() {
 						</div>
 					)}
 					<form onKeyDown={handleKeyDown} className="addPost">
-						<Card appearance="subtle">
+						<Card appearance="subtle" className={styles.card}>
 							<CardHeader
 								header={
 									<div className="col sm-12 mb-3 mb-sm-0">
 										<div className="row p-2">
 											<Label
 												htmlFor="Title"
-												className="mb-2"
+												className={`mb-2 ${styles.label}`}
 											>
 												Title
 											</Label>
@@ -326,7 +326,7 @@ export default function EditPostComponent() {
 												name="postTitle"
 												onChange={handleFormChange}
 												value={postData.postTitle}
-												className="form-control"
+												className={styles.titleInput}
 												id="Title"
 												placeholder={
 													CreatePostPageConstants
@@ -335,7 +335,7 @@ export default function EditPostComponent() {
 												}
 											/>
 											{errors.postTitle && (
-												<span className="alert alert-danger ml-10 mt-3">
+												<span className={styles.errorMessage}>
 													{errors.postTitle}
 												</span>
 											)}
@@ -383,7 +383,7 @@ export default function EditPostComponent() {
 													modules={modules}
 												/>
 												{errors.postContent && (
-													<span className="alert alert-danger ml-10 mt-3">
+													<span className={styles.errorMessage}>
 														{errors.postContent}
 													</span>
 												)}
@@ -406,18 +406,24 @@ export default function EditPostComponent() {
 															handleAiRewrite
 														}
 													>
-														<img
-															src={AiButton}
-															style={{
-																height: "20px",
-															}}
-														/>{" "}
-														{
-															CreatePostPageConstants
-																.Headings
-																.RewriteAIButtonTexts
-																.ButtonText
-														}
+														<span
+															className={
+																styles.gradientTextButton
+															}
+														>
+															<img
+																src={AiButton}
+																style={{
+																	height: "20px",
+																}}
+															/>{" "}
+															{
+																CreatePostPageConstants
+																	.Headings
+																	.RewriteAIButtonTexts
+																	.ButtonText
+															}
+														</span>
 													</Button>
 												</Tooltip>
 											</>
