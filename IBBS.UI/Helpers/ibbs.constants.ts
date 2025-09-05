@@ -42,36 +42,11 @@ export const HeaderPageConstants = {
 	},
 };
 
-export const RegisterPageConstants = {
-	validations: {
-		NameRequired: "Please enter your name. This field cannot be blank.",
-		UserAliasRequired:
-			"Please enter a user alias. We will use this to identify you.",
-		UserEmailRequired: "Please enter your email.",
-		UserPasswordRequired:
-			"The password field is mandatory. Else anyone can impersonate you.",
+export const LandingPageConstants = {
+	PostsContainerConstants: {
+		PostsHeader: "Latest Posts",
+		DiscoverMessageConstant: "Discover what the community is talking about",
 	},
-	Headings: {
-		RegisterNewUser:
-			"Register yourself, and join the bulletin board's wealth!",
-		AddButton: "Register",
-		CancelButton: "Cancel",
-	},
-};
-
-export const LoginPageConstants = {
-	validations: {
-		UserEmailRequired: "Please enter your email.",
-		UserPasswordRequired:
-			"The password field is mandatory. Else anyone can impersonate you.",
-	},
-	Headings: {
-		LoginUser: "Log back in, let the fun begin !",
-		LoginButton: "Login",
-		CancelButton: "Cancel",
-	},
-	LoginSuccess: "User logged in successfully!",
-	LogoutSuccess: "User logged out successfully!",
 };
 
 export const ErrorPageConstants = {
@@ -84,6 +59,8 @@ export const HomePageConstants = {
 		WelcomeMessage:
 			"Welcome to the Internet Bulletin Board, where sharing ideas is your reward.",
 		IBBS: "Internet Bulletin Board",
+		SubText:
+			"Connect, share, and discover amazing stories from our vibrant community",
 	},
 };
 

@@ -163,8 +163,7 @@ export default function LandingPageComponent() {
 							</div>
 						</div>
 						<p className={styles.heroSubtext}>
-							Connect, share, and discover amazing ideas from our
-							vibrant community
+							{HomePageConstants.Headings.SubText}
 						</p>
 					</div>
 				</div>

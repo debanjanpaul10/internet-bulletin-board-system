@@ -14,10 +14,10 @@ import {
 	Tag,
 } from "@fluentui/react-components";
 import {
-	Edit28Filled,
-	Delete28Filled,
 	Star28Filled,
 	Star28Regular,
+	EditColor,
+	DismissCircleColor,
 } from "@fluentui/react-icons";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -84,10 +84,10 @@ export default function PostBody({ post }: { post: any }) {
 
 	useEffect(() => {
 		if (isAuthenticated && user) {
-			setShowEditAndDelete(
-				post.postOwnerUserName ==
-					(user.nickname || user.name || user.email)
-			);
+			const userEmail = user.email;
+			const isOwner = post.postOwnerUserName === userEmail;
+
+			setShowEditAndDelete(isOwner);
 			setIsUserLoggedIn(true);
 		} else {
 			setShowEditAndDelete(false);
@@ -121,7 +121,7 @@ export default function PostBody({ post }: { post: any }) {
 			const token = await getIdTokenClaims();
 			return token?.__raw;
 		} catch (error) {
-			console.error("Error getting access token:", error);
+			console.error(error);
 			return null;
 		}
 	};
@@ -285,7 +285,7 @@ export default function PostBody({ post }: { post: any }) {
 												}
 												size="small"
 											>
-												<Edit28Filled />
+												<EditColor fontSize={28} />
 											</Button>
 										</Tooltip>
 										<Tooltip
@@ -305,7 +305,9 @@ export default function PostBody({ post }: { post: any }) {
 												}
 												size="small"
 											>
-												<Delete28Filled />
+												<DismissCircleColor
+													fontSize={28}
+												/>
 											</Button>
 										</Tooltip>
 									</>

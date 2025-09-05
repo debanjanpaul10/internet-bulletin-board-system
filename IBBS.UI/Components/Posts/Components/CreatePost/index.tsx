@@ -30,6 +30,7 @@ import {
 } from "@/Store/AiServices/Actions";
 import CancelModalComponent from "../CancelModal";
 import RewriteTextComponent from "../RewriteText";
+import AiButton from "@assets/Images/ai-icon.svg";
 
 /**
  * @component
@@ -323,6 +324,14 @@ export default function CreatePostComponent() {
 							onClick={handleModerateButtonClick}
 							className={styles.moderateWithAiButton}
 						>
+							<img
+								src={AiButton}
+								style={{
+									height: "20px",
+									marginRight: "10px",
+								}}
+								alt="AI Star Icon"
+							/>
 							<span className={styles.gradientTextButton}>
 								{
 									CreatePostPageConstants.Headings
@@ -340,7 +349,7 @@ export default function CreatePostComponent() {
 
 	/**
 	 * Renders the moderation tags based on AI moderation results.
-	 * @returns {JSX.Element} The rendered tags component.
+	 * @returns The rendered tags component.
 	 */
 	const renderTags = () => {
 		const tagData = AIModerationStoreData?.tagData;
