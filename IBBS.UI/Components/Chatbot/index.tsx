@@ -322,7 +322,6 @@ export default function ChatbotComponent() {
 													}}
 												/>
 											) : (
-												// If message is new, show typing animation
 												<TextType
 													text={renderSafeMarkdown(
 														typeof message.content ===
@@ -340,7 +339,6 @@ export default function ChatbotComponent() {
 													cursorCharacter="|"
 													renderHtml={true}
 													onTypingComplete={() => {
-														// Mark this message as completed
 														setCompletedMessageIndexes(
 															(prev) => {
 																const updated =
@@ -349,7 +347,6 @@ export default function ChatbotComponent() {
 																		[message.id]:
 																			true,
 																	};
-																// Save to localStorage
 																if (
 																	typeof window !==
 																	"undefined"
@@ -498,7 +495,10 @@ export default function ChatbotComponent() {
 										}}
 									>
 										<Spinner size="tiny" />
-										Thinking...
+										{
+											ChatbotConstants.ChatbotWindow
+												.ThinkingMessage
+										}
 									</div>
 								</div>
 							</div>
@@ -529,7 +529,10 @@ export default function ChatbotComponent() {
 								onChange={(event) =>
 									setUserQuery(event.target.value)
 								}
-								placeholder="Type your message here..."
+								placeholder={
+									ChatbotConstants.ChatbotWindow
+										.TypingPlaceholder
+								}
 								resize="none"
 								onKeyDown={(event) => {
 									if (

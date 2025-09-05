@@ -203,5 +203,7 @@ export const ChatbotConstants = {
 		CopyTooltip: "Copy response",
 		LikeTooltip: "Good response",
 		DislikeTooltip: "Bad response",
+		TypingPlaceholder: "Type your query",
+		ThinkingMessage: "AI is thinking ...",
 	},
 };
