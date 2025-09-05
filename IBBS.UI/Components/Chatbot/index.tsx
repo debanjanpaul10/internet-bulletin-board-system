@@ -469,6 +469,24 @@ export default function ChatbotComponent() {
 							</div>
 						))}
 
+						{/* FOLLOWUP QUESTIONS */}
+						{lastBotMessage &&
+							showFollowups &&
+							(lastBotMessage.content as AIChatbotResponseDTO)
+								.followupQuestions!.length > 0 && (
+								<FollowupQuestionsComponent
+									messageList={
+										(
+											lastBotMessage.content as AIChatbotResponseDTO
+										).followupQuestions
+									}
+									onSelect={(question) => {
+										setShowFollowups(false);
+										sendMessage(question);
+									}}
+								/>
+							)}
+
 						{isLoading && (
 							<div className={styles.botMessage}>
 								<div className={styles.loadingBotBubble}>
@@ -486,26 +504,6 @@ export default function ChatbotComponent() {
 							</div>
 						)}
 					</div>
-
-					{/* FOLLOWUP QUESTIONS */}
-					{lastBotMessage &&
-						showFollowups &&
-						(lastBotMessage.content as AIChatbotResponseDTO)
-							.followupQuestions!.length > 0 && (
-							<div className={styles.pinnedPromptsContainer}>
-								<FollowupQuestionsComponent
-									messageList={
-										(
-											lastBotMessage.content as AIChatbotResponseDTO
-										).followupQuestions
-									}
-									onSelect={(question) => {
-										setShowFollowups(false);
-										sendMessage(question);
-									}}
-								/>
-							</div>
-						)}
 
 					{/* PINNED SAMPLE PROMPTS */}
 					{SamplePromptsStoreData.length > 0 && showSamplePrompts && (
