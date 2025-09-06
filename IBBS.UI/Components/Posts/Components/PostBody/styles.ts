@@ -118,6 +118,21 @@ export const useStyles = makeStyles({
 			boxShadow: "0 4px 12px rgba(255, 193, 7, 0.15)",
 		},
 	},
+	starButton: {
+		borderRadius: "8px",
+		backgroundColor: "rgba(255, 255, 255, 0.05)",
+		backdropFilter: "blur(15px)",
+		WebkitBackdropFilter: "blur(15px)",
+		border: `1px solid rgba(255, 193, 7, 0.2)`,
+		transition: "all 0.2s ease",
+		"&:hover": {
+			backgroundColor: "rgba(255, 193, 7, 0.1)",
+			border: `1px solid rgba(255, 193, 7, 0.4)`,
+			color: "rgba(255, 193, 7, 0.9)",
+			transform: "translateY(-1px)",
+			boxShadow: "0 4px 12px rgba(255, 193, 7, 0.15)",
+		},
+	},
 	deleteButton: {
 		width: "36px",
 		height: "36px",

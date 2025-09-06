@@ -19,12 +19,12 @@ export const formatDate = (date: Date) => {
 };
 
 /**
- * Handles the snap scroll effect.
+ * Handles the snap scroll effect with smooth transitions.
  * @param container The container element.
  * @param currentSection The current section of container.
  * @param setCurrentSection The setting of current section container function.
- * @param contentSectionRef The content container sectionr reference.
- * @returns A tupple containing the helper methods.
+ * @param contentSectionRef The content container section reference.
+ * @returns A tuple containing the helper methods.
  */
 export const SnapScrollHandler = (
 	container: any,
@@ -36,6 +36,8 @@ export const SnapScrollHandler = (
 	let scrollTimeout: any;
 	let touchStartY = 0;
 	let touchEndY = 0;
+	const transitionDuration = 500; // Match this with CSS transition duration (in ms)
+	const headerHeight = 56; // Header height in pixels
 
 	const handleWheel = (e: any) => {
 		if (e.target.closest("button")) {
@@ -44,9 +46,13 @@ export const SnapScrollHandler = (
 
 		if (isScrolling) return;
 
+		// Get the current scroll position relative to the top of the page
+		const scrollY = window.scrollY || window.pageYOffset;
+
 		if (currentSection === 1) {
 			const contentSection: any = contentSectionRef.current;
 			if (contentSection && contentSection.contains(e.target)) {
+				// Only allow scrolling back to hero section if at the very top of content
 				if (e.deltaY < 0 && contentSection.scrollTop <= 5) {
 					e.preventDefault();
 					isScrolling = true;
@@ -54,7 +60,7 @@ export const SnapScrollHandler = (
 
 					scrollTimeout = setTimeout(() => {
 						isScrolling = false;
-					}, 300);
+					}, transitionDuration);
 					return;
 				}
 				return;
@@ -67,7 +73,7 @@ export const SnapScrollHandler = (
 
 				scrollTimeout = setTimeout(() => {
 					isScrolling = false;
-				}, 300);
+				}, transitionDuration);
 				return;
 			}
 		}
@@ -77,13 +83,22 @@ export const SnapScrollHandler = (
 
 		clearTimeout(scrollTimeout);
 
-		if (currentSection === 0 && e.deltaY > 0) {
+		// Only trigger content section when scroll position is at or past the header
+		if (currentSection === 0 && e.deltaY > 0 && scrollY >= headerHeight) {
 			setCurrentSection(1);
+		} else if (currentSection === 0 && e.deltaY > 0) {
+			// If not past header yet, just scroll normally
+			window.scrollTo({
+				top: headerHeight,
+				behavior: 'smooth'
+			});
+			isScrolling = false;
+			return;
 		}
 
 		scrollTimeout = setTimeout(() => {
 			isScrolling = false;
-		}, 300);
+		}, transitionDuration);
 	};
 
 	const handleTouchStart = (e: any) => {
@@ -111,6 +126,10 @@ export const SnapScrollHandler = (
 		}
 
 		if (isScrolling) return;
+
+		// Get the current scroll position relative to the top of the page
+		const scrollY = window.scrollY || window.pageYOffset;
+
 		if (currentSection === 1) {
 			const contentSection: any = contentSectionRef.current;
 			if (contentSection && contentSection.contains(e.target)) {
@@ -122,7 +141,7 @@ export const SnapScrollHandler = (
 					setCurrentSection(0);
 					setTimeout(() => {
 						isScrolling = false;
-					}, 300);
+					}, transitionDuration);
 					return;
 				}
 				return;
@@ -133,22 +152,31 @@ export const SnapScrollHandler = (
 				setCurrentSection(0);
 				setTimeout(() => {
 					isScrolling = false;
-				}, 300);
+				}, transitionDuration);
 				return;
 			}
 		}
 
 		isScrolling = true;
 
-		if (currentSection === 0 && touchDiff > minSwipeDistance) {
+		// Only trigger content section when scroll position is at or past the header
+		if (currentSection === 0 && touchDiff > minSwipeDistance && scrollY >= headerHeight) {
 			setCurrentSection(1);
+		} else if (currentSection === 0 && touchDiff > minSwipeDistance) {
+			// If not past header yet, just scroll normally
+			window.scrollTo({
+				top: headerHeight,
+				behavior: 'smooth'
+			});
+			isScrolling = false;
+			return;
 		} else if (currentSection === 1 && touchDiff < -minSwipeDistance) {
 			setCurrentSection(0);
 		}
 
 		setTimeout(() => {
 			isScrolling = false;
-		}, 300);
+		}, transitionDuration);
 	};
 
 	container.addEventListener("wheel", handleWheel, { passive: false });
