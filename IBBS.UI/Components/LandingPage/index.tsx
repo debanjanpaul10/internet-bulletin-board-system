@@ -151,53 +151,67 @@ export default function LandingPageComponent() {
 		<div ref={containerRef} className={styles.landingContainer}>
 			<Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
 
-			{/* Hero Section - Always visible when currentSection === 0 */}
-			{currentSection === 0 && (
-				<div ref={heroSectionRef} className={styles.heroSection}>
-					<div className={styles.heroContent}>
-						<div className={styles.mainHeading}>
-							<div className="col-sm-12">
-								<h1 className={styles.mainHeadingText}>
-									{HomePageConstants.Headings.WelcomeMessage}
-								</h1>
-							</div>
+			{/* Hero Section - Always visible but transforms based on currentSection */}
+			<div 
+				ref={heroSectionRef} 
+				className={styles.heroSection}
+				style={{
+					opacity: currentSection === 0 ? 1 : 0,
+					transform: currentSection === 0 ? 'translateY(0) scale(1)' : 'translateY(-50px) scale(0.98)',
+					pointerEvents: currentSection === 0 ? 'all' : 'none'
+				}}
+			>
+				<div className={styles.heroContent}>
+					<div className={styles.mainHeading}>
+						<div className="col-sm-12">
+							<h1 className={styles.mainHeadingText}>
+								{HomePageConstants.Headings.WelcomeMessage}
+							</h1>
 						</div>
-						<p className={styles.heroSubtext}>
-							{HomePageConstants.Headings.SubText}
-						</p>
 					</div>
+					<p className={styles.heroSubtext}>
+						{HomePageConstants.Headings.SubText}
+					</p>
 				</div>
-			)}
+			</div>
 
 			{/* Throbbing Down Arrow Button - Outside sections for better accessibility */}
-			{currentSection === 0 && (
-				<button
-					className={styles.downArrowButton}
-					onClick={handleDownArrowClick}
-					onMouseDown={handleDownArrowClick}
-					onTouchStart={handleDownArrowClick}
-					aria-label="Scroll down to content"
-					type="button"
-					style={{ pointerEvents: "all" }}
-				>
-					<ArrowDown32Filled />
-				</button>
-			)}
+			<button
+				className={styles.downArrowButton}
+				onClick={handleDownArrowClick}
+				onMouseDown={handleDownArrowClick}
+				onTouchStart={handleDownArrowClick}
+				aria-label="Scroll down to content"
+				type="button"
+				style={{ 
+					pointerEvents: "all",
+					opacity: currentSection === 0 ? 1 : 0,
+					visibility: currentSection === 0 ? 'visible' : 'hidden',
+					transition: 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out'
+				}}
+			>
+				<ArrowDown32Filled />
+			</button>
 
-			{/* Content Section - Visible when currentSection === 1 */}
-			{currentSection === 1 && (
-				<div className={styles.contentWrapper}>
-					<div
-						ref={contentSectionRef}
-						className={styles.contentSection}
-					>
-						<div className={styles.contentMain}>
-							<PostsContainer />
-							<EditPostComponent />
-						</div>
+			{/* Content Section - Always rendered but transforms based on currentSection */}
+			<div 
+				className={styles.contentWrapper}
+				style={{
+					opacity: currentSection === 1 ? 1 : 0,
+					transform: currentSection === 1 ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.98)',
+					pointerEvents: currentSection === 1 ? 'all' : 'none'
+				}}
+			>
+				<div
+					ref={contentSectionRef}
+					className={styles.contentSection}
+				>
+					<div className={styles.contentMain}>
+						<PostsContainer />
+						<EditPostComponent />
 					</div>
 				</div>
-			)}
+			</div>
 
 			{/* Footer - Fixed to bottom when in content section */}
 			{currentSection === 1 && (

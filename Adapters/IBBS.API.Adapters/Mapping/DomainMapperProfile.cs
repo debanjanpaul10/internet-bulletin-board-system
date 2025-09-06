@@ -2,10 +2,10 @@
 using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.API.Adapters.Models.Posts;
+using IBBS.API.Adapters.Models.Users;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DomainEntities.Posts;
-using InternetBulletin.Shared.DTOs.Users;
 
 namespace IBBS.API.Adapters.Mapping;
 
@@ -30,5 +30,7 @@ public class DomainMapperProfile : Profile
 		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
 		CreateMap<AIChatbotResponseDomain, AIChatbotResponseDTO>();
 		CreateMap<LookupMasterDomain, LookupMasterDTO>();
+		CreateMap<UserPostDomain, UserPostDTO>();
+		CreateMap<UserProfileDomain, UserProfileDto>();
 	}
 }

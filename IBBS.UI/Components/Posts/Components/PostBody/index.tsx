@@ -14,10 +14,10 @@ import {
 	Tag,
 } from "@fluentui/react-components";
 import {
-	Star28Filled,
 	Star28Regular,
 	EditColor,
 	DismissCircleColor,
+	StarColor,
 } from "@fluentui/react-icons";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -245,10 +245,11 @@ export default function PostBody({ post }: { post: any }) {
 												handleVoting(postData.postId)
 											}
 											size="small"
+											className={styles.starButton}
 										>
 											{renderRatingButtonIcons(
 												postData.ratingValue === 1 ? (
-													<Star28Filled />
+													<StarColor fontSize={28} />
 												) : (
 													<Star28Regular />
 												)

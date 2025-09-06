@@ -1,9 +1,9 @@
-namespace IBBS.API.Adapters.Models.Users;
+﻿namespace IBBS.Domain.DomainEntities.Posts;
 
 /// <summary>
-/// The User PostDomain DTO.
+/// The User Post domain model.
 /// </summary>
-public class UserPostDTO
+public class UserPostDomain
 {
 	/// <summary>
 	/// Gets or sets the post identifier.
@@ -38,10 +38,10 @@ public class UserPostDTO
 	public string PostOwnerUserName { get; set; } = string.Empty;
 
 	/// <summary>
-	/// Gets or sets the ratings.
+	/// Gets or sets the rating.
 	/// </summary>
 	/// <value>
-	/// The ratings.
+	/// The rating.
 	/// </value>
 	public int Ratings { get; set; }
 }

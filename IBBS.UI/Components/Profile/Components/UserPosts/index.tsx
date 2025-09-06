@@ -3,7 +3,6 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableCellLayout,
     TableHeader,
     TableHeaderCell,
     TableRow,
@@ -53,78 +52,80 @@ export default function UserPostsComponent({ userPosts }: { userPosts: any }) {
                 {MyProfilePageConstants.Headings.YourPostsMessage}
             </Title1>
             <div className={styles.scrollableItems}>
-                <Table
-                    aria-label="User posts"
-                    className={styles.postTable}
-                    size="medium"
-                >
-                    <TableHeader className={styles.stickyHeader}>
-                        <TableRow>
-                            {MyProfilePageConstants.PostTableHeaders.map(
-                                (item, index) => (
-                                    <TableHeaderCell
-                                        key={index}
-                                        className={styles.rowCell}
-                                    >
-                                        <Text size={400}>{item}</Text>
-                                    </TableHeaderCell>
-                                )
-                            )}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {Object.values(userPostsData).length > 0 &&
-                            userPostsData?.map((item: any, index: number) => (
-                                <TableRow key={index}>
-                                    <TableCell className={styles.rowCell}>
-                                        <TableCellLayout
-                                            media={
-                                                <Text size={400}>
-                                                    <SparkleCircle28Regular />{" "}
-                                                </Text>
-                                            }
+                {Object.values(userPostsData).length > 0 ? (
+                    <Table
+                        aria-label="User posts"
+                        className={styles.postTable}
+                        size="medium"
+                    >
+                        <TableHeader className={styles.stickyHeader}>
+                            <TableRow>
+                                {MyProfilePageConstants.PostTableHeaders.map(
+                                    (item, index) => (
+                                        <TableHeaderCell
+                                            key={index}
+                                            className={styles.headerCell}
                                         >
-                                            <Text size={400}>
-                                                {item.postTitle}{" "}
+                                            <Text size={300}>{item}</Text>
+                                        </TableHeaderCell>
+                                    )
+                                )}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {userPostsData?.map((item: any, index: number) => (
+                                <TableRow key={index} className={styles.tableRow}>
+                                    <TableCell className={styles.rowCell}>
+                                        <div className={styles.cellContent}>
+                                            <SparkleCircle28Regular className={styles.cellIcon} />
+                                            <Text size={400} style={{ color: "rgba(255, 255, 255, 0.95)" }}>
+                                                {item.postTitle}
                                             </Text>
-                                        </TableCellLayout>
+                                        </div>
                                     </TableCell>
 
                                     <TableCell className={styles.rowCell}>
-                                        <TableCellLayout>
-                                            <Text
-                                                size={400}
-                                                className={styles.dateText}
-                                            >
-                                                {formatDate(
-                                                    item.postCreatedDate
-                                                )}{" "}
-                                            </Text>
-                                        </TableCellLayout>
+                                        <Text
+                                            size={400}
+                                            className={styles.dateText}
+                                        >
+                                            {formatDate(item.postCreatedDate)}
+                                        </Text>
                                     </TableCell>
 
                                     <TableCell className={styles.rowCell}>
-                                        <TableCellLayout
-                                            media={
-                                                item.ratings > 0 ? (
-                                                    <Star28Filled />
-                                                ) : (
-                                                    <Star28Regular />
-                                                )
-                                            }
-                                        >
+                                        <div className={styles.cellContent}>
+                                            {item.ratings > 0 ? (
+                                                <Star28Filled className={styles.starIcon} style={{ color: "#FFD700" }} />
+                                            ) : (
+                                                <Star28Regular className={styles.starIcon} style={{ color: "rgba(255, 255, 255, 0.6)" }} />
+                                            )}
                                             <Text
                                                 size={200}
                                                 className={styles.dateText}
+                                                style={{ color: "rgba(255, 255, 255, 0.8)" }}
                                             >
                                                 {item.ratings}
                                             </Text>
-                                        </TableCellLayout>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
-                    </TableBody>
-                </Table>
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <div className={styles.emptyState}>
+                        <div className={styles.emptyStateIcon}>
+                            <SparkleCircle28Regular />
+                        </div>
+                        <Text className={styles.emptyStateTitle}>
+                            No Stories Yet
+                        </Text>
+                        <Text className={styles.emptyStateMessage}>
+                            You haven't created any stories yet. Start sharing your thoughts with the community!
+                        </Text>
+                    </div>
+                )}
             </div>
         </SpotlightCard>
     );

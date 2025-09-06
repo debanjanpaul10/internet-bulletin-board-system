@@ -72,6 +72,16 @@ public class DomainConstants
 		/// Something went wrong message
 		/// </summary>
 		internal const string SomethingWentWrongMessage = "Something went wrong while processing the request. Please try again after sometime";
+
+		/// <summary>
+		/// The user id cannot be null message constant.
+		/// </summary>
+		public const string UserIdCannotBeNullMessageConstant = "The user id passed must be a valid integer boss!";
+
+		/// <summary>
+		/// The user does not exists message constant
+		/// </summary>
+		public static readonly string UserDoesNotExistsMessageConstant = "The user data does not exist with us anymore!";
 	}
 
 	/// <summary>
