@@ -17,8 +17,8 @@ import {
 	CopyRegular,
 	ThumbLikeRegular,
 	ThumbDislikeRegular,
-	ChatMultipleColor,
 	AgentsColor,
+	Agents32Color,
 } from "@fluentui/react-icons";
 import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 
@@ -187,7 +187,7 @@ export default function ChatbotComponent() {
 					onClick={() => setIsChatOpen(!isChatOpen)}
 					appearance="transparent"
 				>
-					<ChatMultipleColor fontSize={40} />
+					<AgentsColor fontSize={30} />
 				</Button>
 			</Tooltip>
 
@@ -201,7 +201,8 @@ export default function ChatbotComponent() {
 				>
 					<div className={styles.chatHeader}>
 						<div className={styles.chatTitle}>
-							<AgentsColor fontSize={30} /> &nbsp;
+							<Agents32Color />
+							&nbsp;
 							{ChatbotConstants.ChatbotWindow.AgentName}
 						</div>
 						<div className={styles.headerButtons}>
@@ -242,6 +243,12 @@ export default function ChatbotComponent() {
 									ChatbotConstants.ChatbotWindow
 										.AiAssistantGreetingMessage
 								}
+								{/* AI DISCLAIMER */}
+								<br />
+								<em>
+									AI features are still in Alpha phase, please
+									expect incorrect responses or bugs
+								</em>
 							</div>
 						)}
 
