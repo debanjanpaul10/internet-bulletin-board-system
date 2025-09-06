@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0, User } from "@auth0/auth0-react";
 import { Skeleton, SkeletonItem } from "@fluentui/react-components";
 
 import { GetUserProfileDataAsync } from "@store/Users/Actions";
 import { useStyles } from "./styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
-import AlienImage from "@assets/Images/alien-pfp.jpg";
 import PageNotFound from "@/Components/Common/PageNotFound";
 import Magnet from "@animations/Magnet";
 import { useAppDispatch, useAppSelector } from "@/index";
-import UserDetailsComponent from "./Components/UserDetails";
 import UserPostsComponent from "./Components/UserPosts";
 import UserRatingsComponent from "./Components/UserRatings";
+import { UserProfileDto } from "@/Models/DTOs/user-profile.dto";
 
 /**
  * @component
@@ -37,15 +36,13 @@ export default function ProfileComponent() {
 		(state) => state.UserReducer.isUserProfileDataLoading
 	);
 
-	const [userStateData, setUserStateData] = useState({
-		displayName: "",
+	const [userStateData, setUserStateData] = useState<UserProfileDto>({
 		emailAddress: "",
-		userName: "",
-		userPosts: [],
 		userPostRatings: [],
+		userPosts: [],
 	});
 	const [isUserDataLoading, setIsUserDataLoading] = useState(true);
-	const [_, setCurrentLoggedInUser] = useState({});
+	const [currentLoggedInUser, setCurrentLoggedInUser] = useState<User>({});
 
 	// #region SIDE EFFECTS
 
@@ -105,79 +102,54 @@ export default function ProfileComponent() {
 	};
 
 	return isUserLoggedIn() ? (
-		<div
-			className="container"
-			style={{ marginTop: "76px", paddingTop: "20px" }}
-		>
-			<div className="row">
-				<div className="col-sm-12">
-					<h1 className={styles.profileHeading}>
+		<div className={styles.profileContainer}>
+			{/* Hero Section */}
+			<div className={`${styles.heroSection} ${styles.heroSection768}`}>
+				<div className={`${styles.heroContent} ${styles.heroContent768}`}>
+					<h1 className={`${styles.profileHeading} ${styles.profileHeading768} ${styles.profileHeading480}`}>
 						{Headings.WelcomeMessage}
 					</h1>
-				</div>
-
-				{/* USER DETAILS */}
-				<div
-					className="row position-relative"
-					style={{ marginTop: "20px" }}
-				>
-					{isUserDataLoading || !userStateData?.displayName ? (
-						<Skeleton
-							aria-label="Profile data loading"
-							as="div"
-							className="row"
-						>
-							<div className="col-12 col-sm-2">
+					
+					{/* Profile Image Section */}
+					<div className={styles.profileImageSection}>
+						{isUserDataLoading || !userStateData?.emailAddress ? (
+							<Skeleton
+								aria-label="Profile data loading"
+								as="div"
+								className={styles.profileImageSkeleton}
+							>
 								<SkeletonItem
 									appearance="translucent"
 									animation="pulse"
 									as="div"
 									shape="circle"
 									className={styles.userImgSkeleton}
-								></SkeletonItem>
-							</div>
-							<div className="col-12 col-sm-10">
-								<SkeletonItem
-									className={styles.userDataSkeleton}
-									appearance="translucent"
-									animation="pulse"
-									as="div"
 								/>
-							</div>
-						</Skeleton>
-					) : (
-						<div className="row">
-							<div className="col-12 col-sm-2">
-								<div className={styles.imageContainer}>
-									<Magnet disabled={false} magnetStrength={5}>
+							</Skeleton>
+						) : (
+							<div className={styles.profileImageWrapper}>
+								<Magnet disabled={false} magnetStrength={8}>
+									<div className={`${styles.profileImageContainer} ${styles.profileImageContainer768} ${styles.profileImageContainer480}`}>
 										<img
-											src={AlienImage}
+											src={currentLoggedInUser.picture}
 											alt="Profile"
 											className={styles.profileImage}
 										/>
-									</Magnet>
-								</div>
+										<div className={styles.profileImageGlow} />
+									</div>
+								</Magnet>
 							</div>
-							<div className="col-12 col-sm-10">
-								<div className={styles.userDetailsContainer}>
-									<UserDetailsComponent
-										displayName={userStateData.displayName}
-										emailAddress={
-											userStateData.emailAddress
-										}
-										userName={userStateData.userName}
-									/>
-								</div>
-							</div>
-						</div>
-					)}
+						)}
+					</div>
 				</div>
+			</div>
 
-				{/* USER ACTIVITY */}
-				<div className="row position-relative mt-4">
+			{/* Content Cards Section */}
+			<div className={`${styles.contentSection} ${styles.contentSection480}`}>
+				<div className={`${styles.cardsGrid} ${styles.cardsGrid768} ${styles.cardsGrid480}`}>
 					{/* USER POSTS */}
 					{isUserDataLoading || !userStateData?.userPosts ? (
-						<div className="col-12 col-sm-6">
+						<div className={styles.cardSkeleton}>
 							<Skeleton>
 								<SkeletonItem
 									className={styles.userDataSkeleton}
@@ -188,40 +160,33 @@ export default function ProfileComponent() {
 							</Skeleton>
 						</div>
 					) : (
-						<div className="col-12 col-sm-6">
-							<div className={styles.userPostsContainer}>
-								<UserPostsComponent
-									userPosts={userStateData.userPosts}
-								/>
-							</div>
+						<div className={styles.cardWrapper}>
+							<UserPostsComponent
+								userPosts={userStateData.userPosts}
+							/>
 						</div>
 					)}
 
 					{/* USER RATINGS */}
 					{isUserDataLoading || !userStateData?.userPostRatings ? (
-						<div className="cl-12 col-sm-6">
+						<div className={styles.cardSkeleton}>
 							<Skeleton
 								aria-label="Profile data loading"
 								as="div"
-								className="row"
 							>
 								<SkeletonItem
 									appearance="translucent"
 									animation="pulse"
 									as="div"
-									className={styles.userImgSkeleton}
-								></SkeletonItem>
+									className={styles.userDataSkeleton}
+								/>
 							</Skeleton>
 						</div>
 					) : (
-						<div className="col-12 col-sm-6">
-							<div className={styles.userRatingsContainer}>
-								<UserRatingsComponent
-									userPostRatings={
-										userStateData.userPostRatings
-									}
-								/>
-							</div>
+						<div className={styles.cardWrapper}>
+							<UserRatingsComponent
+								userPostRatings={userStateData.userPostRatings}
+							/>
 						</div>
 					)}
 				</div>

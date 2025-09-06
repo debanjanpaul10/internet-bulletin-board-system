@@ -50,6 +50,7 @@ public static class DIContainer
 	private static IServiceCollection AddDataManagers(this IServiceCollection services) =>
 		services.AddScoped<IPostsDataService, PostsDataService>()
 			.AddScoped<IPostRatingsDataService, PostRatingsDataService>()
-			.AddScoped<ICommonDataManager, CommonDataManager>();
+			.AddScoped<ICommonDataManager, CommonDataManager>()
+			.AddScoped<IProfilesDataService, ProfilesDataService>();
 
 }

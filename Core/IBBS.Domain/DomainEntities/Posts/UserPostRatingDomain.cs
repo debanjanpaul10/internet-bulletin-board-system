@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IBBS.Domain.DomainEntities.Posts;
+﻿namespace IBBS.Domain.DomainEntities.Posts;
 
 /// <summary>
 /// The user post rating domain model.
@@ -12,26 +6,26 @@ namespace IBBS.Domain.DomainEntities.Posts;
 public class UserPostRatingDomain
 {
 	/// <summary>
-	/// Gets or sets the post id.
+	/// Gets or sets the post name.
 	/// </summary>
 	/// <value>
-	/// The post id.
+	/// The post name.
 	/// </value>
-	public Guid PostId { get; set; }
+	public string PostName { get; set; } = string.Empty;
 
 	/// <summary>
-	/// Gets or sets the is update success.
+	/// Gets or sets the rated on.
 	/// </summary>
 	/// <value>
-	/// The is update success.
+	/// The rated on.
 	/// </value>
-	public bool IsUpdateSuccess { get; set; }
+	public DateTime RatedOn { get; set; }
 
 	/// <summary>
-	/// Gets or sets the has already updated.
+	/// Gets or sets the current rating value.
 	/// </summary>
 	/// <value>
-	/// The has already updated.
+	/// The current rating value.
 	/// </value>
-	public bool HasAlreadyUpdated { get; set; }
+	public int CurrentRatingValue { get; set; }
 }
