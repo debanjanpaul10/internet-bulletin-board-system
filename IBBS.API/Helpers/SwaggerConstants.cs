@@ -208,4 +208,20 @@ internal static class SwaggerConstants
 			internal const string OperationId = nameof(UpdateRatingAction);
 		}
 	}
+
+	/// <summary>
+	/// Swagger documentation for ProfilesController.
+	/// </summary>
+	internal static class ProfilesController
+	{
+		/// <summary>
+		/// Swagger documentation for GetUserProfilesDataAsync.
+		/// </summary>
+		internal static class GetUserProfilesDataAction
+		{
+			internal const string Summary = "";
+			internal const string Description = "";
+			internal const string OperationId = nameof(GetUserProfilesDataAction);
+		}
+	}
 }

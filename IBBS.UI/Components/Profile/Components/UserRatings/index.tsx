@@ -1,13 +1,12 @@
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableCellLayout,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-    Text,
-    Title1,
+	Table,
+	TableBody,
+	TableCell,
+	TableHeader,
+	TableHeaderCell,
+	TableRow,
+	Text,
+	Title1,
 } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
@@ -33,87 +32,114 @@ import { useStyles } from "./styles";
  *  - Scrollable content area for multiple ratings
  */
 export default function UserRatingsComponent({
-    userPostRatings,
+	userPostRatings,
 }: {
-    userPostRatings: any;
+	userPostRatings: any;
 }) {
-    const styles = useStyles();
+	const styles = useStyles();
 
-    const [userPostRatingsState, setUserPostRatingsState] = useState([]);
+	const [userPostRatingsState, setUserPostRatingsState] = useState([]);
 
-    useEffect(() => {
-        if (
-            userPostRatings !== null &&
-            userPostRatings !== undefined &&
-            userPostRatings !== userPostRatingsState
-        ) {
-            setUserPostRatingsState(userPostRatings);
-        }
-    }, [userPostRatings]);
+	useEffect(() => {
+		if (
+			userPostRatings !== null &&
+			userPostRatings !== undefined &&
+			userPostRatings !== userPostRatingsState
+		) {
+			setUserPostRatingsState(userPostRatings);
+		}
+	}, [userPostRatings]);
 
-    return (
-        <SpotlightCard
-            className={`custom-spotlight-card ${styles.card}`}
-            spotlightColor="rgba(0, 229, 255, 0.2)"
-        >
-            <Title1 className={styles.yourPostsHeader}>
-                {MyProfilePageConstants.Headings.YourRatings}
-            </Title1>
-            <div className={styles.scrollableItems}>
-                <Table
-                    aria-label="User ratings"
-                    className={styles.ratingsTable}
-                    size="medium"
-                >
-                    <TableHeader className={styles.stickyHeader}>
-                        <TableRow>
-                            {MyProfilePageConstants.RatingsTableHeaders.map(
-                                (item, index) => (
-                                    <TableHeaderCell
-                                        key={index}
-                                        className={styles.rowCell}
-                                    >
-                                        <Text size={400}>{item}</Text>
-                                    </TableHeaderCell>
-                                )
-                            )}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody className="row">
-                        {Object.values(userPostRatingsState).length > 0 &&
-                            userPostRatingsState.map(
-                                (item: any, index: number) => (
-                                    <TableRow key={index}>
-                                        <TableCell className={styles.rowCell}>
-                                            <TableCellLayout
-                                                media={
-                                                    <Text size={400}>
-                                                        <SparkleCircle28Regular />
-                                                    </Text>
-                                                }
-                                            >
-                                                <Text size={400}>
-                                                    {item.postName}
-                                                </Text>
-                                            </TableCellLayout>
-                                        </TableCell>
+	return (
+		<SpotlightCard
+			className={`custom-spotlight-card ${styles.card}`}
+			spotlightColor="rgba(0, 229, 255, 0.2)"
+		>
+			<Title1 className={styles.yourPostsHeader}>
+				{MyProfilePageConstants.Headings.YourRatings}
+			</Title1>
+			<div className={styles.scrollableItems}>
+				{Object.values(userPostRatingsState).length > 0 ? (
+					<Table
+						aria-label="User ratings"
+						className={styles.ratingsTable}
+						size="medium"
+					>
+						<TableHeader className={styles.stickyHeader}>
+							<TableRow>
+								<TableHeaderCell className={styles.headerCell}>
+									<Text size={300}>
+										{
+											MyProfilePageConstants
+												.RatingsTableHeaders[0]
+										}
+									</Text>
+								</TableHeaderCell>
 
-                                        <TableCell className={styles.rowCell}>
-                                            <TableCellLayout>
-                                                <Text
-                                                    size={400}
-                                                    className={styles.dateText}
-                                                >
-                                                    {formatDate(item.ratedOn)}{" "}
-                                                </Text>
-                                            </TableCellLayout>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            )}
-                    </TableBody>
-                </Table>
-            </div>
-        </SpotlightCard>
-    );
+								<TableHeaderCell className={styles.headerCellR}>
+									<Text size={300}>
+										{
+											MyProfilePageConstants
+												.RatingsTableHeaders[1]
+										}
+									</Text>
+								</TableHeaderCell>
+							</TableRow>
+						</TableHeader>
+						<TableBody className="row">
+							{userPostRatingsState.map(
+								(item: any, index: number) => (
+									<TableRow
+										key={index}
+										className={styles.tableRow}
+									>
+										<TableCell className={styles.rowCell}>
+											<div className={styles.cellContent}>
+												<SparkleCircle28Regular
+													className={styles.cellIcon}
+												/>
+												<Text
+													size={400}
+													style={{
+														color: "rgba(255, 255, 255, 0.95)",
+													}}
+												>
+													{item.postName}
+												</Text>
+											</div>
+										</TableCell>
+
+										<TableCell className={styles.rowCellR}>
+											<Text
+												size={400}
+												className={styles.dateText}
+												style={{
+													color: "rgba(255, 255, 255, 0.8)",
+												}}
+											>
+												{formatDate(item.ratedOn)}
+											</Text>
+										</TableCell>
+									</TableRow>
+								)
+							)}
+						</TableBody>
+					</Table>
+				) : (
+					<div className={styles.emptyState}>
+						<div className={styles.emptyStateIcon}>
+							<SparkleCircle28Regular />
+						</div>
+						<Text className={styles.emptyStateTitle}>
+							No Ratings Yet
+						</Text>
+						<Text className={styles.emptyStateMessage}>
+							You haven't rated any stories yet. Explore the
+							community and share your thoughts!
+						</Text>
+					</div>
+				)}
+			</div>
+		</SpotlightCard>
+	);
 }

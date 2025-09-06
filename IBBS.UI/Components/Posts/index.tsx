@@ -6,11 +6,14 @@ import AnimatedContent from "@animations/AnimatedFadeInContent";
 import { useAppSelector } from "@/index";
 import { Post } from "@/Models/Interfaces/IPost";
 import { LandingPageConstants } from "@/Helpers/ibbs.constants";
+import { useStyles } from "./styles";
 
 /**
  * PostsContainer component to display a list of posts.
  */
 export default function PostsContainer() {
+	const styles = useStyles();
+
 	const AllPostsStoreData = useAppSelector(
 		(state) => state.PostsReducer.allPostsData
 	);
@@ -39,19 +42,13 @@ export default function PostsContainer() {
 		<div className="posts-container">
 			{allPosts.length > 0 ? (
 				<>
-					<div className="posts-header">
-						<h2 className="posts-title">
-							{
-								LandingPageConstants.PostsContainerConstants
-									.PostsHeader
-							}
-						</h2>
-						<p className="posts-subtitle">
+					<div className={styles.postsHeading}>
+						<h1 className={styles.postsTitle}>
 							{
 								LandingPageConstants.PostsContainerConstants
 									.DiscoverMessageConstant
 							}
-						</p>
+						</h1>
 					</div>
 					<div className="posts-grid">
 						{allPosts.map((post, index) => (

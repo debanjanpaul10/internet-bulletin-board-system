@@ -168,5 +168,4 @@ internal static class RouteConstants
 		/// </summary>
 		internal const string GetSamplePrompts_Route = "getsampleaiprompts";
 	}
-
 }

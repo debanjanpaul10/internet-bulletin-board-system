@@ -1,9 +1,11 @@
-﻿namespace IBBS.API.Adapters.Models.Users;
+﻿using IBBS.Domain.DomainEntities.Posts;
+
+namespace IBBS.Domain.DomainEntities;
 
 /// <summary>
-/// The User Profile DTO.
+/// The user profile domain model.
 /// </summary>
-public class UserProfileDto
+public class UserProfileDomain
 {
 	/// <summary>
 	/// Gets or sets the email address.
@@ -19,7 +21,7 @@ public class UserProfileDto
 	/// <value>
 	/// The user posts.
 	/// </value>
-	public List<UserPostDTO> UserPosts { get; set; } = [];
+	public List<UserPostDomain> UserPosts { get; set; } = [];
 
 	/// <summary>
 	/// Gets or sets the user post ratings.
@@ -27,5 +29,5 @@ public class UserProfileDto
 	/// <value>
 	/// The user post ratings.
 	/// </value>
-	public List<UserPostRatingDTO> UserPostRatings { get; set; } = [];
+	public List<UserPostRatingDomain> UserPostRatings { get; set; } = [];
 }

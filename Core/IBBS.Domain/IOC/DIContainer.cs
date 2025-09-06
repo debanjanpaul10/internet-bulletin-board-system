@@ -16,6 +16,7 @@ public static class DIContainer
 	/// <returns>The service collection.</returns>
 	public static IServiceCollection AddDomainServices(this IServiceCollection services) =>
 		 services.AddScoped<IAIService, AIService>().AddScoped<IPostRatingsService, PostRatingsService>()
-		.AddScoped<IPostsService, PostsService>().AddScoped<ICacheService, CacheService>();
+		.AddScoped<IPostsService, PostsService>().AddScoped<ICacheService, CacheService>()
+		.AddScoped<IProfilesService, ProfilesService>();
 
 }
