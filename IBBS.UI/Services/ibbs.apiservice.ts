@@ -3,6 +3,7 @@
 import HttpUtility from "@/Helpers/http.utility";
 import AddPostDtoModel from "@/Models/AddPostDto";
 import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
+import { BugReportDTO } from "@/Models/DTOs/bug-report-data.dto";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
 import PostRatingDtoModel from "@/Models/PostRatingDto";
 import UpdatePostDtoModel from "@/Models/UpdatePostDto";
@@ -104,17 +105,16 @@ export const UpdateRatingApiAsync = async (
 
 // #endregion
 
-// #region CONFIGURATION
+// #region Common
 
-/**
- * Gets the configuration value.
- * @param keyName The configuration key name.
- * @returns The promise of the response from api.
- */
-export const GetConfigurationApiAsync = async (keyName: string) => {
-	return await HttpUtility.GetAsync(
-		`Configuration/GetConfiguration?keyName=${keyName}`,
-		""
+export const SubmitBugReportDataApiAsync = async (
+	bugReportData: BugReportDTO,
+	accessToken: string
+) => {
+	return await HttpUtility.PostAsync(
+		"CommonServices/SubmitBugReport",
+		bugReportData,
+		accessToken
 	);
 };
 

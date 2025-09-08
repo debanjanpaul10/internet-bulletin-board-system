@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import { useStyles } from "./styles";
 import { HeaderPageConstants } from "@helpers/ibbs.constants";
@@ -11,7 +12,7 @@ import HeaderComponent from "@/Components/Common/Header";
 import LandingPageComponent from "@/Components/LandingPage";
 import Aurora from "@animations/AuroraBackground";
 import ChatbotComponent from "../Chatbot";
-import { useAuth0 } from "@auth0/auth0-react";
+import BugReportComponent from "../BugReport";
 
 /**
  * @component
@@ -57,6 +58,7 @@ export default function IBBSComponent() {
 			<div className={styles.bodyContent}>
 				<ToasterComponent />
 				<SideDrawerComponent />
+				<BugReportComponent />
 				{isAuthenticated && <ChatbotComponent />}
 				<Routes>
 					<Route
