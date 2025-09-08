@@ -19,4 +19,11 @@ public interface ICommonDataManager
 	/// </summary>
 	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
 	Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync();
+
+	/// <summary>
+	/// Submits the bug report data asynchronous.
+	/// </summary>
+	/// <param name="addBugReportModel">The add bug report model.</param>
+	/// <returns>The boolean for success/failure.</returns>
+	Task<bool> SubmitBugReportDataAsync(BugReportDomain newBugReportData);
 }

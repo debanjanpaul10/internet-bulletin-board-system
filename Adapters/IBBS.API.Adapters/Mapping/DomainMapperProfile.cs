@@ -23,6 +23,7 @@ public class DomainMapperProfile : Profile
 		CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
 		CreateMap<UserQueryRequestDTO, UserQueryRequestDomain>();
 		CreateMap<AIResponseFeedbackDTO, AIResponseFeedbackDomain>();
+		CreateMap<BugReportDTO, BugReportDomain>();
 
 		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
 		CreateMap<PostWithRatingsDomain, PostWithRatingsDTO>().ReverseMap();

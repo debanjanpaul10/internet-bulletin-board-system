@@ -69,6 +69,34 @@ public class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext d
 	}
 
 	/// <summary>
+	/// Submits the bug report data asynchronous.
+	/// </summary>
+	/// <param name="addBugReportModel">The add bug report model.</param>
+	/// <returns>The boolean for success/failure.</returns>
+	public async Task<bool> SubmitBugReportDataAsync(BugReportDomain newBugReportData)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, string.Empty));
+
+			await dbContext.AddAsync(newBugReportData).ConfigureAwait(false);
+			await dbContext.SaveChangesAsync().ConfigureAwait(false);
+			return true;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, string.Empty));
+		}
+	}
+
+	#region PRIVATE METHODS
+
+	/// <summary>
 	/// Executes the SQL query raw asynchronous.
 	/// </summary>
 	/// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -108,4 +136,6 @@ public class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext d
 			return default!;
 		}
 	}
+
+	#endregion
 }

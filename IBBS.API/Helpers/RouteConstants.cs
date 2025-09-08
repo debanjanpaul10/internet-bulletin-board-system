@@ -168,4 +168,20 @@ internal static class RouteConstants
 		/// </summary>
 		internal const string GetSamplePrompts_Route = "getsampleaiprompts";
 	}
+
+	/// <summary>
+	/// The Common services controller constants.
+	/// </summary>
+	internal static class CommonServicesController
+	{
+		/// <summary>
+		/// The base route
+		/// </summary>
+		internal const string BaseRoute = "CommonServices";
+
+		/// <summary>
+		/// The submit bug report route
+		/// </summary>
+		internal const string SubmitBugReport_Route = "SubmitBugReport";
+	}
 }

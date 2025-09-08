@@ -219,9 +219,25 @@ internal static class SwaggerConstants
 		/// </summary>
 		internal static class GetUserProfilesDataAction
 		{
-			internal const string Summary = "";
-			internal const string Description = "";
+			internal const string Summary = "Gets the user profile data.";
+			internal const string Description = "Gets the user profile data including the posts and post ratings by user.";
 			internal const string OperationId = nameof(GetUserProfilesDataAction);
+		}
+	}
+
+	/// <summary>
+	/// Swagger documentation for CommonServicesController.
+	/// </summary>
+	internal static class CommonServicesController
+	{
+		/// <summary>
+		/// Swagger documentation for SubmitBugReportDataAsync.
+		/// </summary>
+		internal static class SubmitBugReportDataAction
+		{
+			internal const string Summary = "Adds a new bug report.";
+			internal const string Description = "Adds a new bug report.";
+			internal const string OperationId = nameof(SubmitBugReportDataAction);
 		}
 	}
 }
