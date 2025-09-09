@@ -47,6 +47,7 @@ public class CommonService(ILogger<CommonService> logger, ICommonDataManager com
 		try
 		{
 			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, addBugReportModel.Title));
+			addBugReportModel.ModifiedBy = addBugReportModel.CreatedBy;
 			return await commonDataManager.SubmitBugReportDataAsync(addBugReportModel).ConfigureAwait(false);
 		}
 		catch (Exception ex)
