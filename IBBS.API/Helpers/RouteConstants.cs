@@ -183,5 +183,10 @@ internal static class RouteConstants
 		/// The submit bug report route
 		/// </summary>
 		internal const string SubmitBugReport_Route = "SubmitBugReport";
+
+		/// <summary>
+		/// The get lookup master data route.
+		/// </summary>
+		internal const string GetLookupMasterData_Route = "GetLookupMaster";
 	}
 }

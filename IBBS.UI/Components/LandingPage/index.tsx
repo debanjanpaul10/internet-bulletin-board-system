@@ -205,7 +205,7 @@ export default function LandingPageComponent() {
 					transform:
 						currentSection === 1
 							? "translateY(0) scale(1)"
-							: "translateY(20px) scale(0.98)",
+							: "translateY(10px) scale(1)",
 					pointerEvents: currentSection === 1 ? "all" : "none",
 				}}
 			>

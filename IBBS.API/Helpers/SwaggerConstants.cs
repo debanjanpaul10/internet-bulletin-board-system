@@ -239,5 +239,15 @@ internal static class SwaggerConstants
 			internal const string Description = "Adds a new bug report.";
 			internal const string OperationId = nameof(SubmitBugReportDataAction);
 		}
+
+		/// <summary>
+		/// Swagger documentation for GetLookupMasterDataAsync.
+		/// </summary>
+		internal static class GetLookupMasterDataAction
+		{
+			internal const string Summary = "Gets the lookup master data.";
+			internal const string Description = "Gets the list of lookup master data key and type wise from DB.";
+			internal const string OperationId = nameof(GetLookupMasterDataAction);
+		}
 	}
 }

@@ -24,10 +24,7 @@ import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 
 import { useAppDispatch, useAppSelector } from "@/index";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
-import {
-	GetSamplePromptsForChatbotAsync,
-	HandleChatbotResponseAsync,
-} from "@/Store/AiServices/Actions";
+import { HandleChatbotResponseAsync } from "@/Store/AiServices/Actions";
 import { useStyles } from "./styles";
 import { ChatbotConstants } from "@/Helpers/ibbs.constants";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
@@ -45,8 +42,8 @@ export default function ChatbotComponent() {
 	const ChatbotResponseStoreData = useAppSelector(
 		(state) => state.AiServicesReducer.chatbotResponse
 	);
-	const SamplePromptsStoreData = useAppSelector(
-		(state) => state.AiServicesReducer.sampleAiPrompts
+	const LookupMasterStoreData = useAppSelector(
+		(state) => state.CommonReducer.lookupMasterData
 	);
 
 	const [isChatOpen, setIsChatOpen] = useState(false);
@@ -74,10 +71,6 @@ export default function ChatbotComponent() {
 	);
 
 	useEffect(() => {
-		GetSamplePromptsAsync();
-	}, []);
-
-	useEffect(() => {
 		if (chatResponse !== ChatbotResponseStoreData) {
 			if (Object.values(ChatbotResponseStoreData).length > 0) {
 				setChatResponse(ChatbotResponseStoreData);
@@ -95,11 +88,6 @@ export default function ChatbotComponent() {
 			console.error(error);
 			return null;
 		}
-	};
-
-	const GetSamplePromptsAsync = async () => {
-		const accessToken = await GetAccessTokenAsync();
-		accessToken && dispatch(GetSamplePromptsForChatbotAsync(accessToken));
 	};
 
 	// Generate a unique ID for messages
@@ -515,12 +503,12 @@ export default function ChatbotComponent() {
 					</div>
 
 					{/* PINNED SAMPLE PROMPTS */}
-					{SamplePromptsStoreData.length > 0 && showSamplePrompts && (
+					{LookupMasterStoreData.length > 0 && showSamplePrompts && (
 						<div className={styles.pinnedPromptsContainer}>
 							<FollowupQuestionsComponent
-								messageList={SamplePromptsStoreData.map(
-									(prompt: any) => prompt.keyValue
-								)}
+								messageList={LookupMasterStoreData.filter(
+									(x: any) => x.type === "SamplePrompts"
+								).map((prompt: any) => prompt.keyValue)}
 								onSelect={(question) => {
 									sendMessage(question);
 								}}

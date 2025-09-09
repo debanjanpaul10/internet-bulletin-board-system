@@ -16,6 +16,28 @@ namespace IBBS.Domain.UseCases;
 public class CommonService(ILogger<CommonService> logger, ICommonDataManager commonDataManager) : ICommonService
 {
 	/// <summary>
+	/// Gets the lookup master data async.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
+	public async Task<IEnumerable<LookupMasterDomain>> GetLookupMasterDataAsync()
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
+			return await commonDataManager.GetLookupMasterDataAsync().ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
+		}
+	}
+
+	/// <summary>
 	/// Submits the bug report data asynchronous.
 	/// </summary>
 	/// <param name="addBugReportModel">The add bug report model.</param>

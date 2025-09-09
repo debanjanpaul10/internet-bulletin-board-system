@@ -1,6 +1,7 @@
 ﻿using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models;
 using IBBS.API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
@@ -35,6 +36,7 @@ public class CommonServicesController(IHttpContextAccessor httpContextAccessor, 
 		if (IsAuthorized())
 		{
 			ArgumentNullException.ThrowIfNull(addBugReportModel);
+			addBugReportModel.CreatedBy = UserEmail;
 			var result = await commonServicesHandler.SubmitBugReportDataAsync(addBugReportModel).ConfigureAwait(false);
 			if (result)
 			{
@@ -45,5 +47,27 @@ public class CommonServicesController(IHttpContextAccessor httpContextAccessor, 
 		}
 
 		return HandleUnAuthorizedRequest();
+	}
+
+	/// <summary>
+	/// Gets the lookup master data asynchronous.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDTO"/></returns>
+	[AllowAnonymous]
+	[HttpGet(RouteConstants.CommonServicesController.GetLookupMasterData_Route)]
+	[ProducesResponseType(typeof(IEnumerable<LookupMasterDTO>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = GetLookupMasterDataAction.Summary, Description = GetLookupMasterDataAction.Description, OperationId = GetLookupMasterDataAction.OperationId)]
+	public async Task<IActionResult> GetLookupMasterDataAsync()
+	{
+		var result = await commonServicesHandler.GetLookupMasterDataAsync().ConfigureAwait(false);
+		if (result is not null && result.Any())
+		{
+			return HandleSuccessResult(result);
+		}
+
+		return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
 	}
 }

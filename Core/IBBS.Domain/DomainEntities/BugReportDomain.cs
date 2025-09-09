@@ -36,7 +36,7 @@ public class BugReportDomain : BaseEntity
 	/// <value>
 	/// The bug severity identifier.
 	/// </value>
-	public int BugSeverityId { get; set; }
+	public int BugSeverity { get; set; }
 
 	/// <summary>
 	/// Gets or sets the bug status identifier.
@@ -44,7 +44,7 @@ public class BugReportDomain : BaseEntity
 	/// <value>
 	/// The bug status identifier.
 	/// </value>
-	public int BugStatusId { get; set; }
+	public int BugStatus { get; set; }
 
 	/// <summary>
 	/// Gets or sets the page URL.

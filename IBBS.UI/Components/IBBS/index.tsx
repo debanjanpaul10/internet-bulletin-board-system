@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -13,6 +14,8 @@ import LandingPageComponent from "@/Components/LandingPage";
 import Aurora from "@animations/AuroraBackground";
 import ChatbotComponent from "../Chatbot";
 import BugReportComponent from "../BugReport";
+import { useAppDispatch } from "@/index";
+import { GetLookupMasterDataAsync } from "@/Store/Common/Actions";
 
 /**
  * @component
@@ -26,23 +29,18 @@ import BugReportComponent from "../BugReport";
  * - User interactions and post management
  * - Real-time updates and notifications
  *
- * @state {Object} [state] - Component state management
- * @state {Array} [state.posts] - List of bulletin board posts
- * @state {boolean} [state.isLoading] - Loading state indicator
- * @state {Object} [state.user] - Current user information
- *
- * @effect
- * On mount:
- * - Fetches initial bulletin board data
- * - Sets up real-time listeners
- * - Initializes user session
- *
  * @returns The main IBBS interface component with all necessary features and functionality
  */
 export default function IBBSComponent() {
+	const dispatch = useAppDispatch();
+
 	const styles = useStyles();
 	const { isAuthenticated } = useAuth0();
 	const { Headings } = HeaderPageConstants;
+
+	useEffect(() => {
+		dispatch(GetLookupMasterDataAsync());
+	}, []);
 
 	return (
 		<div className="main-content">

@@ -1,4 +1,5 @@
 import {
+	GET_LOOKUP_MASTER_DATA,
 	SAVE_BUG_REPORT_DATA,
 	TOGGLE_BUG_REPORT_DRAWER,
 	TOGGLE_BUG_REPORT_SPINNER,
@@ -14,6 +15,7 @@ const initialState: any = {
 	isBugReportSubmitted: false,
 	isBugReportSpinnerLoading: false,
 	isBugReportDrawerOpen: false,
+	lookupMasterData: [],
 };
 
 /**
@@ -58,6 +60,12 @@ const CommonReducer = (state = initialState, action: any) => {
 			return {
 				...state,
 				isBugReportDrawerOpen: action.payload,
+			};
+		}
+		case GET_LOOKUP_MASTER_DATA: {
+			return {
+				...state,
+				lookupMasterData: action.payload,
 			};
 		}
 		default: {

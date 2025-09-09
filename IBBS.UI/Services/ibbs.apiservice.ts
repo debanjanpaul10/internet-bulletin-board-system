@@ -118,6 +118,10 @@ export const SubmitBugReportDataApiAsync = async (
 	);
 };
 
+export const GetLookupMasterDataApiAsync = async () => {
+	return await HttpUtility.GetAsync("CommonServices/GetLookupMaster", "");
+};
+
 // #endregion
 
 // #region AI Services
@@ -179,15 +183,6 @@ export const PostAiResultFeedbackApiAsync = async (
 	return await HttpUtility.PostAsync(
 		"AiServices/AIFeedback",
 		aiResponseFeedback,
-		accessToken
-	);
-};
-
-export const GetSamplePromptsForChatbotApiAsync = async (
-	accessToken: string
-) => {
-	return await HttpUtility.GetAsync(
-		"AiServices/GetSampleAIPrompts",
 		accessToken
 	);
 };
