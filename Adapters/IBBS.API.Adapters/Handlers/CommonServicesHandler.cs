@@ -15,6 +15,16 @@ namespace IBBS.API.Adapters.Handlers;
 public class CommonServicesHandler(IMapper mapper, ICommonService commonService) : ICommonServicesHandler
 {
 	/// <summary>
+	/// Gets the lookup master data async.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDTO"/></returns>
+	public async Task<IEnumerable<LookupMasterDTO>> GetLookupMasterDataAsync()
+	{
+		var domainResult = await commonService.GetLookupMasterDataAsync().ConfigureAwait(false);
+		return mapper.Map<IEnumerable<LookupMasterDTO>>(domainResult);
+	}
+
+	/// <summary>
 	/// Submits the bug report data asynchronous.
 	/// </summary>
 	/// <param name="addBugReportModel">The add bug report model.</param>

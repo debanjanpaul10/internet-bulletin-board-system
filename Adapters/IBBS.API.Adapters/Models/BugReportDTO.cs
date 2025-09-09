@@ -30,6 +30,14 @@ public class BugReportDTO
 	public int BugSeverity { get; set; } = 0;
 
 	/// <summary>
+	/// Gets or sets the bug status.
+	/// </summary>
+	/// <value>
+	/// The bug status.
+	/// </value>
+	public int BugStatus { get; set; } = 0;
+
+	/// <summary>
 	/// Gets or sets the created by.
 	/// </summary>
 	/// <value>

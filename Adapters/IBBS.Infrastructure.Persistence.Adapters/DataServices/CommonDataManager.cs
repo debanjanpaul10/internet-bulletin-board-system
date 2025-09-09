@@ -44,6 +44,28 @@ public class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext d
 	}
 
 	/// <summary>
+	/// Gets the lookup master data async.
+	/// </summary>
+	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
+	public async Task<IEnumerable<LookupMasterDomain>> GetLookupMasterDataAsync()
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
+			return await dbContext.LookupMaster.Where(x => x.IsActive).ToListAsync().ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
+		}
+	}
+
+	/// <summary>
 	/// Gets the sample prompts for chatbot asynchronous.
 	/// </summary>
 	/// <returns>
@@ -79,7 +101,7 @@ public class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext d
 		{
 			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, string.Empty));
 
-			await dbContext.AddAsync(newBugReportData).ConfigureAwait(false);
+			await dbContext.BugReportData.AddAsync(newBugReportData).ConfigureAwait(false);
 			await dbContext.SaveChangesAsync().ConfigureAwait(false);
 			return true;
 		}
