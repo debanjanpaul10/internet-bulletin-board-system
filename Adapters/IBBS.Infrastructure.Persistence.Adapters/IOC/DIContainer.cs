@@ -20,7 +20,7 @@ public static class DIContainer
 	/// <param name="configuration">The configuration.</param>
 	/// <param name="isDevelopmentMode">if set to <c>true</c> [is development mode].</param>
 	public static IServiceCollection AddDataDependencies(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode) =>
-		 services.ConfigureSqlDatabase(configuration, isDevelopmentMode).AddDataManagers();
+		services.ConfigureSqlDatabase(configuration, isDevelopmentMode).AddDataManagers();
 
 	/// <summary>
 	/// Configures the SQL database.
@@ -37,8 +37,7 @@ public static class DIContainer
 
 		return services.AddDbContext<SqlDbContext>(options =>
 		{
-			options.UseSqlServer(
-				sqlConnectionString,
+			options.UseSqlServer(sqlConnectionString,
 				options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null));
 		});
 	}

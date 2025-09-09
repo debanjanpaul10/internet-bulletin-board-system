@@ -20,6 +20,7 @@ public static class DIContainer
 			.AddScoped<IPostsHandler, PostsHandler>()
 			.AddScoped<IPostRatingsHandler, PostRatingsHandler>()
 			.AddScoped<IProfilesHandler, ProfilesHandler>()
+			.AddScoped<ICommonServicesHandler, CommonServicesHandler>()
 			.AddAutoMapper(mapperConfig => mapperConfig.AddProfile<DomainMapperProfile>());
 
 }

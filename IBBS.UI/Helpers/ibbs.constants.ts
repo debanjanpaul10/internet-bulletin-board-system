@@ -2,6 +2,7 @@ export const PageConstants = {
 	DarkModeConstant: "dark-mode",
 	DarkConstant: "dark",
 	LightConstant: "light",
+	DefaultLoaderMessage: "Loading amazing content ...",
 };
 
 export const HeaderPageConstants = {
@@ -183,4 +184,9 @@ export const ChatbotConstants = {
 		TypingPlaceholder: "Type your query",
 		ThinkingMessage: "AI is thinking ...",
 	},
+};
+
+export const BugReportConstants = {
+	Header: "We accept that we screwed up, so please help us and submit a bug report",
+	LoaderMessage: "Submitting the bug report ...",
 };

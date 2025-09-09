@@ -18,10 +18,8 @@ public static class DIContainer
 	/// <param name="services">The services.</param>
 	/// <param name="configuration">The configuration.</param>
 	/// <returns>The service collection.</returns>
-	public static IServiceCollection AddMongoDbAdapterDependencies(this IServiceCollection services, IConfiguration configuration)
-	{
-		return services.ConfigureMongoDbServer(configuration).AddScoped<IMongoDbDatabaseManager, MongoDbDatabaseManager>();
-	}
+	public static IServiceCollection AddMongoDbAdapterDependencies(this IServiceCollection services, IConfiguration configuration) =>
+		services.ConfigureMongoDbServer(configuration).AddScoped<IMongoDbDatabaseManager, MongoDbDatabaseManager>();
 
 	/// <summary>
 	/// Configures the mongo database server.

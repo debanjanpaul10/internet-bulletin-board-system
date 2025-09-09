@@ -1,5 +1,10 @@
 @import "react-quill-new/dist/quill.snow.css";
 
+@font-face {
+	font-family: "jetbrains-mono";
+	src: url("../assets/Fonts/JetBrainsMono-Regular.ttf") format("opentype");
+}
+
 body {
 	margin: 0;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "", "Oxygen",
@@ -14,6 +19,9 @@ body {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
+}
+* {
+	font-family: "jetbrains-mono";
 }
 
 /* ANIMATIONS START */

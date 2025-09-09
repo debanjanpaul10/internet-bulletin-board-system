@@ -3,7 +3,6 @@ import {
 	GET_CHATBOT_RESPONSE,
 	HANDLE_POST_AI_MODERATION,
 	REWRITE_STORY_AI,
-	SAMPLE_AI_PROMPTS,
 	SAVE_AI_FEEDBACK_RESPONSE,
 	TOGGLE_AI_FEEDBACK_SPINNER,
 	TOGGLE_CHATBOT_LOADING,
@@ -12,7 +11,6 @@ import {
 import {
 	GenerateTagForStoryApiAsync,
 	GetChatbotResponseAsync,
-	GetSamplePromptsForChatbotApiAsync,
 	ModerateContentDataApiAsync,
 	PostAiResultFeedbackApiAsync,
 	PostRewriteStoryWithAiApiAsync,
@@ -25,18 +23,6 @@ import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
 
 /**
- * Stores the toggle event for rewrite text loading.
- * @param isLoading The is loading boolean flag.
- * @returns The action type and payload data.
- */
-export const ToggleRewriteLoader = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_REWRITE_LOADER,
-		payload: isLoading,
-	};
-};
-
-/**
  * Rewrites story with AI using createAsyncThunk.
  */
 export const RewriteStoryWithAiAsync = (
@@ -45,7 +31,10 @@ export const RewriteStoryWithAiAsync = (
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleRewriteLoader(true));
+			dispatch({
+				type: TOGGLE_REWRITE_LOADER,
+				payload: true,
+			});
 			const response = await PostRewriteStoryWithAiApiAsync(
 				requestDto,
 				accessToken
@@ -64,7 +53,10 @@ export const RewriteStoryWithAiAsync = (
 			);
 			throw error;
 		} finally {
-			dispatch(ToggleRewriteLoader(false));
+			dispatch({
+				type: TOGGLE_REWRITE_LOADER,
+				payload: false,
+			});
 		}
 	};
 };
@@ -155,13 +147,19 @@ export const HandleChatbotResponseAsync = (
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleChatbotLoading(true));
+			dispatch({
+				type: TOGGLE_CHATBOT_LOADING,
+				payload: true,
+			});
 			const response = await GetChatbotResponseAsync(
 				userQueryRequest,
 				accessToken
 			);
 			if (response?.data) {
-				dispatch(GetChatbotResponseSuccess(response.data));
+				dispatch({
+					type: GET_CHATBOT_RESPONSE,
+					payload: response.data,
+				});
 				return response.data as AIChatbotResponseDTO;
 			}
 			return null;
@@ -175,22 +173,11 @@ export const HandleChatbotResponseAsync = (
 			);
 			throw error;
 		} finally {
-			dispatch(ToggleChatbotLoading(false));
+			dispatch({
+				type: TOGGLE_CHATBOT_LOADING,
+				payload: false,
+			});
 		}
-	};
-};
-
-export const ToggleChatbotLoading = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_CHATBOT_LOADING,
-		payload: isLoading,
-	};
-};
-
-export const GetChatbotResponseSuccess = (data: AIChatbotResponseDTO) => {
-	return {
-		type: GET_CHATBOT_RESPONSE,
-		payload: data,
 	};
 };
 
@@ -200,13 +187,19 @@ export const HandleAiResultFeedbackAsync = (
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleFeedbackSpinner(true));
+			dispatch({
+				type: TOGGLE_AI_FEEDBACK_SPINNER,
+				payload: true,
+			});
 			const response = await PostAiResultFeedbackApiAsync(
 				responseFeedback,
 				accessToken
 			);
 			if (response?.data) {
-				dispatch(AiResultFeedbackSuccess(response.data));
+				dispatch({
+					type: SAVE_AI_FEEDBACK_RESPONSE,
+					payload: response.data,
+				});
 			}
 		} catch (error) {
 			console.error(error);
@@ -217,52 +210,10 @@ export const HandleAiResultFeedbackAsync = (
 				})
 			);
 		} finally {
-			dispatch(ToggleFeedbackSpinner(false));
+			dispatch({
+				type: TOGGLE_AI_FEEDBACK_SPINNER,
+				payload: false,
+			});
 		}
-	};
-};
-
-const AiResultFeedbackSuccess = (data: boolean) => {
-	return {
-		type: SAVE_AI_FEEDBACK_RESPONSE,
-		payload: data,
-	};
-};
-
-export const ToggleFeedbackSpinner = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_AI_FEEDBACK_SPINNER,
-		payload: isLoading,
-	};
-};
-
-export const GetSamplePromptsForChatbotAsync = (accessToken: string) => {
-	return async (dispatch: Dispatch<Action>) => {
-		try {
-			dispatch(ToggleChatbotLoading(true));
-			const response = await GetSamplePromptsForChatbotApiAsync(
-				accessToken
-			);
-			if (response?.data) {
-				dispatch(GetSamplePromptsForChatbotSuccess(response.data));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(
-				ToggleErrorToaster({
-					shouldShow: true,
-					errorMessage: error,
-				})
-			);
-		} finally {
-			dispatch(ToggleChatbotLoading(false));
-		}
-	};
-};
-
-const GetSamplePromptsForChatbotSuccess = (data: any) => {
-	return {
-		type: SAMPLE_AI_PROMPTS,
-		payload: data,
 	};
 };

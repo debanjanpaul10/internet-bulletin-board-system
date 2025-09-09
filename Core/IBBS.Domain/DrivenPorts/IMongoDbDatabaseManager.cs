@@ -1,6 +1,4 @@
-﻿using IBBS.Domain.DomainEntities.Knowledgebase;
-
-namespace IBBS.Domain.DrivenPorts;
+﻿namespace IBBS.Domain.DrivenPorts;
 
 /// <summary>
 /// The Mongo DB database manager.
@@ -8,20 +6,11 @@ namespace IBBS.Domain.DrivenPorts;
 public interface IMongoDbDatabaseManager
 {
 	/// <summary>
-	/// Gets the database schema json asynchronous.
+	/// Gets the data from collection asynchronous.
 	/// </summary>
-	/// <returns>The database schema domain.</returns>
-	Task<DatabaseSchemaDomain> GetDatabaseSchemaJsonAsync();
-
-	/// <summary>
-	/// Gets the database knowledge pieces json asynchronous.
-	/// </summary>
-	/// <returns>The database knowledge base domain.</returns>
-	Task<DatabaseKnowledgebaseDomain> GetDatabaseKnowledgePiecesJsonAsync();
-
-	/// <summary>
-	/// Gets the rag knowledge pieces json asynchronous.
-	/// </summary>
-	/// <returns>The RAG knowledge base domain.</returns>
-	Task<RAGKnowledgebaseDomain> GetRAGKnowledgePiecesJsonAsync();
+	/// <typeparam name="TResult">The type of the result.</typeparam>
+	/// <param name="databaseName">Name of the database.</param>
+	/// <param name="collectionName">Name of the collection.</param>
+	/// <returns>The mongo db collection.</returns>
+	Task<TResult> GetDataFromCollectionAsync<TResult>(string databaseName, string collectionName);
 }

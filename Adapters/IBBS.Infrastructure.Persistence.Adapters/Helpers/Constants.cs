@@ -122,5 +122,10 @@ internal static class Constants
 		/// The lookup master table name
 		/// </summary>
 		internal const string LookupMasterTableName = "LookupMaster";
+
+		/// <summary>
+		/// The bug report table name.
+		/// </summary>
+		internal const string BugReportTableName = "BugReportData";
 	}
 }

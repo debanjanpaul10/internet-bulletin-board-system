@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
+using IBBS.Domain.DomainEntities.Knowledgebase;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
@@ -204,8 +205,10 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 	/// <returns>The AI response data.</returns>
 	private async Task<string> InvokeSqlFunctionAsync(string userInput, AIChatbotResponseDomain aiChatbotResponse)
 	{
-		var databaseSchemaTask = mongoDbDatabaseManager.GetDatabaseSchemaJsonAsync();
-		var databaseKnowledgeBaseTask = mongoDbDatabaseManager.GetDatabaseKnowledgePiecesJsonAsync();
+		var databaseSchemaTask = mongoDbDatabaseManager.GetDataFromCollectionAsync<DatabaseSchemaDomain>(
+			MongoDBConstants.IbbsKnowledgebaseDB, MongoDBConstants.IBBSDatabaseSchemaCollection);
+		var databaseKnowledgeBaseTask = mongoDbDatabaseManager.GetDataFromCollectionAsync<DatabaseKnowledgebaseDomain>(
+			MongoDBConstants.IbbsKnowledgebaseDB, MongoDBConstants.IBBSDatabaseKnowledgeBaseCollection);
 		await Task.WhenAll(databaseSchemaTask, databaseKnowledgeBaseTask).ConfigureAwait(false);
 
 		var nltosqlInput = new NltosqlInputDomain()
@@ -232,7 +235,8 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 	/// <returns>The AI response data.</returns>
 	private async Task<string> InvokeRAGFunctionAsync(string userInput)
 	{
-		var knowledgeBase = await mongoDbDatabaseManager.GetRAGKnowledgePiecesJsonAsync().ConfigureAwait(false);
+		var knowledgeBase = await mongoDbDatabaseManager.GetDataFromCollectionAsync<RAGKnowledgebaseDomain>(
+			MongoDBConstants.IbbsKnowledgebaseDB, MongoDBConstants.IBBSRAGKnowledgeBaseCollection).ConfigureAwait(false);
 		var skillsInput = new SkillsInputDomain()
 		{
 			KnowledgeBase = JsonConvert.SerializeObject(knowledgeBase.KnowledgeBase),

@@ -185,6 +185,8 @@ public class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgent
 
 	#endregion
 
+	#region INDIVIDUAL PLUGINS
+
 	/// <summary>
 	/// Moderates the content data asynchronous.
 	/// </summary>
@@ -276,4 +278,6 @@ public class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgent
 			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GenerateTagForStoryAsync), DateTime.UtcNow, string.Empty));
 		}
 	}
+
+	#endregion
 }

@@ -152,13 +152,16 @@ export default function LandingPageComponent() {
 			<Spinner isLoading={IsPostsDataLoading || !isTokenRetrieved} />
 
 			{/* Hero Section - Always visible but transforms based on currentSection */}
-			<div 
-				ref={heroSectionRef} 
+			<div
+				ref={heroSectionRef}
 				className={styles.heroSection}
 				style={{
 					opacity: currentSection === 0 ? 1 : 0,
-					transform: currentSection === 0 ? 'translateY(0) scale(1)' : 'translateY(-50px) scale(0.98)',
-					pointerEvents: currentSection === 0 ? 'all' : 'none'
+					transform:
+						currentSection === 0
+							? "translateY(0) scale(1)"
+							: "translateY(-50px) scale(0.98)",
+					pointerEvents: currentSection === 0 ? "all" : "none",
 				}}
 			>
 				<div className={styles.heroContent}>
@@ -183,29 +186,30 @@ export default function LandingPageComponent() {
 				onTouchStart={handleDownArrowClick}
 				aria-label="Scroll down to content"
 				type="button"
-				style={{ 
+				style={{
 					pointerEvents: "all",
 					opacity: currentSection === 0 ? 1 : 0,
-					visibility: currentSection === 0 ? 'visible' : 'hidden',
-					transition: 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out'
+					visibility: currentSection === 0 ? "visible" : "hidden",
+					transition:
+						"opacity 0.5s ease-in-out, visibility 0.5s ease-in-out",
 				}}
 			>
 				<ArrowDown32Filled />
 			</button>
 
 			{/* Content Section - Always rendered but transforms based on currentSection */}
-			<div 
+			<div
 				className={styles.contentWrapper}
 				style={{
 					opacity: currentSection === 1 ? 1 : 0,
-					transform: currentSection === 1 ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.98)',
-					pointerEvents: currentSection === 1 ? 'all' : 'none'
+					transform:
+						currentSection === 1
+							? "translateY(0) scale(1)"
+							: "translateY(10px) scale(1)",
+					pointerEvents: currentSection === 1 ? "all" : "none",
 				}}
 			>
-				<div
-					ref={contentSectionRef}
-					className={styles.contentSection}
-				>
+				<div ref={contentSectionRef} className={styles.contentSection}>
 					<div className={styles.contentMain}>
 						<PostsContainer />
 						<EditPostComponent />

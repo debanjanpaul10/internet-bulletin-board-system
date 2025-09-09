@@ -218,9 +218,8 @@ export default function SideDrawerComponent() {
 							aria-label="Close"
 							onClick={handleSideBarClose}
 							className={styles.closeButton}
-						>
-							<Dismiss28Filled />
-						</Button>
+							icon={<Dismiss28Filled />}
+						/>
 					}
 				>
 					{/* HOME BUTTON */}
