@@ -52,4 +52,11 @@ public interface IAiServicesHandler
 	/// </summary>
 	/// <returns>The list of <see cref="LookupMasterDTO"/></returns>
 	Task<IEnumerable<LookupMasterDTO>> GetSamplePromptsForChatbotAsync();
+
+	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDTO bugSeverityAiRequest);
 }

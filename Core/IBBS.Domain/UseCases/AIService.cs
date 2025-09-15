@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
+using IBBS.Domain.DomainEntities.Knowledgebase;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
@@ -18,7 +19,7 @@ namespace IBBS.Domain.UseCases;
 /// <param name="commonDataManager">The common data manager.</param>
 /// <param name="mongoDbDatabaseManager">The mongo db database manager.</param>
 /// <seealso cref="IBBS.Domain.DrivingPorts.IAIService" />
-public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logger, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager) : IAIService
+public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager) : IAIService
 {
 	/// <summary>
 	/// Rewrites the provided story using AI processing.
@@ -194,6 +195,29 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		}
 	}
 
+	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	public async Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+			return await aiAgentsService.GenerateBugSeverityAsync(bugSeverityAiRequest).ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+		}
+	}
+
 	#region PRIVATE METHODS
 
 	/// <summary>
@@ -204,8 +228,10 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 	/// <returns>The AI response data.</returns>
 	private async Task<string> InvokeSqlFunctionAsync(string userInput, AIChatbotResponseDomain aiChatbotResponse)
 	{
-		var databaseSchemaTask = mongoDbDatabaseManager.GetDatabaseSchemaJsonAsync();
-		var databaseKnowledgeBaseTask = mongoDbDatabaseManager.GetDatabaseKnowledgePiecesJsonAsync();
+		var databaseSchemaTask = mongoDbDatabaseManager.GetDataFromCollectionAsync<DatabaseSchemaDomain>(
+			MongoDBConstants.IbbsKnowledgebaseDB, MongoDBConstants.IBBSDatabaseSchemaCollection);
+		var databaseKnowledgeBaseTask = mongoDbDatabaseManager.GetDataFromCollectionAsync<DatabaseKnowledgebaseDomain>(
+			MongoDBConstants.IbbsKnowledgebaseDB, MongoDBConstants.IBBSDatabaseKnowledgeBaseCollection);
 		await Task.WhenAll(databaseSchemaTask, databaseKnowledgeBaseTask).ConfigureAwait(false);
 
 		var nltosqlInput = new NltosqlInputDomain()
@@ -232,7 +258,8 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 	/// <returns>The AI response data.</returns>
 	private async Task<string> InvokeRAGFunctionAsync(string userInput)
 	{
-		var knowledgeBase = await mongoDbDatabaseManager.GetRAGKnowledgePiecesJsonAsync().ConfigureAwait(false);
+		var knowledgeBase = await mongoDbDatabaseManager.GetDataFromCollectionAsync<RAGKnowledgebaseDomain>(
+			MongoDBConstants.IbbsKnowledgebaseDB, MongoDBConstants.IBBSRAGKnowledgeBaseCollection).ConfigureAwait(false);
 		var skillsInput = new SkillsInputDomain()
 		{
 			KnowledgeBase = JsonConvert.SerializeObject(knowledgeBase.KnowledgeBase),
@@ -272,6 +299,8 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 			logger.LogInformation(string.Format(CultureInfo.InvariantCulture, LoggingConstants.MethodEndedMessageConstant, nameof(HandleFollowupQuestionsDataAsync), DateTime.UtcNow, aiResult.AIResponseData));
 		}
 	}
+
+
 
 	#endregion
 }

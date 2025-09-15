@@ -10,6 +10,7 @@ import {
 	Tag,
 } from "@fluentui/react-components";
 import { useAuth0 } from "@auth0/auth0-react";
+import { AgentsColor } from "@fluentui/react-icons";
 
 import {
 	BlankTextErrorMessageConstant,
@@ -30,7 +31,6 @@ import {
 } from "@/Store/AiServices/Actions";
 import CancelModalComponent from "../CancelModal";
 import RewriteTextComponent from "../RewriteText";
-import AiButton from "@assets/Images/ai-icon.svg";
 
 /**
  * @component
@@ -41,22 +41,6 @@ import AiButton from "@assets/Images/ai-icon.svg";
  * - AI-powered content rewriting
  * - Authentication integration with Auth0
  * - Responsive design with Fluent UI components
- *
- * @requires {Object} `React` - The React library
- * @requires {Object} `ReactQuill` - Rich text editor component
- * @requires {Object} `@fluentui/react-components` - UI component library
- * @requires {Object} `@auth0/auth0-react` - Auth0 Authentication Library
- *
- * @state {Object} postData - Contains the post information (Title, Content, CreatedBy)
- * @state {Object} errors - Contains validation errors for the form
- * @state {Object} currentLoggedInUser - Stores the current authenticated user information
- * @state {Object} isDialogOpen - Indicates whether the confirmation dialog is open
- *
- * @function handleCreatePost - Handles form submission and post creation
- * @function handleFormChange - Manages form input changes
- * @function handleContentChange - Manages rich text editor content changes
- * @function handleCancelClick - Handles navigation back to home page
- * @function handleConfirmCancel - Handles confirmation of cancellation
  *
  * @returns Returns either the post creation form or a PageNotFound component based on authentication status
  */
@@ -167,7 +151,7 @@ export default function CreatePostComponent() {
 			const token = await getIdTokenClaims();
 			return token?.__raw;
 		} catch (error) {
-			console.error("Error getting access token:", error);
+			console.error(error);
 			return null;
 		}
 	};
@@ -323,15 +307,8 @@ export default function CreatePostComponent() {
 							type="submit"
 							onClick={handleModerateButtonClick}
 							className={styles.moderateWithAiButton}
+							icon={<AgentsColor />}
 						>
-							<img
-								src={AiButton}
-								style={{
-									height: "20px",
-									marginRight: "10px",
-								}}
-								alt="AI Star Icon"
-							/>
 							<span className={styles.gradientTextButton}>
 								{
 									CreatePostPageConstants.Headings

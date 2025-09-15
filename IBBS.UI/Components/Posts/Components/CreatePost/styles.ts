@@ -149,7 +149,7 @@ export const useStyles = makeStyles({
 		marginBottom: "48px",
 		paddingTop: "20px",
 		paddingBottom: "10px",
-		fontWeight: tokens.fontWeightMedium,
+		fontWeight: tokens.fontWeightBold,
 		color: tokens.colorNeutralForeground1,
 		background:
 			"linear-gradient(135deg, #3A29FF 0%, #FF94B4 50%, #FF3232 100%)",

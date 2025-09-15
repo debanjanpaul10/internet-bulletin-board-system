@@ -2,7 +2,6 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
 	postsHeading: {
-		lineHeight: 1.3,
 		margin: "0 auto",
 		marginBottom: "40px",
 		maxWidth: "800px",

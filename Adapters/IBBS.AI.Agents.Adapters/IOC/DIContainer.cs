@@ -18,11 +18,9 @@ public static class DIContainer
 	/// <param name="services">The services.</param>
 	/// <param name="configuration">The configuration.</param>
 	/// <returns>The service collection.</returns>
-	public static IServiceCollection AddAiAgentsServices(this IServiceCollection services, IConfiguration configuration)
-	{
-		return services.AddScoped<IHttpClientHelper, HttpClientHelper>()
-			.AddScoped<IAiAgentsService, AiAgentsService>().ConfigureHttpClientFactory(configuration);
-	}
+	public static IServiceCollection AddAiAgentsServices(this IServiceCollection services, IConfiguration configuration) =>
+		services.AddScoped<IHttpClientHelper, HttpClientHelper>().AddScoped<IAiAgentsService, AiAgentsService>()
+			.ConfigureHttpClientFactory(configuration);
 
 	// <summary>
 	/// Configures the HTTP client factory.

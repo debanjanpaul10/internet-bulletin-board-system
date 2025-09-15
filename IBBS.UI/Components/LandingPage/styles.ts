@@ -56,8 +56,6 @@ const useStyles = makeStyles({
 		margin: "0 auto",
 	},
 	mainHeading: {
-		fontSize: tokens.fontSizeHero1000,
-		fontWeight: tokens.fontWeightBold,
 		lineHeight: 1.3,
 		margin: "0 auto",
 		marginBottom: "32px",
@@ -73,6 +71,7 @@ const useStyles = makeStyles({
 		fontSize: tokens.fontSizeHero1000,
 		fontWeight: tokens.fontWeightBold,
 		lineHeight: 1.3,
+		letterSpacing: "-3px",
 		marginBottom: "48px",
 		paddingTop: "20px",
 		paddingBottom: "10px",

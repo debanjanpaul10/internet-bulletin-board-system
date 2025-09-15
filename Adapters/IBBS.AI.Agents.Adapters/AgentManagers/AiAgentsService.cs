@@ -185,6 +185,8 @@ public class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgent
 
 	#endregion
 
+	#region INDIVIDUAL PLUGINS
+
 	/// <summary>
 	/// Moderates the content data asynchronous.
 	/// </summary>
@@ -276,4 +278,33 @@ public class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgent
 			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GenerateTagForStoryAsync), DateTime.UtcNow, string.Empty));
 		}
 	}
+
+	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	public async Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+			var response = await httpClientHelper.GetAIResponseAsync(bugSeverityAiRequest, AIAgentsRoutesConstants.GetBugSeverity_ApiRoute).ConfigureAwait(false);
+			var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+			var aiResponse = JsonConvert.DeserializeObject<AIAgentResponse>(responseString) ?? new AIAgentResponse();
+			return aiResponse.ResponseData.ToString() ?? throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+		}
+	}
+
+	#endregion
 }

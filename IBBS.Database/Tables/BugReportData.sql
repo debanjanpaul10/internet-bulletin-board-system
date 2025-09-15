@@ -1,0 +1,18 @@
+CREATE TABLE [dbo].[BugReportData]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+	[Title] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(MAX) NOT NULL,
+	[BugSeverity] INT NOT NULL,
+	[BugStatus] INT NOT NULL,
+	[PageUrl] NVARCHAR(MAX) NULL,
+	[DateCreated] DATETIME NOT NULL DEFAULT GETUTCDATE(),
+	[CreatedBy] NVARCHAR(MAX) NOT NULL,
+	[DateModified] DATETIME NOT NULL DEFAULT GETUTCDATE(),
+	[ModifiedBy] NVARCHAR(MAX) NOT NULL,
+	[IsActive] BIT NOT NULL DEFAULT 1,
+)
+GO;
+
+CREATE NONCLUSTERED INDEX ix_BugReportData_Id_IsActive ON [dbo].[BugReportData]([Id], [IsActive])
+GO;

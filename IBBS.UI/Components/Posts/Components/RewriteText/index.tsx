@@ -9,6 +9,7 @@ import {
 	DialogActions,
 } from "@fluentui/react-components";
 import { useAuth0 } from "@auth0/auth0-react";
+import { AgentsColor } from "@fluentui/react-icons";
 
 import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 import {
@@ -16,7 +17,6 @@ import {
 	CreatePostPageConstants,
 } from "@helpers/ibbs.constants";
 import Spinner from "@components/Common/Spinner";
-import AiButton from "@assets/Images/ai-icon.svg";
 import { useStyles } from "./styles";
 import { useAppDispatch, useAppSelector } from "@/index";
 import {
@@ -155,16 +155,9 @@ export default function RewriteTextComponent({
 				onClick={handleRewrite}
 				disabled={isLoading || IsRewriteLoadingStoreData}
 				className={styles.rewriteButton}
+				icon={<AgentsColor />}
 			>
 				<span className={styles.gradientTextButton}>
-					<img
-						src={AiButton}
-						style={{
-							height: "20px",
-							marginRight: "10px",
-						}}
-						alt="AI Star Icon"
-					/>
 					{
 						CreatePostPageConstants.Headings.RewriteAIButtonTexts
 							.ButtonText

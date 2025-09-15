@@ -54,6 +54,14 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 	public virtual DbSet<LookupMasterDomain> LookupMaster { get; set; }
 
 	/// <summary>
+	/// Gets or sets the bug report domain.
+	/// </summary>
+	/// <value>
+	/// The bug report domain.
+	/// </value>
+	public virtual DbSet<BugReportDomain> BugReportData { get; set; }
+
+	/// <summary>
 	/// Override this method to further configure the model that was discovered by convention from the entity types
 	/// exposed in <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1" /> properties on your derived context. The resulting model may be cached
 	/// and re-used for subsequent instances of your derived context.
@@ -131,6 +139,11 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 		modelBuilder.Entity<LookupMasterDomain>(entity =>
 		{
 			entity.ToTable(LookupMasterTableName).HasKey(e => e.Id);
+		});
+
+		modelBuilder.Entity<BugReportDomain>(entity =>
+		{
+			entity.ToTable(BugReportTableName).HasKey(e => e.Id);
 		});
 	}
 }

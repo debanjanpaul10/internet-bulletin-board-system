@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import { BugRegular, Form28Color } from "@fluentui/react-icons";
 import { useDispatch } from "react-redux";
+import { BugRegular, Form28Color } from "@fluentui/react-icons";
 import {
-    Button,
-    Tooltip,
-    useRestoreFocusTarget,
+	Button,
+	Tooltip,
+	useRestoreFocusTarget,
 } from "@fluentui/react-components";
 
 import {
-    HeaderPageConstants,
-    HomePageConstants,
+	HeaderPageConstants,
+	HomePageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
 import useStyles from "@/Components/Common/Header/styles";
-import { ToggleSideBar } from "@store/Common/Actions";
+import { ToggleBugReportDrawer, ToggleSideBar } from "@store/Common/Actions";
 
 /**
  * @component
@@ -34,90 +34,85 @@ import { ToggleSideBar } from "@store/Common/Actions";
  * @returns A navigation bar containing the application header elements
  */
 export default function HeaderComponent() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const styles = useStyles();
-    const restoreFocusTargetAttributes = useRestoreFocusTarget();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const styles = useStyles();
+	const restoreFocusTargetAttributes = useRestoreFocusTarget();
 
-    const { Headings, ButtonTitles } = HeaderPageConstants;
+	const { Headings, ButtonTitles } = HeaderPageConstants;
 
-    /**
-     * Handles the home page redirection.
-     */
-    const handleHomePageRedirect = () => {
-        navigate(Headings.Home.Link);
-    };
+	/**
+	 * Handles the home page redirection.
+	 */
+	const handleHomePageRedirect = () => {
+		navigate(Headings.Home.Link);
+	};
 
-    /**
-     * Toggles the side car.
-     */
-    const toggleSideBar = () => {
-        dispatch(ToggleSideBar(true));
-    };
+	/**
+	 * Toggles the side car.
+	 */
+	const toggleSideBar = () => {
+		dispatch(ToggleSideBar(true));
+	};
 
-    /**
-     * Handles the bug reporting event.
-     */
-    const handleBugReportSubmission = () => {
-        alert(
-            "This feature is being actively worked upon and is not yet ready!"
-        );
-    };
+	/**
+	 * Handles the bug report drawer open event.
+	 */
+	const openBugReportDrawer = () => {
+		dispatch(ToggleBugReportDrawer(true));
+	};
 
-    return (
-        <nav className={styles.navbar}>
-            <div className={styles.navContent}>
-                {/* LEFT SIDE - SIDEBAR BUTTON */}
-                <div className={styles.leftSection}>
-                    <Tooltip
-                        content={ButtonTitles.SideDrawer}
-                        relationship="label"
-                        positioning="after"
-                    >
-                        <Button
-                            appearance="subtle"
-                            className={styles.sideBarButton}
-                            onClick={toggleSideBar}
-                            {...restoreFocusTargetAttributes}
-                        >
-                            <Form28Color />
-                        </Button>
-                    </Tooltip>
-                </div>
+	return (
+		<nav className={styles.navbar}>
+			<div className={styles.navContent}>
+				{/* LEFT SIDE - SIDEBAR BUTTON */}
+				<div className={styles.leftSection}>
+					<Tooltip
+						content={ButtonTitles.SideDrawer}
+						relationship="label"
+						positioning="after"
+					>
+						<Button
+							className={styles.sideBarButton}
+							onClick={toggleSideBar}
+							{...restoreFocusTargetAttributes}
+							icon={<Form28Color />}
+						></Button>
+					</Tooltip>
+				</div>
 
-                {/* CENTER - IBBS LOGO */}
-                <div className={styles.centerSection}>
-                    <Tooltip
-                        content={ButtonTitles.HomeButton}
-                        relationship="label"
-                    >
-                        <Button
-                            onClick={handleHomePageRedirect}
-                            className={styles.homeButton}
-                            appearance="subtle"
-                        >
-                            <img src={AppLogo} height={"24px"} />
-                            {HomePageConstants.Headings.IBBS}
-                        </Button>
-                    </Tooltip>
-                </div>
+				{/* CENTER - IBBS LOGO */}
+				<div className={styles.centerSection}>
+					<Tooltip
+						content={ButtonTitles.HomeButton}
+						relationship="label"
+					>
+						<Button
+							onClick={handleHomePageRedirect}
+							className={styles.homeButton}
+							appearance="subtle"
+						>
+							<img src={AppLogo} height={"24px"} />
+							{HomePageConstants.Headings.IBBS}
+						</Button>
+					</Tooltip>
+				</div>
 
-                {/* RIGHT SIDE - BUG REPORT BUTTON */}
-                <div className={styles.rightSection}>
-                    <Tooltip
-                        content={ButtonTitles.BugButton}
-                        relationship="label"
-                    >
-                        <Button
-                            onClick={handleBugReportSubmission}
-                            appearance="subtle"
-                            className={styles.bugButton}
-                        >
-                            <BugRegular fontSize={24} />
-                        </Button>
-                    </Tooltip>
-                </div>
-            </div>
-        </nav>
-    );
+				{/* RIGHT SIDE - BUG REPORT BUTTON */}
+				<div className={styles.rightSection}>
+					<Tooltip
+						content={ButtonTitles.BugButton}
+						relationship="label"
+					>
+						<Button
+							className={styles.bugButton}
+							onClick={openBugReportDrawer}
+							{...restoreFocusTargetAttributes}
+							icon={<BugRegular />}
+						></Button>
+					</Tooltip>
+				</div>
+			</div>
+		</nav>
+	);
 }

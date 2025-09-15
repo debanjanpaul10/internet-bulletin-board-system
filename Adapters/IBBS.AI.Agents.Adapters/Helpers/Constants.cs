@@ -124,6 +124,11 @@ internal static class Constants
 		internal const string RewriteText_ApiRoute = "plugins/rewritetext";
 
 		/// <summary>
+		/// The get bug severity API route.
+		/// </summary>
+		internal const string GetBugSeverity_ApiRoute = "plugins/getbugseverity";
+
+		/// <summary>
 		/// The detect user intent API route
 		/// </summary>
 		internal const string DetectUserIntent_ApiRoute = "skills/intentdetectionskill";
