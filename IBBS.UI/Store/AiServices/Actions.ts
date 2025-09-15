@@ -1,9 +1,9 @@
 import { Action, Dispatch } from "@reduxjs/toolkit";
 import {
+	GET_BUG_SEVERITY_AI_STATUS,
 	GET_CHATBOT_RESPONSE,
 	HANDLE_POST_AI_MODERATION,
 	REWRITE_STORY_AI,
-	SAMPLE_AI_PROMPTS,
 	SAVE_AI_FEEDBACK_RESPONSE,
 	TOGGLE_AI_FEEDBACK_SPINNER,
 	TOGGLE_CHATBOT_LOADING,
@@ -11,8 +11,8 @@ import {
 } from "./ActionTypes";
 import {
 	GenerateTagForStoryApiAsync,
+	GetBugSeverityStatusApiAsync,
 	GetChatbotResponseAsync,
-	GetSamplePromptsForChatbotApiAsync,
 	ModerateContentDataApiAsync,
 	PostAiResultFeedbackApiAsync,
 	PostRewriteStoryWithAiApiAsync,
@@ -23,18 +23,8 @@ import { HandleCreatePostPageLoader, PostDataFailure } from "../Posts/Actions";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
 import { AIChatbotResponseDTO } from "@/Models/DTOs/ai-chatbot-response.dto";
 import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
-
-/**
- * Stores the toggle event for rewrite text loading.
- * @param isLoading The is loading boolean flag.
- * @returns The action type and payload data.
- */
-export const ToggleRewriteLoader = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_REWRITE_LOADER,
-		payload: isLoading,
-	};
-};
+import { BugSeverityAIRequestDTO } from "@/Models/DTOs/bug-severity-ai-request.dto";
+import { TOGGLE_BUG_REPORT_SPINNER } from "../Common/ActionTypes";
 
 /**
  * Rewrites story with AI using createAsyncThunk.
@@ -45,7 +35,10 @@ export const RewriteStoryWithAiAsync = (
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleRewriteLoader(true));
+			dispatch({
+				type: TOGGLE_REWRITE_LOADER,
+				payload: true,
+			});
 			const response = await PostRewriteStoryWithAiApiAsync(
 				requestDto,
 				accessToken
@@ -64,7 +57,10 @@ export const RewriteStoryWithAiAsync = (
 			);
 			throw error;
 		} finally {
-			dispatch(ToggleRewriteLoader(false));
+			dispatch({
+				type: TOGGLE_REWRITE_LOADER,
+				payload: false,
+			});
 		}
 	};
 };
@@ -155,13 +151,19 @@ export const HandleChatbotResponseAsync = (
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleChatbotLoading(true));
+			dispatch({
+				type: TOGGLE_CHATBOT_LOADING,
+				payload: true,
+			});
 			const response = await GetChatbotResponseAsync(
 				userQueryRequest,
 				accessToken
 			);
 			if (response?.data) {
-				dispatch(GetChatbotResponseSuccess(response.data));
+				dispatch({
+					type: GET_CHATBOT_RESPONSE,
+					payload: response.data,
+				});
 				return response.data as AIChatbotResponseDTO;
 			}
 			return null;
@@ -175,38 +177,39 @@ export const HandleChatbotResponseAsync = (
 			);
 			throw error;
 		} finally {
-			dispatch(ToggleChatbotLoading(false));
+			dispatch({
+				type: TOGGLE_CHATBOT_LOADING,
+				payload: false,
+			});
 		}
 	};
 };
 
-export const ToggleChatbotLoading = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_CHATBOT_LOADING,
-		payload: isLoading,
-	};
-};
-
-export const GetChatbotResponseSuccess = (data: AIChatbotResponseDTO) => {
-	return {
-		type: GET_CHATBOT_RESPONSE,
-		payload: data,
-	};
-};
-
+/**
+ * Handles the AI response feedback from user.
+ * @param responseFeedback The response feedback from user.
+ * @param accessToken The access token.
+ * @returns The payload data from the API response.
+ */
 export const HandleAiResultFeedbackAsync = (
 	responseFeedback: AIResponseFeedbackDTO,
 	accessToken: string
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleFeedbackSpinner(true));
+			dispatch({
+				type: TOGGLE_BUG_REPORT_SPINNER,
+				payload: true,
+			});
 			const response = await PostAiResultFeedbackApiAsync(
 				responseFeedback,
 				accessToken
 			);
 			if (response?.data) {
-				dispatch(AiResultFeedbackSuccess(response.data));
+				dispatch({
+					type: SAVE_AI_FEEDBACK_RESPONSE,
+					payload: response.data,
+				});
 			}
 		} catch (error) {
 			console.error(error);
@@ -217,34 +220,40 @@ export const HandleAiResultFeedbackAsync = (
 				})
 			);
 		} finally {
-			dispatch(ToggleFeedbackSpinner(false));
+			dispatch({
+				type: TOGGLE_AI_FEEDBACK_SPINNER,
+				payload: false,
+			});
 		}
 	};
 };
 
-const AiResultFeedbackSuccess = (data: boolean) => {
-	return {
-		type: SAVE_AI_FEEDBACK_RESPONSE,
-		payload: data,
-	};
-};
-
-export const ToggleFeedbackSpinner = (isLoading: boolean) => {
-	return {
-		type: TOGGLE_AI_FEEDBACK_SPINNER,
-		payload: isLoading,
-	};
-};
-
-export const GetSamplePromptsForChatbotAsync = (accessToken: string) => {
+/**
+ * Gets the bug severity status.
+ * @param bugSeverityInput The bug severity request input dto.
+ * @param accessToken The access token.
+ * @returns The payload data from API response.
+ */
+export const GetBugSeverityStatusAsync = (
+	bugSeverityInput: BugSeverityAIRequestDTO,
+	accessToken: string
+) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
-			dispatch(ToggleChatbotLoading(true));
-			const response = await GetSamplePromptsForChatbotApiAsync(
+			dispatch({
+				type: TOGGLE_BUG_REPORT_SPINNER,
+				payload: true,
+			});
+
+			const response = await GetBugSeverityStatusApiAsync(
+				bugSeverityInput,
 				accessToken
 			);
 			if (response?.data) {
-				dispatch(GetSamplePromptsForChatbotSuccess(response.data));
+				dispatch({
+					type: GET_BUG_SEVERITY_AI_STATUS,
+					payload: response.data,
+				});
 			}
 		} catch (error) {
 			console.error(error);
@@ -255,14 +264,10 @@ export const GetSamplePromptsForChatbotAsync = (accessToken: string) => {
 				})
 			);
 		} finally {
-			dispatch(ToggleChatbotLoading(false));
+			dispatch({
+				type: TOGGLE_BUG_REPORT_SPINNER,
+				payload: false,
+			});
 		}
-	};
-};
-
-const GetSamplePromptsForChatbotSuccess = (data: any) => {
-	return {
-		type: SAMPLE_AI_PROMPTS,
-		payload: data,
 	};
 };

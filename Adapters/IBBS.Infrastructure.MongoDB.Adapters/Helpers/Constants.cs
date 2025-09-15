@@ -53,45 +53,4 @@ internal static class Constants
 		/// </summary>
 		internal const string SomethingWentWrongMessageConstant = "Oops! Something went wrong while processing this request!";
 	}
-
-	/// <summary>
-	/// The MongoDB Constants.
-	/// </summary>
-	internal static class MongoDBConstants
-	{
-		/// <summary>
-		/// The ai agents knowledge base database
-		/// </summary>
-		internal const string AiAgentsKnowledgeBaseDatabase = "ai-agents-knowledgebase";
-
-		/// <summary>
-		/// The mongo database name constant
-		/// </summary>
-		internal const string IbbsDatabase = "ibbs-mongo-db";
-
-		/// <summary>
-		/// The Application Information Collection
-		/// </summary>
-		internal const string ApplicationInformationCollectionConstant = "ApplicationInformation";
-
-		/// <summary>
-		/// The application technologies collection constant.
-		/// </summary>
-		internal const string ApplicationTechnologiesCollectionConstant = "ApplicationTechnologies";
-
-		/// <summary>
-		/// The ibbs database knowledge base collection constant.
-		/// </summary>
-		internal const string IBBSDatabaseKnowledgeBaseCollection = "IBBSDatabaseKnowledgeBase";
-
-		/// <summary>
-		/// The ibbs database schema collection constant.
-		/// </summary>
-		internal const string IBBSDatabaseSchemaCollection = "IBBSDatabaseSchema";
-
-		/// <summary>
-		/// The ibbsrag knowledge base collection
-		/// </summary>
-		internal const string IBBSRAGKnowledgeBaseCollection = "IBBSRAGKnowledgeBase";
-	}
 }

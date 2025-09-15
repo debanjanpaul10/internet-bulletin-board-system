@@ -1,5 +1,4 @@
-﻿
-namespace IBBS.Domain.Helpers;
+﻿namespace IBBS.Domain.Helpers;
 
 /// <summary>
 /// The Domain Constants class.
@@ -124,6 +123,32 @@ public class DomainConstants
 		/// The unclear intent
 		/// </summary>
 		internal const string UnclearIntent = "UNCLEAR";
+	}
+
+	/// <summary>
+	/// The MongoDB Constants.
+	/// </summary>
+	internal static class MongoDBConstants
+	{
+		/// <summary>
+		/// The ibbs knowledgebase database
+		/// </summary>
+		internal const string IbbsKnowledgebaseDB = "ibbs";
+
+		/// <summary>
+		/// The ibbs database knowledge base collection constant.
+		/// </summary>
+		internal const string IBBSDatabaseKnowledgeBaseCollection = "DatabaseKnowledgeBase";
+
+		/// <summary>
+		/// The ibbs database schema collection constant.
+		/// </summary>
+		internal const string IBBSDatabaseSchemaCollection = "DatabaseSchema";
+
+		/// <summary>
+		/// The ibbsrag knowledge base collection
+		/// </summary>
+		internal const string IBBSRAGKnowledgeBaseCollection = "RAGKnowledgeBase";
 	}
 }
 

@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="Stored Procedures" />
     <Folder Include="Tables" />
+    <Folder Include="PostDeploymentScripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables/Posts.sql" />
@@ -24,6 +25,8 @@
     <Build Include="Tables/Users.sql" />
     <Build Include="Stored Procedures/GetUserPostsAndRatings.sql" />
     <Build Include="Tables\LookupMaster.sql" />
+    <Build Include="Tables\BugReportData.sql" />
+    <Build Include="PostDeploymentScripts\Script.ADD_LOOKUPMASTER.sql" />
   </ItemGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />

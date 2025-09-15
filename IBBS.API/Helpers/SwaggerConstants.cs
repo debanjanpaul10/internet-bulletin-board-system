@@ -125,6 +125,16 @@ internal static class SwaggerConstants
 			internal const string Description = "Gets a list of sample prompts for the chatbot that can be asked by the user.";
 			internal const string OperationId = nameof(GetSamplePromptsForChatbotAction);
 		}
+
+		/// <summary>
+		/// Swagger documentation for GetBugSeverityStatusAsync.
+		/// </summary>
+		internal static class GetBugSeverityStatusAction
+		{
+			internal const string Summary = "Gets the bug severity status.";
+			internal const string Description = "Gets the bug severity status for the user's mentioned bug using AI services.";
+			internal const string OperationId = nameof(GetBugSeverityStatusAction);
+		}
 	}
 
 	/// <summary>
@@ -219,9 +229,35 @@ internal static class SwaggerConstants
 		/// </summary>
 		internal static class GetUserProfilesDataAction
 		{
-			internal const string Summary = "";
-			internal const string Description = "";
+			internal const string Summary = "Gets the user profile data.";
+			internal const string Description = "Gets the user profile data including the posts and post ratings by user.";
 			internal const string OperationId = nameof(GetUserProfilesDataAction);
+		}
+	}
+
+	/// <summary>
+	/// Swagger documentation for CommonServicesController.
+	/// </summary>
+	internal static class CommonServicesController
+	{
+		/// <summary>
+		/// Swagger documentation for SubmitBugReportDataAsync.
+		/// </summary>
+		internal static class SubmitBugReportDataAction
+		{
+			internal const string Summary = "Adds a new bug report.";
+			internal const string Description = "Adds a new bug report.";
+			internal const string OperationId = nameof(SubmitBugReportDataAction);
+		}
+
+		/// <summary>
+		/// Swagger documentation for GetLookupMasterDataAsync.
+		/// </summary>
+		internal static class GetLookupMasterDataAction
+		{
+			internal const string Summary = "Gets the lookup master data.";
+			internal const string Description = "Gets the list of lookup master data key and type wise from DB.";
+			internal const string OperationId = nameof(GetLookupMasterDataAction);
 		}
 	}
 }

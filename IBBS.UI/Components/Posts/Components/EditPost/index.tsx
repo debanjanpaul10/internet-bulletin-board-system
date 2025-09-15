@@ -15,7 +15,6 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 import ReactQuill from "react-quill-new";
 
-import AiButton from "@assets/Images/ai-icon.svg";
 import { ToggleEditPostDialog, UpdatePostAsync } from "@store/Posts/Actions";
 import { useStyles } from "@/Components/Posts/Components/EditPost/styles";
 import { CreatePostPageConstants } from "@helpers/ibbs.constants";
@@ -26,6 +25,7 @@ import {
 	RewriteStoryWithAiAsync,
 	RewriteStoryWithAiSuccess,
 } from "@/Store/AiServices/Actions";
+import { AgentsColor } from "@fluentui/react-icons";
 
 /**
  * @component
@@ -413,18 +413,13 @@ export default function EditPostComponent() {
 														onClick={
 															handleAiRewrite
 														}
+														icon={<AgentsColor />}
 													>
 														<span
 															className={
 																styles.gradientTextButton
 															}
 														>
-															<img
-																src={AiButton}
-																style={{
-																	height: "20px",
-																}}
-															/>{" "}
 															{
 																CreatePostPageConstants
 																	.Headings

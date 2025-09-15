@@ -1,0 +1,10 @@
+{
+	"configurations": [
+		{
+			"name": "DEBUG: IBBS.API",
+			"type": "dotnet",
+			"request": "launch",
+			"projectPath": "${workspaceFolder}/IBBS.API/IBBS.API.csproj"
+		}
+	]
+}

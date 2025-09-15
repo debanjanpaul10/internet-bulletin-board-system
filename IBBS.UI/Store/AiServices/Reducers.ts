@@ -1,8 +1,8 @@
 import {
+	GET_BUG_SEVERITY_AI_STATUS,
 	GET_CHATBOT_RESPONSE,
 	HANDLE_POST_AI_MODERATION,
 	REWRITE_STORY_AI,
-	SAMPLE_AI_PROMPTS,
 	TOGGLE_CHATBOT_LOADING,
 	TOGGLE_REWRITE_LOADER,
 } from "./ActionTypes";
@@ -13,7 +13,7 @@ const initialState: any = {
 	aiModerationData: {},
 	isChatbotLoading: false,
 	chatbotResponse: {},
-	sampleAiPrompts: [],
+	bugSeverityStatus: "",
 };
 
 export const AiServicesReducer = (state = initialState, action: any) => {
@@ -48,10 +48,10 @@ export const AiServicesReducer = (state = initialState, action: any) => {
 				chatbotResponse: action.payload,
 			};
 		}
-		case SAMPLE_AI_PROMPTS: {
+		case GET_BUG_SEVERITY_AI_STATUS: {
 			return {
 				...state,
-				sampleAiPrompts: action.payload,
+				bugSeverityStatus: action.payload,
 			};
 		}
 		default: {

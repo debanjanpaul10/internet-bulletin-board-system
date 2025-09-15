@@ -62,7 +62,7 @@ const useStyles = makeStyles({
         backgroundColor: "transparent",
         fontSize: tokens.fontSizeBase300,
         fontWeight: tokens.fontWeightSemibold,
-        fontFamily: "",
+        
         color: tokens.colorNeutralForeground1,
         transition: "all 0.2s ease",
         "&:hover": {
