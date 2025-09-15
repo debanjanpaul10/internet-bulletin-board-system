@@ -186,4 +186,31 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
 
 		return HandleUnAuthorizedRequest();
 	}
+
+	/// <summary>
+	/// Gets the bug severity status asynchronous.
+	/// </summary>
+	/// <param name="bugSeverityInput">The bug severity input.</param>
+	/// <returns>The bug severity response dto.</returns>
+	[HttpPost(RouteConstants.AiServicesController.GetBugSeverityStatus_ApiRoute)]
+	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[SwaggerOperation(Summary = GetBugSeverityStatusAction.Summary, Description = GetBugSeverityStatusAction.Description, OperationId = GetBugSeverityStatusAction.OperationId)]
+	public async Task<IActionResult> GetBugSeverityStatusAsync([FromBody] BugSeverityAIRequestDTO bugSeverityInput)
+	{
+		if (IsAuthorized())
+		{
+			var result = await aiServicesHandler.GenerateBugSeverityAsync(bugSeverityInput).ConfigureAwait(false);
+			if (result is not null)
+			{
+				return HandleSuccessResult(result);
+			}
+
+			return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+		}
+
+		return HandleUnAuthorizedRequest();
+	}
 }

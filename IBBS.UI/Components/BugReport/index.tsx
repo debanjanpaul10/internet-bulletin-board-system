@@ -8,7 +8,7 @@ import {
 	useRestoreFocusSource,
 	Label,
 } from "@fluentui/react-components";
-import { Dismiss28Filled } from "@fluentui/react-icons";
+import { AgentsColor, Dismiss28Filled } from "@fluentui/react-icons";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { useStyles } from "./styles";
@@ -21,6 +21,8 @@ import { BugReportConstants } from "@/Helpers/ibbs.constants";
 import { BugReportDTO } from "@/Models/DTOs/bug-report-data.dto";
 import { DrawerMotion } from "./motion";
 import Spinner from "../Common/Spinner";
+import { GetBugSeverityStatusAsync } from "@/Store/AiServices/Actions";
+import { BugSeverityAIRequestDTO } from "@/Models/DTOs/bug-severity-ai-request.dto";
 
 export default function BugReportComponent() {
 	const dispatch = useAppDispatch();
@@ -37,10 +39,13 @@ export default function BugReportComponent() {
 	const IsBugReportSpinnerLoadingStoreData = useAppSelector(
 		(state) => state.CommonReducer.isBugReportSpinnerLoading
 	);
+	const BugSeverityStatusFromAi = useAppSelector(
+		(state) => state.AiServicesReducer.bugSeverityStatus
+	);
 
 	const [bugReport, setBugReport] = useState<BugReportDTO>({
 		bugDescription: "",
-		bugSeverity: 2,
+		bugSeverity: 4,
 		bugStatus: 1,
 		bugTitle: "",
 		createdBy: "",
@@ -51,10 +56,29 @@ export default function BugReportComponent() {
 		title: "",
 		description: "",
 	});
+	const [bugSeverity, setBugSeverity] = useState("");
 
 	useEffect(() => {
 		runValidationChecks();
 	}, [bugReport]);
+
+	useEffect(() => {
+		if (BugSeverityStatusFromAi !== "") {
+			setBugSeverity(BugSeverityStatusFromAi);
+			const severityItem = LookupMasterStoreData.find(
+				(item: any) =>
+					item.type === "BugSeverity" &&
+					item.keyName.toLowerCase() ===
+						BugSeverityStatusFromAi.toLowerCase()
+			);
+			if (severityItem) {
+				setBugReport((prev) => ({
+					...prev,
+					bugSeverity: Number(severityItem.keyValue),
+				}));
+			}
+		}
+	}, [BugSeverityStatusFromAi, LookupMasterStoreData]);
 
 	const getAccessToken = async () => {
 		try {
@@ -123,7 +147,66 @@ export default function BugReportComponent() {
 			);
 			accessToken &&
 				dispatch(SubmitBugReportDataAsync(bugReport, accessToken));
+			resetForm();
 		}
+	};
+
+	const getBugSeverityStatusFromAi = async () => {
+		if (
+			errors.description.trim().length === 0 &&
+			errors.title.trim().length === 0
+		) {
+			const accessToken = await getAccessToken();
+			const bugSeverityInput: BugSeverityAIRequestDTO = {
+				bugDescription: bugReport.bugDescription.trim(),
+				bugTitle: bugReport.bugTitle.trim(),
+			};
+			accessToken &&
+				dispatch(
+					GetBugSeverityStatusAsync(bugSeverityInput, accessToken)
+				);
+		}
+	};
+
+	const generateBugReportButton = () => {
+		return bugSeverity !== "" ? (
+			<Button
+				appearance="primary"
+				className={styles.submitButton}
+				onClick={handleSubmit}
+				disabled={
+					errors.description.trim().length > 0 ||
+					errors.title.trim().length > 0
+				}
+			>
+				Submit Report
+			</Button>
+		) : (
+			<Button
+				appearance="primary"
+				className={styles.submitButton}
+				onClick={getBugSeverityStatusFromAi}
+				disabled={
+					errors.description.trim().length > 0 ||
+					errors.title.trim().length > 0
+				}
+				icon={<AgentsColor />}
+			>
+				Get Bug Severity from AI
+			</Button>
+		);
+	};
+
+	const resetForm = () => {
+		setBugReport((prevState) => ({
+			...prevState,
+			bugDescription: "",
+			bugSeverity: 4,
+			bugStatus: 1,
+			bugTitle: "",
+			createdBy: "",
+			pageUrl: window.location.origin,
+		}));
 	};
 
 	return (
@@ -180,7 +263,6 @@ export default function BugReportComponent() {
 						<span className="text-danger">{errors.title}</span>
 					)}
 				</div>
-
 				<div className={styles.formField}>
 					<Label
 						className={styles.label}
@@ -214,33 +296,32 @@ export default function BugReportComponent() {
 					<select
 						className={styles.dropdown}
 						onChange={handleSeverityChange}
-						value={
-							LookupMasterStoreData.filter(
-								(item: any) =>
-									item.type === "BugSeverity" &&
-									item.keyValue === bugReport.bugSeverity
-							).keyName
-						}
+						disabled={true}
+						value={bugReport.bugSeverity}
 					>
 						{LookupMasterStoreData.filter(
 							(item: any) => item.type === "BugSeverity"
-						).map((item: any) => (
-							<option key={item.id} value={item.keyValue}>
-								{item.keyName}
+						).map((severity: any) => (
+							<option
+								key={severity.keyValue}
+								value={severity.keyValue}
+							>
+								{severity.keyName}
 							</option>
 						))}
 					</select>
 				</div>
+				{generateBugReportButton()}
 				<Button
 					appearance="primary"
 					className={styles.submitButton}
-					onClick={handleSubmit}
+					onClick={resetForm}
 					disabled={
 						errors.description.trim().length > 0 ||
 						errors.title.trim().length > 0
 					}
 				>
-					Submit Report
+					Reset form
 				</Button>
 			</DrawerBody>
 		</OverlayDrawer>

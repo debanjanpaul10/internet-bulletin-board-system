@@ -233,9 +233,11 @@ export default function ChatbotComponent() {
 								}
 								{/* AI DISCLAIMER */}
 								<br />
-								<em>
-									AI features are still in Alpha phase, please
-									expect incorrect responses or bugs
+								<em className={styles.warningText}>
+									{
+										ChatbotConstants.ChatbotWindow
+											.WarningMessage
+									}
 								</em>
 							</div>
 						)}

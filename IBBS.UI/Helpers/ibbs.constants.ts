@@ -183,10 +183,13 @@ export const ChatbotConstants = {
 		DislikeTooltip: "Bad response",
 		TypingPlaceholder: "Type your query",
 		ThinkingMessage: "AI is thinking ...",
+		WarningMessage:
+			"AI features are still in Alpha phase, please expect incorrect responses or bugs",
 	},
 };
 
 export const BugReportConstants = {
 	Header: "We accept that we screwed up, so please help us and submit a bug report",
 	LoaderMessage: "Submitting the bug report ...",
+	GettingBugSeverity: "Getting the bug severity based on your input ...",
 };

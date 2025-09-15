@@ -19,6 +19,17 @@ namespace IBBS.API.Adapters.Handlers;
 public class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfiguration configuration) : IAiServicesHandler
 {
 	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	public async Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDTO bugSeverityAiRequest)
+	{
+		var domainRequest = mapper.Map<BugSeverityAIRequestDomain>(bugSeverityAiRequest);
+		return await aiServices.GenerateBugSeverityAsync(domainRequest).ConfigureAwait(false);
+	}
+
+	/// <summary>
 	/// Generates the tag for story asynchronous.
 	/// </summary>
 	/// <param name="userName">The current user name.</param>

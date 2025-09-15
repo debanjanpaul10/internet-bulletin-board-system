@@ -1,4 +1,5 @@
 import {
+	GET_BUG_SEVERITY_AI_STATUS,
 	GET_CHATBOT_RESPONSE,
 	HANDLE_POST_AI_MODERATION,
 	REWRITE_STORY_AI,
@@ -12,6 +13,7 @@ const initialState: any = {
 	aiModerationData: {},
 	isChatbotLoading: false,
 	chatbotResponse: {},
+	bugSeverityStatus: "",
 };
 
 export const AiServicesReducer = (state = initialState, action: any) => {
@@ -46,7 +48,12 @@ export const AiServicesReducer = (state = initialState, action: any) => {
 				chatbotResponse: action.payload,
 			};
 		}
-
+		case GET_BUG_SEVERITY_AI_STATUS: {
+			return {
+				...state,
+				bugSeverityStatus: action.payload,
+			};
+		}
 		default: {
 			return state;
 		}

@@ -332,4 +332,7 @@ export const useStyles = makeStyles({
 		maxWidth: "80%",
 		boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
 	},
+	warningText: {
+		fontSize: "10px !important",
+	},
 });

@@ -4,6 +4,7 @@ import HttpUtility from "@/Helpers/http.utility";
 import AddPostDtoModel from "@/Models/AddPostDto";
 import { AIResponseFeedbackDTO } from "@/Models/DTOs/ai-response-feedback.dto";
 import { BugReportDTO } from "@/Models/DTOs/bug-report-data.dto";
+import { BugSeverityAIRequestDTO } from "@/Models/DTOs/bug-severity-ai-request.dto";
 import { UserQueryRequestDTO } from "@/Models/DTOs/user-query-request.dto";
 import PostRatingDtoModel from "@/Models/PostRatingDto";
 import UpdatePostDtoModel from "@/Models/UpdatePostDto";
@@ -183,6 +184,17 @@ export const PostAiResultFeedbackApiAsync = async (
 	return await HttpUtility.PostAsync(
 		"AiServices/AIFeedback",
 		aiResponseFeedback,
+		accessToken
+	);
+};
+
+export const GetBugSeverityStatusApiAsync = async (
+	bugSeverityInput: BugSeverityAIRequestDTO,
+	accessToken: string
+) => {
+	return await HttpUtility.PostAsync(
+		"AiServices/getbugseveritystatus",
+		bugSeverityInput,
 		accessToken
 	);
 };

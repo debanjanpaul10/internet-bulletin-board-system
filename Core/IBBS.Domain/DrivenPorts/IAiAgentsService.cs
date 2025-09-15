@@ -68,4 +68,11 @@ public interface IAiAgentsService
 	/// <param name="followupQuestionsRequestDomain">The followup questions request.</param>
 	/// <returns>The list of followup questions.</returns>
 	Task<IEnumerable<string>> GetFollowupQuestionsResponseAsync(FollowupQuestionsRequestDomain followupQuestionsRequestDomain);
+
+	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest);
 }

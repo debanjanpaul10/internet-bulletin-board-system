@@ -125,6 +125,16 @@ internal static class SwaggerConstants
 			internal const string Description = "Gets a list of sample prompts for the chatbot that can be asked by the user.";
 			internal const string OperationId = nameof(GetSamplePromptsForChatbotAction);
 		}
+
+		/// <summary>
+		/// Swagger documentation for GetBugSeverityStatusAsync.
+		/// </summary>
+		internal static class GetBugSeverityStatusAction
+		{
+			internal const string Summary = "Gets the bug severity status.";
+			internal const string Description = "Gets the bug severity status for the user's mentioned bug using AI services.";
+			internal const string OperationId = nameof(GetBugSeverityStatusAction);
+		}
 	}
 
 	/// <summary>

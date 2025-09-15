@@ -31,6 +31,7 @@ const useStyles = makeStyles({
 		justifyContent: "center",
 		alignItems: "center",
 		fontSize: tokens.fontSizeHero1000,
+		fontWeight: tokens.fontWeightBold,
 		lineHeight: 1.3,
 		margin: "0",
 		overflow: "visible",

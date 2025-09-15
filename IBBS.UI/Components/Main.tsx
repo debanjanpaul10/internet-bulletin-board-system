@@ -27,7 +27,6 @@ export default function MainComponent() {
 	const { isLoading } = useAuth0();
 
 	useEffect(() => {
-		// Force dark mode
 		setThemeMode(DarkConstant);
 		document.body.classList.add(DarkModeConstant);
 	}, []);

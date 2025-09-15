@@ -18,7 +18,6 @@ BEGIN
 	VALUES (N'SamplePrompts', N'SQL', N'Give me the list of all NSFW false posts', 1, CAST(N'2025-09-05' AS Date), N'System', CAST(N'2025-09-05' AS Date), N'System')
 END
 
-
 -- BUG STATUS
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM [dbo].[LookupMaster] WHERE [IsActive]=1 AND [Type]='BugStatus' AND [KeyName]='Not Started')
@@ -70,6 +69,6 @@ BEGIN
 	INSERT [dbo].[LookupMaster] ([Type], [KeyName], [KeyValue], [IsActive], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy]) 
 	VALUES (N'BugSeverity', N'NA', N'4', 1, CAST(N'2025-09-08' AS Date), N'System', CAST(N'2025-09-08' AS Date), N'System')
 END
-
+GO;
 
 

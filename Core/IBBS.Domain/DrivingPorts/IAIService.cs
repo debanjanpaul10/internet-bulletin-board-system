@@ -53,4 +53,11 @@ public interface IAIService
 	/// </summary>
 	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
 	Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync();
+
+	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest);
 }

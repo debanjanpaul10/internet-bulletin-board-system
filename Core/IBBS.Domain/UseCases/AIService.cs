@@ -19,7 +19,7 @@ namespace IBBS.Domain.UseCases;
 /// <param name="commonDataManager">The common data manager.</param>
 /// <param name="mongoDbDatabaseManager">The mongo db database manager.</param>
 /// <seealso cref="IBBS.Domain.DrivingPorts.IAIService" />
-public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logger, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager) : IAIService
+public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager) : IAIService
 {
 	/// <summary>
 	/// Rewrites the provided story using AI processing.
@@ -195,6 +195,29 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 		}
 	}
 
+	/// <summary>
+	/// Generate the bug severity using LLM.
+	/// </summary>
+	/// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
+	/// <returns>The bug severity.</returns>
+	public async Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest)
+	{
+		try
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+			return await aiAgentsService.GenerateBugSeverityAsync(bugSeverityAiRequest).ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, ex.Message));
+			throw;
+		}
+		finally
+		{
+			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+		}
+	}
+
 	#region PRIVATE METHODS
 
 	/// <summary>
@@ -276,6 +299,8 @@ public class AIService(IAiAgentsService aiAgentsService, ILogger<AIService> logg
 			logger.LogInformation(string.Format(CultureInfo.InvariantCulture, LoggingConstants.MethodEndedMessageConstant, nameof(HandleFollowupQuestionsDataAsync), DateTime.UtcNow, aiResult.AIResponseData));
 		}
 	}
+
+
 
 	#endregion
 }

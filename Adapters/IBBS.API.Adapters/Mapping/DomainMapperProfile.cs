@@ -26,6 +26,7 @@ public class DomainMapperProfile : Profile
 		CreateMap<BugReportDTO, BugReportDomain>()
 			.ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.BugTitle))
 			.ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.BugDescription));
+		CreateMap<BugSeverityAIRequestDTO, BugSeverityAIRequestDomain>();
 
 		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
 		CreateMap<PostWithRatingsDomain, PostWithRatingsDTO>().ReverseMap();

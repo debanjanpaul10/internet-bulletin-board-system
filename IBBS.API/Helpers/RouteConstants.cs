@@ -167,6 +167,11 @@ internal static class RouteConstants
 		/// The get sample prompts route
 		/// </summary>
 		internal const string GetSamplePrompts_Route = "getsampleaiprompts";
+
+		/// <summary>
+		/// The get bug severity status API route
+		/// </summary>
+		internal const string GetBugSeverityStatus_ApiRoute = "getbugseveritystatus";
 	}
 
 	/// <summary>
