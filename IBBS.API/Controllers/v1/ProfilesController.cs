@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.ProfilesController;
 
-namespace IBBS.API.Controllers;
+namespace IBBS.API.Controllers.v1;
 
 /// <summary>
 /// The Profiles API Controller.

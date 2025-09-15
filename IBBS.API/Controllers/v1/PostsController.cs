@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.PostsController;
 
-namespace IBBS.API.Controllers;
+namespace IBBS.API.Controllers.v1;
 
 /// <summary>
 /// The Posts Controller Class.

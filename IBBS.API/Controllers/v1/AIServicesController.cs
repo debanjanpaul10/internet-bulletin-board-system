@@ -7,14 +7,14 @@ using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.AIServicesController;
 
-namespace IBBS.API.Controllers;
+namespace IBBS.API.Controllers.v1;
 
 /// <summary>
 /// The AI Services Controller.
 /// </summary>
 /// <param name="aiServicesHandler">The AI Services adapter Handler.</param>
 /// <param name="httpContextAccessor">The http context accessor.</param>
-/// <seealso cref="IBBS.API.Controllers.BaseController" />
+/// <seealso cref="BaseController" />
 [ApiController]
 [Route(RouteConstants.AiServicesController.BaseRoute)]
 public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiServicesHandler aiServicesHandler) : BaseController(httpContextAccessor)

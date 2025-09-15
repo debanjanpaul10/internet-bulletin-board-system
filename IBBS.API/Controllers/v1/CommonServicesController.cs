@@ -7,14 +7,14 @@ using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.CommonServicesController;
 
-namespace IBBS.API.Controllers;
+namespace IBBS.API.Controllers.v1;
 
 /// <summary>
 /// The common services controller class.
 /// </summary>
 /// <param name="commonServicesHandler">The common services handler.</param>
 /// <param name="httpContextAccessor">The http context accessor.</param>
-/// <seealso cref="IBBS.API.Controllers.BaseController" />
+/// <seealso cref="BaseController" />
 [ApiController]
 [Route(RouteConstants.CommonServicesController.BaseRoute)]
 public class CommonServicesController(IHttpContextAccessor httpContextAccessor, ICommonServicesHandler commonServicesHandler) : BaseController(httpContextAccessor)
