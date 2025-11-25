@@ -108,7 +108,6 @@ export const HandlePostAiModerationTasksAsync = (
 					)
 				);
 			}
-			throw new Error("Failed to get AI moderation data");
 		} catch (error: any) {
 			console.error(error);
 			dispatch(PostDataFailure(error.data));

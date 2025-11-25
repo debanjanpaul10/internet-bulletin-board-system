@@ -54,10 +54,10 @@ export default function RewriteTextComponent({
     const [hasRequestedRewrite, setHasRequestedRewrite] = useState(false);
 
     const AiRewrittenStoryStoreData = useAppSelector(
-        (state) => state.PostsReducer.aiRewrittenStory
+        (state) => state.AiServicesReducer.aiRewrittenStory
     );
     const IsRewriteLoadingStoreData = useAppSelector(
-        (state) => state.PostsReducer.isRewriteLoading
+        (state) => state.AiServicesReducer.isRewriteLoading
     );
 
     // Reset AI response when component unmounts
