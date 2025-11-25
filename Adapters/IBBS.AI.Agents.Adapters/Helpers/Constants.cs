@@ -111,32 +111,32 @@ internal static class Constants
         /// <summary>
         /// The detect user intent API route
         /// </summary>
-        internal const string DetectUserIntent_ApiRoute = "skills/intentdetectionskill";
+        internal const string DetectUserIntent_ApiRoute = "v1/skills/intentdetectionskill";
 
         /// <summary>
         /// The get user greeting response API route
         /// </summary>
-        internal const string GetUserGreetingResponse_ApiRoute = "skills/usergreetingskill";
+        internal const string GetUserGreetingResponse_ApiRoute = "v1/skills/usergreetingskill";
 
         /// <summary>
         /// The get rag text response API route
         /// </summary>
-        internal const string GetRAGTextResponse_ApiRoute = "skills/ragtextresponseskill";
+        internal const string GetRAGTextResponse_ApiRoute = "v1/skills/ragtextresponseskill";
 
         /// <summary>
         /// The get nl to SQL response API route
         /// </summary>
-        internal const string GetNlToSqlResponse_ApiRoute = "skills/nltosqlskill";
+        internal const string GetNlToSqlResponse_ApiRoute = "v1/skills/nltosqlskill";
 
         /// <summary>
         /// The get SQL query markdown response API route
         /// </summary>
-        internal const string GetSQLQueryMarkdownResponse_ApiRoute = "skills/getsqlquerymarkdownresponse";
+        internal const string GetSQLQueryMarkdownResponse_ApiRoute = "v1/skills/getsqlquerymarkdownresponse";
 
         /// <summary>
         /// The get followup questions response API route.
         /// </summary>
-        internal const string GetFollowupQuestionsResponse_ApiRoute = "skills/getfollowupquestionsresponse";
+        internal const string GetFollowupQuestionsResponse_ApiRoute = "v1/skills/getfollowupquestionsresponse";
 
         /// <summary>
         /// The invoke agent API route.

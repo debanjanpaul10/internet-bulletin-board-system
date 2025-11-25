@@ -98,7 +98,7 @@ public class DomainConstants
         /// </summary>
         internal const string SourceName = "IBBS (Internet Bulletin Board System)";
 
-        // <summary>
+        /// <summary>
         /// The are followup questions enabled constant.
         /// </summary>
         public const string AreFollowupQuestionsEnabled = "AreFollowupQuestionsEnabled";
@@ -197,25 +197,4 @@ public class DomainConstants
             internal const string Name = "Determine Bug Severity Agent";
         }
     }
-}
-
-/// <summary>
-/// The enum for AI Usage details
-/// </summary>
-public enum AiUsages
-{
-    /// <summary>
-    /// The rewrite story enum.
-    /// </summary>
-    RewriteStory = 1,
-
-    /// <summary>
-    /// The moderate content enum.
-    /// </summary>
-    ModerateContent = 2,
-
-    /// <summary>
-    /// The genre tag enum.
-    /// </summary>
-    GenreTag = 3,
 }

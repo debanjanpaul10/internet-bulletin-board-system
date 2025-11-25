@@ -73,6 +73,7 @@ export default function CreatePostComponent() {
         Content: "",
     });
     const [_, setCurrentLoggedInUser] = useState({});
+    const [isContentModerated, setIsContentModerated] = useState(false);
 
     // #region Side Effects
 
@@ -134,6 +135,9 @@ export default function CreatePostComponent() {
                 ? { ...prevState, ...updates }
                 : prevState;
         });
+
+        // Mark content as moderated when we receive moderation data
+        setIsContentModerated(true);
     }, [processModerationData]);
 
     // #endregion
@@ -248,12 +252,16 @@ export default function CreatePostComponent() {
      */
     const handleContentChange = useMemo(
         () => (content: string) => {
+            // Mark content as not moderated when it changes (but keep the tags visible)
+            if (isContentModerated) {
+                setIsContentModerated(false);
+            }
             setPostData({
                 ...postData,
                 Content: content,
             });
         },
-        [postData]
+        [postData, isContentModerated]
     );
 
     /**
@@ -281,7 +289,7 @@ export default function CreatePostComponent() {
     const renderCreatePostButtons = () => {
         return (
             <div className="text-center">
-                {AiModerationData && AiTagData ? (
+                {isContentModerated ? (
                     <Button
                         type="submit"
                         onClick={handleCreatePost}
@@ -348,6 +356,9 @@ export default function CreatePostComponent() {
             ""
         ).trim();
         if (strippedContent !== "") {
+            // Reset AI moderation data before making new request
+            dispatch(HandlePostAiModerationTasksSuccess(null, null));
+
             const requestDto: any = new UserStoryRequestDtoModel(
                 strippedContent
             );
@@ -358,92 +369,101 @@ export default function CreatePostComponent() {
         }
     };
 
-    return isUserLoggedIn() ? (
-        <div
-            className="container d-flex flex-column"
-            style={{ marginTop: "76px", paddingTop: "20px" }}
-        >
-            <Spinner isLoading={IsCreatePostLoadingStoreData} />
-            <div className="row">
-                <div className="col-sm-12">
-                    <h1 className={styles.addNewHeading}>
-                        {CreatePostPageConstants.Headings.Header}
-                    </h1>
-                </div>
-                <form
-                    onKeyDown={handleKeyDown}
-                    className="addpost"
-                    style={{ marginTop: "20px" }}
-                >
-                    <SpotlightCard
-                        className={`custom-spotlight-card ${styles.card}`}
-                        spotlightColor="rgba(0, 229, 255, 0.2)"
+    /**
+     * Handles the rendering of the create post content.
+     * @returns The create post jsx component.
+     */
+    const renderCreatePostContent = () => {
+        return (
+            <div
+                className="container d-flex flex-column"
+                style={{ marginTop: "76px", paddingTop: "20px" }}
+            >
+                <Spinner isLoading={IsCreatePostLoadingStoreData} />
+                <div className="row">
+                    <div className="col-sm-12">
+                        <h1 className={styles.addNewHeading}>
+                            {CreatePostPageConstants.Headings.Header}
+                        </h1>
+                    </div>
+                    <form
+                        onKeyDown={handleKeyDown}
+                        className="addpost"
+                        style={{ marginTop: "20px" }}
                     >
-                        <CardHeader
-                            className={styles.cardHeader}
-                            header={
-                                <div className="col sm-12 mb-3 mb-sm-0">
-                                    <div className="row p-2">
-                                        <input
-                                            type="text"
-                                            name="Title"
-                                            onChange={handleFormChange}
-                                            value={postData.Title}
-                                            className={`form-control mt-0 ${styles.cardHeaderText}`}
-                                            id="Title"
+                        <SpotlightCard
+                            className={`custom-spotlight-card ${styles.card}`}
+                            spotlightColor="rgba(0, 229, 255, 0.2)"
+                        >
+                            <CardHeader
+                                className={styles.cardHeader}
+                                header={
+                                    <div className="col sm-12 mb-3 mb-sm-0">
+                                        <div className="row p-2">
+                                            <input
+                                                type="text"
+                                                name="Title"
+                                                onChange={handleFormChange}
+                                                value={postData.Title}
+                                                className={`form-control mt-0 ${styles.cardHeaderText}`}
+                                                id="Title"
+                                                placeholder={
+                                                    CreatePostPageConstants
+                                                        .Headings
+                                                        .TitleBarPlaceholder
+                                                }
+                                            />
+                                            {errors.Title && (
+                                                <span className="alert alert-danger ml-10 mt-3">
+                                                    {errors.Title}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                }
+                            />
+                            <CardPreview className={styles.cardPreview}>
+                                <div className="form-group row mt-3">
+                                    <div className="col sm-12 mb-3 mb-sm-0 p-3">
+                                        <ReactQuill
+                                            value={postData.Content}
+                                            onChange={handleContentChange}
+                                            id="Content"
+                                            className={styles.textEditor}
                                             placeholder={
                                                 CreatePostPageConstants.Headings
-                                                    .TitleBarPlaceholder
+                                                    .ContentBoxPlaceholder
                                             }
+                                            modules={modules}
                                         />
-                                        {errors.Title && (
+                                        {errors.Content && (
                                             <span className="alert alert-danger ml-10 mt-3">
-                                                {errors.Title}
+                                                {errors.Content}
                                             </span>
                                         )}
-                                    </div>
-                                </div>
-                            }
-                        />
-                        <CardPreview className={styles.cardPreview}>
-                            <div className="form-group row mt-3">
-                                <div className="col sm-12 mb-3 mb-sm-0 p-3">
-                                    <ReactQuill
-                                        value={postData.Content}
-                                        onChange={handleContentChange}
-                                        id="Content"
-                                        className={styles.textEditor}
-                                        placeholder={
-                                            CreatePostPageConstants.Headings
-                                                .ContentBoxPlaceholder
-                                        }
-                                        modules={modules}
-                                    />
-                                    {errors.Content && (
-                                        <span className="alert alert-danger ml-10 mt-3">
-                                            {errors.Content}
+                                        <RewriteTextComponent
+                                            originalText={postData.Content}
+                                            onTextChange={(newText: string) => {
+                                                setPostData({
+                                                    ...postData,
+                                                    Content: newText,
+                                                });
+                                            }}
+                                        />
+                                        &nbsp;
+                                        <span className="ms-3">
+                                            {renderTags()}
                                         </span>
-                                    )}
-                                    <RewriteTextComponent
-                                        originalText={postData.Content}
-                                        onTextChange={(newText: string) => {
-                                            setPostData({
-                                                ...postData,
-                                                Content: newText,
-                                            });
-                                        }}
-                                    />
-                                    &nbsp;
-                                    <span className="ms-3">{renderTags()}</span>
+                                    </div>
+                                    {renderCreatePostButtons()}
                                 </div>
-                                {renderCreatePostButtons()}
-                            </div>
-                        </CardPreview>
-                    </SpotlightCard>
-                </form>
+                            </CardPreview>
+                        </SpotlightCard>
+                    </form>
+                </div>
             </div>
-        </div>
-    ) : (
-        <PageNotFound />
-    );
+        );
+    };
+
+    return isUserLoggedIn() ? renderCreatePostContent() : <PageNotFound />;
 }
