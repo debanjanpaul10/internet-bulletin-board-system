@@ -5,9 +5,11 @@ using IBBS.Domain.DomainEntities.Knowledgebase;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
+using static IBBS.Domain.Helpers.DomainConstants.AiAgentsIdConstants;
 
 namespace IBBS.Domain.UseCases;
 
@@ -18,8 +20,9 @@ namespace IBBS.Domain.UseCases;
 /// <param name="aiAgentsService">The ai agent service.</param>
 /// <param name="commonDataManager">The common data manager.</param>
 /// <param name="mongoDbDatabaseManager">The mongo db database manager.</param>
+/// <param name="configuration">The configuration.</param>
 /// <seealso cref="IBBS.Domain.DrivingPorts.IAIService" />
-public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager) : IAIService
+public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager, IConfiguration configuration) : IAIService
 {
     #region PLUGINS
 
@@ -37,8 +40,8 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
 
             var chatRequestDomain = new ChatRequestDomainModel()
             {
-                AgentId = "f51f52ba-15c4-49db-9b2d-a9f992e0641c",
-                AgentName = "Rewrite text agent",
+                AgentId = configuration[RewriteTextAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, RewriteTextAgent.Id)),
+                AgentName = RewriteTextAgent.Name,
                 ConversationId = Guid.NewGuid().ToString(),
                 UserMessage = requestDTO.Story
             };
@@ -69,8 +72,8 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
 
             var chatRequestDomainModel = new ChatRequestDomainModel()
             {
-                AgentId = "fd223919-f710-4228-9814-6b703be604a5",
-                AgentName = "Generate Tag for Story Agent",
+                AgentId = configuration[GenerateTagAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateTagAgent.Id)),
+                AgentName = GenerateTagAgent.Name,
                 ConversationId = Guid.NewGuid().ToString(),
                 UserMessage = requestDTO.Story
             };
@@ -101,8 +104,8 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
 
             var chatRequestDomainModel = new ChatRequestDomainModel()
             {
-                AgentId = "44083df0-9773-4ff8-a8b2-894ddcecbeb6",
-                AgentName = "Content Moderation Agent",
+                AgentId = configuration[ModerateContentAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, ModerateContentAgent.Id)),
+                AgentName = ModerateContentAgent.Name,
                 ConversationId = Guid.NewGuid().ToString(),
                 UserMessage = requestDTO.Story
             };
@@ -132,8 +135,8 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
 
             var chatRequestDomainModel = new ChatRequestDomainModel()
             {
-                AgentId = "e3079942-c134-440c-a7fe-8ee2b6ba4486",
-                AgentName = "Determine Bug Severity Agent",
+                AgentId = configuration[GenerateBugSeverityAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateBugSeverityAgent.Id)),
+                AgentName = GenerateBugSeverityAgent.Name,
                 ConversationId = Guid.NewGuid().ToString(),
                 UserMessage = bugSeverityAiRequest.BugDescription
             };
@@ -153,6 +156,7 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
     #endregion
 
     #region CHATBOT
+
     /// <summary>
     /// Gets the chatbot response asynchronous.
     /// </summary>

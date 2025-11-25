@@ -12,19 +12,19 @@ on:
             deploy_api:
                 description: "InternetBulletin.API"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
             deploy_web:
                 description: "InternetBulletin.Web"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
             deploy_database:
                 description: "InternetBulletin.Database"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
             deploy_function:
@@ -85,7 +85,7 @@ jobs:
             - name: Deploy to Azure App Service
               uses: Azure/webapps-deploy@v2
               with:
-                  app-name: app-webapi-internet-bulletin
+                  app-name: app-webapi-ibbs
                   slot-name: production
                   publish-profile: ${{ secrets.AZURE_IBBS_API_PUBLISH_PROFILE }}
                   package: ./publish-api
