@@ -46,7 +46,6 @@ export const RewriteStoryWithAiAsync = (
 			if (response?.statusCode === 200) {
 				dispatch(RewriteStoryWithAiSuccess(response.data));
 			}
-			throw new Error("Failed to rewrite story");
 		} catch (error: any) {
 			console.error(error);
 			dispatch(

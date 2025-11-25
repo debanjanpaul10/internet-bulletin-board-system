@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using System.Security.Claims;
+using Azure.Identity;
 using IBBS.AI.Agents.Adapters.IOC;
 using IBBS.API.Adapters.IOC;
 using IBBS.API.Controllers;
@@ -8,7 +9,6 @@ using IBBS.Infrastructure.Persistence.Adapters.IOC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using static IBBS.API.Helpers.APIConstants;
 
 namespace IBBS.API.IOC;
@@ -42,19 +42,14 @@ public static class DIContainer
 		var configuration = builder.Configuration;
 		var appConfigurationEndpoint = configuration[ConfigurationConstants.AppConfigurationEndpointKeyConstant];
 		if (string.IsNullOrEmpty(appConfigurationEndpoint))
-		{
 			throw new InvalidOperationException(ExceptionConstants.ConfigurationValueIsEmptyMessageConstant);
-		}
 
 		configuration.AddAzureAppConfiguration(options =>
 		{
 			options.Connect(new Uri(appConfigurationEndpoint), credentials)
 				.Select(KeyFilter.Any).Select(KeyFilter.Any, ConfigurationConstants.BaseConfigurationAppConfigKeyConstant)
 				.Select(KeyFilter.Any, ConfigurationConstants.IbbsAPIAppConfigKeyConstant)
-				.ConfigureKeyVault((options) =>
-				{
-					options.SetCredential(credentials);
-				});
+				.ConfigureKeyVault((options) => options.SetCredential(credentials));
 
 		});
 	}
@@ -86,9 +81,7 @@ public static class DIContainer
 
 			// For development: disable HTTPS requirement
 			if (builder.Environment.IsDevelopment())
-			{
 				options.RequireHttpsMetadata = false;
-			}
 
 			options.Events = new JwtBearerEvents
 			{

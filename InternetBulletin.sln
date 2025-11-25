@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{A6A63F47-635D-459A-AD51-2E3BAC8ED38D}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,8 +23,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBBS.AI.Agents.Adapters", "Adapters\IBBS.AI.Agents.Adapters\IBBS.AI.Agents.Adapters.csproj", "{A4B71F28-615A-4E51-9F76-48BB885932B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBBS.Infrastructure.MongoDB.Adapters", "Adapters\IBBS.Infrastructure.MongoDB.Adapters\IBBS.Infrastructure.MongoDB.Adapters.csproj", "{26DAE527-7747-4976-858A-9768FD0C6BC9}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "IBBS.Database", "IBBS.Database\IBBS.Database.sqlproj", "{849DF4E7-F43F-4238-ABAF-E3B145098584}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{E1B6F6E4-5F63-458E-B2F7-40118F2E50F6}"
 EndProject
@@ -112,23 +110,6 @@ Global
 		{26DAE527-7747-4976-858A-9768FD0C6BC9}.Release|x64.Build.0 = Release|Any CPU
 		{26DAE527-7747-4976-858A-9768FD0C6BC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{26DAE527-7747-4976-858A-9768FD0C6BC9}.Release|x86.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.Build.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x64.Deploy.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.Build.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Debug|x86.Deploy.0 = Debug|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.ActiveCfg = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x64.Deploy.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.ActiveCfg = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.Build.0 = Release|Any CPU
-		{849DF4E7-F43F-4238-ABAF-E3B145098584}.Release|x86.Deploy.0 = Release|Any CPU
 		{EFAC2B43-0508-442F-BD4B-0D9D219A9D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFAC2B43-0508-442F-BD4B-0D9D219A9D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFAC2B43-0508-442F-BD4B-0D9D219A9D35}.Debug|x64.ActiveCfg = Debug|Any CPU

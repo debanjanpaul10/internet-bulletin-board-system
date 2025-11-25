@@ -1,4 +1,5 @@
 ﻿using IBBS.AI.Agents.Adapters.AgentManagers;
+using IBBS.AI.Agents.Adapters.Contracts;
 using IBBS.AI.Agents.Adapters.Helpers;
 using IBBS.Domain.DrivenPorts;
 using Microsoft.Extensions.Configuration;

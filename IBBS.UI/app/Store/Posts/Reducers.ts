@@ -11,6 +11,11 @@ import {
     GET_EDIT_POST_DATA,
     TOGGLE_EDIT_POST_LOADER,
 } from "@store/Posts/ActionTypes";
+import {
+    REWRITE_STORY_AI,
+    TOGGLE_REWRITE_LOADER,
+    HANDLE_POST_AI_MODERATION,
+} from "@store/AiServices/ActionTypes";
 
 const initialState: any = {
     postData: {},
@@ -23,6 +28,10 @@ const initialState: any = {
     isEditModalOpen: false,
     editPostData: {},
     isEditPostDataLoading: false,
+    aiRewrittenStory: null,
+    isRewriteLoading: false,
+    aiTagData: null,
+    aiModerationData: null,
 };
 
 /**
@@ -98,6 +107,25 @@ const PostsReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 isEditPostDataLoading: action.payload,
+            };
+        }
+        case TOGGLE_REWRITE_LOADER: {
+            return {
+                ...state,
+                isRewriteLoading: action.payload,
+            };
+        }
+        case REWRITE_STORY_AI: {
+            return {
+                ...state,
+                aiRewrittenStory: action.payload,
+            };
+        }
+        case HANDLE_POST_AI_MODERATION: {
+            return {
+                ...state,
+                aiTagData: action.payload.tagData,
+                aiModerationData: action.payload.moderationData,
             };
         }
 

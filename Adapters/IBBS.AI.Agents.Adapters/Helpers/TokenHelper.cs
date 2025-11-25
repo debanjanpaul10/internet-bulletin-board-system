@@ -1,18 +1,11 @@
-// *********************************************************************************
-//	<copyright file="TokenHelper.cs" company="Personal">
-//		Copyright (c) 2025 Personal
-//	</copyright>
-// <summary>Token helper class.</summary>
-// *********************************************************************************
-
 namespace IBBS.AI.Agents.Adapters.Helpers;
 
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using static IBBS.AI.Agents.Adapters.Helpers.Constants;
 
 /// <summary>
