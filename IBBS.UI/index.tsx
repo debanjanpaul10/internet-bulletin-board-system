@@ -10,12 +10,12 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 import "@styles/App.css";
 import "@styles/App_Dark.css";
-import { PostsReducer } from "@/Store/Posts/Reducers";
-import { CommonReducer } from "@/Store/Common/Reducers";
+import { PostsReducer } from "@store/Posts/Reducers";
+import { CommonReducer } from "@store/Common/Reducers";
 import { UserReducer } from "@store/Users/Reducer";
 import Main from "@components/Main";
 import { environment } from "@environment";
-import { AiServicesReducer } from "./Store/AiServices/Reducers";
+import { AiServicesReducer } from "@store/AiServices/Reducers";
 
 /**
  * Configures the redux store.
