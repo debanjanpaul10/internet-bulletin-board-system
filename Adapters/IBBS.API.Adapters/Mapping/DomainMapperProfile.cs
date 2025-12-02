@@ -15,26 +15,27 @@ namespace IBBS.API.Adapters.Mapping;
 /// <seealso cref="AutoMapper.Profile" />
 public class DomainMapperProfile : Profile
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="DomainMapperProfile"/> class.
-	/// </summary>
-	public DomainMapperProfile()
-	{
-		CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
-		CreateMap<UserQueryRequestDTO, UserQueryRequestDomain>();
-		CreateMap<AIResponseFeedbackDTO, AIResponseFeedbackDomain>();
-		CreateMap<BugReportDTO, BugReportDomain>()
-			.ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.BugTitle))
-			.ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.BugDescription));
-		CreateMap<BugSeverityAIRequestDTO, BugSeverityAIRequestDomain>();
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainMapperProfile"/> class.
+    /// </summary>
+    public DomainMapperProfile()
+    {
+        CreateMap<UserStoryRequestDTO, UserStoryRequestDomain>();
+        CreateMap<UserQueryRequestDTO, UserQueryRequestDomain>();
+        CreateMap<AIResponseFeedbackDTO, AIResponseFeedbackDomain>();
+        CreateMap<BugReportDTO, BugReportDomain>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.BugTitle))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.BugDescription));
+        CreateMap<BugSeverityAIRequestDTO, BugSeverityAIRequestDomain>();
 
-		CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
-		CreateMap<PostWithRatingsDomain, PostWithRatingsDTO>().ReverseMap();
-		CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
-		CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
-		CreateMap<AIChatbotResponseDomain, AIChatbotResponseDTO>();
-		CreateMap<LookupMasterDomain, LookupMasterDTO>();
-		CreateMap<UserPostDomain, UserPostDTO>();
-		CreateMap<UserProfileDomain, UserProfileDto>();
-	}
+        CreateMap<PostRatingDomain, PostRatingDTO>().ReverseMap();
+        CreateMap<PostWithRatingsDomain, PostWithRatingsDTO>().ReverseMap();
+        CreateMap<UserPostRatingDomain, UserPostRatingDTO>().ReverseMap();
+        CreateMap<UpdateRatingDomain, UpdateRatingDTO>();
+        CreateMap<AIChatbotResponseDomain, AIChatbotResponseDTO>();
+        CreateMap<LookupMasterDomain, LookupMasterDTO>();
+        CreateMap<UserPostDomain, UserPostDTO>();
+        CreateMap<UserProfileDomain, UserProfileDto>();
+        CreateMap<PostDomain, PostDTO>().ReverseMap();
+    }
 }

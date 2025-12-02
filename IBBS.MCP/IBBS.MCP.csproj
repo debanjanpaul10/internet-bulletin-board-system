@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="4.1.1" />
+    <PackageReference Include="ModelContextProtocol" Version="0.4.1-preview.1" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.4.1-preview.1" />
+    <PackageReference Include="ModelContextProtocol.Core" Version="0.4.1-preview.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.0.1" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Adapters\IBBS.AI.Agents.Adapters\IBBS.AI.Agents.Adapters.csproj" />
+    <ProjectReference Include="..\Adapters\IBBS.API.Adapters\IBBS.API.Adapters.csproj" />
+    <ProjectReference Include="..\Adapters\IBBS.Infrastructure.MongoDB.Adapters\IBBS.Infrastructure.MongoDB.Adapters.csproj" />
+    <ProjectReference Include="..\Adapters\IBBS.Infrastructure.Persistence.Adapters\IBBS.Infrastructure.Persistence.Adapters.csproj" />
+    <ProjectReference Include="..\Core\IBBS.Domain\IBBS.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
