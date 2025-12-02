@@ -57,6 +57,24 @@ internal static class ToolsConstants
             internal const string InputDescription = "The unique identifier of the post to retrieve. Cannot be null or empty.";
         }
 
-    }
+        /// <summary>
+        /// Provides constants describing the action for retrieving all post ratings associated with a specified user
+        /// email address.
+        /// </summary>
+        /// <remarks>This class is intended for internal use to supply descriptive metadata for the user
+        /// ratings retrieval operation. It includes information about expected input and response behavior, such as
+        /// handling cases where no ratings are found and logging execution details.</remarks>
+        internal static class GetAllUserRatingsAction
+        {
+            internal const string Description = """
+                Role: Retrieves all post ratings associated with the specified user email address asynchronously.
+                Description: 
+                    - If no ratings are found for the specified user, the response will indicate a bad request.
+                    - This method logs its execution and may throw exceptions encountered during processing.
+                Returns: A ResponseDTO containing the user's post ratings if found; otherwise, a response indicating a bad request.
+                """;
 
+            internal const string InputDescription = "The email address of the user whose post ratings are to be retrieved. Cannot be null or empty.";
+        }
+    }
 }

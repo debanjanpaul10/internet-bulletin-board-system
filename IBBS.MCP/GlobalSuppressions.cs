@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("mcp", "MCP002:MCP method must be partial to generate [Description] attributes", Justification = "MCP Tool", Scope = "member", Target = "~M:IBBS.MCP.Tools.PostsDataTool.GetAllPostsDataAsync~System.Threading.Tasks.Task{InternetBulletin.Shared.DTOs.ResponseDTO}")]
 [assembly: SuppressMessage("mcp", "MCP002:MCP method must be partial to generate [Description] attributes", Justification = "MCP Tool", Scope = "member", Target = "~M:IBBS.MCP.Tools.PostsDataTool.GetPostAsync(System.String)~System.Threading.Tasks.Task{InternetBulletin.Shared.DTOs.ResponseDTO}")]
+[assembly: SuppressMessage("mcp", "MCP002:MCP method must be partial to generate [Description] attributes", Justification = "MCP Tool", Scope = "member", Target = "~M:IBBS.MCP.Tools.PostRatingsTool.GetAllUserRatingsAsync(System.String)~System.Threading.Tasks.Task{InternetBulletin.Shared.DTOs.ResponseDTO}")]

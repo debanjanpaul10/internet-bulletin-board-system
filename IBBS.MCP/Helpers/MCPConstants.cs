@@ -105,6 +105,11 @@ internal static class MCPConstants
         /// The post not found message constant
         /// </summary>
         public static readonly string PostNotFoundMessageConstant = "It seems the post you are looking for does not exists anymore!";
+
+        /// <summary>
+        /// Represents the default message displayed when user post ratings cannot be retrieved.
+        /// </summary>
+        public const string UnableToGetUserPostRatingsMessageConstant = "Unable to retrieve user's post ratings as of this moment!";
     }
 
     /// <summary>
