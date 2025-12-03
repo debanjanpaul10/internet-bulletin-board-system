@@ -1,28 +1,13 @@
-namespace IBBS.AI.Agents.Adapters.Helpers;
-
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using IBBS.AI.Agents.Adapters.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.AI.Agents.Adapters.Helpers.Constants;
 
-/// <summary>
-/// Http client helper interface.
-/// </summary>
-public interface IHttpClientHelper
-{
-	/// <summary>
-	/// Gets the ai response asynchronous.
-	/// </summary>
-	/// <typeparam name="T">The input data.</typeparam>
-	/// <param name="data">The data.</param>
-	/// <param name="apiUrl">The api url.</param>
-	/// <returns>The response from AI</returns>
-	Task<HttpResponseMessage> GetAIResponseAsync<T>(T data, string apiUrl);
-}
+namespace IBBS.AI.Agents.Adapters.Helpers;
 
 /// <summary>
 /// Http client helper service.
@@ -48,9 +33,9 @@ public class HttpClientHelper(ILogger<HttpClientHelper> logger, IConfiguration c
 		try
 		{
 			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAIResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? string.Empty));
+			ArgumentException.ThrowIfNullOrEmpty(apiUrl);
 
 			var client = httpClientFactory.CreateClient(ConfigurationConstants.AiAgentsHttpClient);
-			ArgumentException.ThrowIfNullOrEmpty(apiUrl);
 			await PrepareHttpClientFactoryAsync(client, TokenHelper.GetAiAgentsLabTokenAsync(configuration, logger));
 
 			var inputJson = JsonConvert.SerializeObject(data);
@@ -58,9 +43,7 @@ public class HttpClientHelper(ILogger<HttpClientHelper> logger, IConfiguration c
 
 			var response = await client.PostAsync(apiUrl, contentData).ConfigureAwait(false);
 			if (!response.IsSuccessStatusCode)
-			{
 				return response.EnsureSuccessStatusCode();
-			}
 
 			return response;
 		}

@@ -1,38 +1,40 @@
 {
-    "compilerOptions": {
-        "target": "ES2020",
-        "useDefineForClassFields": true,
-        "lib": ["ES2020", "DOM", "DOM.Iterable"],
-        "module": "ESNext",
-        "skipLibCheck": true,
-        "moduleResolution": "bundler",
-        "allowImportingTsExtensions": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx",
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true,
-        "baseUrl": "./",
-        "paths": {
-            "@/*": ["./*"],
-            "@components/*": ["./Components/*"],
-            "@helpers/*": ["./Helpers/*"],
-            "@store/*": ["./Store/*"],
-            "@styles/*": ["./Styles/*"],
-            "@models/*": ["./Models/*"],
-            "@services/*": ["./Services/*"],
-            "@context/*": ["./Context/*"],
-            "@assets/*": ["./assets/*"],
-            "@animations/*": ["./Animations/*"],
-            "@environment": [
-                "./environments/environment.development.ts",
-                "./environments/environment.ts"
-            ]
-        }
-    },
-    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-    "exclude": ["node_modules", "dist"]
+	"compilerOptions": {
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["./*"],
+			"@components/*": ["./app/Components/*"],
+			"@helpers/*": ["./app/Helpers/*"],
+			"@store/*": ["./app/Store/*"],
+			"@styles/*": ["./app/Styles/*"],
+			"@models/*": ["./app/Models/*"],
+			"@services/*": ["./app/Services/*"],
+			"@context/*": ["./app/Context/*"],
+			"@assets/*": ["./assets/*"],
+			"@animations/*": ["./app/Animations/*"],
+			"@types/*": ["./app/Types/*"],
+			"@environment": [
+				"./environments/environment.development.ts",
+				"./environments/environment.ts"
+			]
+		},
+		"plugins": [{ "name": "mkcert()" }]
+	},
+	"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+	"exclude": ["node_modules", "dist"]
 }

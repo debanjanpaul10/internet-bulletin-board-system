@@ -1,43 +1,43 @@
-name: Build and Deploy InternetBulletin
+name: Build and Deploy IBBS
 
 env:
-    API_PROJECT_PATH: InternetBulletin.API/InternetBulletin.API.csproj
-    WEB_PROJECT_PATH: InternetBulletin.Web
-    DATABASE_PROJECT_PATH: InternetBulletin.Database/InternetBulletin.Database.sqlproj
-    FUNCTION_PROJECT_PATH: InternetBulletin.Functions/InternetBulletin.Functions.csproj
+    API_PROJECT_PATH: IBBS.API/IBBS.API.csproj
+    WEB_PROJECT_PATH: IBBS.UI
+    DATABASE_PROJECT_PATH: IBBS.Database/IBBS.Database.sqlproj
+    MCP_PROJECT_PATH: IBBS.MCP/IBBS.MCP.csproj
 
 on:
     workflow_dispatch:
         inputs:
             deploy_api:
-                description: "InternetBulletin.API"
+                description: "IBBS.API"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
             deploy_web:
-                description: "InternetBulletin.Web"
+                description: "IBBS.UI"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
             deploy_database:
-                description: "InternetBulletin.Database"
+                description: "IBBS.Database"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
-            deploy_function:
-                description: "InternetBulletin.Functions"
+            deploy_mcp:
+                description: "IBBS.MCP.Server"
                 required: false
-                default: false
+                default: true
                 type: boolean
 
 jobs:
     #region API
 
     build-api:
-        name: Build InternetBulletin.API
+        name: Build IBBS.API
         runs-on: ubuntu-latest
         if: ${{ inputs.deploy_api }}
         outputs:
@@ -49,7 +49,7 @@ jobs:
             - name: Setup .NET
               uses: actions/setup-dotnet@v3
               with:
-                  dotnet-version: "9.0.x"
+                  dotnet-version: "10.0.x"
 
             - name: Install dependencies and Build solution
               run: |
@@ -71,7 +71,7 @@ jobs:
                   path: ./publish-api
 
     deploy-api:
-        name: Deploy InternetBulletin.API
+        name: Deploy IBBS.API
         runs-on: ubuntu-latest
         needs: build-api
         environment: Production
@@ -85,7 +85,7 @@ jobs:
             - name: Deploy to Azure App Service
               uses: Azure/webapps-deploy@v2
               with:
-                  app-name: app-webapi-internet-bulletin
+                  app-name: app-webapi-ibbs
                   slot-name: production
                   publish-profile: ${{ secrets.AZURE_IBBS_API_PUBLISH_PROFILE }}
                   package: ./publish-api
@@ -95,7 +95,7 @@ jobs:
     #region WEB
 
     build-and-deploy-web:
-        name: Build and Deploy InternetBulletin.Web
+        name: Build and Deploy IBBS.Web
         if: ${{ inputs.deploy_web }}
         runs-on: ubuntu-latest
         environment: Production
@@ -132,7 +132,7 @@ jobs:
     #region Database
 
     build-database:
-        name: Build InternetBulletin.Database
+        name: Build IBBS.Database
         runs-on: windows-latest
         if: ${{ inputs.deploy_database }}
         outputs:
@@ -144,7 +144,7 @@ jobs:
             - name: Setup .NET
               uses: actions/setup-dotnet@v3
               with:
-                  dotnet-version: "9.0.x"
+                  dotnet-version: "8.0.x"
 
             - name: Install dependencies and Build solution
               run: |
@@ -166,7 +166,7 @@ jobs:
                   path: ./publish-db
 
     deploy-database:
-        name: Deploy InternetBulletin.Database
+        name: Deploy IBBS.Database
         runs-on: windows-latest
         needs: build-database
         environment: Production
@@ -193,66 +193,66 @@ jobs:
               uses: azure/sql-action@v2.3
               with:
                   connection-string: ${{ secrets.AZURE_DB_CONNECTION_STRING }}
-                  path: "./publish-db/InternetBulletin.Database.dacpac"
+                  path: "./publish-db/IBBS.Database.dacpac"
                   action: "publish"
                   arguments: "/p:DropObjectsNotInSource=true"
 
     #endregion
 
-    #region Azure Function
+    #region MCP
 
-    build-function:
-        name: Build InternetBulletin.Functions
+    build-mcp:
+        name: Build IBBS.MCP.Server
         runs-on: ubuntu-latest
-        if: ${{ inputs.deploy_function }}
+        if: ${{ inputs.deploy_mcp }}
         outputs:
             artifact-path: ${{ steps.set-artifact-path.outputs.path }}
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v3
 
             - name: Setup .NET
               uses: actions/setup-dotnet@v3
               with:
-                  dotnet-version: "9.0.x"
+                  dotnet-version: "10.0.x"
 
             - name: Install dependencies and Build solution
               run: |
-                  dotnet restore ${{ env.FUNCTION_PROJECT_PATH }}
-                  dotnet build ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --no-restore
+                  dotnet restore ${{ env.MCP_PROJECT_PATH }}
+                  dotnet build ${{ env.MCP_PROJECT_PATH }} --configuration Release --no-restore
 
             - name: Publish the project
               run: |
-                  dotnet publish ${{ env.FUNCTION_PROJECT_PATH }} --configuration Release --no-build --output ./publish-function
+                  dotnet publish ${{ env.MCP_PROJECT_PATH }} --configuration Release --no-build --output ./publish-mcp
 
             - name: Set artifact path
               id: set-artifact-path
-              run: echo "path=./publish-function" >> $GITHUB_OUTPUT
+              run: echo "path=./publish-mcp" >> $GITHUB_OUTPUT
 
-            - name: Upload Function Artifact
+            - name: Upload MCP artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: function-artifact
-                  path: ./publish-function
+                  name: mcp-artifact
+                  path: ./publish-mcp
 
-    deploy-function:
-        name: Deploy InternetBulletin.Functions
+    deploy-mcp:
+        name: Deploy IBBS.MCP.Server
         runs-on: ubuntu-latest
-        needs: build-function
+        needs: build-mcp
         environment: Production
         steps:
-            - name: Download Function Artifact
+            - name: Download MCP Artifact
               uses: actions/download-artifact@v4
               with:
-                  name: function-artifact
-                  path: ./publish-function
+                  name: mcp-artifact
+                  path: ./publish-mcp
 
-            - name: Run Azure Functions action
-              uses: Azure/functions-action@v1
+            - name: Deploy to Azure App Service
+              uses: Azure/webapps-deploy@v2
               with:
-                  app-name: func-internet-bulletin
-                  package: ./publish-function
-                  sku: "flexconsumption"
-                  publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+                  app-name: app-mcp-ibbs
+                  slot-name: production
+                  publish-profile: ${{ secrets.AZURE_IBBS_MCP_PUBLISH_PROFILE }}
+                  package: ./publish-mcp
 
     #endregion
