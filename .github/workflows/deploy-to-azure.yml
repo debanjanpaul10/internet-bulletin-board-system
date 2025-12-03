@@ -28,7 +28,7 @@ on:
                 type: boolean
 
             deploy_mcp:
-                description: "IBBS.MCP Server"
+                description: "IBBS.MCP.Server"
                 required: false
                 default: true
                 type: boolean
