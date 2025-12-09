@@ -165,7 +165,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: db-artifact
-                  path: ./publish-db
+                  path: ./${{env.DATABASE_FOLDER_PATH}}/publish-db
 
     deploy-database:
         name: Deploy IBBS.Database
