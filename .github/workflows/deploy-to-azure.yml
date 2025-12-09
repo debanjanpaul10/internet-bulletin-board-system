@@ -148,8 +148,10 @@ jobs:
 
             - name: Install dependencies and Build solution
               run: |
-                  dotnet restore ${{ env.DATABASE_PROJECT_PATH }}
-                  dotnet build ${{ env.DATABASE_PROJECT_PATH }} --configuration Release --no-restore
+                  cd ${{ env.DATABASE_PROJECT_PATH }}
+                  dotnet restore 
+                  dotnet build --configuration Release --no-restore
+                  cd ..
 
             - name: Publish the project
               run: |
