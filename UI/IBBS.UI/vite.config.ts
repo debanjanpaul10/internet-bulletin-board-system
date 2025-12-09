@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import mkcert from "vite-plugin-mkcert";
@@ -11,12 +10,12 @@ export default defineConfig(({ mode }) => {
 	const isDev = mode === "development";
 
 	return {
-		plugins: [react(), basicSsl(), mkcert()],
+		plugins: [react(), mkcert()],
 		build: isDev
 			? {}
 			: {
 					target: "esnext",
-					minify: "terser",
+					minify: "esbuild",
 					rollupOptions: {
 						input: path.resolve(__dirname, "index.html"),
 						external: [],
@@ -73,7 +72,6 @@ export default defineConfig(({ mode }) => {
 			extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
 		},
 		server: {
-			https: true,
 			host: true,
 			port: 5173,
 			strictPort: false,

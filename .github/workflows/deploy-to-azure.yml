@@ -1,10 +1,10 @@
 name: Build and Deploy IBBS
 
 env:
-    API_PROJECT_PATH: IBBS.API/IBBS.API.csproj
-    WEB_PROJECT_PATH: IBBS.UI
-    DATABASE_PROJECT_PATH: IBBS.Database/IBBS.Database.sqlproj
-    MCP_PROJECT_PATH: IBBS.MCP/IBBS.MCP.csproj
+    API_PROJECT_PATH: Backend/API/IBBS.API/IBBS.API.csproj
+    WEB_PROJECT_PATH: UI/IBBS.UI
+    DATABASE_FOLDER_PATH: Backend/Database/IBBS.Database
+    MCP_PROJECT_PATH: Backend/API/IBBS.MCP/IBBS.MCP.csproj
 
 on:
     workflow_dispatch:
@@ -49,7 +49,7 @@ jobs:
             - name: Setup .NET
               uses: actions/setup-dotnet@v3
               with:
-                  dotnet-version: "10.0.x"
+                  dotnet-version: "8.0.x"
 
             - name: Install dependencies and Build solution
               run: |
@@ -144,16 +144,18 @@ jobs:
             - name: Setup .NET
               uses: actions/setup-dotnet@v3
               with:
-                  dotnet-version: "9.0.x"
+                  dotnet-version: "8.0.x"
 
             - name: Install dependencies and Build solution
               run: |
-                  dotnet restore ${{ env.DATABASE_PROJECT_PATH }}
-                  dotnet build ${{ env.DATABASE_PROJECT_PATH }} --configuration Release --no-restore
+                  cd ${{env.DATABASE_FOLDER_PATH}}
+                  dotnet restore 
+                  dotnet build --configuration Release --no-restore
 
             - name: Publish the project
               run: |
-                  dotnet publish ${{ env.DATABASE_PROJECT_PATH }} --configuration Release --output ./publish-db
+                  cd ${{env.DATABASE_FOLDER_PATH}}
+                  dotnet publish --configuration Release --output ./publish-db
 
             - name: Set artifact path
               id: set-artifact-path
@@ -163,7 +165,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: db-artifact
-                  path: ./publish-db
+                  path: ./${{env.DATABASE_FOLDER_PATH}}/publish-db
 
     deploy-database:
         name: Deploy IBBS.Database
