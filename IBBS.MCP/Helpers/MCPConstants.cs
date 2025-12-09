@@ -74,6 +74,16 @@ internal static class MCPConstants
         /// Represents the name of the default authorization policy used when no specific policy is specified.
         /// </summary>
         internal const string DefaultAuthorizationPolicy = "DefaultPolicy";
+
+        /// <summary>
+        /// Represents the configuration key for the audience of the AI Agents API.
+        /// </summary>
+        internal const string AiAgentsApiAudience = "AiAgentsApi:Audience";
+
+        /// <summary>
+        /// Represents the configuration key for the issuer of the AI Agents API.
+        /// </summary>
+        internal const string AiAgentsApiIssuer = "AiAgentsApi:Issuer";
     }
 
     /// <summary>
@@ -104,7 +114,7 @@ internal static class MCPConstants
         /// <summary>
         /// The post not found message constant
         /// </summary>
-        public static readonly string PostNotFoundMessageConstant = "It seems the post you are looking for does not exists anymore!";
+        public const string PostNotFoundMessageConstant = "It seems the post you are looking for does not exists anymore!";
 
         /// <summary>
         /// Represents the default message displayed when user post ratings cannot be retrieved.
@@ -144,12 +154,12 @@ internal static class MCPConstants
             /// <summary>
             /// The author's name.
             /// </summary>
-            internal static readonly string Name = "Debanjan Paul";
+            internal const string Name = "Debanjan Paul";
 
             /// <summary>
             /// The author's email address.
             /// </summary>
-            internal static readonly string Email = "debanjanpaul10@gmail.com";
+            internal const string Email = "debanjanpaul10@gmail.com";
         }
 
         /// <summary>

@@ -17,7 +17,6 @@ namespace IBBS.Domain.UseCases;
 /// <seealso cref="IPostsService"/>
 public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
 {
-
     /// <summary>
     /// Gets the post asynchronous.
     /// </summary>
@@ -43,8 +42,7 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     public async Task<bool> AddNewPostAsync(AddPostDomain newPost, string userName)
     {
         DomainUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, logger);
-        var result = await postsDataService.AddNewPostAsync(newPost, userName).ConfigureAwait(false);
-        return result;
+        return await postsDataService.AddNewPostAsync(newPost, userName).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -68,8 +66,7 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     public async Task<bool> DeletePostAsync(string postId, string userName)
     {
         var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
-        var response = await postsDataService.DeletePostAsync(postGuid, userName).ConfigureAwait(false);
-        return response;
+        return await postsDataService.DeletePostAsync(postGuid, userName).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -97,8 +94,7 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
         }
         else
         {
-            var postsData = await postRatingsDataService.GetAllPostsWithRatingsAsync(userName).ConfigureAwait(false);
-            return postsData;
+            return await postRatingsDataService.GetAllPostsWithRatingsAsync(userName).ConfigureAwait(false);
         }
     }
 
