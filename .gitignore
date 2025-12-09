@@ -23,7 +23,3 @@ __queuestorage__
 __tablestorage__
 __azurite_db*.*
 
-# DB
-*.dbmdl
-*.jfm
-

@@ -4,13 +4,13 @@
 			"name": "DEBUG: IBBS.API",
 			"type": "dotnet",
 			"request": "launch",
-			"projectPath": "${workspaceFolder}/IBBS.API/IBBS.API.csproj"
+			"projectPath": "${workspaceFolder}/Backend/API/IBBS.API/IBBS.API.csproj"
 		},
 		{
 			"name": "DEBUG: IBBS.MCP",
 			"type": "dotnet",
 			"request": "launch",
-			"projectPath": "${workspaceFolder}/IBBS.MCP/IBBS.MCP.csproj"
+			"projectPath": "${workspaceFolder}/Backend/API/IBBS.MCP/IBBS.MCP.csproj"
 		}
 	]
 }
