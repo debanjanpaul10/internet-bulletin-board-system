@@ -16,7 +16,7 @@ namespace IBBS.API.Adapters.Handlers;
 /// <param name="mapper">The mapper.</param>
 /// <param name="configuration">The configuration.</param>
 /// <seealso cref="IBBS.API.Adapters.Contracts.IAiServicesHandler" />
-public class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfiguration configuration) : IAiServicesHandler
+public sealed class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfiguration configuration) : IAiServicesHandler
 {
     /// <summary>
     /// Generate the bug severity using LLM.

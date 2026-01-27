@@ -14,65 +14,55 @@ namespace IBBS.API.Controllers.v1;
 /// <seealso cref="BaseController" />
 /// <param name="httpContextAccessor">The http context accessor.</param>
 /// <param name="postRatingsHandler">The posts ratings service.</param>
+/// <param name="configuration">The configuration service.</param>
 [ApiController]
 [Route(RouteConstants.PostRatingsController.BaseRoute)]
-public class PostRatingsController(IHttpContextAccessor httpContextAccessor, IPostRatingsHandler postRatingsHandler) : BaseController(httpContextAccessor)
+public sealed class PostRatingsController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IPostRatingsHandler postRatingsHandler) : BaseController(httpContextAccessor, configuration)
 {
-	/// <summary>
-	/// Gets all the user ratings async
-	/// </summary>
-	/// <returns>The action result of the ratings data</returns>
-	[HttpGet(RouteConstants.PostRatingsController.GetAllUserRatings_Route)]
-	[ProducesResponseType(typeof(IEnumerable<PostRatingDTO>), StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[SwaggerOperation(Summary = GetAllUserRatingsAction.Summary, Description = GetAllUserRatingsAction.Description, OperationId = GetAllUserRatingsAction.OperationId)]
-	public async Task<IActionResult> GetAllUserRatingsAsync()
-	{
-		if (IsAuthorized())
-		{
-			var result = await postRatingsHandler.GetAllUserPostRatingsAsync(UserEmail).ConfigureAwait(false);
-			if (result is not null)
-			{
-				return HandleSuccessResult(result);
-			}
-			else
-			{
-				return this.HandleBadRequest(ExceptionConstants.UnableToGetUserPostRatingsMessageConstant);
-			}
-		}
+    /// <summary>
+    /// Gets all the user ratings async
+    /// </summary>
+    /// <returns>The action result of the ratings data</returns>
+    [HttpGet(RouteConstants.PostRatingsController.GetAllUserRatings_Route)]
+    [ProducesResponseType(typeof(IEnumerable<PostRatingDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = GetAllUserRatingsAction.Summary, Description = GetAllUserRatingsAction.Description, OperationId = GetAllUserRatingsAction.OperationId)]
+    public async Task<IActionResult> GetAllUserRatingsAsync()
+    {
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        {
+            var result = await postRatingsHandler.GetAllUserPostRatingsAsync(UserEmail).ConfigureAwait(false);
+            if (result is not null) return HandleSuccessResult(result);
+            else return this.HandleBadRequest(ExceptionConstants.UnableToGetUserPostRatingsMessageConstant);
+        }
 
-		return HandleUnAuthorizedRequest();
-	}
+        return HandleUnAuthorizedRequest();
+    }
 
-	/// <summary>
-	/// Updates the rating of the post asynchronously.
-	/// </summary>
-	/// <param name="postRating">The post rating.</param>
-	/// <returns>The action result.</returns>
-	[HttpPost(RouteConstants.PostRatingsController.UpdateRating_Route)]
-	[ProducesResponseType(typeof(UpdateRatingDTO), StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[SwaggerOperation(Summary = UpdateRatingAction.Summary, Description = UpdateRatingAction.Description, OperationId = UpdateRatingAction.OperationId)]
-	public async Task<IActionResult> UpdateRatingAsync(PostRatingDTO postRating)
-	{
-		if (IsAuthorized())
-		{
-			var result = await postRatingsHandler.UpdateRatingAsync(postRating, UserEmail).ConfigureAwait(false);
-			if (result is not null)
-			{
-				return this.HandleSuccessResult(result);
-			}
-			else
-			{
-				return this.HandleBadRequest(ExceptionConstants.PostGuidNotValidMessageConstant);
-			}
-		}
+    /// <summary>
+    /// Updates the rating of the post asynchronously.
+    /// </summary>
+    /// <param name="postRating">The post rating.</param>
+    /// <returns>The action result.</returns>
+    [HttpPost(RouteConstants.PostRatingsController.UpdateRating_Route)]
+    [ProducesResponseType(typeof(UpdateRatingDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = UpdateRatingAction.Summary, Description = UpdateRatingAction.Description, OperationId = UpdateRatingAction.OperationId)]
+    public async Task<IActionResult> UpdateRatingAsync(PostRatingDTO postRating)
+    {
+        ArgumentNullException.ThrowIfNull(postRating);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        {
+            var result = await postRatingsHandler.UpdateRatingAsync(postRating, UserEmail).ConfigureAwait(false);
+            if (result is not null) return this.HandleSuccessResult(result);
+            else return this.HandleBadRequest(ExceptionConstants.PostGuidNotValidMessageConstant);
+        }
 
-		return HandleUnAuthorizedRequest();
-	}
+        return HandleUnAuthorizedRequest();
+    }
 }
 

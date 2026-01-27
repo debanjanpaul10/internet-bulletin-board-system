@@ -12,7 +12,7 @@ namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
 /// <param name="dbContext">The database context.</param>
 /// <param name="logger">The logger service.</param>
 /// <seealso cref="IBBS.Domain.DrivenPorts.IPostsDataService" />
-public class PostsDataService(SqlDbContext dbContext, ILogger<PostsDataService> logger) : IPostsDataService
+public sealed class PostsDataService(SqlDbContext dbContext, ILogger<PostsDataService> logger) : IPostsDataService
 {
     /// <summary>
     /// Gets the post asynchronous.

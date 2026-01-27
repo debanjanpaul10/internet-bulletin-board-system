@@ -3,7 +3,7 @@ namespace IBBS.Domain.DomainEntities.AI;
 /// <summary>
 /// The Bug Severity AI request domain model.
 /// </summary>
-public class BugSeverityAIRequestDomain
+public sealed record BugSeverityAIRequestDomain
 {
     /// <summary>
     /// Gets or sets the bug title.

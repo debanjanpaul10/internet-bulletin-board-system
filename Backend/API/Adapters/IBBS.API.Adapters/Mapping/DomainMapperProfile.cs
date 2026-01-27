@@ -13,7 +13,7 @@ namespace IBBS.API.Adapters.Mapping;
 /// The Domain Mapper Profile.
 /// </summary>
 /// <seealso cref="AutoMapper.Profile" />
-public class DomainMapperProfile : Profile
+public sealed class DomainMapperProfile : Profile
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainMapperProfile"/> class.

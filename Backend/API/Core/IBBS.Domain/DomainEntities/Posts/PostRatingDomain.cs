@@ -3,7 +3,7 @@ namespace IBBS.Domain.DomainEntities.Posts;
 /// <summary>
 /// The PostDomain Ratings Entity Class.
 /// </summary>
-public class PostRatingDomain
+public sealed record PostRatingDomain
 {
     /// <summary>
     /// Gets or sets the post rating id.

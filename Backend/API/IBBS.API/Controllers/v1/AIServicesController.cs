@@ -13,12 +13,15 @@ namespace IBBS.API.Controllers.v1;
 /// The AI Services Controller.
 /// </summary>
 /// <param name="aiServicesHandler">The AI Services adapter Handler.</param>
+/// <param name="configuration">The configuration service.</param>
 /// <param name="httpContextAccessor">The http context accessor.</param>
 /// <seealso cref="BaseController" />
 [ApiController]
 [Route(RouteConstants.AiServicesController.BaseRoute)]
-public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiServicesHandler aiServicesHandler) : BaseController(httpContextAccessor)
+public sealed class AIServicesController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IAiServicesHandler aiServicesHandler) : BaseController(httpContextAccessor, configuration)
 {
+    #region PLUGINS
+
     /// <summary>
     /// Rewrites the with ai asynchronous.
     /// </summary>
@@ -32,14 +35,12 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
     [SwaggerOperation(Summary = RewriteWithAIAction.Summary, Description = RewriteWithAIAction.Description, OperationId = RewriteWithAIAction.OperationId)]
     public async Task<IActionResult> RewriteWithAIAsync(UserStoryRequestDTO requestDto)
     {
-        if (IsAuthorized())
+        ArgumentNullException.ThrowIfNull(requestDto);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            ArgumentNullException.ThrowIfNull(requestDto);
-            var rewrittenStory = await aiServicesHandler.RewriteWithAIAsync(UserEmail, requestDto).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(rewrittenStory))
-                return HandleSuccessResult(rewrittenStory);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+            var result = await aiServicesHandler.RewriteWithAIAsync(UserEmail, requestDto).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
 
         return HandleUnAuthorizedRequest();
@@ -59,14 +60,12 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
     [SwaggerOperation(Summary = GenerateTagForStoryAction.Summary, Description = GenerateTagForStoryAction.Description, OperationId = GenerateTagForStoryAction.OperationId)]
     public async Task<IActionResult> GenerateTagForStoryAsync(UserStoryRequestDTO requestDto)
     {
-        if (IsAuthorized())
+        ArgumentNullException.ThrowIfNull(requestDto);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            ArgumentNullException.ThrowIfNull(requestDto);
-            var tagForStory = await aiServicesHandler.GenerateTagForStoryAsync(UserEmail, requestDto).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(tagForStory))
-                return HandleSuccessResult(tagForStory);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+            var result = await aiServicesHandler.GenerateTagForStoryAsync(UserEmail, requestDto).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
 
         return HandleUnAuthorizedRequest();
@@ -85,18 +84,42 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
     [SwaggerOperation(Summary = ModerateContentDataAction.Summary, Description = ModerateContentDataAction.Description, OperationId = ModerateContentDataAction.OperationId)]
     public async Task<IActionResult> ModerateContentDataAsync(UserStoryRequestDTO requestDto)
     {
-        if (IsAuthorized())
+        ArgumentNullException.ThrowIfNull(requestDto);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            ArgumentNullException.ThrowIfNull(requestDto);
-            var tagForStory = await aiServicesHandler.ModerateContentDataAsync(UserEmail, requestDto).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(tagForStory))
-                return HandleSuccessResult(tagForStory);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+            var result = await aiServicesHandler.ModerateContentDataAsync(UserEmail, requestDto).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
 
         return HandleUnAuthorizedRequest();
     }
+
+    /// <summary>
+    /// Gets the bug severity status asynchronous.
+    /// </summary>
+    /// <param name="bugSeverityInput">The bug severity input.</param>
+    /// <returns>The bug severity response dto.</returns>
+    [HttpPost(RouteConstants.AiServicesController.GetBugSeverityStatus_ApiRoute)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = GetBugSeverityStatusAction.Summary, Description = GetBugSeverityStatusAction.Description, OperationId = GetBugSeverityStatusAction.OperationId)]
+    public async Task<IActionResult> GetBugSeverityStatusAsync([FromBody] BugSeverityAIRequestDTO bugSeverityInput)
+    {
+        ArgumentNullException.ThrowIfNull(bugSeverityInput);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        {
+            var result = await aiServicesHandler.GenerateBugSeverityAsync(bugSeverityInput).ConfigureAwait(false);
+            if (result is not null) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
+
+        return HandleUnAuthorizedRequest();
+    }
+
+    #endregion
 
     /// <summary>
     /// Gets the chatbot response asynchronous.
@@ -111,14 +134,12 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
     [SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
     public async Task<IActionResult> GetChatbotResponseAsync([FromBody] UserQueryRequestDTO chatMessage)
     {
-        if (IsAuthorized())
+        ArgumentException.ThrowIfNullOrWhiteSpace(chatMessage.UserQuery);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(chatMessage.UserQuery);
             var result = await aiServicesHandler.GetChatbotResponseAsync(chatMessage).ConfigureAwait(false);
-            if (result is not null)
-                return HandleSuccessResult(result);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+            if (result is not null) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
 
         return HandleUnAuthorizedRequest();
@@ -138,14 +159,12 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
     [SwaggerOperation(Summary = PostAiResultFeedbackAction.Summary, Description = PostAiResultFeedbackAction.Description, OperationId = PostAiResultFeedbackAction.OperationId)]
     public async Task<IActionResult> PostAiResultFeedbackAsync([FromBody] AIResponseFeedbackDTO aiResponseFeedback)
     {
-        if (IsAuthorized())
+        ArgumentNullException.ThrowIfNull(aiResponseFeedback);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            ArgumentNullException.ThrowIfNull(aiResponseFeedback);
             var result = await aiServicesHandler.PostAiResultFeedbackAsync(aiResponseFeedback, UserEmail).ConfigureAwait(false);
-            if (result)
-                return HandleSuccessResult(result);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+            if (result) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
 
         return HandleUnAuthorizedRequest();
@@ -163,41 +182,14 @@ public class AIServicesController(IHttpContextAccessor httpContextAccessor, IAiS
     [SwaggerOperation(Summary = GetSamplePromptsForChatbotAction.Summary, Description = GetSamplePromptsForChatbotAction.Description, OperationId = GetSamplePromptsForChatbotAction.OperationId)]
     public async Task<IActionResult> GetSamplePromptsForChatbotAsync()
     {
-        if (IsAuthorized())
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
             var result = await aiServicesHandler.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
-            if (result is not null)
-                return HandleSuccessResult(result);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+            if (result is not null) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
 
         return HandleUnAuthorizedRequest();
     }
 
-    /// <summary>
-    /// Gets the bug severity status asynchronous.
-    /// </summary>
-    /// <param name="bugSeverityInput">The bug severity input.</param>
-    /// <returns>The bug severity response dto.</returns>
-    [HttpPost(RouteConstants.AiServicesController.GetBugSeverityStatus_ApiRoute)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GetBugSeverityStatusAction.Summary, Description = GetBugSeverityStatusAction.Description, OperationId = GetBugSeverityStatusAction.OperationId)]
-    public async Task<IActionResult> GetBugSeverityStatusAsync([FromBody] BugSeverityAIRequestDTO bugSeverityInput)
-    {
-        if (IsAuthorized())
-        {
-            ArgumentNullException.ThrowIfNull(bugSeverityInput);
-            var result = await aiServicesHandler.GenerateBugSeverityAsync(bugSeverityInput).ConfigureAwait(false);
-            if (result is not null)
-                return HandleSuccessResult(result);
-
-            return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
-
-        return HandleUnAuthorizedRequest();
-    }
 }

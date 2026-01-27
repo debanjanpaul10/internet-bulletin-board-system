@@ -12,28 +12,28 @@ namespace IBBS.API.Adapters.Handlers;
 /// <param name="commonService">The common services.</param>
 /// <param name="mapper">The auto mapper.</param>
 /// <seealso cref="IBBS.API.Adapters.Contracts.ICommonServicesHandler" />
-public class CommonServicesHandler(IMapper mapper, ICommonService commonService) : ICommonServicesHandler
+public sealed class CommonServicesHandler(IMapper mapper, ICommonService commonService) : ICommonServicesHandler
 {
-	/// <summary>
-	/// Gets the lookup master data async.
-	/// </summary>
-	/// <returns>The list of <see cref="LookupMasterDTO"/></returns>
-	public async Task<IEnumerable<LookupMasterDTO>> GetLookupMasterDataAsync()
-	{
-		var domainResult = await commonService.GetLookupMasterDataAsync().ConfigureAwait(false);
-		return mapper.Map<IEnumerable<LookupMasterDTO>>(domainResult);
-	}
+    /// <summary>
+    /// Gets the lookup master data async.
+    /// </summary>
+    /// <returns>The list of <see cref="LookupMasterDTO"/></returns>
+    public async Task<IEnumerable<LookupMasterDTO>> GetLookupMasterDataAsync()
+    {
+        var domainResult = await commonService.GetLookupMasterDataAsync().ConfigureAwait(false);
+        return mapper.Map<IEnumerable<LookupMasterDTO>>(domainResult);
+    }
 
-	/// <summary>
-	/// Submits the bug report data asynchronous.
-	/// </summary>
-	/// <param name="addBugReportModel">The add bug report model.</param>
-	/// <returns>
-	/// The boolean for success/failure.
-	/// </returns>
-	public async Task<bool> SubmitBugReportDataAsync(BugReportDTO addBugReportModel)
-	{
-		var domainInput = mapper.Map<BugReportDomain>(addBugReportModel);
-		return await commonService.SubmitBugReportDataAsync(domainInput).ConfigureAwait(false);
-	}
+    /// <summary>
+    /// Submits the bug report data asynchronous.
+    /// </summary>
+    /// <param name="addBugReportModel">The add bug report model.</param>
+    /// <returns>
+    /// The boolean for success/failure.
+    /// </returns>
+    public async Task<bool> SubmitBugReportDataAsync(BugReportDTO addBugReportModel)
+    {
+        var domainInput = mapper.Map<BugReportDomain>(addBugReportModel);
+        return await commonService.SubmitBugReportDataAsync(domainInput).ConfigureAwait(false);
+    }
 }

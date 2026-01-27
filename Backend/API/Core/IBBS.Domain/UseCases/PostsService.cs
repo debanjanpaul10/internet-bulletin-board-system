@@ -4,6 +4,7 @@ using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
 using InternetBulletin.Data.Contracts;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
 
 namespace IBBS.Domain.UseCases;
@@ -15,7 +16,7 @@ namespace IBBS.Domain.UseCases;
 /// <param name="postsDataService">The Posts Data Service.</param>
 /// <param name="postRatingsDataService">The post ratings data service.</param>
 /// <seealso cref="IPostsService"/>
-public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
+public sealed class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
 {
     /// <summary>
     /// Gets the post asynchronous.
@@ -27,9 +28,23 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     /// </returns>
     public async Task<PostDomain> GetPostAsync(string postId, string userName)
     {
-        var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
-        var result = await postsDataService.GetPostAsync(postGuid, userName, true).ConfigureAwait(false);
-        return DomainUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, logger);
+        try
+        {
+            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(GetPostAsync), DateTime.UtcNow, postId);
+
+            var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
+            var result = await postsDataService.GetPostAsync(postGuid, userName, true).ConfigureAwait(false);
+            return DomainUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, logger);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetPostAsync), DateTime.UtcNow, ex.Message);
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(GetPostAsync), DateTime.UtcNow, postId);
+        }
     }
 
     /// <summary>
@@ -41,8 +56,22 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     /// </returns>
     public async Task<bool> AddNewPostAsync(AddPostDomain newPost, string userName)
     {
-        DomainUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, logger);
-        return await postsDataService.AddNewPostAsync(newPost, userName).ConfigureAwait(false);
+        try
+        {
+            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(AddNewPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { newPost, userName }));
+
+            DomainUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, logger);
+            return await postsDataService.AddNewPostAsync(newPost, userName).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(AddNewPostAsync), DateTime.UtcNow, ex.Message);
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(AddNewPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { newPost, userName }));
+        }
     }
 
     /// <summary>
@@ -52,9 +81,24 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     /// <returns>The updated post data.</returns>
     public async Task<PostDomain> UpdatePostAsync(UpdatePostDomain updatedPost, string userName)
     {
-        DomainUtilities.ThrowIfNull(updatedPost, ExceptionConstants.NullPostMessageConstant, logger);
-        var result = await postsDataService.UpdatePostAsync(updatedPost, userName, false).ConfigureAwait(false);
-        return DomainUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, logger);
+        try
+        {
+            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(UpdatePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { updatedPost, userName }));
+
+            DomainUtilities.ThrowIfNull(updatedPost, ExceptionConstants.NullPostMessageConstant, logger);
+            var result = await postsDataService.UpdatePostAsync(updatedPost, userName, false).ConfigureAwait(false);
+            return DomainUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, logger);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(UpdatePostAsync), DateTime.UtcNow, ex.Message);
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(UpdatePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { updatedPost, userName }));
+        }
+
     }
 
     /// <summary>
@@ -65,8 +109,23 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     /// <returns>The boolean for success / failure</returns>
     public async Task<bool> DeletePostAsync(string postId, string userName)
     {
-        var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
-        return await postsDataService.DeletePostAsync(postGuid, userName).ConfigureAwait(false);
+        try
+        {
+            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(DeletePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { postId, userName }));
+
+            var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
+            return await postsDataService.DeletePostAsync(postGuid, userName).ConfigureAwait(false);
+        }
+
+        catch (Exception ex)
+        {
+            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(DeletePostAsync), DateTime.UtcNow, ex.Message);
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(DeletePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { postId, userName }));
+        }
     }
 
     /// <summary>
@@ -76,26 +135,39 @@ public class PostsService(ILogger<PostsService> logger, IPostsDataService postsD
     /// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
     public async Task<List<PostWithRatingsDomain>> GetAllPostsAsync(string userName)
     {
-        if (string.IsNullOrWhiteSpace(userName)) // Consider IsNullOrWhiteSpace for robustness
+        try
         {
-            var result = await postsDataService.GetAllPostsAsync().ConfigureAwait(false);
-            var postsData = result.Select(post => new PostWithRatingsDomain
-            {
-                PostId = post.PostId,
-                PostTitle = post.PostTitle,
-                PostContent = post.PostContent,
-                PostCreatedDate = post.PostCreatedDate,
-                PostOwnerUserName = post.PostOwnerUserName,
-                Ratings = post.Ratings,
-                IsActive = post.IsActive,
-            }).ToList();
+            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(GetAllPostsAsync), DateTime.UtcNow, userName ?? string.Empty);
 
-            return postsData;
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                var result = await postsDataService.GetAllPostsAsync().ConfigureAwait(false);
+                var postsData = result.Select(post => new PostWithRatingsDomain
+                {
+                    PostId = post.PostId,
+                    PostTitle = post.PostTitle,
+                    PostContent = post.PostContent,
+                    PostCreatedDate = post.PostCreatedDate,
+                    PostOwnerUserName = post.PostOwnerUserName,
+                    Ratings = post.Ratings,
+                    IsActive = post.IsActive,
+                }).ToList();
+
+                return postsData;
+            }
+            else
+            {
+                return await postRatingsDataService.GetAllPostsWithRatingsAsync(userName).ConfigureAwait(false);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return await postRatingsDataService.GetAllPostsWithRatingsAsync(userName).ConfigureAwait(false);
+            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetAllPostsAsync), DateTime.UtcNow, ex.Message);
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(GetAllPostsAsync), DateTime.UtcNow, userName ?? string.Empty);
         }
     }
-
 }

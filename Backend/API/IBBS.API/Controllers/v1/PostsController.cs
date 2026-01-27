@@ -14,11 +14,11 @@ namespace IBBS.API.Controllers.v1;
 /// </summary>
 /// <seealso cref="BaseController" />
 /// <param name="httpContextAccessor">The http context accessor.</param>
-/// <param name="logger">The Logger.</param>
 /// <param name="postsHandler">The Posts api adapter handler.</param>
+/// <param name="configuration">The configuration service.</param>
 [ApiController]
 [Route(RouteConstants.PostsController.BaseRoute)]
-public class PostsController(ILogger<PostsController> logger, IHttpContextAccessor httpContextAccessor, IPostsHandler postsHandler) : BaseController(httpContextAccessor)
+public sealed class PostsController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IPostsHandler postsHandler) : BaseController(httpContextAccessor, configuration)
 {
     /// <summary>
     /// Gets all posts data asynchronous.
@@ -33,21 +33,9 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
     [SwaggerOperation(Summary = GetAllPostsDataAction.Summary, Description = GetAllPostsDataAction.Description, OperationId = GetAllPostsDataAction.OperationId)]
     public async Task<IActionResult> GetAllPostsDataAsync()
     {
-        try
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
-            var result = await postsHandler.GetAllPostsAsync(UserEmail ?? string.Empty);
-            return HandleSuccessResult(result);
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsDataAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsDataAsync), DateTime.UtcNow, string.Empty));
-        }
+        var result = await postsHandler.GetAllPostsAsync(UserEmail ?? string.Empty);
+        if (result is not null) return HandleSuccessResult(result);
+        else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
     }
 
     /// <summary>
@@ -63,34 +51,15 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
     [SwaggerOperation(Summary = GetPostAction.Summary, Description = GetPostAction.Description, OperationId = GetPostAction.OperationId)]
     public async Task<IActionResult> GetPostAsync(string postId)
     {
-        try
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-            if (IsAuthorized())
-            {
-                var result = await postsHandler.GetPostAsync(postId, UserEmail);
-                if (result is not null && !Equals(result.PostId, Guid.Empty))
-                {
-                    return HandleSuccessResult(result);
-                }
-                else
-                {
-                    return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
-                }
-            }
+            var result = await postsHandler.GetPostAsync(postId, UserEmail);
+            if (result is not null && !Equals(result.PostId, Guid.Empty)) return HandleSuccessResult(result);
+            else return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
+        }
 
-            return HandleUnAuthorizedRequest();
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetPostAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetPostAsync), DateTime.UtcNow, postId));
-        }
+        return HandleUnAuthorizedRequest();
     }
 
     /// <summary>
@@ -106,33 +75,15 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
     [SwaggerOperation(Summary = AddNewPostAction.Summary, Description = AddNewPostAction.Description, OperationId = AddNewPostAction.OperationId)]
     public async Task<IActionResult> AddNewPostAsync(AddPostDTO newPost)
     {
-        try
+        ArgumentNullException.ThrowIfNull(newPost);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-            if (IsAuthorized())
-            {
-                var result = await postsHandler.AddNewPostAsync(newPost, UserEmail);
-                if (result)
-                {
-                    return this.HandleSuccessResult(result);
-                }
-                else
-                {
-                    return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-                }
-            }
+            var result = await postsHandler.AddNewPostAsync(newPost, UserEmail);
+            if (result) return this.HandleSuccessResult(result);
+            else return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
 
-            return HandleUnAuthorizedRequest();
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(AddNewPostAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(AddNewPostAsync), DateTime.UtcNow, newPost.PostTitle));
-        }
+        return HandleUnAuthorizedRequest();
     }
 
     /// <summary>
@@ -148,33 +99,15 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
     [SwaggerOperation(Summary = UpdatePostAction.Summary, Description = UpdatePostAction.Description, OperationId = UpdatePostAction.OperationId)]
     public async Task<IActionResult> UpdatePostAsync(UpdatePostDTO updatePost)
     {
-        try
+        ArgumentNullException.ThrowIfNull(updatePost);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
-            if (IsAuthorized())
-            {
-                var result = await postsHandler.UpdatePostAsync(updatePost, UserEmail);
-                if (result is not null && result.PostId != Guid.Empty)
-                {
-                    return this.HandleSuccessResult(result);
-                }
-                else
-                {
-                    return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-                }
-            }
+            var result = await postsHandler.UpdatePostAsync(updatePost, UserEmail);
+            if (result is not null && result.PostId != Guid.Empty) return this.HandleSuccessResult(result);
+            else return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
 
-            return HandleUnAuthorizedRequest();
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(UpdatePostAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(UpdatePostAsync), DateTime.UtcNow, updatePost.PostId));
-        }
+        return HandleUnAuthorizedRequest();
     }
 
     /// <summary>
@@ -190,32 +123,14 @@ public class PostsController(ILogger<PostsController> logger, IHttpContextAccess
     [SwaggerOperation(Summary = DeletePostAction.Summary, Description = DeletePostAction.Description, OperationId = DeletePostAction.OperationId)]
     public async Task<IActionResult> DeletePostAsync(string postId)
     {
-        try
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-            if (IsAuthorized())
-            {
-                var result = await postsHandler.DeletePostAsync(postId, UserEmail);
-                if (result)
-                {
-                    return HandleSuccessResult(result);
-                }
-                else
-                {
-                    return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-                }
-            }
+            var result = await postsHandler.DeletePostAsync(postId, UserEmail);
+            if (result) return HandleSuccessResult(result);
+            else return this.HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
 
-            return HandleUnAuthorizedRequest();
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-        }
+        return HandleUnAuthorizedRequest();
     }
 }
