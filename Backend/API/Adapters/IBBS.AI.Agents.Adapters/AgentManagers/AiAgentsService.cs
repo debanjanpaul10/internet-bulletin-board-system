@@ -187,16 +187,19 @@ public sealed class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<
     #endregion
 
     /// <summary>
-    /// Gets the ai agent response data asynchronous.
+    /// Invoke the workspace agent with user message and get the response.
     /// </summary>
-    /// <param name="chatRequestDomainModel">The chat request domain model.</param>
-    /// <returns>The AI response string.</returns>
-    public async Task<string> GetAiAgentResponseDataAsync(ChatRequestDomainModel chatRequestDomainModel)
+    /// <param name="chatRequestModel">The chat request model.</param>
+    /// <returns>The string response from AI.</returns>
+    public async Task<string> InvokeWorkspaceAgentAsync(WorkspaceAgentChatRequestDomain chatRequestModel)
     {
         try
         {
-            logger.LogInformation(LoggingConstants.LogHelperMethodStart, nameof(GetAiAgentResponseDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(chatRequestDomainModel));
-            var response = await httpClientHelper.GetAIResponseAsync(chatRequestDomainModel, AIAgentsRoutesConstants.InvokeAgent_ApiRoute).ConfigureAwait(false);
+            logger.LogInformation(LoggingConstants.LogHelperMethodStart, nameof(InvokeWorkspaceAgentAsync), DateTime.UtcNow, JsonConvert.SerializeObject(chatRequestModel));
+
+            var response = await httpClientHelper.GetAIResponseAsync(
+                data: chatRequestModel,
+                apiUrl: AIAgentsRoutesConstants.InvokeWorkspaceAgent_ApiRoute).ConfigureAwait(false);
             var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var aiResponse = JsonConvert.DeserializeObject<AIAgentResponse>(responseString) ?? new AIAgentResponse();
@@ -204,12 +207,12 @@ public sealed class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, LoggingConstants.LogHelperMethodFailed, nameof(GetAiAgentResponseDataAsync), DateTime.UtcNow, ex.Message);
+            logger.LogError(ex, LoggingConstants.LogHelperMethodFailed, nameof(InvokeWorkspaceAgentAsync), DateTime.UtcNow, ex.Message);
             throw;
         }
         finally
         {
-            logger.LogInformation(LoggingConstants.LogHelperMethodEnded, nameof(GetAiAgentResponseDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(chatRequestDomainModel));
+            logger.LogInformation(LoggingConstants.LogHelperMethodEnded, nameof(InvokeWorkspaceAgentAsync), DateTime.UtcNow, JsonConvert.SerializeObject(chatRequestModel));
         }
     }
 }

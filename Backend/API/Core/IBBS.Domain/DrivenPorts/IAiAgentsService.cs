@@ -49,9 +49,9 @@ public interface IAiAgentsService
     Task<IEnumerable<string>> GetFollowupQuestionsResponseAsync(FollowupQuestionsRequestDomain followupQuestionsRequestDomain);
 
     /// <summary>
-    /// Gets the ai agent response data asynchronous.
+    /// Invoke the workspace agent with user message and get the response.
     /// </summary>
-    /// <param name="chatRequestDomainModel">The chat request domain model.</param>
-    /// <returns>The AI response string.</returns>
-    Task<string> GetAiAgentResponseDataAsync(ChatRequestDomainModel chatRequestDomainModel);
+    /// <param name="chatRequestModel">The chat request model.</param>
+    /// <returns>The string response from AI.</returns>
+    Task<string> InvokeWorkspaceAgentAsync(WorkspaceAgentChatRequestDomain chatRequestModel);
 }

@@ -122,30 +122,6 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
     #endregion
 
     /// <summary>
-    /// Gets the chatbot response asynchronous.
-    /// </summary>
-    /// <param name="chatMessage">The chat message.</param>
-    /// <returns>The ai chatbot response dto model.</returns>
-    [HttpPost(RouteConstants.AiServicesController.ChatbotRespond_Route)]
-    [ProducesResponseType(typeof(AIChatbotResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
-    public async Task<IActionResult> GetChatbotResponseAsync([FromBody] UserQueryRequestDTO chatMessage)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(chatMessage.UserQuery);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
-        {
-            var result = await aiServicesHandler.GetChatbotResponseAsync(chatMessage).ConfigureAwait(false);
-            if (result is not null) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
-
-        return HandleUnAuthorizedRequest();
-    }
-
-    /// <summary>
     /// Posts the ai result feedback asynchronous.
     /// </summary>
     /// <param name="aiResponseFeedback">The ai response feedback.</param>

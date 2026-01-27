@@ -4,8 +4,6 @@ using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivingPorts;
-using Microsoft.Extensions.Configuration;
-using static IBBS.Domain.Helpers.DomainConstants;
 
 namespace IBBS.API.Adapters.Handlers;
 
@@ -14,9 +12,8 @@ namespace IBBS.API.Adapters.Handlers;
 /// </summary>
 /// <param name="aiServices">The ai services.</param>
 /// <param name="mapper">The mapper.</param>
-/// <param name="configuration">The configuration.</param>
-/// <seealso cref="IBBS.API.Adapters.Contracts.IAiServicesHandler" />
-public sealed class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfiguration configuration) : IAiServicesHandler
+/// <seealso cref="IAiServicesHandler" />
+public sealed class AiServicesHandler(IAIService aiServices, IMapper mapper) : IAiServicesHandler
 {
     /// <summary>
     /// Generate the bug severity using LLM.
@@ -41,22 +38,6 @@ public sealed class AiServicesHandler(IAIService aiServices, IMapper mapper, ICo
     {
         var domainRequest = mapper.Map<UserStoryRequestDomain>(requestDTO);
         return await aiServices.GenerateTagForStoryAsync(userName, domainRequest).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Gets the chatbot response asynchronous.
-    /// </summary>
-    /// <param name="chatMessageRequest">The user query request.</param>
-    /// <returns>
-    /// The ai agent response.
-    /// </returns>
-    public async Task<AIChatbotResponseDTO> GetChatbotResponseAsync(UserQueryRequestDTO chatMessageRequest)
-    {
-        var areFollowupQuestionsEnabled = bool.TryParse(configuration[ConfigurationConstants.AreFollowupQuestionsEnabled], out var parsedValue) && parsedValue;
-
-        var domainInput = mapper.Map<UserQueryRequestDomain>(chatMessageRequest);
-        var domainResponse = await aiServices.GetChatbotResponseAsync(domainInput, areFollowupQuestionsEnabled).ConfigureAwait(false);
-        return mapper.Map<AIChatbotResponseDTO>(domainResponse);
     }
 
     /// <summary>
