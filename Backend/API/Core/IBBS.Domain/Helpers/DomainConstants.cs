@@ -128,6 +128,11 @@ public class DomainConstants
         /// The unclear intent
         /// </summary>
         internal const string UnclearIntent = "UNCLEAR";
+
+        /// <summary>
+        /// The unclear intent message
+        /// </summary>
+        internal const string UnclearIntentMessage = "Cannot determine the user intent";
     }
 
     /// <summary>

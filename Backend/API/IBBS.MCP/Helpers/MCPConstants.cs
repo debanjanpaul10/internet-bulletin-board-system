@@ -6,6 +6,27 @@
 internal static class MCPConstants
 {
     /// <summary>
+    /// The header constants class.
+    /// </summary>
+    internal static class HeaderConstants
+    {
+        /// <summary>
+        /// The not applicable string constant.
+        /// </summary>
+        internal const string NotApplicableStringConstant = "NA";
+
+        /// <summary>
+        /// The client id claim constant.
+        /// </summary>
+        public const string ClientIdClaimConstant = "aud";
+
+        /// <summary>
+        /// The user display name constant.
+        /// </summary>
+        internal const string UserEmailClaimConstant = "name";
+    }
+
+    /// <summary>
     /// The Configuration Constants class.
     /// </summary>
     internal static class ConfigurationConstants

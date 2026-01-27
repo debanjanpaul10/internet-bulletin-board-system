@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using IBBS.API.Helpers;
 using InternetBulletin.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,46 +8,42 @@ using static IBBS.API.Helpers.APIConstants;
 namespace IBBS.API.Controllers;
 
 /// <summary>
-/// The Base Controller Class.
+/// The base controller class.
 /// </summary>
-/// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+/// <param name="httpContextAccessor">The http context accessor.</param>
+/// <param name="configuration">The configuration.</param>
+/// <seealso cref="ControllerBase"/>
 [Authorize]
-public abstract class BaseController : ControllerBase
+public abstract class BaseController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : ControllerBase
 {
     /// <summary>
     /// The user email
     /// </summary>
-    protected string UserEmail = string.Empty;
+    protected string UserEmail => httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(HeaderConstants.UserEmailClaimConstant))?.Value
+        ?? HeaderConstants.NotApplicableStringConstant;
 
     /// <summary>
-    /// The http context accessor.
+    /// Determines whether the request is authorized based on the authorization type.
     /// </summary>
-    private readonly IHttpContextAccessor? _httpContextAccessor;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BaseController"/> class.
-    /// </summary>
-    /// <param name="httpContextAccessor">The http context accessor.</param>
-    public BaseController(IHttpContextAccessor httpContextAccessor)
+    /// <param name="authorizationType">The authorization type.</param>
+    /// <returns>The boolean <c>true</c> if the request is authorized, otherwise <c>false</c>.</returns>
+    /// <exception cref="Exception">Thrown when the configuration is missing.</exception>
+    protected bool IsAuthorized(AuthorizationTypes authorizationTypes)
     {
-        this._httpContextAccessor = httpContextAccessor;
-        if (this._httpContextAccessor.HttpContext is not null && _httpContextAccessor.HttpContext?.User is not null)
+        if (httpContextAccessor.HttpContext is not null && httpContextAccessor.HttpContext?.User is not null)
         {
-            var userEmail = this._httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(ConfigurationConstants.UserEmailClaimConstant))?.Value;
-            if (!string.IsNullOrEmpty(userEmail))
-                this.UserEmail = userEmail;
+            // USER AUTHENTICATION
+            if (authorizationTypes == AuthorizationTypes.UserBased)
+                if (!string.IsNullOrEmpty(this.UserEmail) && !this.UserEmail.Equals(HeaderConstants.NotApplicableStringConstant, StringComparison.OrdinalIgnoreCase))
+                    return true && this.CheckApplicationLevelAuthorization();
+
+
+            // APPLICATION AUTHENTICATION
+            if (authorizationTypes == AuthorizationTypes.ApplicationBased)
+                return this.CheckApplicationLevelAuthorization();
         }
-    }
 
-    /// <summary>
-    /// Is user authorized.
-    /// </summary>
-    protected bool IsAuthorized()
-    {
-        if (string.IsNullOrEmpty(this.UserEmail))
-            throw new UnauthorizedAccessException();
-
-        return true;
+        return false;
     }
 
     /// <summary>
@@ -92,4 +89,23 @@ public abstract class BaseController : ControllerBase
             IsSuccess = false,
         });
     }
+
+    #region PRIVATE METHODS
+
+    /// <summary>
+    /// Checks the application level authorization.
+    /// </summary>
+    /// <returns><c>true</c> if the application is authorized, otherwise <c>false</c>.</returns>
+    /// <exception cref="Exception">Thrown when the configuration is missing.</exception>
+    private bool CheckApplicationLevelAuthorization()
+    {
+        var currentClientId = this.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(HeaderConstants.ClientIdClaimConstant))?.Value;
+        var aiAgentsClientIdFromConfig = configuration[ConfigurationConstants.Auth0ApiAudience] ?? throw new Exception(ExceptionConstants.ConfigurationValueNotExistsMessageConstant);
+        if (!string.IsNullOrEmpty(currentClientId) && !currentClientId.Equals(HeaderConstants.NotApplicableStringConstant, StringComparison.OrdinalIgnoreCase))
+            return currentClientId.Equals(aiAgentsClientIdFromConfig, StringComparison.OrdinalIgnoreCase);
+
+        return false;
+    }
+
+    #endregion
 }

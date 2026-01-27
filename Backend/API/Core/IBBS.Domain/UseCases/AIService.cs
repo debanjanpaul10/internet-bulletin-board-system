@@ -22,7 +22,7 @@ namespace IBBS.Domain.UseCases;
 /// <param name="mongoDbDatabaseManager">The mongo db database manager.</param>
 /// <param name="configuration">The configuration.</param>
 /// <seealso cref="IBBS.Domain.DrivingPorts.IAIService" />
-public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager, IConfiguration configuration) : IAIService
+public sealed class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, IMongoDbDatabaseManager mongoDbDatabaseManager, ICommonDataManager commonDataManager, IConfiguration configuration) : IAIService
 {
     #region PLUGINS
 
@@ -175,9 +175,7 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
             var aiChatbotResponse = new AIChatbotResponseDomain();
             var userIntent = await aiAgentsService.DetectUserIntentAsync(userQueryRequest).ConfigureAwait(false);
             if (string.IsNullOrEmpty(userIntent))
-            {
                 throw new Exception(ExceptionConstants.SomethingWentWrongMessage);
-            }
 
             var normalizedIntent = userIntent.Trim().ToUpperInvariant();
             var aiResponse = normalizedIntent switch
@@ -185,15 +183,13 @@ public class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsServi
                 IntentConstants.GreetingIntent => await aiAgentsService.HandleUserGreetingIntentAsync().ConfigureAwait(false),
                 IntentConstants.SQLIntent => await InvokeSqlFunctionAsync(userQueryRequest.UserQuery, aiChatbotResponse).ConfigureAwait(false),
                 IntentConstants.RAGIntent => await InvokeRAGFunctionAsync(userQueryRequest.UserQuery).ConfigureAwait(false),
-                IntentConstants.UnclearIntent => "Cannot determine the user intent",
+                IntentConstants.UnclearIntent => IntentConstants.UnclearIntentMessage,
                 _ => string.Empty
             };
 
             aiChatbotResponse.PrepareAgentChatbotReponse(userIntent.Trim(), userQueryRequest.UserQuery, aiResponse);
-            if (areFollowupQuestionsEnabled && (normalizedIntent != IntentConstants.GreetingIntent && normalizedIntent != IntentConstants.UnclearIntent))
-            {
-                await HandleFollowupQuestionsDataAsync(aiChatbotResponse).ConfigureAwait(false);
-            }
+            if (areFollowupQuestionsEnabled && normalizedIntent != IntentConstants.GreetingIntent && normalizedIntent != IntentConstants.UnclearIntent)
+                await this.HandleFollowupQuestionsDataAsync(aiChatbotResponse).ConfigureAwait(false);
 
             return aiChatbotResponse;
         }

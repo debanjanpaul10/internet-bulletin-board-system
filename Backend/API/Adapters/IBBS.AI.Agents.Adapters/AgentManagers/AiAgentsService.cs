@@ -15,7 +15,7 @@ namespace IBBS.AI.Agents.Adapters.AgentManagers;
 /// <param name="httpClientHelper">The http client helper service.</param>
 /// <param name="logger">The logger service.</param>
 /// <seealso cref="IBBS.Domain.DrivenPorts.IAiAgentsService" />
-public class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgentsService> logger) : IAiAgentsService
+public sealed class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgentsService> logger) : IAiAgentsService
 {
     #region CHATBOT
 

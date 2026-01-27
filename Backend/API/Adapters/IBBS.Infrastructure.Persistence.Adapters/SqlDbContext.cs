@@ -101,49 +101,109 @@ public class SqlDbContext(DbContextOptions<SqlDbContext> options) : DbContext(op
 			entity.ToTable(PostsTableConstant);
 			entity.HasKey(e => e.PostId).HasName(PrimaryKeyPostsConstant);
 
-			entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
-			entity.Property(e => e.PostTitle).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-			entity.Property(e => e.PostContent).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-			entity.Property(e => e.PostCreatedDate).HasColumnType(DateTimeDataTypeConstant).IsRequired();
-			entity.Property(e => e.PostOwnerUserName).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-			entity.Property(e => e.Ratings).HasColumnType(IntegerDataTypeConstant).HasDefaultValue(0).IsRequired();
-			entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+			if (Database.IsSqlServer())
+			{
+				entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant);
+				entity.Property(e => e.PostTitle).HasColumnType(NVarCharMaxDataTypeConstant);
+				entity.Property(e => e.PostContent).HasColumnType(NVarCharMaxDataTypeConstant);
+				entity.Property(e => e.PostCreatedDate).HasColumnType(DateTimeDataTypeConstant);
+				entity.Property(e => e.PostOwnerUserName).HasColumnType(NVarCharMaxDataTypeConstant);
+				entity.Property(e => e.Ratings).HasColumnType(IntegerDataTypeConstant);
+				entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant);
+			}
+
+			entity.Property(e => e.PostId).IsRequired();
+			entity.Property(e => e.PostTitle).IsRequired();
+			entity.Property(e => e.PostContent).IsRequired();
+			entity.Property(e => e.PostCreatedDate).IsRequired();
+			entity.Property(e => e.PostOwnerUserName).IsRequired();
+			entity.Property(e => e.Ratings).HasDefaultValue(0).IsRequired();
+			entity.Property(e => e.IsActive).HasDefaultValue(1).IsRequired();
 		});
 
 		modelBuilder.Entity<PostRatingDomain>(entity =>
 		{
 			entity.ToTable(PostRatingsTableNameConstant);
 			entity.HasKey(e => e.PostRatingId);
-			entity.Property(e => e.PostRatingId).HasColumnType(IntegerDataTypeConstant).UseIdentityColumn().IsRequired();
-			entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant).IsRequired();
-			entity.Property(e => e.UserName).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-			entity.Property(e => e.RatedOn).HasColumnType(DateTimeDataTypeConstant).IsRequired();
-			entity.Property(e => e.RatingValue).HasColumnType(IntegerDataTypeConstant).IsRequired();
-			entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+
+			if (Database.IsSqlServer())
+			{
+				entity.Property(e => e.PostRatingId).HasColumnType(IntegerDataTypeConstant).UseIdentityColumn();
+				entity.Property(e => e.PostId).HasColumnType(UniqueIdentifierDataTypeConstant);
+				entity.Property(e => e.UserName).HasColumnType(NVarCharMaxDataTypeConstant);
+				entity.Property(e => e.RatedOn).HasColumnType(DateTimeDataTypeConstant);
+				entity.Property(e => e.RatingValue).HasColumnType(IntegerDataTypeConstant);
+				entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant);
+			}
+			else
+			{
+				entity.Property(e => e.PostRatingId).UseIdentityByDefaultColumn();
+			}
+
+			entity.Property(e => e.PostRatingId).IsRequired();
+			entity.Property(e => e.PostId).IsRequired();
+			entity.Property(e => e.UserName).IsRequired();
+			entity.Property(e => e.RatedOn).IsRequired();
+			entity.Property(e => e.RatingValue).IsRequired();
+			entity.Property(e => e.IsActive).HasDefaultValue(1).IsRequired();
 		});
 
 		modelBuilder.Entity<AiUsageDomain>(entity =>
 		{
 			entity.ToTable(AiUsagesTableNameConstant);
 			entity.HasKey(e => e.Id);
-			entity.Property(e => e.Id).HasColumnType(IntegerDataTypeConstant).UseIdentityColumn().IsRequired();
-			entity.Property(e => e.UserName).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-			entity.Property(e => e.Usage).HasColumnType(NVarCharMaxDataTypeConstant).IsRequired();
-			entity.Property(e => e.UsageTime).HasColumnType(DateTimeDataTypeConstant).IsRequired();
-			entity.Property(e => e.TotalTokensConsumed).HasColumnType(IntegerDataTypeConstant);
-			entity.Property(e => e.CandidatesTokenCount).HasColumnType(IntegerDataTypeConstant);
-			entity.Property(e => e.PromptTokenCount).HasColumnType(IntegerDataTypeConstant);
-			entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant).HasDefaultValue(1).IsRequired();
+
+			if (Database.IsSqlServer())
+			{
+				entity.Property(e => e.Id).HasColumnType(IntegerDataTypeConstant).UseIdentityColumn();
+				entity.Property(e => e.UserName).HasColumnType(NVarCharMaxDataTypeConstant);
+				entity.Property(e => e.Usage).HasColumnType(NVarCharMaxDataTypeConstant);
+				entity.Property(e => e.UsageTime).HasColumnType(DateTimeDataTypeConstant);
+				entity.Property(e => e.TotalTokensConsumed).HasColumnType(IntegerDataTypeConstant);
+				entity.Property(e => e.CandidatesTokenCount).HasColumnType(IntegerDataTypeConstant);
+				entity.Property(e => e.PromptTokenCount).HasColumnType(IntegerDataTypeConstant);
+				entity.Property(e => e.IsActive).HasColumnType(BitDataTypeConstant);
+			}
+			else
+			{
+				entity.Property(e => e.Id).UseIdentityByDefaultColumn();
+			}
+
+			entity.Property(e => e.Id).IsRequired();
+			entity.Property(e => e.UserName).IsRequired();
+			entity.Property(e => e.Usage).IsRequired();
+			entity.Property(e => e.UsageTime).IsRequired();
+			entity.Property(e => e.IsActive).HasDefaultValue(1).IsRequired();
 		});
 
 		modelBuilder.Entity<LookupMasterDomain>(entity =>
 		{
 			entity.ToTable(LookupMasterTableName).HasKey(e => e.Id);
+			if (Database.IsNpgsql())
+			{
+				entity.Property(e => e.Id).UseIdentityByDefaultColumn();
+			}
 		});
 
 		modelBuilder.Entity<BugReportDomain>(entity =>
 		{
 			entity.ToTable(BugReportTableName).HasKey(e => e.Id);
+			if (Database.IsNpgsql())
+			{
+				entity.Property(e => e.Id).UseIdentityByDefaultColumn();
+			}
 		});
+
+		if (Database.IsNpgsql())
+		{
+			foreach (var entity in modelBuilder.Model.GetEntityTypes())
+			{
+				entity.SetTableName(entity.GetTableName()?.ToLower());
+				foreach (var property in entity.GetProperties())
+				{
+					property.SetColumnName(property.GetColumnName().ToLower());
+				}
+			}
+		}
 	}
 }

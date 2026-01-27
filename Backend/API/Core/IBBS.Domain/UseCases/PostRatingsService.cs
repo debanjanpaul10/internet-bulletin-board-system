@@ -16,7 +16,7 @@ namespace IBBS.Domain.UseCases;
 /// <param name="postRatingsDataService">The post ratings data service.</param>
 /// <param name="postsDataService">The posts data service.</param>
 /// <seealso cref="IPostRatingsService"/>
-public class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatingsDataService postRatingsDataService, IPostsDataService postsDataService) : IPostRatingsService
+public sealed class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatingsDataService postRatingsDataService, IPostsDataService postsDataService) : IPostRatingsService
 {
     /// <summary>
     /// Updates the rating asynchronous.

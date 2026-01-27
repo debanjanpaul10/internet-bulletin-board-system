@@ -3,7 +3,7 @@ namespace IBBS.Domain.DomainEntities.AI;
 /// <summary>
 /// The Chat Request domain model.
 /// </summary>
-public class ChatRequestDomainModel
+public sealed record ChatRequestDomainModel
 {
     /// <summary>
     /// Gets or sets the name of the agent.

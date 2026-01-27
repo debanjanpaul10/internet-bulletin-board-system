@@ -11,13 +11,13 @@ namespace IBBS.MCP.Tools;
 /// Provides server-side tools for retrieving and managing post data within the current user context.
 /// </summary>
 /// <remarks>This tool is intended for use in server environments where post data must be accessed or managed in
-/// the context of an authenticated user. All operations performed by this tool are scoped to the current user and
-/// leverage dependency-injected services for context, logging, and data access.</remarks>
-/// <param name="logger">The logger used to record diagnostic and operational information for this tool.</param>
+/// the context of an authenticated user. All operations performed by this tool are scoped to the current user and leverage dependency-injected services for context, logging, and data access.</remarks>
 /// <param name="postsHandler">Handles post-related data operations, such as retrieving and managing post information.</param>
+/// <param name="configuration">The configuration service.</param>
+/// <param name="httpContextAccessor">The http context accessor service.</param>
 /// <seealso cref="BaseTool"/>
 [McpServerToolType]
-public class PostsDataTool(ILogger<PostsDataTool> logger, IPostsHandler postsHandler) : BaseTool
+public sealed class PostsDataTool(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IPostsHandler postsHandler) : BaseTool(httpContextAccessor, configuration)
 {
     /// <summary>
     /// Asynchronously retrieves data for all available posts.
@@ -30,22 +30,14 @@ public class PostsDataTool(ILogger<PostsDataTool> logger, IPostsHandler postsHan
     [Description(GetAllPostsDataAction.Description)]
     public async Task<ResponseDTO> GetAllPostsDataAsync()
     {
-        try
+        if (base.IsAuthorized())
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, string.Empty));
-
             var result = await postsHandler.GetAllPostsAsync(string.Empty).ConfigureAwait(false);
-            return this.HandleSuccessResult(result);
+            if (result is not null) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsDataAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsDataAsync), DateTime.UtcNow, string.Empty));
-        }
+
+        return HandleUnAuthorizedRequest();
     }
 
     /// <summary>
@@ -58,25 +50,13 @@ public class PostsDataTool(ILogger<PostsDataTool> logger, IPostsHandler postsHan
     [Description(GetPostDataAction.Description)]
     public async Task<ResponseDTO> GetPostAsync([Description(GetPostDataAction.InputDescription)] string postId)
     {
-        try
+        if (base.IsAuthorized())
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetPostAsync), DateTime.UtcNow, postId));
-
             var result = await postsHandler.GetPostAsync(postId, string.Empty).ConfigureAwait(false);
-            if (result is not null && !Equals(result.PostId, Guid.Empty))
-                return this.HandleSuccessResult(result);
-            else
-                return this.HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
+            if (result is not null && !Equals(result.PostId, Guid.Empty)) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.PostNotFoundMessageConstant);
         }
 
-        catch (Exception ex)
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetPostAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetPostAsync), DateTime.UtcNow, postId));
-        }
+        return HandleUnAuthorizedRequest();
     }
 }

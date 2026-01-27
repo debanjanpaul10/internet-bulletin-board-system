@@ -11,16 +11,16 @@ namespace IBBS.API.Adapters.Handlers;
 /// <param name="mapper">The auto mapper.</param>
 /// <param name="profilesService">The profiles service.</param>
 /// <seealso cref="IBBS.API.Adapters.Contracts.IProfilesHandler" />
-public class ProfilesHandler(IMapper mapper, IProfilesService profilesService) : IProfilesHandler
+public sealed class ProfilesHandler(IMapper mapper, IProfilesService profilesService) : IProfilesHandler
 {
-	/// <summary>
-	/// Gets user profile data async.
-	/// </summary>
-	/// <param name="userEmail">The user email.</param>
-	/// <returns>The user profile dto.</returns>
-	public async Task<UserProfileDto> GetUserProfileDataAsync(string userEmail)
-	{
-		var domainResult = await profilesService.GetUserProfileDataAsync(userEmail).ConfigureAwait(false);
-		return mapper.Map<UserProfileDto>(domainResult);
-	}
+    /// <summary>
+    /// Gets user profile data async.
+    /// </summary>
+    /// <param name="userEmail">The user email.</param>
+    /// <returns>The user profile dto.</returns>
+    public async Task<UserProfileDto> GetUserProfileDataAsync(string userEmail)
+    {
+        var domainResult = await profilesService.GetUserProfileDataAsync(userEmail).ConfigureAwait(false);
+        return mapper.Map<UserProfileDto>(domainResult);
+    }
 }
