@@ -86,6 +86,11 @@ public class DomainConstants
         /// The agent not found message constant.
         /// </summary>
         internal static readonly string AgentNotFoundMessageConstant = "The AI Agent with id {0} was not found.";
+
+        /// <summary>
+        /// The workspace not found message constant.
+        /// </summary>
+        internal static readonly string WorkspaceNotFoundMessageConstant = "The AI workspace with id {0} was not found.";
     }
 
     /// <summary>
@@ -166,6 +171,38 @@ public class DomainConstants
     /// </summary>
     internal static class AiAgentsIdConstants
     {
+        /// <summary>
+        /// The IBBS Plugin agents workspace
+        /// </summary>
+        internal static class IbbsPluginsWorkspace
+        {
+            /// <summary>
+            /// The workspace identifier constant.
+            /// </summary>
+            internal const string WorkspaceId = "IBBSPlugins:WorkspaceId";
+
+            /// <summary>
+            /// The workspace name constant.
+            /// </summary>
+            internal const string WorkspaceName = "IBBSPlugins:WorkspaceName";
+        }
+
+        /// <summary>
+        /// The IBBS Group chat workspace.
+        /// </summary>
+        internal static class IbbsGroupchatWorkspace
+        {
+            /// <summary>
+            /// The workspace identifier constant.
+            /// </summary>
+            internal const string WorkspaceId = "IBBSGroupChat:WorkspaceId";
+
+            /// <summary>
+            /// The workspace name constant.
+            /// </summary>
+            internal const string WorkspaceName = "IBBSGroupChat:WorkspaceName";
+        }
+
         /// <summary>
         /// The rewrite text agent identifier constant.
         /// </summary>

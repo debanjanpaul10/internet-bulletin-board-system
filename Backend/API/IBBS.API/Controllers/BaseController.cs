@@ -100,9 +100,9 @@ public abstract class BaseController(IHttpContextAccessor httpContextAccessor, I
     private bool CheckApplicationLevelAuthorization()
     {
         var currentClientId = this.User?.Claims?.FirstOrDefault(claim => claim.Type.Equals(HeaderConstants.ClientIdClaimConstant))?.Value;
-        var aiAgentsClientIdFromConfig = configuration[ConfigurationConstants.Auth0ApiAudience] ?? throw new Exception(ExceptionConstants.ConfigurationValueNotExistsMessageConstant);
+        var ibbsClientId = configuration[ConfigurationConstants.Auth0WebClientId] ?? throw new Exception(ExceptionConstants.ConfigurationValueNotExistsMessageConstant);
         if (!string.IsNullOrEmpty(currentClientId) && !currentClientId.Equals(HeaderConstants.NotApplicableStringConstant, StringComparison.OrdinalIgnoreCase))
-            return currentClientId.Equals(aiAgentsClientIdFromConfig, StringComparison.OrdinalIgnoreCase);
+            return currentClientId.Equals(ibbsClientId, StringComparison.OrdinalIgnoreCase);
 
         return false;
     }

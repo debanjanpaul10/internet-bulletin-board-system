@@ -33,14 +33,6 @@ public interface IAIService
     Task<string> ModerateContentDataAsync(string userName, UserStoryRequestDomain requestDTO);
 
     /// <summary>
-    /// Gets the chatbot response asynchronous.
-    /// </summary>
-    /// <param name="userQueryRequest">The user query request.</param>
-    /// <param name="areFollowupQuestionsEnabled">The boolean flag for followup questions.</param>
-    /// <returns>The ai agent response.</returns>
-    Task<AIChatbotResponseDomain> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest, bool areFollowupQuestionsEnabled);
-
-    /// <summary>
     /// Posts the ai result feedback asynchronous.
     /// </summary>
     /// <param name="aiResponseFeedback">The ai response feedback.</param>
@@ -60,4 +52,11 @@ public interface IAIService
     /// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
     /// <returns>The bug severity.</returns>
     Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest);
+
+    /// <summary>
+    /// Gets the chatbot response using LLM.
+    /// </summary>
+    /// <param name="userQueryRequest">The user query request domain model.</param>
+    /// <returns>The AI response string.</returns>
+    Task<string> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest);
 }

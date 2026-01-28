@@ -20,7 +20,7 @@ import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
 export const GetPostApiAsync = async (postId: string, accessToken: string) => {
 	return await HttpUtility.GetAsync(
 		`Posts/GetPost?postId=${postId}`,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -41,12 +41,12 @@ export const GetAllPostsApiAsync = async (accessToken: string) => {
  */
 export const AddNewPostApiAsync = async (
 	newPostData: AddPostDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		`Posts/AddPost`,
 		newPostData,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -59,12 +59,12 @@ export const AddNewPostApiAsync = async (
  */
 export const UpdatePostApiAsync = async (
 	updatedPostData: UpdatePostDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		`Posts/UpdatePost`,
 		updatedPostData,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -77,12 +77,12 @@ export const UpdatePostApiAsync = async (
  */
 export const DeletePostApiAsync = async (
 	postId: string,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		`Posts/DeletePost?postId=${postId}`,
 		null,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -95,12 +95,12 @@ export const DeletePostApiAsync = async (
  */
 export const UpdateRatingApiAsync = async (
 	postRatingModel: PostRatingDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		`PostRatings/UpdateRating`,
 		postRatingModel,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -110,12 +110,12 @@ export const UpdateRatingApiAsync = async (
 
 export const SubmitBugReportDataApiAsync = async (
 	bugReportData: BugReportDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"CommonServices/SubmitBugReport",
 		bugReportData,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -135,67 +135,67 @@ export const GetLookupMasterDataApiAsync = async () => {
  */
 export const PostRewriteStoryWithAiApiAsync = async (
 	storyText: string,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"AiServices/RewriteWithAI",
 		storyText,
-		accessToken
+		accessToken,
 	);
 };
 
 export const GenerateTagForStoryApiAsync = async (
 	storyText: UserStoryRequestDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"AiServices/GenerateGenreTag",
 		storyText,
-		accessToken
+		accessToken,
 	);
 };
 
 export const ModerateContentDataApiAsync = async (
 	storyText: UserStoryRequestDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"AiServices/ModerateContent",
 		storyText,
-		accessToken
+		accessToken,
 	);
 };
 
-export const GetChatbotResponseAsync = async (
+export const GetChatbotResponseApiAsync = async (
 	userQueryRequest: UserQueryRequestDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"AiServices/Respond",
 		userQueryRequest,
-		accessToken
+		accessToken,
 	);
 };
 
 export const PostAiResultFeedbackApiAsync = async (
 	aiResponseFeedback: AIResponseFeedbackDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"AiServices/AIFeedback",
 		aiResponseFeedback,
-		accessToken
+		accessToken,
 	);
 };
 
 export const GetBugSeverityStatusApiAsync = async (
 	bugSeverityInput: BugSeverityAIRequestDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(
 		"AiServices/getbugseveritystatus",
 		bugSeverityInput,
-		accessToken
+		accessToken,
 	);
 };
 
@@ -211,7 +211,7 @@ export const GetBugSeverityStatusApiAsync = async (
 export const GetUserProfilesDataApiAsync = async (accessToken: string) => {
 	return await HttpUtility.GetAsync(
 		"Profiles/GetUserProfileData",
-		accessToken
+		accessToken,
 	);
 };
 
