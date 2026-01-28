@@ -204,4 +204,34 @@ public sealed class AIService(ILogger<AIService> logger, IAiAgentsService aiAgen
         }
     }
 
+    /// <summary>
+    /// Gets the chatbot response using LLM.
+    /// </summary>
+    /// <param name="userQueryRequest">The user query request domain model.</param>
+    /// <returns>The AI response string.</returns>
+    public async Task<string> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest)
+    {
+        try
+        {
+            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(userQueryRequest));
+
+            var chatRequestModel = new WorkspaceAgentChatRequestDomain()
+            {
+                ApplicationName = configuration[IbbsGroupchatWorkspace.WorkspaceName] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsGroupchatWorkspace.WorkspaceName)),
+                WorkspaceId = configuration[IbbsGroupchatWorkspace.WorkspaceId] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsGroupchatWorkspace.WorkspaceId)),
+                ConversationId = Guid.NewGuid().ToString(),
+                UserMessage = userQueryRequest.UserQuery
+            };
+            return await aiAgentsService.GetWorkspaceGroupChatResponseAsync(chatRequestModel).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, ex.Message);
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(userQueryRequest));
+        }
+    }
 }

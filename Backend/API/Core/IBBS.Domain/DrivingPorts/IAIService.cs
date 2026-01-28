@@ -52,4 +52,11 @@ public interface IAIService
     /// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
     /// <returns>The bug severity.</returns>
     Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest);
+
+    /// <summary>
+    /// Gets the chatbot response using LLM.
+    /// </summary>
+    /// <param name="userQueryRequest">The user query request domain model.</param>
+    /// <returns>The AI response string.</returns>
+    Task<string> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest);
 }

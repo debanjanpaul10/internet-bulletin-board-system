@@ -172,7 +172,7 @@ public class DomainConstants
     internal static class AiAgentsIdConstants
     {
         /// <summary>
-        /// The IBBS agents workspace
+        /// The IBBS Plugin agents workspace
         /// </summary>
         internal static class IbbsPluginsWorkspace
         {
@@ -185,6 +185,22 @@ public class DomainConstants
             /// The workspace name constant.
             /// </summary>
             internal const string WorkspaceName = "IBBSPlugins:WorkspaceName";
+        }
+
+        /// <summary>
+        /// The IBBS Group chat workspace.
+        /// </summary>
+        internal static class IbbsGroupchatWorkspace
+        {
+            /// <summary>
+            /// The workspace identifier constant.
+            /// </summary>
+            internal const string WorkspaceId = "IBBSGroupChat:WorkspaceId";
+
+            /// <summary>
+            /// The workspace name constant.
+            /// </summary>
+            internal const string WorkspaceName = "IBBSGroupChat:WorkspaceName";
         }
 
         /// <summary>

@@ -2,7 +2,7 @@ name: Build and Deploy IBBS
 
 env:
     API_PROJECT_PATH: Backend/API/IBBS.API/IBBS.API.csproj
-    WEB_PROJECT_PATH: UI/IBBS.UI
+    WEB_PROJECT_PATH: UI/web
     DATABASE_FOLDER_PATH: Backend/Database/IBBS.Database
     MCP_PROJECT_PATH: Backend/API/IBBS.MCP/IBBS.MCP.csproj
 

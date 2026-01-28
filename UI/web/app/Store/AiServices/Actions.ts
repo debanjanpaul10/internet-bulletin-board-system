@@ -12,7 +12,7 @@ import {
 import {
 	GenerateTagForStoryApiAsync,
 	GetBugSeverityStatusApiAsync,
-	GetChatbotResponseAsync,
+	GetChatbotResponseApiAsync,
 	ModerateContentDataApiAsync,
 	PostAiResultFeedbackApiAsync,
 	PostRewriteStoryWithAiApiAsync,
@@ -31,7 +31,7 @@ import { TOGGLE_BUG_REPORT_SPINNER } from "../Common/ActionTypes";
  */
 export const RewriteStoryWithAiAsync = (
 	requestDto: any,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
@@ -41,7 +41,7 @@ export const RewriteStoryWithAiAsync = (
 			});
 			const response = await PostRewriteStoryWithAiApiAsync(
 				requestDto,
-				accessToken
+				accessToken,
 			);
 			if (response?.statusCode === 200) {
 				dispatch(RewriteStoryWithAiSuccess(response.data));
@@ -52,7 +52,7 @@ export const RewriteStoryWithAiAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error.title,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -81,18 +81,18 @@ export const RewriteStoryWithAiSuccess = (data: any) => {
  */
 export const HandlePostAiModerationTasksAsync = (
 	userStoryRequestDto: UserStoryRequestDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
 			dispatch(HandleCreatePostPageLoader(true));
 			const tagResponseTask = GenerateTagForStoryApiAsync(
 				userStoryRequestDto,
-				accessToken
+				accessToken,
 			);
 			const moderateContentResponseTask = ModerateContentDataApiAsync(
 				userStoryRequestDto,
-				accessToken
+				accessToken,
 			);
 
 			const [tagResponse, moderationContentResponse] = await Promise.all([
@@ -104,8 +104,8 @@ export const HandlePostAiModerationTasksAsync = (
 				dispatch(
 					HandlePostAiModerationTasksSuccess(
 						tagResponse?.data,
-						moderationContentResponse?.data
-					)
+						moderationContentResponse?.data,
+					),
 				);
 			}
 		} catch (error: any) {
@@ -115,7 +115,7 @@ export const HandlePostAiModerationTasksAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -132,7 +132,7 @@ export const HandlePostAiModerationTasksAsync = (
  */
 export const HandlePostAiModerationTasksSuccess = (
 	tagData: any,
-	moderationData: any
+	moderationData: any,
 ) => {
 	return {
 		type: HANDLE_POST_AI_MODERATION,
@@ -143,9 +143,9 @@ export const HandlePostAiModerationTasksSuccess = (
 	};
 };
 
-export const HandleChatbotResponseAsync = (
+export const GetChatbotResponseAsync = (
 	userQueryRequest: UserQueryRequestDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
@@ -153,9 +153,9 @@ export const HandleChatbotResponseAsync = (
 				type: TOGGLE_CHATBOT_LOADING,
 				payload: true,
 			});
-			const response = await GetChatbotResponseAsync(
+			const response = await GetChatbotResponseApiAsync(
 				userQueryRequest,
-				accessToken
+				accessToken,
 			);
 			if (response?.data) {
 				dispatch({
@@ -171,7 +171,7 @@ export const HandleChatbotResponseAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -191,7 +191,7 @@ export const HandleChatbotResponseAsync = (
  */
 export const HandleAiResultFeedbackAsync = (
 	responseFeedback: AIResponseFeedbackDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
@@ -201,7 +201,7 @@ export const HandleAiResultFeedbackAsync = (
 			});
 			const response = await PostAiResultFeedbackApiAsync(
 				responseFeedback,
-				accessToken
+				accessToken,
 			);
 			if (response?.data) {
 				dispatch({
@@ -215,7 +215,7 @@ export const HandleAiResultFeedbackAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 		} finally {
 			dispatch({
@@ -234,7 +234,7 @@ export const HandleAiResultFeedbackAsync = (
  */
 export const GetBugSeverityStatusAsync = (
 	bugSeverityInput: BugSeverityAIRequestDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
@@ -245,7 +245,7 @@ export const GetBugSeverityStatusAsync = (
 
 			const response = await GetBugSeverityStatusApiAsync(
 				bugSeverityInput,
-				accessToken
+				accessToken,
 			);
 			if (response?.data) {
 				dispatch({
@@ -259,7 +259,7 @@ export const GetBugSeverityStatusAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 		} finally {
 			dispatch({

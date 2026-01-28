@@ -121,6 +121,8 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
 
     #endregion
 
+    #region CHATBOT
+
     /// <summary>
     /// Posts the ai result feedback asynchronous.
     /// </summary>
@@ -168,4 +170,29 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
         return HandleUnAuthorizedRequest();
     }
 
+    /// <summary>
+    /// Gets the chatbot response using LLM.
+    /// </summary>
+    /// <param name="userQueryRequest">The user query request dto model.</param>
+    /// <returns>The AI response string.</returns>
+    [HttpPost(RouteConstants.AiServicesController.ChatbotRespond_Route)]
+    [ProducesResponseType(typeof(IEnumerable<LookupMasterDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
+    public async Task<IActionResult> GetChatbotResponseAsync([FromBody] UserQueryRequestDTO userQueryRequest)
+    {
+        ArgumentNullException.ThrowIfNull(userQueryRequest);
+        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        {
+            var result = await aiServicesHandler.GetChatbotResponseAsync(userQueryRequest).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(result)) return HandleSuccessResult(result);
+            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
+
+        return HandleUnAuthorizedRequest();
+    }
+
+    #endregion
 }

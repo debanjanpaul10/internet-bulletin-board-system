@@ -41,6 +41,17 @@ public sealed class AiServicesHandler(IAIService aiServices, IMapper mapper) : I
     }
 
     /// <summary>
+    /// Gets the chatbot response using LLM.
+    /// </summary>
+    /// <param name="userQueryRequest">The user query request dto model.</param>
+    /// <returns>The AI response string.</returns>
+    public async Task<string> GetChatbotResponseAsync(UserQueryRequestDTO userQueryRequest)
+    {
+        var domainInput = mapper.Map<UserQueryRequestDomain>(userQueryRequest);
+        return await aiServices.GetChatbotResponseAsync(domainInput).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Gets the sample prompts for chatbot asynchronous.
     /// </summary>
     /// <returns>
