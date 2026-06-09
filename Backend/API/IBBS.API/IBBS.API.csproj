@@ -7,22 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration"
-      Version="8.3.0" />
-    <PackageReference Include="MongoDB.Driver" Version="3.4.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.5.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.9.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Adapters\IBBS.AI.Agents.Adapters\IBBS.AI.Agents.Adapters.csproj" />
     <ProjectReference Include="..\Adapters\IBBS.API.Adapters\IBBS.API.Adapters.csproj" />
-    <ProjectReference
-      Include="..\Adapters\IBBS.Infrastructure.MongoDB.Adapters\IBBS.Infrastructure.MongoDB.Adapters.csproj" />
-    <ProjectReference
-      Include="..\Adapters\IBBS.Infrastructure.Persistence.Adapters\IBBS.Infrastructure.Persistence.Adapters.csproj" />
+    <ProjectReference Include="..\Adapters\IBBS.Infrastructure.MongoDB.Adapters\IBBS.Infrastructure.MongoDB.Adapters.csproj" />
+    <ProjectReference Include="..\Adapters\IBBS.Infrastructure.Persistence.Adapters\IBBS.Infrastructure.Persistence.Adapters.csproj" />
     <ProjectReference Include="..\Core\IBBS.Domain\IBBS.Domain.csproj" />
   </ItemGroup>
 

@@ -81,6 +81,11 @@ internal static class Constants
         /// The database connection not found
         /// </summary>
         internal const string DatabaseConnectionNotFound = "Oops! It seems the database connection is missing from the configuration!";
+
+        /// <summary>
+        /// Something went wrong message
+        /// </summary>
+        internal const string SomethingWentWrongMessage = "Something went wrong while processing the request. Please try again after sometime";
     }
 
     /// <summary>

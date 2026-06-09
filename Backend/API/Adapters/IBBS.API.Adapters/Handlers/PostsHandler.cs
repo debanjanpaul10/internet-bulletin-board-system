@@ -12,72 +12,79 @@ namespace IBBS.API.Adapters.Handlers;
 /// <param name="mapper">The auto mapper.</param>
 /// <param name="postsService">The posts service.</param>
 /// <seealso cref="IBBS.API.Adapters.Contracts.IPostsHandler" />
-public sealed class PostsHandler(IPostsService postsService, IMapper mapper) : IPostsHandler
+public sealed class PostsHandler(
+    IPostsService postsService,
+    IMapper mapper) : IPostsHandler
 {
-    /// <summary>
-    /// Adds the new post asynchronous.
-    /// </summary>
-    /// <param name="newPost">The new post.</param>
-    /// <param name="userName">The User name.</param>
-    /// <returns>
-    /// The boolean for success or failure.
-    /// </returns>
-    public async Task<bool> AddNewPostAsync(AddPostDTO newPost, string userName)
+    /// <inheritdoc />
+    public async Task<bool> AddNewPostAsync(
+        AddPostDTO newPost,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
         var domainInput = mapper.Map<AddPostDomain>(newPost);
-        return await postsService.AddNewPostAsync(domainInput, userName).ConfigureAwait(false);
+        return await postsService.AddNewPostAsync(
+            newPost: domainInput,
+            userName,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Deletes the post asynchronous.
-    /// </summary>
-    /// <param name="postId">The post identifier.</param>
-    /// <param name="userName">The current user name.</param>
-    /// <returns>
-    /// The boolean for success / failure
-    /// </returns>
-    public async Task<bool> DeletePostAsync(string postId, string userName)
-    {
-        return await postsService.DeletePostAsync(postId, userName).ConfigureAwait(false);
-    }
+    /// <inheritdoc />
+    public async Task<bool> DeletePostAsync(
+        string postId,
+        string userName,
+        CancellationToken cancellationToken = default
+    ) =>
+        await postsService.DeletePostAsync(
+            postId,
+            userName,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-    /// <summary>
-    /// Gets all posts asynchronous.
-    /// </summary>
-    /// <param name="userName">The user name</param>
-    /// <returns>
-    /// The list of <see cref="PostWithRatingsDTO" />
-    /// </returns>
-    public async Task<IEnumerable<PostWithRatingsDTO>> GetAllPostsAsync(string userName)
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<PostWithRatingsDTO>> GetAllPostsAsync(
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainResult = await postsService.GetAllPostsAsync(userName).ConfigureAwait(false);
+        var domainResult = await postsService.GetAllPostsAsync(
+            userName,
+            cancellationToken
+        ).ConfigureAwait(false);
         return mapper.Map<IEnumerable<PostWithRatingsDTO>>(domainResult);
     }
 
-    /// <summary>
-    /// Gets the post asynchronous.
-    /// </summary>
-    /// <param name="postId">The post identifier.</param>
-    /// <param name="userName">Name of the user.</param>
-    /// <returns>The post dto.</returns>
-    public async Task<PostDTO> GetPostAsync(string postId, string userName)
+    /// <inheritdoc />
+    public async Task<PostDTO> GetPostAsync(
+        string postId,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainResult = await postsService.GetPostAsync(postId, userName).ConfigureAwait(false);
+        var domainResult = await postsService.GetPostAsync(
+            postId,
+            userName,
+            cancellationToken
+        ).ConfigureAwait(false);
         return mapper.Map<PostDTO>(domainResult);
     }
 
-    /// <summary>
-    /// Updates the post asynchronous.
-    /// </summary>
-    /// <param name="updatedPost">The updated post.</param>
-    /// <param name="userName">The user name.</param>
-    /// <returns>
-    /// The updated post data.
-    /// </returns>
-    public async Task<PostDTO> UpdatePostAsync(UpdatePostDTO updatedPost, string userName)
+    /// <inheritdoc />
+    public async Task<PostDTO> UpdatePostAsync(
+        UpdatePostDTO updatedPost,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
         var domainInput = mapper.Map<UpdatePostDomain>(updatedPost);
-        var domainResult = await postsService.UpdatePostAsync(domainInput, userName).ConfigureAwait(false);
+        var domainResult = await postsService.UpdatePostAsync(
+            updatedPost: domainInput,
+            userName,
+            cancellationToken
+        ).ConfigureAwait(false);
         return mapper.Map<PostDTO>(domainResult);
     }
 }

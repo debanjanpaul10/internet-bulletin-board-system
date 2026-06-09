@@ -1,12 +1,14 @@
 using Azure.Identity;
 using IBBS.API.IOC;
 using IBBS.API.Middleware;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(ConfigurationConstants.LocalAppsettingsFileConstant, optional: true).AddEnvironmentVariables();
+if (builder.Environment.IsDevelopment())
+    builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile(ConfigurationConstants.LocalAppsettingsFileConstant, optional: true).AddEnvironmentVariables();
 
 var credentials = builder.Environment.IsDevelopment()
     ? new DefaultAzureCredential()
@@ -43,20 +45,27 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint(SwaggerUIConstants.SwaggerEndpointUrl, $"{SwaggerUIConstants.ApplicationAPIName}.{SwaggerUIConstants.ApiVersion}");
+        c.SwaggerEndpoint(
+            url: SwaggerUIConstants.SwaggerEndpointUrl,
+            name: $"{SwaggerUIConstants.ApplicationAPIName}.{SwaggerUIConstants.ApiVersion}"
+        );
         c.RoutePrefix = SwaggerUIConstants.SwaggerUiPrefix;
     });
 }
 
+app.UseCorrelationIdMiddleware();
+app.UseRequestLogging();
 app.UseExceptionMiddleware();
 app.UseHttpsRedirection();
-app.UseCors();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors();
 app.MapControllers();
 
-app.Run();
+
+await app.RunAsync();

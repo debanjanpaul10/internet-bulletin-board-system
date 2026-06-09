@@ -2,7 +2,10 @@
 using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
 using IBBS.API.Helpers;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.AIServicesController;
@@ -15,10 +18,17 @@ namespace IBBS.API.Controllers.v1;
 /// <param name="aiServicesHandler">The AI Services adapter Handler.</param>
 /// <param name="configuration">The configuration service.</param>
 /// <param name="httpContextAccessor">The http context accessor.</param>
+/// <param name="correlationContext">The correlation context.</param>
+/// <param name="logger">The logger.</param>
 /// <seealso cref="BaseController" />
 [ApiController]
 [Route(RouteConstants.AiServicesController.BaseRoute)]
-public sealed class AIServicesController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IAiServicesHandler aiServicesHandler) : BaseController(httpContextAccessor, configuration)
+public sealed class AIServicesController(
+    ILogger<AIServicesController> logger,
+    ICorrelationContext correlationContext,
+    IHttpContextAccessor httpContextAccessor,
+    IConfiguration configuration,
+    IAiServicesHandler aiServicesHandler) : BaseController(httpContextAccessor, configuration)
 {
     #region PLUGINS
 
@@ -32,18 +42,61 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = RewriteWithAIAction.Summary, Description = RewriteWithAIAction.Description, OperationId = RewriteWithAIAction.OperationId)]
-    public async Task<IActionResult> RewriteWithAIAsync(UserStoryRequestDTO requestDto)
+    [SwaggerOperation(
+        Summary = RewriteWithAIAction.Summary,
+        Description = RewriteWithAIAction.Description,
+        OperationId = RewriteWithAIAction.OperationId)]
+    public async Task<IActionResult> RewriteWithAIAsync(
+        UserStoryRequestDTO requestDto,
+        CancellationToken cancellationToken = default
+    )
     {
-        ArgumentNullException.ThrowIfNull(requestDto);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        string response = string.Empty;
+        try
         {
-            var result = await aiServicesHandler.RewriteWithAIAsync(UserEmail, requestDto).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDto })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(requestDto);
+            if (base.IsAuthorized(AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.RewriteWithAIAsync(
+                    userName: UserEmail,
+                    requestDTO: requestDto
+                ).ConfigureAwait(false);
+
+                return HandleSuccessResult(response);
+            }
+
+            return HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+            );
+            return HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+            );
+            return HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDto, response })
+            );
+        }
 
     }
 
@@ -57,8 +110,14 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GenerateTagForStoryAction.Summary, Description = GenerateTagForStoryAction.Description, OperationId = GenerateTagForStoryAction.OperationId)]
-    public async Task<IActionResult> GenerateTagForStoryAsync(UserStoryRequestDTO requestDto)
+    [SwaggerOperation(
+        Summary = GenerateTagForStoryAction.Summary,
+        Description = GenerateTagForStoryAction.Description,
+        OperationId = GenerateTagForStoryAction.OperationId)]
+    public async Task<IActionResult> GenerateTagForStoryAsync(
+        UserStoryRequestDTO requestDto,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(requestDto);
         if (base.IsAuthorized(AuthorizationTypes.UserBased))
@@ -81,8 +140,14 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = ModerateContentDataAction.Summary, Description = ModerateContentDataAction.Description, OperationId = ModerateContentDataAction.OperationId)]
-    public async Task<IActionResult> ModerateContentDataAsync(UserStoryRequestDTO requestDto)
+    [SwaggerOperation(
+        Summary = ModerateContentDataAction.Summary,
+        Description = ModerateContentDataAction.Description,
+        OperationId = ModerateContentDataAction.OperationId)]
+    public async Task<IActionResult> ModerateContentDataAsync(
+        UserStoryRequestDTO requestDto,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(requestDto);
         if (base.IsAuthorized(AuthorizationTypes.UserBased))
@@ -105,8 +170,14 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GetBugSeverityStatusAction.Summary, Description = GetBugSeverityStatusAction.Description, OperationId = GetBugSeverityStatusAction.OperationId)]
-    public async Task<IActionResult> GetBugSeverityStatusAsync([FromBody] BugSeverityAIRequestDTO bugSeverityInput)
+    [SwaggerOperation(
+        Summary = GetBugSeverityStatusAction.Summary,
+        Description = GetBugSeverityStatusAction.Description,
+        OperationId = GetBugSeverityStatusAction.OperationId)]
+    public async Task<IActionResult> GetBugSeverityStatusAsync(
+        [FromBody] BugSeverityAIRequestDTO bugSeverityInput,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(bugSeverityInput);
         if (base.IsAuthorized(AuthorizationTypes.UserBased))
@@ -134,8 +205,13 @@ public sealed class AIServicesController(IHttpContextAccessor httpContextAccesso
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = PostAiResultFeedbackAction.Summary, Description = PostAiResultFeedbackAction.Description, OperationId = PostAiResultFeedbackAction.OperationId)]
-    public async Task<IActionResult> PostAiResultFeedbackAsync([FromBody] AIResponseFeedbackDTO aiResponseFeedback)
+    [SwaggerOperation(
+        Summary = PostAiResultFeedbackAction.Summary,
+        Description = PostAiResultFeedbackAction.Description,
+        OperationId = PostAiResultFeedbackAction.OperationId)]
+    public async Task<IActionResult> PostAiResultFeedbackAsync(
+        [FromBody] AIResponseFeedbackDTO aiResponseFeedback
+    )
     {
         ArgumentNullException.ThrowIfNull(aiResponseFeedback);
         if (base.IsAuthorized(AuthorizationTypes.UserBased))

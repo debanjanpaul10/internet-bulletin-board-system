@@ -16,37 +16,61 @@ namespace IBBS.Domain.UseCases;
 /// <param name="postRatingsDataService">The post ratings data service.</param>
 /// <param name="postsDataService">The posts data service.</param>
 /// <seealso cref="IPostRatingsService"/>
-public sealed class PostRatingsService(ILogger<PostRatingsService> logger, IPostRatingsDataService postRatingsDataService, IPostsDataService postsDataService) : IPostRatingsService
+public sealed class PostRatingsService(
+    ILogger<PostRatingsService> logger,
+    IPostRatingsDataService postRatingsDataService,
+    IPostsDataService postsDataService) : IPostRatingsService
 {
-    /// <summary>
-    /// Updates the rating asynchronous.
-    /// </summary>
-    /// <param name="postRatingDomain">The post rating domain.</param>
-    /// <param name="userName">The user name.</param>
-    /// <returns>The updated post rating domain model.</returns>
-    public async Task<UpdateRatingDomain> UpdateRatingAsync(PostRatingDomain postRatingDomain, string userName)
+    /// <inheritdoc />
+    public async Task<UpdateRatingDomain> UpdateRatingAsync(
+        PostRatingDomain postRatingDomain,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
-        var postIdGuid = DomainUtilities.ValidateAndParsePostId(Convert.ToString(postRatingDomain.PostId)!, logger);
+        var postIdGuid = DomainUtilities.ValidateAndParsePostId(
+            postId: Convert.ToString(postRatingDomain.PostId)!,
+            logger
+        );
 
-        var post = await postsDataService.GetPostAsync(postIdGuid, userName, false).ConfigureAwait(false);
-        var postRating = await postRatingsDataService.GetPostRatingAsync(postIdGuid, userName).ConfigureAwait(false);
+        var post = await postsDataService.GetPostAsync(
+            postId: postIdGuid,
+            userName,
+            isForCurrentUser: false,
+            cancellationToken
+        ).ConfigureAwait(false);
+        var postRating = await postRatingsDataService.GetPostRatingAsync(
+            postId: postIdGuid,
+            userName
+        ).ConfigureAwait(false);
+
         DomainUtilities.ThrowIfNull(post, ExceptionConstants.PostNotFoundMessageConstant, logger);
 
         if (postRating is not null && postRating.PostId != Guid.Empty)
-            return await HandleUpdateExistingPostRatingDataAsync(postRating, post, userName).ConfigureAwait(false);
+            return await this.HandleUpdateExistingPostRatingDataAsync(
+                postRating,
+                post,
+                userName,
+                cancellationToken
+            ).ConfigureAwait(false);
         else
-            return await HandleAddNewPostRatingDataAsync(postIdGuid, post, userName).ConfigureAwait(false);
+            return await this.HandleAddNewPostRatingDataAsync(
+                postIdGuid,
+                post,
+                userName,
+                cancellationToken
+            ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Gets all user post ratings async.
-    /// </summary>
-    /// <param name="userName">The user name.</param>
-    /// <returns>The list of post ratings</returns>
-    public async Task<List<PostRatingDomain>> GetAllUserPostRatingsAsync(string userName)
-    {
-        return await postRatingsDataService.GetAllUserPostRatingsAsync(userName).ConfigureAwait(false);
-    }
+    /// <inheritdoc />
+    public async Task<List<PostRatingDomain>> GetAllUserPostRatingsAsync(
+        string userName,
+        CancellationToken cancellationToken = default
+    ) =>
+        await postRatingsDataService.GetAllUserPostRatingsAsync(
+            userName
+        ).ConfigureAwait(false);
+
 
     #region PRIVATE METHODS
 
@@ -57,7 +81,12 @@ public sealed class PostRatingsService(ILogger<PostRatingsService> logger, IPost
     /// <param name="post">The post.</param>
     /// <param name="userName">Name of the user.</param>
     /// <returns>The updated rating domain data.</returns>
-    private async Task<UpdateRatingDomain> HandleUpdateExistingPostRatingDataAsync(PostRatingDomain postRating, PostDomain post, string userName)
+    private async Task<UpdateRatingDomain> HandleUpdateExistingPostRatingDataAsync(
+        PostRatingDomain postRating,
+        PostDomain post,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
         if (postRating.RatingValue == 0)
         {
@@ -70,8 +99,15 @@ public sealed class PostRatingsService(ILogger<PostRatingsService> logger, IPost
             postRating.RatingValue = 0;
         }
 
-        await postsDataService.UpdatePostAsync(DomainUtilities.CreateUpdatePostDTO(post), userName, true).ConfigureAwait(false);
-        await postRatingsDataService.UpdatePostRatingAsync(postRating).ConfigureAwait(false);
+        await postsDataService.UpdatePostAsync(
+            updatedPost: DomainUtilities.CreateUpdatePostDTO(post),
+            userName,
+            isRatingUpdate: true,
+            cancellationToken
+        ).ConfigureAwait(false);
+        await postRatingsDataService.UpdatePostRatingAsync(
+            postRating
+        ).ConfigureAwait(false);
         return new UpdateRatingDomain { HasAlreadyUpdated = true, IsUpdateSuccess = true };
     }
 
@@ -82,7 +118,12 @@ public sealed class PostRatingsService(ILogger<PostRatingsService> logger, IPost
     /// <param name="post">The post.</param>
     /// <param name="userName">Name of the user.</param>
     /// <returns>The update rating domain data.</returns>
-    private async Task<UpdateRatingDomain> HandleAddNewPostRatingDataAsync(Guid postIdGuid, PostDomain post, string userName)
+    private async Task<UpdateRatingDomain> HandleAddNewPostRatingDataAsync(
+        Guid postIdGuid,
+        PostDomain post,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
         post.Ratings += 1;
         var newRating = new PostRatingDomain
@@ -94,8 +135,15 @@ public sealed class PostRatingsService(ILogger<PostRatingsService> logger, IPost
             RatingValue = 1,
         };
 
-        await postsDataService.UpdatePostAsync(DomainUtilities.CreateUpdatePostDTO(post), userName, true).ConfigureAwait(false);
-        await postRatingsDataService.AddPostRatingAsync(newRating).ConfigureAwait(false);
+        await postsDataService.UpdatePostAsync(
+            updatedPost: DomainUtilities.CreateUpdatePostDTO(post),
+            userName,
+            isRatingUpdate: true,
+            cancellationToken
+        ).ConfigureAwait(false);
+        await postRatingsDataService.AddPostRatingAsync(
+            postRating: newRating
+        ).ConfigureAwait(false);
         return new UpdateRatingDomain { HasAlreadyUpdated = false, IsUpdateSuccess = true };
     }
 

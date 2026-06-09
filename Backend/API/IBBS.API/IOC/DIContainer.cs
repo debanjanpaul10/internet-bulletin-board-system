@@ -3,6 +3,9 @@ using Azure.Identity;
 using IBBS.AI.Agents.Adapters.IOC;
 using IBBS.API.Adapters.IOC;
 using IBBS.API.Controllers;
+using IBBS.API.Helpers;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using IBBS.Domain.IOC;
 using IBBS.Infrastructure.MongoDB.Adapters.IOC;
 using IBBS.Infrastructure.Persistence.Adapters.IOC;
@@ -25,6 +28,7 @@ public static class DIContainer
     public static void ConfigureApiServices(this WebApplicationBuilder builder)
     {
         builder.ConfigureAuthenticationServices();
+        builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
         builder.Services.AddMemoryCache().AddAPIHandlers()
             .AddDataDependencies(builder.Configuration, builder.Environment.IsDevelopment())
             .AddDomainServices().AddAiAgentsServices(builder.Configuration)
@@ -39,17 +43,19 @@ public static class DIContainer
     /// <exception cref="InvalidOperationException">InvalidOperationException error.</exception>
     public static void ConfigureAzureAppConfiguration(this WebApplicationBuilder builder, DefaultAzureCredential credentials)
     {
-        var configuration = builder.Configuration;
-        var appConfigurationEndpoint = configuration[ConfigurationConstants.AppConfigurationEndpointKeyConstant];
+        var appConfigurationEndpoint = builder.Configuration[ConfigurationConstants.AppConfigurationEndpointKeyConstant];
         if (string.IsNullOrEmpty(appConfigurationEndpoint))
             throw new InvalidOperationException(ExceptionConstants.ConfigurationValueIsEmptyMessageConstant);
 
-        configuration.AddAzureAppConfiguration(options =>
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
             options.Connect(new Uri(appConfigurationEndpoint), credentials)
                 .Select(KeyFilter.Any).Select(KeyFilter.Any, ConfigurationConstants.BaseConfigurationAppConfigKeyConstant)
-                .Select(KeyFilter.Any, ConfigurationConstants.IbbsAPIAppConfigKeyConstant).Select(KeyFilter.Any, ConfigurationConstants.AiAgentsConfigurationKeyConstant)
-                .ConfigureKeyVault((options) => options.SetCredential(credentials))
-        );
+                .Select(KeyFilter.Any, ConfigurationConstants.IbbsAPIAppConfigKeyConstant)
+                .Select(KeyFilter.Any, ConfigurationConstants.AiAgentsConfigurationKeyConstant)
+            .ConfigureKeyVault((options) => options.SetCredential(credentials));
+        });
+
     }
 
     /// <summary>
@@ -93,12 +99,20 @@ public static class DIContainer
     /// Handles auth token validation success async.
     /// </summary>
     /// <param name="context">The token validation context.</param>
-    private static async Task HandleAuthTokenValidationSuccessAsync(this TokenValidatedContext context)
+    private static async Task HandleAuthTokenValidationSuccessAsync(
+        this TokenValidatedContext context
+    )
     {
         var claimsPrincipal = context.Principal;
         if (claimsPrincipal?.Identity is not ClaimsIdentity claimsIdentity || !claimsIdentity.IsAuthenticated)
         {
-            context.Fail(ExceptionConstants.InvalidTokenExceptionConstant);
+            var tokenValidationFailedException = new SecurityTokenValidationException(ExceptionConstants.InvalidTokenExceptionConstant);
+            context.Fail(failureMessage: tokenValidationFailedException.Message);
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<BaseController>>();
+            logger.LogAppError(
+                exception: tokenValidationFailedException,
+                message: tokenValidationFailedException.Message
+            );
             return;
         }
 
@@ -110,14 +124,21 @@ public static class DIContainer
     /// Handles auth token validation failed async.
     /// </summary>
     /// <param name="context">The auth failed context.</param>
-    private static async Task HandleAuthTokenValidationFailedAsync(this AuthenticationFailedContext context)
+    private static async Task HandleAuthTokenValidationFailedAsync(
+        this AuthenticationFailedContext context
+    )
     {
         var authenticationFailedException = new UnauthorizedAccessException(context.Exception.Message);
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<BaseController>>();
-        logger.LogError(authenticationFailedException, context.Exception.Message);
+        logger.LogAppError(
+            exception: authenticationFailedException,
+            message: authenticationFailedException.Message
+        );
 
-        context.Fail(context.Exception.Message);
-        await Task.CompletedTask;
+        context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await context.HttpContext.Response.WriteAsync(
+            authenticationFailedException.Message
+        ).ConfigureAwait(false);
     }
 
 }

@@ -18,9 +18,17 @@ internal static class DomainUtilities
     /// <param name="commonLogger">The common logger.</param>
     /// <typeparam name="T">The null variable type</typeparam>
     /// <typeparam name="L">The logger type.</typeparam>
-    internal static T ThrowIfNull<T, L>(T obj, string message, ILogger<L> commonLogger)
+    internal static T ThrowIfNull<T, L>(
+        T obj,
+        string message,
+        ILogger<L> commonLogger
+    )
     {
-        if (obj is null) ThrowLoggedException(message, commonLogger);
+        if (obj is null)
+            ThrowLoggedException(
+                message,
+                commonLogger
+            );
 
         return obj;
     }
@@ -31,10 +39,16 @@ internal static class DomainUtilities
     /// <param name="message">The message.</param>
     /// <param name="commonLogger">The common logger.</param>
     /// <typeparam name="T"></typeparam>
-    internal static void ThrowLoggedException<T>(string message, ILogger<T> commonLogger)
+    internal static void ThrowLoggedException<T>(
+        string message,
+        ILogger<T> commonLogger
+    )
     {
         var exception = new Exception(message);
-        commonLogger.LogError(exception, exception.Message);
+        commonLogger.LogAppError(
+            exception,
+            message: exception.Message
+        );
         throw exception;
     }
 
@@ -47,10 +61,16 @@ internal static class DomainUtilities
     internal static Guid ValidateAndParsePostId<T>(string postId, ILogger<T> logger)
     {
         if (string.IsNullOrWhiteSpace(postId))
-            ThrowLoggedException(ExceptionConstants.PostIdNotPresentMessageConstant, logger);
+            ThrowLoggedException(
+                message: ExceptionConstants.PostIdNotPresentMessageConstant,
+                commonLogger: logger
+            );
 
         if (!Guid.TryParse(postId, out var postGuid))
-            ThrowLoggedException(ExceptionConstants.PostGuidNotValidMessageConstant, logger);
+            ThrowLoggedException(
+                message: ExceptionConstants.PostGuidNotValidMessageConstant,
+                commonLogger: logger
+            );
 
         return postGuid;
     }
@@ -59,7 +79,9 @@ internal static class DomainUtilities
     /// Creates update post dto.
     /// </summary>
     /// <param name="post">The post.</param>
-    internal static UpdatePostDomain CreateUpdatePostDTO(PostDomain post) =>
+    internal static UpdatePostDomain CreateUpdatePostDTO(
+        PostDomain post
+    ) =>
         new()
         {
             PostContent = post.PostContent,
@@ -76,7 +98,12 @@ internal static class DomainUtilities
     /// <param name="input">The input.</param>
     /// <param name="aiResponse">The ai response.</param>
     /// <returns>The populated agent response domain.</returns>
-    internal static AIChatbotResponseDomain PrepareAgentChatbotReponse(this AIChatbotResponseDomain aiAgentResponse, string userIntent, string input, string aiResponse)
+    internal static AIChatbotResponseDomain PrepareAgentChatbotReponse(
+        this AIChatbotResponseDomain aiAgentResponse,
+        string userIntent,
+        string input,
+        string aiResponse
+    )
     {
         aiAgentResponse.UserIntent = userIntent.Trim();
         aiAgentResponse.UserQuery = input.Trim();

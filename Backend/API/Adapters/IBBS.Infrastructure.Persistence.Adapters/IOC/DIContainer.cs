@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using IBBS.Domain.DrivenPorts;
+using IBBS.Infrastructure.Persistence.Adapters.DataManager;
 using IBBS.Infrastructure.Persistence.Adapters.DataServices;
 using InternetBulletin.Data.Contracts;
 using Microsoft.EntityFrameworkCore;

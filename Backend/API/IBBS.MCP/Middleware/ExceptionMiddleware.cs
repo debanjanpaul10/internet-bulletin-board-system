@@ -1,5 +1,7 @@
 using IBBS.Domain.Helpers;
+using IBBS.MCP.Helpers;
 using static IBBS.MCP.Helpers.MCPConstants;
+using static IBBS.MCP.Helpers.MCPConstants.LoggingConstants;
 
 namespace IBBS.MCP.Middleware;
 
@@ -14,19 +16,48 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, RequestDel
     /// Invokes the specified HTTP context.
     /// </summary>
     /// <param name="httpContext">The HTTP context.</param>
-    public async Task Invoke(HttpContext httpContext)
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task InvokeAsync(
+        HttpContext httpContext,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
-            await next(httpContext);
+            await next(context: httpContext).ConfigureAwait(false);
         }
         catch (UnauthorizedAccessException ex)
         {
-            await HandleExceptionAsync(httpContext, ex, StatusCodes.Status401Unauthorized, ex.ToString(), ex.Message);
+            await this.HandleExceptionAsync(
+                httpContext,
+                ex,
+                statusCode: StatusCodes.Status401Unauthorized,
+                error: ex.Message.ToString(),
+                message: ex.Message,
+                cancellationToken
+            ).ConfigureAwait(false);
+        }
+        catch (BadHttpRequestException ex)
+        {
+            await this.HandleExceptionAsync(
+                httpContext,
+                ex,
+                statusCode: StatusCodes.Status400BadRequest,
+                error: ex.Message.ToString(),
+                message: ex.Message,
+                cancellationToken
+            ).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(httpContext, ex, StatusCodes.Status500InternalServerError, ex.ToString(), ex.Message);
+            await this.HandleExceptionAsync(
+                httpContext,
+                ex,
+                statusCode: StatusCodes.Status500InternalServerError,
+                error: ex.Message.ToString(),
+                message: ex.Message,
+                cancellationToken
+            ).ConfigureAwait(false);
         }
     }
 
@@ -38,15 +69,42 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, RequestDel
     /// <param name="statusCode">The status code.</param>
     /// <param name="error">The error.</param>
     /// <param name="message">The message.</param>
-    public async Task HandleExceptionAsync(HttpContext httpContext, Exception ex, int statusCode, string error, string message)
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task HandleExceptionAsync(
+        HttpContext httpContext,
+        Exception ex,
+        int statusCode,
+        string error,
+        string message,
+        CancellationToken cancellationToken = default
+    )
     {
-        logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, httpContext.Request.Method, DateTime.UtcNow, ex.Message));
+        // Get correlation ID from HttpContext
+        var correlationId = httpContext.Items[CorrelationIdHeader]?.ToString() ?? LogContext.CorrelationId ?? Guid.NewGuid().ToString();
+
+        // Enrich log context with request details using Microsoft's ILogger.BeginScope
+        using (logger.BeginScope(new Dictionary<string, object>
+        {
+            [HeaderLoggingConstants.CorrelationId] = correlationId,
+            [HeaderLoggingConstants.RequestPath] = httpContext.Request.Path.ToString(),
+            [HeaderLoggingConstants.RequestMethod] = httpContext.Request.Method,
+            [HeaderLoggingConstants.StatusCode] = statusCode
+        }))
+        {
+            logger.LogAppError(
+                ex,
+                UnhandledExceptionMessage,
+                correlationId, httpContext.Request.Path, httpContext.Request.Method
+            );
+        }
 
         httpContext.Response.ContentType = ConfigurationConstants.ApplicationJsonConstant;
         httpContext.Response.StatusCode = statusCode;
-
-        var errorResponse = new InternetBulletinBusinessException(statusCode, message, error);
-        await httpContext.Response.WriteAsJsonAsync(errorResponse);
+        var errorResponse = new IBBSBusinessException(message, statusCode, error, correlationId);
+        await httpContext.Response.WriteAsJsonAsync(
+            value: errorResponse,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 }
 
@@ -60,8 +118,7 @@ public static class ExceptionMiddlewareExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <returns>The application builder.</returns>
-    public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<ExceptionMiddleware>();
-    }
+    public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder) =>
+        builder.UseMiddleware<ExceptionMiddleware>();
+
 }
