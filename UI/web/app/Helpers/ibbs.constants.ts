@@ -1,3 +1,33 @@
+/**
+ * This file contains constants used throughout the Internet Bulletin Board System (IBBS) application.
+ */
+export const ApplicationConstants = {
+	ConsoleMessage: "Developed from scratch by Debanjan Paul!",
+	CookiesConstants: {
+		DarkMode: {
+			Name: "darkMode",
+			Timeout: 30,
+		},
+		LoggedInUser: {
+			Name: "currentLoggedIn",
+			Timeout: 30,
+		},
+	},
+	ModalStyle: {
+		position: "absolute",
+		top: "50%",
+		left: "50%",
+		transform: "translate(-50%, -50%)",
+		width: "auto",
+		border: "2px solid #000",
+		boxShadow: 24,
+		p: 4,
+	},
+};
+
+/**
+ * This file contains constants used throughout the Internet Bulletin Board System (IBBS) application.
+ */
 export const PageConstants = {
 	DarkModeConstant: "dark-mode",
 	DarkConstant: "dark",
@@ -5,6 +35,9 @@ export const PageConstants = {
 	DefaultLoaderMessage: "Loading amazing content ...",
 };
 
+/**
+ * Constants used for header page configurations in the application.
+ */
 export const HeaderPageConstants = {
 	Headings: {
 		Login: {
@@ -43,6 +76,9 @@ export const HeaderPageConstants = {
 	},
 };
 
+/**
+ * Constants used for landing page configurations in the application.
+ */
 export const LandingPageConstants = {
 	PostsContainerConstants: {
 		PostsHeader: "Latest Posts",
@@ -50,11 +86,17 @@ export const LandingPageConstants = {
 	},
 };
 
+/**
+ * Constants used for error page configurations in the application.
+ */
 export const ErrorPageConstants = {
 	PageNotFoundMessage:
 		"Oops! The page could not be found, but hey don't be down!",
 };
 
+/**
+ * Constants used for home page configurations in the application.
+ */
 export const HomePageConstants = {
 	Headings: {
 		WelcomeMessage:
@@ -65,6 +107,9 @@ export const HomePageConstants = {
 	},
 };
 
+/**
+ * Constants used for post body configurations in the application.
+ */
 export const PostBodyConstants = {
 	ButtonText: {
 		RatingsButtonTooltipText: "Vote as good one!",
@@ -74,17 +119,9 @@ export const PostBodyConstants = {
 	},
 };
 
-export const CookiesConstants = {
-	DarkMode: {
-		Name: "darkMode",
-		Timeout: 30,
-	},
-	LoggedInUser: {
-		Name: "currentLoggedIn",
-		Timeout: 30,
-	},
-};
-
+/**
+ * Constants used for create post page configurations in the application.
+ */
 export const CreatePostPageConstants = {
 	Headings: {
 		Header: "Share your story, no need for glory, just a bit of wit, and maybe some allegory.",
@@ -121,23 +158,16 @@ export const CreatePostPageConstants = {
 	},
 };
 
+/**
+ * Constants used for no posts message configurations in the application.
+ */
 export const NoPostsMessageConstant = {
 	Heading: "Oops! We do not have anything for you right now.",
 };
 
-export const ConsoleMessage = "Developed from scratch by Debanjan Paul!";
-
-export const modalStyle = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "auto",
-	border: "2px solid #000",
-	boxShadow: 24,
-	p: 4,
-};
-
+/**
+ * Constants used for my profile page configurations in the application.
+ */
 export const MyProfilePageConstants = {
 	Headings: {
 		Header: "My Profile",
@@ -152,6 +182,9 @@ export const MyProfilePageConstants = {
 	RatingsTableHeaders: ["Post Name", "Rated on"],
 };
 
+/**
+ * Constants used for about us page configurations in the application.
+ */
 export const AboutUsPageConstants = {
 	ButtonTexts: {
 		WebsiteNav: "Visit the official website",
@@ -159,6 +192,9 @@ export const AboutUsPageConstants = {
 	Subtitle: "Made with ❤ and",
 };
 
+/**
+ * Constants used for footer configurations in the application.
+ */
 export const FooterConstants = {
 	EmailLink: "mailto:debanjanpaul10@gmail.com",
 	FaceBookLink: "https://www.facebook.com/debanjan.paul.69",
@@ -170,6 +206,9 @@ export const NSFWConstant = "NSFW";
 export const BlankTextErrorMessageConstant =
 	"Atleast enter something in the text box boss!";
 
+/**
+ * Constants used for chatbot configurations in the application.
+ */
 export const ChatbotConstants = {
 	ChatbotFloatingIconTooltip: "Chat with IBBS AI Assistant",
 	ChatbotWindow: {
@@ -188,6 +227,9 @@ export const ChatbotConstants = {
 	},
 };
 
+/**
+ * Constants used for bug report configurations in the application.
+ */
 export const BugReportConstants = {
 	Header: "We accept that we screwed up, so please help us and submit a bug report",
 	LoaderMessage: "Submitting the bug report ...",

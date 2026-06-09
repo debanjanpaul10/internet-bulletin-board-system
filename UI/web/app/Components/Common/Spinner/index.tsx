@@ -2,7 +2,7 @@ import { Spinner as FluentSpinner } from "@fluentui/react-components";
 
 import AppLogo from "@assets/Images/IBBS_logo.png";
 import { useStyles } from "./styles";
-import { PageConstants } from "@helpers/ibbs.constants";
+import { PageConstants } from "@/app/helpers/ibbs.constants";
 
 /**
  * @component

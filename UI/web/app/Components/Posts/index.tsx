@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import PostBody from "@components/Posts/Components/PostBody";
-import NoPostsContainer from "@components/Posts/Components/NoPosts";
-import AnimatedContent from "@animations/AnimatedFadeInContent";
+import PostBody from "@components/posts/components/post-body";
+import NoPostsContainer from "@components/posts/components/no-post";
+import AnimatedContent from "@animations/animated-fadein-content/index.tsx";
 import { useAppSelector } from "@/index";
-import { Post } from "@models/Interfaces/IPost";
+import { Post } from "@models/interfaces/IPost.js";
 import { LandingPageConstants } from "@helpers/ibbs.constants";
-import { useStyles } from "./styles";
+import { useStyles } from "./styles.ts";
 
 /**
  * PostsContainer component to display a list of posts.
@@ -15,10 +15,10 @@ export default function PostsContainer() {
 	const styles = useStyles();
 
 	const AllPostsStoreData = useAppSelector(
-		(state) => state.PostsReducer.allPostsData
+		(state) => state.PostsReducer.allPostsData,
 	);
 	const IsPostsDataLoading = useAppSelector(
-		(state) => state.PostsReducer.isPostsDataLoading
+		(state) => state.PostsReducer.isPostsDataLoading,
 	);
 
 	const [allPosts, setAllPosts] = useState<Post[]>([]);
@@ -28,7 +28,7 @@ export default function PostsContainer() {
 			let sortedData = [...AllPostsStoreData].sort(
 				(a, b) =>
 					new Date(b.postCreatedDate).getTime() -
-					new Date(a.postCreatedDate).getTime()
+					new Date(a.postCreatedDate).getTime(),
 			);
 			setAllPosts(sortedData);
 		}
@@ -51,8 +51,11 @@ export default function PostsContainer() {
 						</h1>
 					</div>
 					<div className="posts-grid">
-						{allPosts.map((post, index) => (
-							<div className="post-item" key={index}>
+						{allPosts.map((post) => (
+							<div
+								className="post-item"
+								key={post.postCreatedDate}
+							>
 								<AnimatedContent
 									distance={150}
 									direction="vertical"

@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useStyles } from "./styles";
+import { useStyles } from "@animations/noise/styles";
 
 interface NoiseProps {
 	patternSize?: number;
@@ -36,7 +36,7 @@ const Noise = ({
 
 		const patternData = patternCtx.createImageData(
 			patternSize,
-			patternSize
+			patternSize,
 		);
 		const patternPixelDataLength = patternSize * patternSize * 4;
 
@@ -73,7 +73,7 @@ const Noise = ({
 				drawGrain();
 			}
 			frame++;
-			window.requestAnimationFrame(loop);
+			globalThis.window.requestAnimationFrame(loop);
 		};
 
 		window.addEventListener("resize", resize);

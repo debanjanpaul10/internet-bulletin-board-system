@@ -1,10 +1,10 @@
 import { Action, Dispatch } from "redux";
 
-import { GetUserProfilesDataApiAsync } from "@services/ibbs.apiservice";
+import { GetUserProfilesDataApiAsync } from "@/app/services/ibbs.apiservice";
 import {
 	GET_USER_PROFILE_DATA,
 	TOGGLE_USER_PROFILE_DATA_SPINNER,
-} from "./ActionTypes";
+} from "./action-types";
 
 /**
  * Stores the profile data spinner toggle state to redux store.

@@ -1,14 +1,14 @@
 // #region POSTS
 
 import HttpUtility from "@helpers/http.utility";
-import AddPostDtoModel from "@models/AddPostDto";
-import { AIResponseFeedbackDTO } from "@models/DTOs/ai-response-feedback.dto";
-import { BugReportDTO } from "@models/DTOs/bug-report-data.dto";
-import { BugSeverityAIRequestDTO } from "@models/DTOs/bug-severity-ai-request.dto";
-import { UserQueryRequestDTO } from "@models/DTOs/user-query-request.dto";
-import PostRatingDtoModel from "@models/PostRatingDto";
-import UpdatePostDtoModel from "@models/UpdatePostDto";
-import UserStoryRequestDtoModel from "@models/UserStoryRequestDto";
+import { AddPostDtoModel } from "@models/dto-models/add-post.dto";
+import { AIResponseFeedbackDTO } from "@models/dto-models/ai-response-feedback.dto";
+import { BugReportDTO } from "@models/dto-models/bug-report-data.dto";
+import { BugSeverityAIRequestDTO } from "@models/dto-models/bug-severity-ai-request.dto";
+import { UserQueryRequestDTO } from "@/app/models/dto-models/user-query-request.dto";
+import { PostRatingDtoModel } from "@models/dto-models/post-rating.dto";
+import { UpdatePostDtoModel } from "@models/dto-models/update-post.dto";
+import { UserStoryRequestDtoModel } from "@models/dto-models/user-story-request.dto";
 
 /**
  * Gets the post data from api.
@@ -134,7 +134,7 @@ export const GetLookupMasterDataApiAsync = async () => {
  * @returns The promise of the response from api.
  */
 export const PostRewriteStoryWithAiApiAsync = async (
-	storyText: string,
+	storyText: UserStoryRequestDtoModel,
 	accessToken: string,
 ) => {
 	return await HttpUtility.PostAsync(

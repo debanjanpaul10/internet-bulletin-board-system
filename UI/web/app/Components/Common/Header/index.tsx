@@ -12,8 +12,8 @@ import {
 	HomePageConstants,
 } from "@helpers/ibbs.constants";
 import AppLogo from "@assets/Images/IBBS_logo.png";
-import useStyles from "@components/Common/Header/styles";
-import { ToggleBugReportDrawer, ToggleSideBar } from "@store/Common/Actions";
+import useStyles from "@components/common/header/styles";
+import { ToggleBugReportDrawer, ToggleSideBar } from "@store/common/actions";
 
 /**
  * @component
@@ -92,7 +92,7 @@ export default function HeaderComponent() {
 							className={styles.homeButton}
 							appearance="subtle"
 						>
-							<img src={AppLogo} height={"24px"} />
+							<img src={AppLogo} height={"24px"} alt="App Logo" />
 							{HomePageConstants.Headings.IBBS}
 						</Button>
 					</Tooltip>
