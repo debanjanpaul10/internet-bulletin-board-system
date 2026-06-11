@@ -20,9 +20,9 @@ import {
 import { BugReportConstants } from "@/app/helpers/ibbs.constants";
 import { BugReportDTO } from "@/app/models/dto-models/bug-report-data.dto";
 import { DrawerMotion } from "./motion";
-import Spinner from "../common/spinner";
-import { GetBugSeverityStatusAsync } from "@/app/store/ai-services/actions";
-import { BugSeverityAIRequestDTO } from "@/app/models/dto-models/bug-severity-ai-request.dto";
+import Spinner from "@components/common/spinner";
+import { GetBugSeverityStatusAsync } from "@store/ai-services/actions";
+import { BugSeverityAIRequestDTO } from "@models/dto-models/bug-severity-ai-request.dto";
 
 export default function BugReportComponent() {
 	const dispatch = useAppDispatch();
