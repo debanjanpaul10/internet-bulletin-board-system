@@ -1,5 +1,7 @@
 ﻿using System.Data.Common;
+using System.Linq.Expressions;
 using System.Reflection;
+using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
 
 namespace IBBS.Infrastructure.Persistence.Adapters.Helpers;
 
@@ -32,6 +34,36 @@ internal static class QueryableExtensions
 		// For specific types, use the existing extension method
 		return reader.MapReaderToObject(type);
 	}
+
+	/// <summary>
+	/// Filters the IQueryable to include only entities that are marked as active.
+	/// </summary>
+	/// <typeparam name="T">The type param</typeparam>
+	/// <param name="query">The passed query.</param>
+	/// <param name="isActiveOnly">The is active only boolean flag.</param>
+	/// <returns>The queryable type data.</returns>
+	internal static IQueryable<T> WhereIsActive<T>(this IQueryable<T> query, bool isActiveOnly = true)
+	{
+		if (!isActiveOnly)
+		{
+			return query;
+		}
+
+		var property = typeof(T).GetProperty(DatabaseConstants.IsActiveBooleanFlag, BindingFlags.Public | BindingFlags.Instance);
+		if (property is null || property.PropertyType != typeof(bool))
+		{
+			return query;
+		}
+
+		var parameter = Expression.Parameter(typeof(T), "x");
+		var propertyAccess = Expression.Property(parameter, property);
+		var isActiveExpression = Expression.Equal(propertyAccess, Expression.Constant(true));
+		var lambda = Expression.Lambda<Func<T, bool>>(isActiveExpression, parameter);
+
+		return query.Where(lambda);
+	}
+
+	#region PRIVATE METHODS
 
 	/// <summary>
 	/// Maps a data reader row to an object of the specified type.
@@ -76,4 +108,6 @@ internal static class QueryableExtensions
 
 		return instance;
 	}
+
+	#endregion
 }

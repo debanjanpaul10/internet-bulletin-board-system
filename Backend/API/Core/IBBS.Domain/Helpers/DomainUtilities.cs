@@ -1,7 +1,10 @@
 ﻿using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DomainEntities.Posts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
+using static IBBS.Domain.Helpers.DomainConstants.AiAgentsIdConstants;
 
 namespace IBBS.Domain.Helpers;
 
@@ -111,4 +114,69 @@ internal static class DomainUtilities
 
         return aiAgentResponse;
     }
+
+    /// <summary>
+    /// Prepares the workspace agent chat request domain.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="agentId">The agent id.</param>
+    /// <param name="requestDTO">The request DTO.</param>
+    /// <returns>The populated workspace agent chat request domain.</returns>
+    internal static WorkspaceAgentChatRequestDomain PrepareWorkspaceAgentChatRequestDomain(
+        IConfiguration configuration,
+        string? agentId,
+        UserStoryRequestDomain requestDTO
+    ) => new()
+    {
+        AgentId = agentId
+            ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, RewriteTextAgent.Id)),
+        ApplicationName = configuration[IbbsPluginsWorkspace.WorkspaceName]
+            ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceName)),
+        WorkspaceId = configuration[IbbsPluginsWorkspace.WorkspaceId]
+            ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceId)),
+        ConversationId = Guid.NewGuid().ToString(),
+        UserMessage = requestDTO.Story
+    };
+
+    /// <summary>
+    /// Prepares the workspace agent chat request domain.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="agentId">The agent id.</param>
+    /// <param name="requestDTO">The request DTO.</param>
+    /// <returns>The populated workspace agent chat request domain.</returns>
+    internal static WorkspaceAgentChatRequestDomain PrepareWorkspaceAgentChatRequestDomain(
+        IConfiguration configuration,
+        string agentId,
+        BugSeverityAIRequestDomain requestDTO
+    ) => new()
+    {
+        AgentId = agentId
+            ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateBugSeverityAgent.Id)),
+        ApplicationName = configuration[IbbsPluginsWorkspace.WorkspaceName]
+            ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceName)),
+        WorkspaceId = configuration[IbbsPluginsWorkspace.WorkspaceId]
+            ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceId)),
+        ConversationId = Guid.NewGuid().ToString(),
+        UserMessage = JsonConvert.SerializeObject(new { Title = requestDTO.BugTitle, Description = requestDTO.BugDescription })
+    };
+
+    /// <summary>
+    /// Prepares the workspace agent chat request domain.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="requestDTO">The request DTO.</param>
+    /// <returns>The populated workspace agent chat request domain.</returns>
+    internal static WorkspaceAgentChatRequestDomain PrepareWorkspaceAgentChatRequestDomain(
+        IConfiguration configuration,
+        UserQueryRequestDomain requestDTO
+    ) => new()
+    {
+        ApplicationName = configuration[IbbsGroupchatWorkspace.WorkspaceName]
+            ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsGroupchatWorkspace.WorkspaceName)),
+        WorkspaceId = configuration[IbbsGroupchatWorkspace.WorkspaceId]
+            ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsGroupchatWorkspace.WorkspaceId)),
+        ConversationId = Guid.NewGuid().ToString(),
+        UserMessage = requestDTO.UserQuery
+    };
 }

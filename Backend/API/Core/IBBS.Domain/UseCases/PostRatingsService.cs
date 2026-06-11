@@ -1,10 +1,11 @@
+using IBBS.Domain.Contracts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
-using InternetBulletin.Data.Contracts;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
 
 namespace IBBS.Domain.UseCases;
@@ -12,11 +13,13 @@ namespace IBBS.Domain.UseCases;
 /// <summary>
 /// PostDomain ratings service.
 /// </summary>
+/// <param name="correlationContext">The correlation context.</param>
 /// <param name="logger">The logger.</param>
 /// <param name="postRatingsDataService">The post ratings data service.</param>
 /// <param name="postsDataService">The posts data service.</param>
 /// <seealso cref="IPostRatingsService"/>
 public sealed class PostRatingsService(
+    ICorrelationContext correlationContext,
     ILogger<PostRatingsService> logger,
     IPostRatingsDataService postRatingsDataService,
     IPostsDataService postsDataService) : IPostRatingsService
@@ -28,49 +31,115 @@ public sealed class PostRatingsService(
         CancellationToken cancellationToken = default
     )
     {
-        var postIdGuid = DomainUtilities.ValidateAndParsePostId(
-            postId: Convert.ToString(postRatingDomain.PostId)!,
-            logger
-        );
+        UpdateRatingDomain response = new();
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userName })
+            );
 
-        var post = await postsDataService.GetPostAsync(
-            postId: postIdGuid,
-            userName,
-            isForCurrentUser: false,
-            cancellationToken
-        ).ConfigureAwait(false);
-        var postRating = await postRatingsDataService.GetPostRatingAsync(
-            postId: postIdGuid,
-            userName
-        ).ConfigureAwait(false);
+            var postIdGuid = DomainUtilities.ValidateAndParsePostId(
+                postId: Convert.ToString(postRatingDomain.PostId)!,
+                logger
+            );
 
-        DomainUtilities.ThrowIfNull(post, ExceptionConstants.PostNotFoundMessageConstant, logger);
-
-        if (postRating is not null && postRating.PostId != Guid.Empty)
-            return await this.HandleUpdateExistingPostRatingDataAsync(
-                postRating,
-                post,
+            var post = await postsDataService.GetPostAsync(
+                postId: postIdGuid,
+                userName,
+                isForCurrentUser: false,
+                cancellationToken
+            ).ConfigureAwait(false);
+            var postRating = await postRatingsDataService.GetPostRatingAsync(
+                postId: postIdGuid,
                 userName,
                 cancellationToken
             ).ConfigureAwait(false);
-        else
-            return await this.HandleAddNewPostRatingDataAsync(
-                postIdGuid,
-                post,
-                userName,
-                cancellationToken
-            ).ConfigureAwait(false);
+
+            DomainUtilities.ThrowIfNull(
+                obj: post,
+                message: ExceptionConstants.PostNotFoundMessageConstant,
+                commonLogger: logger
+            );
+
+            if (postRating is not null && postRating.PostId != Guid.Empty)
+                response = await this.HandleUpdateExistingPostRatingDataAsync(
+                    postRating,
+                    post,
+                    userName,
+                    cancellationToken
+                ).ConfigureAwait(false);
+            else
+                response = await this.HandleAddNewPostRatingDataAsync(
+                    postIdGuid,
+                    post,
+                    userName,
+                    cancellationToken
+                ).ConfigureAwait(false);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userName, response })
+            );
+        }
     }
 
     /// <inheritdoc />
     public async Task<List<PostRatingDomain>> GetAllUserPostRatingsAsync(
         string userName,
         CancellationToken cancellationToken = default
-    ) =>
-        await postRatingsDataService.GetAllUserPostRatingsAsync(
-            userName
-        ).ConfigureAwait(false);
+    )
+    {
+        List<PostRatingDomain> response = [];
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetAllUserPostRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userName })
+            );
 
+            response = await postRatingsDataService.GetAllUserPostRatingsAsync(
+                userName,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetAllUserPostRatingsAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetAllUserPostRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userName, response })
+            );
+        }
+    }
 
     #region PRIVATE METHODS
 
@@ -106,7 +175,8 @@ public sealed class PostRatingsService(
             cancellationToken
         ).ConfigureAwait(false);
         await postRatingsDataService.UpdatePostRatingAsync(
-            postRating
+            postRating,
+            cancellationToken
         ).ConfigureAwait(false);
         return new UpdateRatingDomain { HasAlreadyUpdated = true, IsUpdateSuccess = true };
     }
@@ -142,7 +212,8 @@ public sealed class PostRatingsService(
             cancellationToken
         ).ConfigureAwait(false);
         await postRatingsDataService.AddPostRatingAsync(
-            postRating: newRating
+            postRating: newRating,
+            cancellationToken
         ).ConfigureAwait(false);
         return new UpdateRatingDomain { HasAlreadyUpdated = false, IsUpdateSuccess = true };
     }

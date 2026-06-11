@@ -1,163 +1,184 @@
-﻿using System.Globalization;
-using System.Text.Json;
+﻿using IBBS.Domain.Contracts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DrivenPorts;
-using IBBS.Infrastructure.Persistence.Adapters.Helpers;
-using Microsoft.EntityFrameworkCore;
+using IBBS.Domain.Helpers;
+using IBBS.Infrastructure.Persistence.Adapters.Contracts;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.DataMapperProfile;
 
-namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
+namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 
 /// <summary>
 /// The common data manager service.
 /// </summary>
-/// <param name="dbContext">The database context.</param>
+/// <param name="correlationContext">The correlation context.</param>
 /// <param name="logger">The logger servoce.</param>
+/// <param name="masterDataRepository">The master data repository.</param>
 /// <seealso cref="Domain.DrivenPorts.ICommonDataManager" />
-public sealed class CommonDataManager(ILogger<CommonDataManager> logger, SqlDbContext dbContext) : ICommonDataManager
+public sealed class CommonDataManager(
+    ICorrelationContext correlationContext,
+    ILogger<CommonDataManager> logger,
+    IMasterDataRepository masterDataRepository) : ICommonDataManager
 {
-    /// <summary>
-    /// Executes the aisql query asynchronous.
-    /// </summary>
-    /// <param name="aiSqlQuery">The ai SQL query.</param>
-    /// <returns>
-    /// The json format of the sql response.
-    /// </returns>
-    public async Task<string> ExecuteAISQLQueryAsync(string aiSqlQuery)
+    /// <inheritdoc />
+    public async Task<string> ExecuteAISQLQueryAsync(
+        string aiSqlQuery,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(ExecuteAISQLQueryAsync), DateTime.UtcNow, aiSqlQuery));
-            var result = await ExecuteSqlQueryRawAsync<List<Object>>(aiSqlQuery).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result);
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(ExecuteAISQLQueryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, aiSqlQuery })
+            );
+
+            response = await masterDataRepository.ExecuteAISQLQueryAsync(
+                aiSqlQuery,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(ExecuteAISQLQueryAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(ExecuteAISQLQueryAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(ExecuteAISQLQueryAsync), DateTime.UtcNow, aiSqlQuery));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(ExecuteAISQLQueryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, aiSqlQuery, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Gets the lookup master data async.
-    /// </summary>
-    /// <returns>The list of <see cref="LookupMasterDomain"/></returns>
-    public async Task<IEnumerable<LookupMasterDomain>> GetLookupMasterDataAsync()
+    /// <inheritdoc />
+    public async Task<IEnumerable<LookupMasterDomain>> GetLookupMasterDataAsync(
+        CancellationToken cancellationToken = default
+    )
     {
+        IEnumerable<LookupMasterDomain> response = [];
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
-            return await dbContext.LookupMaster.Where(x => x.IsActive).ToListAsync().ConfigureAwait(false);
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetLookupMasterDataAsync), DateTime.UtcNow, correlationContext.CorrelationId
+            );
+
+            var dbResponse = await masterDataRepository.GetLookupMasterDataAsync(cancellationToken).ConfigureAwait(false);
+            response = [.. dbResponse.Select(MapToDomain)];
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetLookupMasterDataAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetLookupMasterDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Gets the sample prompts for chatbot asynchronous.
-    /// </summary>
-    /// <returns>
-    /// The list of <see cref="LookupMasterDomain" />
-    /// </returns>
-    public async Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync()
+    /// <inheritdoc />
+    public async Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync(
+        CancellationToken cancellationToken = default
+    )
     {
+        IEnumerable<LookupMasterDomain> response = [];
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
-            var result = await dbContext.LookupMaster.Where(x => x.Type == "SamplePrompts" && x.IsActive).ToListAsync().ConfigureAwait(false);
-            return result;
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, correlationContext.CorrelationId
+            );
+
+            var dbResponse = await masterDataRepository.GetSamplePromptsForChatbotAsync(cancellationToken).ConfigureAwait(false);
+            response = [.. dbResponse.Select(MapToDomain)];
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Submits the bug report data asynchronous.
-    /// </summary>
-    /// <param name="addBugReportModel">The add bug report model.</param>
-    /// <returns>The boolean for success/failure.</returns>
-    public async Task<bool> SubmitBugReportDataAsync(BugReportDomain newBugReportData)
+    /// <inheritdoc />
+    public async Task<bool> SubmitBugReportDataAsync(
+        BugReportDomain newBugReportData,
+        CancellationToken cancellationToken = default
+    )
     {
+        bool response = false;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, correlationContext.CorrelationId
+            );
 
-            await dbContext.BugReportData.AddAsync(newBugReportData).ConfigureAwait(false);
-            await dbContext.SaveChangesAsync().ConfigureAwait(false);
-            return true;
+            var entityModel = MapToEntity(domain: newBugReportData);
+            response = await masterDataRepository.SubmitBugReportDataAsync(
+                newBugReportData: entityModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+            );
         }
     }
 
-    #region PRIVATE METHODS
-
-    /// <summary>
-    /// Executes the SQL query raw asynchronous.
-    /// </summary>
-    /// <typeparam name="TResponse">The type of the response.</typeparam>
-    /// <param name="sqlQuery">The SQL query.</param>
-    /// <returns>The response from sql.</returns>
-    private async Task<TResponse> ExecuteSqlQueryRawAsync<TResponse>(string sqlQuery)
-    {
-        using var connection = dbContext.Database.GetDbConnection();
-        await connection.OpenAsync();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = sqlQuery;
-
-        using var reader = await command.ExecuteReaderAsync();
-
-        if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(List<>))
-        {
-            var elementType = typeof(TResponse).GetGenericArguments()[0];
-            var list = (System.Collections.IList)Activator.CreateInstance<TResponse>()!;
-
-            while (await reader.ReadAsync())
-            {
-                var item = reader.MapReaderToObjectOrDictionary(elementType);
-                list.Add(item);
-            }
-
-            return (TResponse)list;
-        }
-        else
-        {
-            if (await reader.ReadAsync())
-            {
-                var result = reader.MapReaderToObjectOrDictionary(typeof(TResponse));
-                return (TResponse)result;
-            }
-
-            return default!;
-        }
-    }
-
-    #endregion
 }

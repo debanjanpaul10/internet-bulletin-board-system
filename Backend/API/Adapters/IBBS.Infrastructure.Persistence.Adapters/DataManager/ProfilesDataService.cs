@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
 
-namespace IBBS.Infrastructure.Persistence.Adapters.DataServices;
+namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 
 /// <summary>
 /// The Profiles data service class.

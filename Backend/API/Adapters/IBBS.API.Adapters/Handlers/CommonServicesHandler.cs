@@ -12,7 +12,9 @@ namespace IBBS.API.Adapters.Handlers;
 /// <param name="commonService">The common services.</param>
 /// <param name="mapper">The auto mapper.</param>
 /// <seealso cref="IBBS.API.Adapters.Contracts.ICommonServicesHandler" />
-public sealed class CommonServicesHandler(IMapper mapper, ICommonService commonService) : ICommonServicesHandler
+public sealed class CommonServicesHandler(
+    IMapper mapper,
+    ICommonService commonService) : ICommonServicesHandler
 {
     /// <summary>
     /// Gets the lookup master data async.
@@ -21,7 +23,7 @@ public sealed class CommonServicesHandler(IMapper mapper, ICommonService commonS
     public async Task<IEnumerable<LookupMasterDTO>> GetLookupMasterDataAsync()
     {
         var domainResult = await commonService.GetLookupMasterDataAsync().ConfigureAwait(false);
-        return mapper.Map<IEnumerable<LookupMasterDTO>>(domainResult);
+        return mapper.Map<IEnumerable<LookupMasterDTO>>(source: domainResult);
     }
 
     /// <summary>
@@ -33,7 +35,7 @@ public sealed class CommonServicesHandler(IMapper mapper, ICommonService commonS
     /// </returns>
     public async Task<bool> SubmitBugReportDataAsync(BugReportDTO addBugReportModel)
     {
-        var domainInput = mapper.Map<BugReportDomain>(addBugReportModel);
-        return await commonService.SubmitBugReportDataAsync(domainInput).ConfigureAwait(false);
+        var domainInput = mapper.Map<BugReportDomain>(source: addBugReportModel);
+        return await commonService.SubmitBugReportDataAsync(addBugReportModel: domainInput).ConfigureAwait(false);
     }
 }

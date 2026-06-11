@@ -162,5 +162,15 @@ internal static class Constants
         /// The Azure SQL constant.
         /// </summary>
         internal const string AzureSQLConstant = "AzureSQL";
+
+        /// <summary>
+        /// The IsActive boolean flag constant used for filtering active records in database queries and operations.
+        /// </summary>
+        internal const string IsActiveBooleanFlag = "IsActive";
+
+        /// <summary>
+        /// The sample prompts constant.
+        /// </summary>
+        internal const string SamplePromptsConstant = "SamplePrompts";
     }
 }

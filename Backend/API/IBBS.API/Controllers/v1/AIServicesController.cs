@@ -47,8 +47,7 @@ public sealed class AIServicesController(
         Description = RewriteWithAIAction.Description,
         OperationId = RewriteWithAIAction.OperationId)]
     public async Task<IActionResult> RewriteWithAIAsync(
-        UserStoryRequestDTO requestDto,
-        CancellationToken cancellationToken = default
+        UserStoryRequestDTO requestDto
     )
     {
         string response = string.Empty;
@@ -64,7 +63,8 @@ public sealed class AIServicesController(
             {
                 response = await aiServicesHandler.RewriteWithAIAsync(
                     userName: UserEmail,
-                    requestDTO: requestDto
+                    requestDTO: requestDto,
+                    cancellationToken: HttpContext.RequestAborted
                 ).ConfigureAwait(false);
 
                 return HandleSuccessResult(response);
@@ -115,14 +115,13 @@ public sealed class AIServicesController(
         Description = GenerateTagForStoryAction.Description,
         OperationId = GenerateTagForStoryAction.OperationId)]
     public async Task<IActionResult> GenerateTagForStoryAsync(
-        UserStoryRequestDTO requestDto,
-        CancellationToken cancellationToken = default
+        UserStoryRequestDTO requestDto
     )
     {
         ArgumentNullException.ThrowIfNull(requestDto);
         if (base.IsAuthorized(AuthorizationTypes.UserBased))
         {
-            var result = await aiServicesHandler.GenerateTagForStoryAsync(UserEmail, requestDto).ConfigureAwait(false);
+            var result = await aiServicesHandler.GenerateTagForStoryAsync(userName: UserEmail, requestDTO: requestDto).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
             else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
         }
