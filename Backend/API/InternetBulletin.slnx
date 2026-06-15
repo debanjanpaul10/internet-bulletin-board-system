@@ -16,9 +16,7 @@
   <Folder Name="/SolutionItems/">
     <File Path=".gitignore" />
   </Folder>
-  <Folder Name="/UnitTests/">
-    <Project Path="UnitTests/IBBS.Domain.Tests/IBBS.Domain.Tests.csproj" />
-  </Folder>
+  <Folder Name="/UnitTests/" />
   <Project Path="IBBS.API/IBBS.API.csproj" />
   <Project Path="IBBS.MCP/IBBS.MCP.csproj" />
 </Solution>
