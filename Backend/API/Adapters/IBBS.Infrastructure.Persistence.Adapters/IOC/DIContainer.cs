@@ -3,7 +3,6 @@ using IBBS.Domain.DrivenPorts;
 using IBBS.Infrastructure.Persistence.Adapters.Contracts;
 using IBBS.Infrastructure.Persistence.Adapters.DataManager;
 using IBBS.Infrastructure.Persistence.Adapters.Repositories;
-using InternetBulletin.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,6 +95,8 @@ public static class DIContainer
     /// <returns>The service collection.</returns>
     private static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services.AddScoped<IUnitOfWork, UnitOfWork>()
-            .AddScoped<IMasterDataRepository, MasterDataRepository>();
+            .AddScoped<IMasterDataRepository, MasterDataRepository>()
+            .AddScoped<IPostRatingsRepository, PostRatingsRepository>()
+            .AddScoped<IProfilesRepository, ProfilesRepository>();
 
 }

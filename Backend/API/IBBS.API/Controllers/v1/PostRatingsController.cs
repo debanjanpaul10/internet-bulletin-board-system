@@ -1,6 +1,7 @@
 using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models.Posts;
 using IBBS.API.Helpers;
+using IBBS.Domain.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
@@ -17,7 +18,12 @@ namespace IBBS.API.Controllers.v1;
 /// <param name="configuration">The configuration service.</param>
 [ApiController]
 [Route(RouteConstants.PostRatingsController.BaseRoute)]
-public sealed class PostRatingsController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IPostRatingsHandler postRatingsHandler) : BaseController(httpContextAccessor, configuration)
+public sealed class PostRatingsController(
+    IHttpContextAccessor httpContextAccessor,
+    IConfiguration configuration,
+    ICorrelationContext correlationContext,
+    ILogger<PostRatingsController> logger,
+    IPostRatingsHandler postRatingsHandler) : BaseController(httpContextAccessor, configuration)
 {
     /// <summary>
     /// Gets all the user ratings async

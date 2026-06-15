@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using IBBS.Domain.Contracts;
+﻿using IBBS.Domain.Contracts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivenPorts;
@@ -232,14 +231,19 @@ public sealed class AIService(
     )
     {
         // TODO: Needs to be implemented
+        bool response = false;
         try
         {
-            logger.LogAppInformation(LoggingConstants.MethodStartedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail);
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, aiResponseFeedback, userEmail })
+            );
             await Task.Delay(
                 millisecondsDelay: 300,
                 cancellationToken
             ).ConfigureAwait(false);
-            return true;
+            response = true;
+            return response;
         }
         catch (Exception ex)
         {
@@ -255,7 +259,10 @@ public sealed class AIService(
         }
         finally
         {
-            logger.LogAppInformation(LoggingConstants.MethodEndedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail);
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, aiResponseFeedback, userEmail, response })
+            );
         }
     }
 
@@ -272,7 +279,9 @@ public sealed class AIService(
                 nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, correlationContext.CorrelationId
             );
 
-            response = await commonDataManager.GetSamplePromptsForChatbotAsync(cancellationToken).ConfigureAwait(false);
+            response = await commonDataManager.GetSamplePromptsForChatbotAsync(
+                cancellationToken
+            ).ConfigureAwait(false);
             return response;
         }
         catch (Exception ex)

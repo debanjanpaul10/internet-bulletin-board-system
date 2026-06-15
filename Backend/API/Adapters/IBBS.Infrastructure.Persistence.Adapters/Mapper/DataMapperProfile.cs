@@ -186,5 +186,37 @@ public static class DataMapperProfile
         RatingValue = entity.RatingValue
     };
 
+    /// <summary>
+    /// Maps the <see cref="UserPostRating"/> to <see cref="UserPostRatingDomain"/>.
+    /// </summary>
+    /// <param name="entity">The user post rating entity.</param>
+    /// <returns>The user post rating domain.</returns>
+    internal static UserPostRatingDomain MapToDomain(
+        UserPostRating entity
+    ) => new()
+    {
+        CurrentRatingValue = entity.CurrentRatingValue,
+        PostName = entity.PostName,
+        RatedOn = entity.RatedOn
+    };
+
+    /// <summary>
+    /// Maps the <see cref="PostEntity"/> to <see cref="PostDomain"/>
+    /// </summary>
+    /// <param name="entity">The post entity.</param>
+    /// <returns>The post domain.</returns>
+    internal static PostDomain MapToDomain(
+        PostEntity entity
+    ) => new()
+    {
+        IsActive = entity.IsActive,
+        PostContent = entity.PostContent,
+        PostCreatedDate = entity.PostCreatedDate,
+        PostId = entity.PostId,
+        PostOwnerUserName = entity.PostOwnerUserName,
+        PostTitle = entity.PostTitle,
+        Ratings = entity.Ratings
+    };
+
     #endregion
 }

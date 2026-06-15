@@ -12,8 +12,7 @@ namespace IBBS.API.Adapters.Handlers;
 /// </summary>
 /// <param name="aiServices">The ai services.</param>
 /// <seealso cref="IAiServicesHandler" />
-public sealed class AiServicesHandler(
-    IAIService aiServices) : IAiServicesHandler
+public sealed class AiServicesHandler(IAIService aiServices) : IAiServicesHandler
 {
     /// <inheritdoc/>
     public async Task<string> GenerateBugSeverityAsync(

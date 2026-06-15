@@ -21,9 +21,10 @@ public sealed class PostRatingsRepository(
         CancellationToken cancellationToken = default
     )
     {
-        await unitOfWork.Repository<PostRatingEntity>()
-            .AddAsync(entity: postRating, cancellationToken)
-            .ConfigureAwait(false);
+        await unitOfWork.Repository<PostRatingEntity>().AddAsync(
+            entity: postRating,
+            cancellationToken
+        ).ConfigureAwait(false);
 
         var savedCount = await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         return savedCount > 0;
@@ -61,9 +62,10 @@ public sealed class PostRatingsRepository(
         string userName,
         CancellationToken cancellationToken = default
     ) =>
-        await unitOfWork.Repository<PostRatingEntity>()
-            .GetAllAsync(filter: r => r.UserName == userName && r.IsActive, cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+        await unitOfWork.Repository<PostRatingEntity>().GetAllAsync(
+            filter: r => r.UserName == userName && r.IsActive,
+            cancellationToken: cancellationToken
+        ).ConfigureAwait(false);
 
     /// <inheritdoc />
     public async Task<PostRatingEntity> GetPostRatingAsync(
@@ -71,9 +73,10 @@ public sealed class PostRatingsRepository(
         string userName,
         CancellationToken cancellationToken = default
     ) =>
-        await unitOfWork.Repository<PostRatingEntity>()
-            .GetAsync(filter: r => r.PostId == postId && r.UserName == userName && r.IsActive, cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+        await unitOfWork.Repository<PostRatingEntity>().GetAsync(
+            filter: r => r.PostId == postId && r.UserName == userName && r.IsActive,
+            cancellationToken: cancellationToken
+        ).ConfigureAwait(false);
 
     /// <inheritdoc />
     public async Task<bool> UpdatePostRatingAsync(
@@ -81,9 +84,10 @@ public sealed class PostRatingsRepository(
         CancellationToken cancellationToken = default
     )
     {
-        var existingPostRating = await unitOfWork.Repository<PostRatingEntity>()
-            .FirstOrDefaultAsync(predicate: r => r.PostId == postRating.PostId && r.UserName == postRating.UserName, cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+        var existingPostRating = await unitOfWork.Repository<PostRatingEntity>().FirstOrDefaultAsync(
+            predicate: r => r.PostId == postRating.PostId && r.UserName == postRating.UserName,
+            cancellationToken: cancellationToken
+        ).ConfigureAwait(false);
 
         if (existingPostRating is not null)
         {
@@ -91,9 +95,7 @@ public sealed class PostRatingsRepository(
             var savedCounts = await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return savedCounts > 0;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 }

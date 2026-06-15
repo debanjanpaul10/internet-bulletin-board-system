@@ -1,4 +1,6 @@
+using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
+using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
 
 namespace IBBS.API.Adapters.Mapping;
@@ -59,5 +61,22 @@ public static class RequestToDomainMapper
         IsNegativeFeedback = requestDto.IsNegativeFeedback,
         IsPositiveFeedback = requestDto.IsPositiveFeedback,
         UserQuery = requestDto.UserQuery
+    };
+
+    /// <summary>
+    /// Maps the bug report DTO to domain model.
+    /// </summary>
+    /// <param name="requestDto">The bug report request dto.</param>
+    /// <returns>The bug report domain model.</returns>
+    internal static BugReportDomain MapToDomain(
+        BugReportDTO requestDto
+    ) => new()
+    {
+        BugSeverity = requestDto.BugSeverity,
+        BugStatus = requestDto.BugStatus,
+        CreatedBy = requestDto.CreatedBy,
+        Description = requestDto.BugDescription,
+        Title = requestDto.BugTitle,
+        PageUrl = requestDto.PageUrl
     };
 }

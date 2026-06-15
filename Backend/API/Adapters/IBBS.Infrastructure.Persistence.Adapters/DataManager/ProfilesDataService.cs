@@ -1,8 +1,12 @@
-﻿using IBBS.Domain.DomainEntities.Posts;
+﻿using IBBS.Domain.Contracts;
+using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivenPorts;
-using Microsoft.EntityFrameworkCore;
+using IBBS.Domain.Helpers;
+using IBBS.Infrastructure.Persistence.Adapters.Contracts;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.DataMapperProfile;
 
 namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 
@@ -10,71 +14,95 @@ namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 /// The Profiles data service class.
 /// </summary>
 /// <param name="logger">The logger service.</param>
-/// <param name="dbContext">The database context.</param>
-/// <seealso cref="IBBS.Domain.DrivenPorts.IProfilesDataService" />
-public sealed class ProfilesDataService(ILogger<ProfilesDataService> logger, SqlDbContext dbContext) : IProfilesDataService
+/// <param name="correlationContext">The correlation context.</param>
+/// <param name="profilesRepository">The profiles repository.</param>
+/// <seealso cref="IProfilesDataService" />
+public sealed class ProfilesDataService(
+    ILogger<ProfilesDataService> logger,
+    ICorrelationContext correlationContext,
+    IProfilesRepository profilesRepository) : IProfilesDataService
 {
-    /// <summary>
-    /// Gets all posts and ratings for user async.
-    /// </summary>
-    /// <param name="userEmail">The user email.</param>
-    /// <returns>
-    /// The user posts and ratings data.
-    /// </returns>
-    public async Task<List<PostDomain>> GetUserPostsAsync(string userEmail)
+    /// <inheritdoc />
+    public async Task<IEnumerable<PostDomain>> GetUserPostsAsync(
+        string userEmail,
+        CancellationToken cancellationToken = default
+    )
     {
+        List<PostDomain> response = [];
         try
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserPostsAsync), DateTime.UtcNow, userEmail));
-            return await dbContext.Posts.Where(p => p.PostOwnerUserName == userEmail && p.IsActive).ToListAsync().ConfigureAwait(false);
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetUserPostsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userEmail })
+            );
+
+            var dbResponse = await profilesRepository.GetUserPostsAsync(
+                userEmail,
+                cancellationToken
+            ).ConfigureAwait(false);
+            response = [.. dbResponse.Select(MapToDomain)];
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetUserPostsAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetUserPostsAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetUserPostsAsync), DateTime.UtcNow, userEmail));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetUserPostsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userEmail, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Gets user ratings async.
-    /// </summary>
-    /// <param name="userEmail">The user email.</param>
-    /// <returns>
-    /// The list of user post ratings data
-    /// </returns>
-    public async Task<List<UserPostRatingDomain>> GetUserRatingsAsync(string userEmail)
+    /// <inheritdoc />
+    public async Task<IEnumerable<UserPostRatingDomain>> GetUserRatingsAsync(
+        string userEmail,
+        CancellationToken cancellationToken = default
+    )
     {
+        IEnumerable<UserPostRatingDomain> response = [];
         try
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetUserRatingsAsync), DateTime.UtcNow, userEmail));
-            var userRatings = await dbContext.PostRatings
-                .Where(pr => pr.UserName == userEmail && pr.IsActive && pr.RatingValue == 1)
-                .Join(
-                    dbContext.Posts.Where(p => p.IsActive),
-                    pr => pr.PostId,
-                    p => p.PostId,
-                    (pr, p) => new UserPostRatingDomain
-                    {
-                        PostName = p.PostTitle,
-                        RatedOn = pr.RatedOn,
-                        CurrentRatingValue = pr.RatingValue
-                    }
-                ).ToListAsync().ConfigureAwait(false);
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetUserRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userEmail })
+            );
 
-            return userRatings;
+            var dbResponse = await profilesRepository.GetUserRatingsAsync(
+                userEmail,
+                cancellationToken
+            ).ConfigureAwait(false);
+            response = [.. dbResponse.Select(MapToDomain)];
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetUserRatingsAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetUserRatingsAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetUserRatingsAsync), DateTime.UtcNow, userEmail));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetUserRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userEmail, response })
+            );
         }
     }
 }

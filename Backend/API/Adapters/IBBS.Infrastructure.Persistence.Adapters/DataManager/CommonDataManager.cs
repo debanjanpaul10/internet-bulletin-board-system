@@ -111,7 +111,7 @@ public sealed class CommonDataManager(
         {
             logger.LogAppInformation(
                 LoggingConstants.LogHelperMethodStart,
-                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, correlationContext.CorrelationId
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId })
             );
 
             var dbResponse = await masterDataRepository.GetSamplePromptsForChatbotAsync(cancellationToken).ConfigureAwait(false);

@@ -5,6 +5,7 @@ using IBBS.API.Helpers;
 using IBBS.Domain.Contracts;
 using IBBS.Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
@@ -55,7 +56,7 @@ public sealed class AIServicesController(
         {
             logger.LogAppInformation(
                 LoggingConstants.LogHelperMethodStart,
-                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDto })
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, requestDto })
             );
 
             ArgumentNullException.ThrowIfNull(requestDto);
@@ -66,38 +67,36 @@ public sealed class AIServicesController(
                     requestDTO: requestDto,
                     cancellationToken: HttpContext.RequestAborted
                 ).ConfigureAwait(false);
-
-                return HandleSuccessResult(response);
+                return base.HandleSuccessResult(response);
             }
 
-            return HandleUnAuthorizedRequest();
+            return base.HandleUnAuthorizedRequest();
         }
         catch (TaskCanceledException ex)
         {
             logger.LogAppError(
                 ex,
                 LoggingConstants.LogHelperMethodFailed,
-                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
             );
-            return HandleTaskCancelledResponse(message: ex.Message);
+            return base.HandleTaskCancelledResponse(message: ex.Message);
         }
         catch (Exception ex)
         {
             logger.LogAppError(
                 ex,
                 LoggingConstants.LogHelperMethodFailed,
-                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
             );
-            return HandleBadRequest(message: ex.Message);
+            return base.HandleBadRequest(message: ex.Message);
         }
         finally
         {
             logger.LogAppInformation(
                 LoggingConstants.LogHelperMethodEnded,
-                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDto, response })
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDto, base.UserEmail, response })
             );
         }
-
     }
 
     /// <summary>
@@ -144,8 +143,7 @@ public sealed class AIServicesController(
         Description = ModerateContentDataAction.Description,
         OperationId = ModerateContentDataAction.OperationId)]
     public async Task<IActionResult> ModerateContentDataAsync(
-        UserStoryRequestDTO requestDto,
-        CancellationToken cancellationToken = default
+        UserStoryRequestDTO requestDto
     )
     {
         ArgumentNullException.ThrowIfNull(requestDto);
@@ -174,8 +172,7 @@ public sealed class AIServicesController(
         Description = GetBugSeverityStatusAction.Description,
         OperationId = GetBugSeverityStatusAction.OperationId)]
     public async Task<IActionResult> GetBugSeverityStatusAsync(
-        [FromBody] BugSeverityAIRequestDTO bugSeverityInput,
-        CancellationToken cancellationToken = default
+        [FromBody] BugSeverityAIRequestDTO bugSeverityInput
     )
     {
         ArgumentNullException.ThrowIfNull(bugSeverityInput);
@@ -212,15 +209,52 @@ public sealed class AIServicesController(
         [FromBody] AIResponseFeedbackDTO aiResponseFeedback
     )
     {
-        ArgumentNullException.ThrowIfNull(aiResponseFeedback);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        bool response = false;
+        try
         {
-            var result = await aiServicesHandler.PostAiResultFeedbackAsync(aiResponseFeedback, UserEmail).ConfigureAwait(false);
-            if (result) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, aiResponseFeedback })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(aiResponseFeedback);
+            if (base.IsAuthorized(AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.PostAiResultFeedbackAsync(
+                    aiResponseFeedback,
+                    userEmail: UserEmail,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, aiResponseFeedback, response })
+            );
+        }
     }
 
     /// <summary>
@@ -232,17 +266,55 @@ public sealed class AIServicesController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GetSamplePromptsForChatbotAction.Summary, Description = GetSamplePromptsForChatbotAction.Description, OperationId = GetSamplePromptsForChatbotAction.OperationId)]
+    [SwaggerOperation(
+        Summary = GetSamplePromptsForChatbotAction.Summary,
+        Description = GetSamplePromptsForChatbotAction.Description,
+        OperationId = GetSamplePromptsForChatbotAction.OperationId)]
     public async Task<IActionResult> GetSamplePromptsForChatbotAsync()
     {
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        IEnumerable<LookupMasterDTO> response = [];
+        try
         {
-            var result = await aiServicesHandler.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
-            if (result is not null) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail })
+            );
 
-        return HandleUnAuthorizedRequest();
+            if (base.IsAuthorized(authorizationTypes: AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.GetSamplePromptsForChatbotAsync(
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, response })
+            );
+        }
     }
 
     /// <summary>
@@ -251,22 +323,61 @@ public sealed class AIServicesController(
     /// <param name="userQueryRequest">The user query request dto model.</param>
     /// <returns>The AI response string.</returns>
     [HttpPost(RouteConstants.AiServicesController.ChatbotRespond_Route)]
-    [ProducesResponseType(typeof(IEnumerable<LookupMasterDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = GetChatbotResponseAction.Summary, Description = GetChatbotResponseAction.Description, OperationId = GetChatbotResponseAction.OperationId)]
-    public async Task<IActionResult> GetChatbotResponseAsync([FromBody] UserQueryRequestDTO userQueryRequest)
+    public async Task<IActionResult> GetChatbotResponseAsync(
+        [FromBody] UserQueryRequestDTO userQueryRequest
+    )
     {
-        ArgumentNullException.ThrowIfNull(userQueryRequest);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        string response = string.Empty;
+        try
         {
-            var result = await aiServicesHandler.GetChatbotResponseAsync(userQueryRequest).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(result)) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, userQueryRequest })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(userQueryRequest);
+            if (base.IsAuthorized(authorizationTypes: AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.GetChatbotResponseAsync(
+                    userQueryRequest,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, userQueryRequest, response })
+            );
+        }
     }
 
     #endregion
