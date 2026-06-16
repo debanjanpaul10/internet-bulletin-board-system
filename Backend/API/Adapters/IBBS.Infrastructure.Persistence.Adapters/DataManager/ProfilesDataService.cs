@@ -6,7 +6,7 @@ using IBBS.Infrastructure.Persistence.Adapters.Contracts;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
-using static IBBS.Infrastructure.Persistence.Adapters.Mapper.DataMapperProfile;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.EntityToDomainMapper;
 
 namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 

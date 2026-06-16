@@ -97,6 +97,7 @@ public static class DIContainer
         services.AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IMasterDataRepository, MasterDataRepository>()
             .AddScoped<IPostRatingsRepository, PostRatingsRepository>()
-            .AddScoped<IProfilesRepository, ProfilesRepository>();
+            .AddScoped<IProfilesRepository, ProfilesRepository>()
+            .AddScoped<IPostsRepository, PostsRepository>();
 
 }

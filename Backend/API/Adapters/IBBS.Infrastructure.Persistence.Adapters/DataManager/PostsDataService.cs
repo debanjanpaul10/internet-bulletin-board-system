@@ -2,10 +2,13 @@
 using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.Helpers;
+using IBBS.Infrastructure.Persistence.Adapters.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.DomainToEntityMapper;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.EntityToDomainMapper;
 
 namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 
@@ -13,13 +16,13 @@ namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 /// The posts data service.
 /// </summary>
 /// <param name="correlationContext">The correlation context.</param>
-/// <param name="dbContext">The database context.</param>
 /// <param name="logger">The logger service.</param>
+/// <param name="postsRepository">The Posts repository.</param>
 /// <seealso cref="IPostsDataService" />
 public sealed class PostsDataService(
     ICorrelationContext correlationContext,
     ILogger<PostsDataService> logger,
-    SqlDbContext dbContext) : IPostsDataService
+    IPostsRepository postsRepository) : IPostsDataService
 {
     /// <inheritdoc />
     public async Task<PostDomain> GetPostAsync(
@@ -37,12 +40,13 @@ public sealed class PostsDataService(
                 nameof(GetPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName, isForCurrentUser })
             );
 
-            var query = dbContext.Posts.Where(p => p.PostId == postId && p.IsActive);
-            if (string.IsNullOrEmpty(userName))
-                return await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false) ?? new();
-
-            query = isForCurrentUser ? query.Where(p => p.PostOwnerUserName == userName) : query.Where(p => p.PostOwnerUserName != userName);
-            response = await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false) ?? new PostDomain();
+            var dbResponse = await postsRepository.GetPostAsync(
+                postId,
+                userName,
+                isForCurrentUser,
+                cancellationToken
+            ).ConfigureAwait(false);
+            response = MapToDomain(entity: dbResponse);
             return response;
         }
         catch (Exception ex)
@@ -81,43 +85,12 @@ public sealed class PostsDataService(
                 nameof(AddNewPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, newPost, userName })
             );
 
-            var postId = Guid.NewGuid();
-            var existingPost = await dbContext.Posts.AnyAsync(
-                predicate: x => x.PostId == postId && x.IsActive,
+            var dbEntity = MapToEntity(domain: newPost);
+            response = await postsRepository.AddNewPostAsync(
+                newPost: dbEntity,
+                userName,
                 cancellationToken
             ).ConfigureAwait(false);
-            if (!existingPost)
-            {
-                var dbPostData = new PostDomain()
-                {
-                    PostId = postId,
-                    PostContent = newPost.PostContent,
-                    PostTitle = newPost.PostTitle,
-                    IsActive = true,
-                    PostCreatedDate = DateTime.UtcNow,
-                    PostOwnerUserName = userName,
-                    Ratings = 0
-                };
-                await dbContext.Posts.AddAsync(
-                    entity: dbPostData,
-                    cancellationToken
-                ).ConfigureAwait(false);
-                await dbContext.SaveChangesAsync(
-                    cancellationToken
-                ).ConfigureAwait(false);
-                response = true;
-            }
-            else
-            {
-                var exception = new Exception(ExceptionConstants.PostExistsMessageConstant);
-                logger.LogAppError(
-                    exception,
-                    exception.Message
-                );
-
-                response = false;
-            }
-
             return response;
         }
         catch (DbUpdateException dbEx)
@@ -169,37 +142,14 @@ public sealed class PostsDataService(
                 nameof(AddNewPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, updatedPost, userName, isRatingUpdate })
             );
 
-            if (isRatingUpdate)
-            {
-                return await HandleRatingUpdateForPostAsync(
-                    updatedPost,
-                    cancellationToken
-                ).ConfigureAwait(false);
-            }
-            else
-            {
-                var dbPostData = await dbContext.Posts.FirstOrDefaultAsync(
-                    predicate: x => x.PostId == updatedPost.PostId && x.IsActive && x.PostOwnerUserName == userName,
-                    cancellationToken
-                ).ConfigureAwait(false);
-                if (dbPostData is not null)
-                {
-                    dbPostData.PostTitle = updatedPost.PostTitle;
-                    dbPostData.PostContent = updatedPost.PostContent;
-
-                    await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                    response = dbPostData;
-                }
-                else
-                {
-                    var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-                    logger.LogAppError(exception, exception.Message);
-                    response = default!;
-                }
-            }
-
+            var dbResponse = await postsRepository.UpdatePostAsync(
+                updatedPost,
+                userName,
+                isRatingUpdate,
+                cancellationToken
+            ).ConfigureAwait(false);
+            response = MapToDomain(entity: dbResponse);
             return response;
-
         }
         catch (DbUpdateException dbEx)
         {
@@ -242,38 +192,51 @@ public sealed class PostsDataService(
         CancellationToken cancellationToken = default
     )
     {
+        bool response = false;
         try
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(DeletePostAsync), DateTime.UtcNow, postId));
-            var dbPostData = await dbContext.Posts.FirstOrDefaultAsync(post => post.PostId == postId && post.IsActive && post.PostOwnerUserName == userName);
-            if (dbPostData is not null)
-            {
-                dbPostData.IsActive = false;
-                await dbContext.SaveChangesAsync();
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(DeletePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName })
+            );
 
-                return true;
-            }
-            else
-            {
-                var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-                logger.LogError(exception, exception.Message);
-                throw exception;
-            }
-
+            response = await postsRepository.DeletePostAsync(
+                postId,
+                userName,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (DbUpdateException dbEx)
         {
-            logger.LogError(dbEx, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, dbEx.Message));
-            throw;
+            logger.LogAppError(
+                dbEx,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(DeletePostAsync), DateTime.UtcNow, dbEx.Message
+            );
+            throw new IBBSBusinessException(
+                message: dbEx.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(DeletePostAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(DeletePostAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(DeletePostAsync), DateTime.UtcNow, postId));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(DeletePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName, response })
+            );
         }
     }
 
@@ -282,53 +245,37 @@ public sealed class PostsDataService(
         CancellationToken cancellationToken = default
     )
     {
+        List<PostDomain> response = [];
         try
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetAllPostsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId })
+            );
 
-            var result = await dbContext.Posts.Where(x => x.IsActive).ToListAsync();
-            return result;
+            var dbResult = await postsRepository.GetAllPostsAsync(cancellationToken).ConfigureAwait(false);
+            response = [.. dbResult.Select(MapToDomain)];
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllPostsAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllPostsAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAllPostsAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetAllPostsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+            );
         }
     }
-
-    #region PRIVATE Methods
-
-    /// <summary>
-    /// Handles the rating update for post asynchronous.
-    /// </summary>
-    /// <param name="updatedPost">The updated post.</param>
-    /// <returns>The updated post domain.</returns>
-    private async Task<PostDomain> HandleRatingUpdateForPostAsync(
-        UpdatePostDomain updatedPost,
-        CancellationToken cancellationToken
-    )
-    {
-        var dbPostData = await dbContext.Posts.FirstOrDefaultAsync(x => x.PostId == updatedPost.PostId && x.IsActive, cancellationToken);
-        if (dbPostData is not null)
-        {
-            if (updatedPost.PostRating.HasValue)
-                dbPostData.Ratings = updatedPost.PostRating.Value;
-
-            await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            return dbPostData;
-        }
-        else
-        {
-            var exception = new Exception(ExceptionConstants.PostNotFoundMessageConstant);
-            logger.LogAppError(exception, exception.Message);
-            throw exception;
-        }
-    }
-
-    #endregion
 
 }

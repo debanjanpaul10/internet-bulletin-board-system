@@ -2,7 +2,9 @@ using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models.Posts;
 using IBBS.API.Helpers;
 using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.PostRatingsController;
@@ -10,12 +12,15 @@ using static IBBS.API.Helpers.SwaggerConstants.PostRatingsController;
 namespace IBBS.API.Controllers.v1;
 
 /// <summary>
-/// The PostDomain Ratings Controller Class.
+/// The Post Ratings Controller Class.
 /// </summary>
 /// <seealso cref="BaseController" />
 /// <param name="httpContextAccessor">The http context accessor.</param>
 /// <param name="postRatingsHandler">The posts ratings service.</param>
 /// <param name="configuration">The configuration service.</param>
+/// <param name="correlationContext">The correlation context used for logging requests.</param>
+/// <param name="logger">The logger service.</param>
+/// <seealso cref="BaseController"/>
 [ApiController]
 [Route(RouteConstants.PostRatingsController.BaseRoute)]
 public sealed class PostRatingsController(
@@ -34,17 +39,57 @@ public sealed class PostRatingsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GetAllUserRatingsAction.Summary, Description = GetAllUserRatingsAction.Description, OperationId = GetAllUserRatingsAction.OperationId)]
+    [SwaggerOperation(
+        Summary = GetAllUserRatingsAction.Summary,
+        Description = GetAllUserRatingsAction.Description,
+        OperationId = GetAllUserRatingsAction.OperationId)]
     public async Task<IActionResult> GetAllUserRatingsAsync()
     {
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        IEnumerable<PostRatingDTO> response = [];
+        try
         {
-            var result = await postRatingsHandler.GetAllUserPostRatingsAsync(UserEmail).ConfigureAwait(false);
-            if (result is not null) return HandleSuccessResult(result);
-            else return this.HandleBadRequest(ExceptionConstants.UnableToGetUserPostRatingsMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail })
+            );
 
-        return HandleUnAuthorizedRequest();
+            if (base.IsAuthorized(authorizationTypes: AuthorizationTypes.UserBased))
+            {
+                response = await postRatingsHandler.GetAllUserPostRatingsAsync(
+                    userName: base.UserEmail,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, response })
+            );
+        }
     }
 
     /// <summary>
@@ -57,18 +102,61 @@ public sealed class PostRatingsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = UpdateRatingAction.Summary, Description = UpdateRatingAction.Description, OperationId = UpdateRatingAction.OperationId)]
-    public async Task<IActionResult> UpdateRatingAsync(PostRatingDTO postRating)
+    [SwaggerOperation(
+        Summary = UpdateRatingAction.Summary,
+        Description = UpdateRatingAction.Description,
+        OperationId = UpdateRatingAction.OperationId)]
+    public async Task<IActionResult> UpdateRatingAsync(
+        PostRatingDTO postRating
+    )
     {
-        ArgumentNullException.ThrowIfNull(postRating);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        UpdateRatingDTO response = new();
+        try
         {
-            var result = await postRatingsHandler.UpdateRatingAsync(postRating, UserEmail).ConfigureAwait(false);
-            if (result is not null) return this.HandleSuccessResult(result);
-            else return this.HandleBadRequest(ExceptionConstants.PostGuidNotValidMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, postRating })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(postRating);
+            if (base.IsAuthorized(AuthorizationTypes.UserBased))
+            {
+                response = await postRatingsHandler.UpdateRatingAsync(
+                    postRating,
+                    userName: UserEmail,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(UpdateRatingAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, postRating, response })
+            );
+        }
     }
 }
 

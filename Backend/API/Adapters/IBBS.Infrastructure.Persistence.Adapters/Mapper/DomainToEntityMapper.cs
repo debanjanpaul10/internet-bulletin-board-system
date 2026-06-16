@@ -6,12 +6,11 @@ using IBBS.Infrastructure.Persistence.Adapters.Models;
 namespace IBBS.Infrastructure.Persistence.Adapters.Mapper;
 
 /// <summary>
-/// The data mapper profile
+/// The domain to entity mapper.
 /// </summary>
-public static class DataMapperProfile
+/// <remarks>This class provides methods for mapping domain objects to entities.</remarks>
+internal static class DomainToEntityMapper
 {
-    #region Domain -> Entity
-
     /// <summary>
     /// Maps the <see cref="AiUsageDomain"/> to <see cref="AiUsageEntity"/>
     /// </summary>
@@ -126,97 +125,17 @@ public static class DataMapperProfile
         IsAdmin = domain.IsAdmin
     };
 
-    #endregion
-
-    #region Entity -> Domain
-
     /// <summary>
-    /// Maps the <see cref="AiUsageEntity"/> to <see cref="AiUsageDomain"/>
+    /// Maps the <see cref="AddPostDomain"/> to <see cref="PostEntity"/>
     /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>The AI usage domain.</returns>
-    internal static LookupMasterDomain MapToDomain(
-        LookupMasterEntity entity
+    /// <param name="domain">The domain model</param>
+    /// <returns>The post entity</returns>
+    internal static PostEntity MapToEntity(
+        AddPostDomain domain
     ) => new()
     {
-        CreatedBy = entity.CreatedBy,
-        DateCreated = entity.DateCreated,
-        DateModified = entity.DateModified,
-        Id = entity.Id,
-        IsActive = entity.IsActive,
-        KeyName = entity.KeyName,
-        KeyValue = entity.KeyValue,
-        ModifiedBy = entity.ModifiedBy,
-        Type = entity.Type
+        PostContent = domain.PostContent,
+        PostTitle = domain.PostTitle,
     };
 
-    /// <summary>
-    /// Maps the <see cref="PostEntity"/> to <see cref="PostDomain"/>
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>The post domain.</returns>
-    internal static PostRatingDomain MapToDomain(
-        PostRatingEntity entity
-    ) => new()
-    {
-        IsActive = entity.IsActive,
-        PostId = entity.PostId,
-        RatingValue = entity.RatingValue,
-        UserName = entity.UserName,
-        PostRatingId = entity.PostRatingId,
-        RatedOn = entity.RatedOn
-    };
-
-    /// <summary>
-    /// Maps the <see cref="PostEntity"/> to <see cref="PostDomain"/>
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>The post domain.</returns>
-    internal static PostWithRatingsDomain MapToDomain(
-        PostWithRatings entity
-    ) => new()
-    {
-        PostId = entity.PostId,
-        PostTitle = entity.PostTitle,
-        PostContent = entity.PostContent,
-        PostCreatedDate = entity.PostCreatedDate,
-        PostOwnerUserName = entity.PostOwnerUserName,
-        Ratings = entity.Ratings,
-        IsActive = entity.IsActive,
-        RatingValue = entity.RatingValue
-    };
-
-    /// <summary>
-    /// Maps the <see cref="UserPostRating"/> to <see cref="UserPostRatingDomain"/>.
-    /// </summary>
-    /// <param name="entity">The user post rating entity.</param>
-    /// <returns>The user post rating domain.</returns>
-    internal static UserPostRatingDomain MapToDomain(
-        UserPostRating entity
-    ) => new()
-    {
-        CurrentRatingValue = entity.CurrentRatingValue,
-        PostName = entity.PostName,
-        RatedOn = entity.RatedOn
-    };
-
-    /// <summary>
-    /// Maps the <see cref="PostEntity"/> to <see cref="PostDomain"/>
-    /// </summary>
-    /// <param name="entity">The post entity.</param>
-    /// <returns>The post domain.</returns>
-    internal static PostDomain MapToDomain(
-        PostEntity entity
-    ) => new()
-    {
-        IsActive = entity.IsActive,
-        PostContent = entity.PostContent,
-        PostCreatedDate = entity.PostCreatedDate,
-        PostId = entity.PostId,
-        PostOwnerUserName = entity.PostOwnerUserName,
-        PostTitle = entity.PostTitle,
-        Ratings = entity.Ratings
-    };
-
-    #endregion
 }

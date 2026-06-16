@@ -1,20 +1,17 @@
-﻿using AutoMapper;
-using IBBS.API.Adapters.Contracts;
+﻿using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models.Posts;
-using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivingPorts;
+using static IBBS.API.Adapters.Mapping.DomainToResponseMapper;
+using static IBBS.API.Adapters.Mapping.RequestToDomainMapper;
 
 namespace IBBS.API.Adapters.Handlers;
 
 /// <summary>
 /// The posts api adapter handler.
 /// </summary>
-/// <param name="mapper">The auto mapper.</param>
 /// <param name="postsService">The posts service.</param>
-/// <seealso cref="IBBS.API.Adapters.Contracts.IPostsHandler" />
-public sealed class PostsHandler(
-    IPostsService postsService,
-    IMapper mapper) : IPostsHandler
+/// <seealso cref="IPostsHandler" />
+public sealed class PostsHandler(IPostsService postsService) : IPostsHandler
 {
     /// <inheritdoc />
     public async Task<bool> AddNewPostAsync(
@@ -23,7 +20,7 @@ public sealed class PostsHandler(
         CancellationToken cancellationToken = default
     )
     {
-        var domainInput = mapper.Map<AddPostDomain>(newPost);
+        var domainInput = MapToDomain(requestDto: newPost);
         return await postsService.AddNewPostAsync(
             newPost: domainInput,
             userName,
@@ -54,7 +51,7 @@ public sealed class PostsHandler(
             userName,
             cancellationToken
         ).ConfigureAwait(false);
-        return mapper.Map<IEnumerable<PostWithRatingsDTO>>(domainResult);
+        return [.. domainResult.Select(MapToResponse)];
     }
 
     /// <inheritdoc />
@@ -69,7 +66,7 @@ public sealed class PostsHandler(
             userName,
             cancellationToken
         ).ConfigureAwait(false);
-        return mapper.Map<PostDTO>(domainResult);
+        return MapToResponse(domain: domainResult);
     }
 
     /// <inheritdoc />
@@ -79,12 +76,12 @@ public sealed class PostsHandler(
         CancellationToken cancellationToken = default
     )
     {
-        var domainInput = mapper.Map<UpdatePostDomain>(updatedPost);
+        var domainInput = MapToDomain(requestDto: updatedPost);
         var domainResult = await postsService.UpdatePostAsync(
             updatedPost: domainInput,
             userName,
             cancellationToken
         ).ConfigureAwait(false);
-        return mapper.Map<PostDTO>(domainResult);
+        return MapToResponse(domain: domainResult);
     }
 }

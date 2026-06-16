@@ -6,7 +6,8 @@ using IBBS.Infrastructure.Persistence.Adapters.Contracts;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.Infrastructure.Persistence.Adapters.Helpers.Constants;
-using static IBBS.Infrastructure.Persistence.Adapters.Mapper.DataMapperProfile;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.DomainToEntityMapper;
+using static IBBS.Infrastructure.Persistence.Adapters.Mapper.EntityToDomainMapper;
 
 namespace IBBS.Infrastructure.Persistence.Adapters.DataManager;
 
@@ -150,7 +151,7 @@ public sealed class CommonDataManager(
         {
             logger.LogAppInformation(
                 LoggingConstants.LogHelperMethodStart,
-                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, correlationContext.CorrelationId
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, newBugReportData })
             );
 
             var entityModel = MapToEntity(domain: newBugReportData);
@@ -176,7 +177,7 @@ public sealed class CommonDataManager(
         {
             logger.LogAppInformation(
                 LoggingConstants.LogHelperMethodEnded,
-                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, newBugReportData, response })
             );
         }
     }

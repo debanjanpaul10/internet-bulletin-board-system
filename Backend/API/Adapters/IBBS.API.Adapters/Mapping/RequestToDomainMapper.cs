@@ -1,7 +1,9 @@
 using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
+using IBBS.API.Adapters.Models.Posts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
+using IBBS.Domain.DomainEntities.Posts;
 
 namespace IBBS.API.Adapters.Mapping;
 
@@ -78,5 +80,46 @@ public static class RequestToDomainMapper
         Description = requestDto.BugDescription,
         Title = requestDto.BugTitle,
         PageUrl = requestDto.PageUrl
+    };
+
+    /// <summary>
+    /// Maps the <see cref="PostRatingDTO"/> to <see cref="PostRatingDomain"/>.
+    /// </summary>
+    /// <param name="requestDto">The request dto.</param>
+    /// <returns>The post rating domain model.</returns>
+    internal static PostRatingDomain MapToDomain(
+        PostRatingDTO requestDto
+    ) => new()
+    {
+        PostId = Guid.Parse(requestDto.PostId)
+    };
+
+    /// <summary>
+    /// Maps the <see cref="AddPostDTO"/> to <see cref="AddPostDomain"/>
+    /// </summary>
+    /// <param name="requestDto">The request dto.</param>
+    /// <returns>The add post domain model.</returns>
+    internal static AddPostDomain MapToDomain(
+        AddPostDTO requestDto
+    ) => new()
+    {
+        PostContent = requestDto.PostContent,
+        PostCreatedBy = requestDto.PostCreatedBy,
+        PostTitle = requestDto.PostTitle,
+    };
+
+    /// <summary>
+    /// Maps the <see cref="UpdatePostDTO"/> to <see cref="UpdatePostDomain"/>.
+    /// </summary>
+    /// <param name="requestDto">The request dto.</param>
+    /// <returns>The update post domain model.</returns>
+    internal static UpdatePostDomain MapToDomain(
+        UpdatePostDTO requestDto
+    ) => new()
+    {
+        PostContent = requestDto.PostContent,
+        PostId = requestDto.PostId,
+        PostRating = requestDto.PostRating,
+        PostTitle = requestDto.PostTitle
     };
 }

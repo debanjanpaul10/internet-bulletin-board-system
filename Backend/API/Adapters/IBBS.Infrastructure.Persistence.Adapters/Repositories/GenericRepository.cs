@@ -10,7 +10,6 @@ namespace IBBS.Infrastructure.Persistence.Adapters.Repositories;
 /// </summary>
 /// <typeparam name="TEntity">The generic entity.</typeparam>
 /// <param name="context">The database context.</param>
-/// <seealso cref="IRepository"/>
 public sealed class GenericRepository<TEntity>(SqlDbContext context) : IRepository<TEntity> where TEntity : class
 {
     /// <inheritdoc />

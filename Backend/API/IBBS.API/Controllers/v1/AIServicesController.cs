@@ -5,7 +5,6 @@ using IBBS.API.Helpers;
 using IBBS.Domain.Contracts;
 using IBBS.Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
@@ -117,15 +116,53 @@ public sealed class AIServicesController(
         UserStoryRequestDTO requestDto
     )
     {
-        ArgumentNullException.ThrowIfNull(requestDto);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        string response = string.Empty;
+        try
         {
-            var result = await aiServicesHandler.GenerateTagForStoryAsync(userName: UserEmail, requestDTO: requestDto).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, requestDto })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(requestDto);
+            if (base.IsAuthorized(AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.GenerateTagForStoryAsync(
+                    userName: UserEmail,
+                    requestDTO: requestDto,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, requestDto, response })
+            );
+        }
     }
 
     /// <summary>
@@ -146,15 +183,53 @@ public sealed class AIServicesController(
         UserStoryRequestDTO requestDto
     )
     {
-        ArgumentNullException.ThrowIfNull(requestDto);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        string response = string.Empty;
+        try
         {
-            var result = await aiServicesHandler.ModerateContentDataAsync(UserEmail, requestDto).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(result)) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+               LoggingConstants.LogHelperMethodStart,
+               nameof(ModerateContentDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, requestDto })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(requestDto);
+            if (base.IsAuthorized(authorizationTypes: AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.ModerateContentDataAsync(
+                    userName: UserEmail,
+                    requestDTO: requestDto,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+
+                return base.HandleSuccessResult(response);
+            }
+
+            return base.HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(ModerateContentDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(ModerateContentDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(ModerateContentDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, requestDto, response })
+            );
+        }
     }
 
     /// <summary>
@@ -175,15 +250,52 @@ public sealed class AIServicesController(
         [FromBody] BugSeverityAIRequestDTO bugSeverityInput
     )
     {
-        ArgumentNullException.ThrowIfNull(bugSeverityInput);
-        if (base.IsAuthorized(AuthorizationTypes.UserBased))
+        string response = string.Empty;
+        try
         {
-            var result = await aiServicesHandler.GenerateBugSeverityAsync(bugSeverityInput).ConfigureAwait(false);
-            if (result is not null) return HandleSuccessResult(result);
-            else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
-        }
+            logger.LogAppInformation(
+               LoggingConstants.LogHelperMethodStart,
+               nameof(GetBugSeverityStatusAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, bugSeverityInput })
+            );
 
-        return HandleUnAuthorizedRequest();
+            ArgumentNullException.ThrowIfNull(bugSeverityInput);
+            if (base.IsAuthorized(authorizationTypes: AuthorizationTypes.UserBased))
+            {
+                response = await aiServicesHandler.GenerateBugSeverityAsync(
+                    bugSeverityAiRequest: bugSeverityInput,
+                    cancellationToken: HttpContext.RequestAborted
+                ).ConfigureAwait(false);
+
+                return base.HandleSuccessResult(response);
+            }
+
+            return HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetBugSeverityStatusAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetBugSeverityStatusAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetBugSeverityStatusAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, bugSeverityInput, response })
+            );
+        }
     }
 
     #endregion

@@ -1,4 +1,5 @@
 using IBBS.API.Adapters.Models;
+using IBBS.API.Adapters.Models.Posts;
 using IBBS.API.Adapters.Models.Users;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.Posts;
@@ -66,6 +67,69 @@ public static class DomainToResponseMapper
         PostId = domain.PostId,
         PostOwnerUserName = domain.PostOwnerUserName,
         PostTitle = domain.PostTitle,
+        Ratings = domain.Ratings
+    };
+
+    /// <summary>
+    /// Maps the <see cref="PostRatingDomain"/> to <see cref="PostRatingDTO"/>
+    /// </summary>
+    /// <param name="domain">The domain.</param>
+    /// <returns>The updated post rating dto model.</returns>
+    internal static PostRatingDTO MapToResponse(
+        PostRatingDomain domain
+    ) => new()
+    {
+        PostId = domain.PostId.ToString(),
+    };
+
+    /// <summary>
+    /// Maps the <see cref="UpdateRatingDomain"/> to <see cref="UpdateRatingDTO"/>
+    /// </summary>
+    /// <param name="domain">The domain.</param>
+    /// <returns>The update rating dto model.</returns>
+    internal static UpdateRatingDTO MapToResponse(
+        UpdateRatingDomain domain
+    ) => new()
+    {
+        HasAlreadyUpdated = domain.HasAlreadyUpdated,
+        IsUpdateSuccess = domain.IsUpdateSuccess,
+        PostId = domain.PostId
+    };
+
+    /// <summary>
+    /// Maps the <see cref="PostWithRatingsDomain"/> to <see cref="PostWithRatingsDTO"/>
+    /// </summary>
+    /// <param name="domain">The domain.</param>
+    /// <returns>The post with ratings dto model.</returns>
+    internal static PostWithRatingsDTO MapToResponse(
+        PostWithRatingsDomain domain
+    ) => new()
+    {
+        IsActive = domain.IsActive,
+        PostContent = domain.PostContent,
+        PostCreatedDate = domain.PostCreatedDate,
+        PostId = domain.PostId,
+        PostOwnerUserName = domain.PostOwnerUserName,
+        PostTitle = domain.PostTitle,
+        Ratings = domain.Ratings,
+        RatingValue = domain.RatingValue
+    };
+
+    /// <summary>
+    /// Maps the <see cref="PostDomain"/> to <see cref="PostDTO"/>
+    /// </summary>
+    /// <param name="domain">The domain.</param>
+    /// <returns>The post dto model.</returns>
+    internal static PostDTO MapToResponse(
+        PostDomain domain
+    ) => new()
+    {
+        PostTitle = domain.PostTitle,
+        IsActive = domain.IsActive,
+        PostContent = domain.PostContent,
+        PostCreatedDate = domain.PostCreatedDate,
+        PostId = domain.PostId,
+        PostOwnerUserName = domain.PostOwnerUserName,
         Ratings = domain.Ratings
     };
 }

@@ -3,7 +3,6 @@ using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
-using InternetBulletin.Data.Contracts;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;

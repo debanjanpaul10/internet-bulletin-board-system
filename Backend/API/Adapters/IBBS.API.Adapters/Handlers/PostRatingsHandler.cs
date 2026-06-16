@@ -1,20 +1,17 @@
-﻿using AutoMapper;
-using IBBS.API.Adapters.Contracts;
+﻿using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models.Posts;
-using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivingPorts;
+using static IBBS.API.Adapters.Mapping.DomainToResponseMapper;
+using static IBBS.API.Adapters.Mapping.RequestToDomainMapper;
 
 namespace IBBS.API.Adapters.Handlers;
 
 /// <summary>
 /// The posts ratings handler.
 /// </summary>
-/// <param name="mapper">The auto mapper service.</param>
 /// <param name="postRatingsService">The post ratings service.</param>
-/// <seealso cref="IBBS.API.Adapters.Contracts.IPostRatingsHandler" />
-public sealed class PostRatingsHandler(
-    IMapper mapper,
-    IPostRatingsService postRatingsService) : IPostRatingsHandler
+/// <seealso cref="IPostRatingsHandler" />
+public sealed class PostRatingsHandler(IPostRatingsService postRatingsService) : IPostRatingsHandler
 {
     /// <inheritdoc />
     public async Task<IEnumerable<PostRatingDTO>> GetAllUserPostRatingsAsync(
@@ -26,8 +23,7 @@ public sealed class PostRatingsHandler(
             userName,
             cancellationToken
         ).ConfigureAwait(false);
-
-        return mapper.Map<IEnumerable<PostRatingDTO>>(domainResult);
+        return [.. domainResult.Select(MapToResponse)];
     }
 
     /// <inheritdoc />
@@ -37,13 +33,12 @@ public sealed class PostRatingsHandler(
         CancellationToken cancellationToken = default
     )
     {
-        var domainInput = mapper.Map<PostRatingDomain>(postRating);
+        var domainInput = MapToDomain(requestDto: postRating);
         var domainResult = await postRatingsService.UpdateRatingAsync(
             postRating: domainInput,
             userName,
             cancellationToken
         ).ConfigureAwait(false);
-
-        return mapper.Map<UpdateRatingDTO>(domainResult);
+        return MapToResponse(domain: domainResult);
     }
 }
