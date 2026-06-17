@@ -1,7 +1,7 @@
 import { Action, Dispatch } from "@reduxjs/toolkit";
 
-import PostRatingDtoModel from "@models/PostRatingDto";
-import UpdatePostDtoModel from "@models/UpdatePostDto";
+import { PostRatingDtoModel } from "@models/dto-models/post-rating.dto";
+import { UpdatePostDtoModel } from "@models/dto-models/update-post.dto";
 import {
 	AddNewPostApiAsync,
 	DeletePostApiAsync,
@@ -9,8 +9,8 @@ import {
 	GetPostApiAsync,
 	UpdatePostApiAsync,
 	UpdateRatingApiAsync,
-} from "@services/ibbs.apiservice";
-import { ToggleErrorToaster } from "@store/Common/Actions";
+} from "@/app/services/ibbs.apiservice";
+import { ToggleErrorToaster } from "@/app/store/common/actions";
 import {
 	ADD_NEW_POST_DATA,
 	DELETE_POST_DATA,
@@ -26,7 +26,7 @@ import {
 	TOGGLE_VOTING_LOADER,
 	UPDATE_POST_DATA,
 	UPDATE_POST_RATING,
-} from "@store/Posts/ActionTypes";
+} from "@/app/store/posts/action-types";
 
 /**
  * Saves the loader start status to redux store.
@@ -67,7 +67,7 @@ export const GetAllPostsAsync = (accessToken: string) => {
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error.data ?? error.title ?? error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -97,7 +97,7 @@ export const GetPostAsync = (postId: string, accessToken: string) => {
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -126,7 +126,7 @@ export const AddNewPostAsync = (postData: any, accessToken: string) => {
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -182,7 +182,7 @@ export const DeletePostAsync = (postId: string, accessToken: string) => {
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -196,14 +196,14 @@ export const DeletePostAsync = (postId: string, accessToken: string) => {
  */
 export const UpdatePostAsync = (
 	updatePostData: UpdatePostDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
 			dispatch(ToggleEditPostSpinner(true));
 			const response = await UpdatePostApiAsync(
 				updatePostData,
-				accessToken
+				accessToken,
 			);
 			if (response?.statusCode === 200) {
 				dispatch(GetAllPostsAsync(accessToken) as any);
@@ -221,7 +221,7 @@ export const UpdatePostAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -239,14 +239,14 @@ export const UpdatePostAsync = (
  */
 export const UpdateRatingAsync = (
 	postRatingDtoModel: PostRatingDtoModel,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
 			dispatch(ToggleRatingLoader(true));
 			const response = await UpdateRatingApiAsync(
 				postRatingDtoModel,
-				accessToken
+				accessToken,
 			);
 			if (response?.statusCode === 200) {
 				dispatch(GetAllPostsAsync(accessToken) as any);
@@ -262,7 +262,7 @@ export const UpdateRatingAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {

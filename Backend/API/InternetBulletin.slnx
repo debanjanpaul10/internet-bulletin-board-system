@@ -1,0 +1,22 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Adapters/">
+    <Project Path="Adapters/IBBS.AI.Agents.Adapters/IBBS.AI.Agents.Adapters.csproj" />
+    <Project Path="Adapters/IBBS.API.Adapters/IBBS.API.Adapters.csproj" />
+    <Project Path="Adapters/IBBS.Infrastructure.MongoDB.Adapters/IBBS.Infrastructure.MongoDB.Adapters.csproj" />
+    <Project Path="Adapters/IBBS.Infrastructure.Persistence.Adapters/IBBS.Infrastructure.Persistence.Adapters.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="Core/IBBS.Domain/IBBS.Domain.csproj" />
+  </Folder>
+  <Folder Name="/SolutionItems/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/UnitTests/" />
+  <Project Path="IBBS.API/IBBS.API.csproj" />
+  <Project Path="IBBS.MCP/IBBS.MCP.csproj" />
+</Solution>

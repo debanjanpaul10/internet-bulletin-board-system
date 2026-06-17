@@ -193,19 +193,26 @@ internal static class APIConstants
     /// </summary>
     internal static class LoggingConstants
     {
-        /// <summary>
-        /// The log helper method start
-        /// </summary>
         internal const string LogHelperMethodStart = "{0} started at {1} for {2}";
-
-        /// <summary>
-        /// The log helper method ended
-        /// </summary>
         internal const string LogHelperMethodEnded = "{0} ended at {1} for {2}";
+        internal const string LogHelperMethodFailed = "{0} failed at {1} with message {2}";
+
+        internal const string CorrelationIdHeader = "X-Correlation-ID";
+
+        internal const string HttpLoggingMessage = "HTTP {Method} {Path} started";
+        internal const string HttpLoggingMessageWithTime = "HTTP {Method} {Path} responded {StatusCode} in {ElapsedMilliseconds}ms";
+        internal const string UnhandledExceptionMessage = "Unhandled exception occurred. CorrelationId: {CorrelationId}, Path: {Path}, Method: {Method}";
+        internal const string OperationCancelledExceptionMessage = "Operation was canceled.";
 
         /// <summary>
-        /// The log helper method failed
+        /// The header logging constants class.
         /// </summary>
-        internal const string LogHelperMethodFailed = "{0} failed at {1} with message {2}";
+        internal static class HeaderLoggingConstants
+        {
+            internal const string CorrelationId = "CorrelationId";
+            internal const string RequestPath = "RequestPath";
+            internal const string RequestMethod = "RequestMethod";
+            internal const string StatusCode = "StatusCode";
+        }
     }
 }

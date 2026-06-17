@@ -1,6 +1,6 @@
 import { Action, Dispatch } from "redux";
 
-import { BugReportDTO } from "@models/DTOs/bug-report-data.dto";
+import { BugReportDTO } from "@models/dto-models/bug-report-data.dto";
 import {
 	GET_LOOKUP_MASTER_DATA,
 	SAVE_BUG_REPORT_DATA,
@@ -9,13 +9,13 @@ import {
 	TOGGLE_ERROR_TOASTER,
 	TOGGLE_SIDE_BAR_STATUS,
 	TOGGLE_SUCCESS_TOASTER,
-} from "@store/Common/ActionTypes";
+} from "@store/common/action-types";
 import {
 	GetLookupMasterDataApiAsync,
 	SubmitBugReportDataApiAsync,
-} from "@services/ibbs.apiservice";
-import { StartLoader, StopLoader } from "../Posts/Actions";
-import { LookupMasterDTO } from "@models/DTOs/lookup-master-data.dto";
+} from "@/app/services/ibbs.apiservice";
+import { StartLoader, StopLoader } from "@store/posts/actions";
+import { LookupMasterDTO } from "@models/dto-models/lookup-master-data.dto";
 
 /**
  * Saves the toggle of success toaster to redux store.
@@ -67,14 +67,14 @@ export const ToggleSideBar = (isOpen: boolean) => {
  */
 export const SubmitBugReportDataAsync = (
 	bugReport: BugReportDTO,
-	accessToken: string
+	accessToken: string,
 ) => {
 	return async (dispatch: Dispatch<Action>) => {
 		try {
 			dispatch(ToggleBugReportSpinner(true));
 			const response = await SubmitBugReportDataApiAsync(
 				bugReport,
-				accessToken
+				accessToken,
 			);
 			if (response?.isSuccess && response?.data) {
 				dispatch(SubmitBugReportSuccess(response?.data));
@@ -82,7 +82,7 @@ export const SubmitBugReportDataAsync = (
 					ToggleSuccessToaster({
 						shouldShow: true,
 						successMessage: "Report saved succesfully",
-					})
+					}),
 				);
 				dispatch(ToggleBugReportDrawer(false));
 			}
@@ -92,7 +92,7 @@ export const SubmitBugReportDataAsync = (
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {
@@ -154,7 +154,7 @@ export const GetLookupMasterDataAsync = () => {
 				ToggleErrorToaster({
 					shouldShow: true,
 					errorMessage: error,
-				})
+				}),
 			);
 			throw error;
 		} finally {

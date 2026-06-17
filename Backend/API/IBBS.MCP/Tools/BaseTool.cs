@@ -15,7 +15,9 @@ namespace IBBS.MCP.Tools;
 /// not guaranteed; instances should be scoped appropriately in web applications.</remarks>
 /// <param name="httpContextAccessor">The http context accessor service.</param>
 /// <param name="configuration">The configuration service.</param>
-public abstract class BaseTool(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+public abstract class BaseTool(
+    IHttpContextAccessor httpContextAccessor,
+    IConfiguration configuration)
 {
     /// <summary>
     /// Checks the application level authorization.
@@ -37,7 +39,9 @@ public abstract class BaseTool(IHttpContextAccessor httpContextAccessor, IConfig
     /// </summary>
     /// <param name="response">The response.</param>
     /// <returns>The ok object result</returns>
-    protected static ResponseDTO HandleSuccessResult(object response) =>
+    protected static ResponseDTO HandleSuccessResult(
+        object response
+    ) =>
         new()
         {
             Data = response,
@@ -50,7 +54,9 @@ public abstract class BaseTool(IHttpContextAccessor httpContextAccessor, IConfig
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The bad request result.</returns>
-    protected static ResponseDTO HandleBadRequest(string message) =>
+    protected static ResponseDTO HandleBadRequest(
+        string message
+    ) =>
         new()
         {
             Data = message,
@@ -68,5 +74,20 @@ public abstract class BaseTool(IHttpContextAccessor httpContextAccessor, IConfig
             Data = ExceptionConstants.UserUnauthorizedMessageConstant,
             StatusCode = (int)HttpStatusCode.Unauthorized,
             IsSuccess = false,
+        };
+
+    /// <summary>
+    /// Handles the task cancelled response.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <returns>The conflict object result.</returns>
+    protected static ResponseDTO HandleTaskCancelledResponse(
+        string message
+    ) =>
+        new()
+        {
+            Data = message,
+            IsSuccess = false,
+            StatusCode = (int)HttpStatusCode.Conflict
         };
 }

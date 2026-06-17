@@ -2,9 +2,12 @@
 using Azure.Identity;
 using IBBS.AI.Agents.Adapters.IOC;
 using IBBS.API.Adapters.IOC;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using IBBS.Domain.IOC;
 using IBBS.Infrastructure.MongoDB.Adapters.IOC;
 using IBBS.Infrastructure.Persistence.Adapters.IOC;
+using IBBS.MCP.Helpers;
 using IBBS.MCP.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
@@ -34,6 +37,8 @@ internal static class DIContainer
     internal static void ConfigureMcpServices(this WebApplicationBuilder builder)
     {
         builder.ConfigureAuthenticationServices().AddAuthorizationPolicyBuilder();
+        builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
+
         builder.Services.AddMemoryCache().AddAPIHandlers()
             .AddDataDependencies(builder.Configuration, builder.Environment.IsDevelopment())
             .AddDomainServices().AddAiAgentsServices(builder.Configuration)
@@ -51,11 +56,11 @@ internal static class DIContainer
     internal static WebApplicationBuilder AddAuthorizationPolicyBuilder(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthorizationBuilder()
-          .AddPolicy(ConfigurationConstants.DefaultAuthorizationPolicy, policy =>
-          {
-              policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-              policy.RequireAuthenticatedUser();
-          });
+        .AddPolicy(ConfigurationConstants.DefaultAuthorizationPolicy, policy =>
+        {
+            policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+            policy.RequireAuthenticatedUser();
+        });
 
         return builder;
     }
@@ -72,19 +77,23 @@ internal static class DIContainer
     /// <param name="builder">The web application builder to configure with Azure App Configuration and Key Vault integration.</param>
     /// <param name="credentials">The credentials used to authenticate requests to Azure App Configuration and Azure Key Vault. Must be a valid instance of DefaultAzureCredential.</param>
     /// <exception cref="InvalidOperationException">Thrown if the App Configuration endpoint is not specified in the application's configuration.</exception>
-    internal static void ConfigureAzureAppConfiguration(this WebApplicationBuilder builder, DefaultAzureCredential credentials)
+    internal static void ConfigureAzureAppConfiguration(
+        this WebApplicationBuilder builder,
+        DefaultAzureCredential credentials
+    )
     {
-        var configuration = builder.Configuration;
-        var appConfigurationEndpoint = configuration[ConfigurationConstants.AppConfigurationEndpointKeyConstant];
+        var appConfigurationEndpoint = builder.Configuration[ConfigurationConstants.AppConfigurationEndpointKeyConstant];
         if (string.IsNullOrEmpty(appConfigurationEndpoint))
             throw new InvalidOperationException(ExceptionConstants.ConfigurationValueIsEmptyMessageConstant);
 
-        configuration.AddAzureAppConfiguration(options =>
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
             options.Connect(new Uri(appConfigurationEndpoint), credentials)
                 .Select(KeyFilter.Any).Select(KeyFilter.Any, ConfigurationConstants.BaseConfigurationAppConfigKeyConstant)
-                .Select(KeyFilter.Any, ConfigurationConstants.IbbsAPIAppConfigKeyConstant).Select(KeyFilter.Any, ConfigurationConstants.AiAgentsConfigurationKeyConstant)
-                .ConfigureKeyVault((options) => options.SetCredential(credentials))
-        );
+                .Select(KeyFilter.Any, ConfigurationConstants.IbbsAPIAppConfigKeyConstant)
+                .Select(KeyFilter.Any, ConfigurationConstants.AiAgentsConfigurationKeyConstant)
+            .ConfigureKeyVault((options) => options.SetCredential(credentials));
+        });
     }
 
     /// <summary>
@@ -93,7 +102,9 @@ internal static class DIContainer
     /// <remarks>This method sets up authentication schemes and token validation parameters based on
     /// configuration values for Auth0. In development environments, HTTPS metadata requirements are disabled to facilitate local testing.</remarks>
     /// <param name="builder">The web application builder to which authentication services will be added. Must not be null.</param>
-    internal static WebApplicationBuilder ConfigureAuthenticationServices(this WebApplicationBuilder builder)
+    internal static WebApplicationBuilder ConfigureAuthenticationServices(
+        this WebApplicationBuilder builder
+    )
     {
         var configuration = builder.Configuration;
         builder.Services.AddAuthentication(options =>
@@ -135,12 +146,20 @@ internal static class DIContainer
     /// If the principal is not authenticated, the context is marked as failed.</remarks>
     /// <param name="context">The token validation context containing authentication information and the HTTP context to update. Cannot be null.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    private static async Task HandleAuthTokenValidationSuccessAsync(this TokenValidatedContext context)
+    private static async Task HandleAuthTokenValidationSuccessAsync(
+        this TokenValidatedContext context
+    )
     {
         var claimsPrincipal = context.Principal;
         if (claimsPrincipal?.Identity is not ClaimsIdentity claimsIdentity || !claimsIdentity.IsAuthenticated)
         {
-            context.Fail(ExceptionConstants.InvalidTokenExceptionConstant);
+            var tokenValidationFailedException = new SecurityTokenValidationException(ExceptionConstants.InvalidTokenExceptionConstant);
+            context.Fail(failureMessage: tokenValidationFailedException.Message);
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<BaseTool>>();
+            logger.LogAppError(
+                exception: tokenValidationFailedException,
+                message: tokenValidationFailedException.Message
+            );
             return;
         }
 
@@ -155,13 +174,18 @@ internal static class DIContainer
     /// failure and ensures the authentication process is terminated with the appropriate error message.</remarks>
     /// <param name="context">The context for the authentication failure event. Provides access to the exception details and HTTP context required for logging and failure handling.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    private static async Task HandleAuthTokenValidationFailedAsync(this AuthenticationFailedContext context)
+    private static async Task HandleAuthTokenValidationFailedAsync(
+        this AuthenticationFailedContext context
+    )
     {
         var authenticationFailedException = new UnauthorizedAccessException(context.Exception.Message);
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<BaseTool>>();
-        logger.LogError(authenticationFailedException, context.Exception.Message);
+        logger.LogAppError(
+            exception: authenticationFailedException,
+            message: authenticationFailedException.Message
+        );
 
-        context.Fail(context.Exception.Message);
-        await Task.CompletedTask;
+        context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await context.HttpContext.Response.WriteAsync(authenticationFailedException.Message).ConfigureAwait(false);
     }
 }

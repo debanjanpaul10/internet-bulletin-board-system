@@ -12,5 +12,8 @@ public interface IProfilesService
 	/// </summary>
 	/// <param name="userEmail">The user email.</param>
 	/// <returns>The user profile domain.</returns>
-	Task<UserProfileDomain> GetUserProfileDataAsync(string userEmail);
+	Task<UserProfileDomain> GetUserProfileDataAsync(
+		string userEmail,
+		CancellationToken cancellationToken = default
+	);
 }

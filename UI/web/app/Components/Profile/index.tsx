@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useAuth0, User } from "@auth0/auth0-react";
 import { Skeleton, SkeletonItem } from "@fluentui/react-components";
 
-import { GetUserProfileDataAsync } from "@store/Users/Actions";
-import { useStyles } from "./styles";
+import { GetUserProfileDataAsync } from "@store/users/actions";
+import { useStyles } from "@components/profile/styles";
 import { MyProfilePageConstants } from "@helpers/ibbs.constants";
-import PageNotFound from "@components/Common/PageNotFound";
-import Magnet from "@animations/Magnet";
+import PageNotFound from "@components/common/page-not-found";
+import Magnet from "@animations/magnet";
 import { useAppDispatch, useAppSelector } from "@/index";
-import UserPostsComponent from "./Components/UserPosts";
-import UserRatingsComponent from "./Components/UserRatings";
-import { UserProfileDto } from "@models/DTOs/user-profile.dto";
+import UserPostsComponent from "@components/profile/components/user-posts";
+import UserRatingsComponent from "@components/profile/components/user-ratings";
+import { UserProfileDto } from "@models/dto-models/user-profile.dto";
 
 /**
  * @component
@@ -30,10 +30,10 @@ export default function ProfileComponent() {
 	const { Headings } = MyProfilePageConstants;
 
 	const UserProfileStoreData = useAppSelector(
-		(state) => state.UserReducer.userProfileData
+		(state) => state.UserReducer.userProfileData,
 	);
 	const IsUserProfileDataLoadingStoreData = useAppSelector(
-		(state) => state.UserReducer.isUserProfileDataLoading
+		(state) => state.UserReducer.isUserProfileDataLoading,
 	);
 
 	const [userStateData, setUserStateData] = useState<UserProfileDto>({

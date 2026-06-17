@@ -11,13 +11,21 @@ public interface IProfilesDataService
 	/// Gets all posts and ratings for user async.
 	/// </summary>
 	/// <param name="userEmail">The user email.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The user posts and ratings data.</returns>
-	Task<List<PostDomain>> GetUserPostsAsync(string userEmail);
+	Task<IEnumerable<PostDomain>> GetUserPostsAsync(
+		string userEmail,
+		CancellationToken cancellationToken = default
+	);
 
 	/// <summary>
 	/// Gets user ratings async.
 	/// </summary>
 	/// <param name="userEmail">The user email.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The list of user post ratings data</returns>
-	Task<List<UserPostRatingDomain>> GetUserRatingsAsync(string userEmail);
+	Task<IEnumerable<UserPostRatingDomain>> GetUserRatingsAsync(
+		string userEmail,
+		CancellationToken cancellationToken = default
+	);
 }

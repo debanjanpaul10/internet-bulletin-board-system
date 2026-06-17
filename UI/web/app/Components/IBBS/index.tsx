@@ -2,20 +2,20 @@ import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import { useStyles } from "./styles";
+import { useStyles } from "@components/ibbs/styles";
 import { HeaderPageConstants } from "@helpers/ibbs.constants";
-import PageNotFound from "@components/Common/PageNotFound";
-import CreatePostComponent from "@components/Posts/Components/CreatePost";
-import ToasterComponent from "@components/Common/Toaster";
-import ProfileComponent from "@components/Profile";
-import SideDrawerComponent from "@components/Common/SideDrawer";
-import HeaderComponent from "@components/Common/Header";
-import LandingPageComponent from "@components/LandingPage";
-import Aurora from "@animations/AuroraBackground";
-import ChatbotComponent from "../Chatbot";
-import BugReportComponent from "../BugReport";
+import PageNotFound from "@components/common/page-not-found";
+import CreatePostComponent from "@components/posts/components/create-post";
+import ToasterComponent from "@components/common/toaster";
+import ProfileComponent from "@components/profile";
+import SideDrawerComponent from "@components/common/side-drawer";
+import HeaderComponent from "@components/common/header";
+import LandingPageComponent from "@components/landing-page";
+import Aurora from "@animations/aurora-background";
+import ChatbotComponent from "@components/chat-bot";
+import BugReportComponent from "@components/bug-report";
 import { useAppDispatch } from "@/index";
-import { GetLookupMasterDataAsync } from "@store/Common/Actions";
+import { GetLookupMasterDataAsync } from "@store/common/actions";
 
 /**
  * @component

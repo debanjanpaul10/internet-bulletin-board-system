@@ -11,6 +11,11 @@ public interface IHttpClientHelper
     /// <typeparam name="T">The input data.</typeparam>
     /// <param name="data">The data.</param>
     /// <param name="apiUrl">The api url.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The response from AI</returns>
-    Task<HttpResponseMessage> GetAIResponseAsync<T>(T data, string apiUrl);
+    Task<HttpResponseMessage> GetAIResponseAsync<T>(
+        T data,
+        string apiUrl,
+        CancellationToken cancellationToken = default
+    );
 }

@@ -81,6 +81,11 @@ internal static class Constants
         /// The database connection not found
         /// </summary>
         internal const string DatabaseConnectionNotFound = "Oops! It seems the database connection is missing from the configuration!";
+
+        /// <summary>
+        /// Something went wrong message
+        /// </summary>
+        internal const string SomethingWentWrongMessage = "Something went wrong while processing the request. Please try again after sometime";
     }
 
     /// <summary>
@@ -157,5 +162,15 @@ internal static class Constants
         /// The Azure SQL constant.
         /// </summary>
         internal const string AzureSQLConstant = "AzureSQL";
+
+        /// <summary>
+        /// The IsActive boolean flag constant used for filtering active records in database queries and operations.
+        /// </summary>
+        internal const string IsActiveBooleanFlag = "IsActive";
+
+        /// <summary>
+        /// The sample prompts constant.
+        /// </summary>
+        internal const string SamplePromptsConstant = "SamplePrompts";
     }
 }

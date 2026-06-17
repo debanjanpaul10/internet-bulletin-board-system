@@ -6,7 +6,7 @@ import {
 	TOGGLE_ERROR_TOASTER,
 	TOGGLE_SIDE_BAR_STATUS,
 	TOGGLE_SUCCESS_TOASTER,
-} from "@store/Common/ActionTypes";
+} from "@/app/store/common/action-types";
 
 const initialState: any = {
 	successToaster: {},

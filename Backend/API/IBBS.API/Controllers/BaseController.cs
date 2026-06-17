@@ -3,6 +3,7 @@ using IBBS.API.Helpers;
 using InternetBulletin.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using static IBBS.API.Helpers.APIConstants;
 
 namespace IBBS.API.Controllers;
@@ -51,44 +52,62 @@ public abstract class BaseController(IHttpContextAccessor httpContextAccessor, I
     /// </summary>
     /// <param name="response">The response.</param>
     /// <returns>The ok object result</returns>
-    protected OkObjectResult HandleSuccessResult(object response)
-    {
-        return this.Ok(new ResponseDTO()
-        {
-            Data = response,
-            IsSuccess = true,
-            StatusCode = (int)HttpStatusCode.OK
-        });
-    }
+    protected OkObjectResult HandleSuccessResult(
+        object response
+    ) =>
+         this.Ok(new ResponseDTO()
+         {
+             Data = response,
+             IsSuccess = true,
+             StatusCode = (int)HttpStatusCode.OK
+         });
+
 
     /// <summary>
     /// Handles the bad request.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The bad request result.</returns>
-    protected BadRequestObjectResult HandleBadRequest(string message)
-    {
-        return this.BadRequest(new ResponseDTO()
+    protected BadRequestObjectResult HandleBadRequest(
+        string message
+    ) =>
+
+        this.BadRequest(new ResponseDTO()
         {
             Data = message,
             IsSuccess = false,
             StatusCode = (int)HttpStatusCode.BadRequest
         });
-    }
+
 
     /// <summary>
     /// Handles the bad request.
     /// </summary>
     /// <returns>The unauthorized object result</returns>
-    protected UnauthorizedObjectResult HandleUnAuthorizedRequest()
-    {
-        return this.Unauthorized(new ResponseDTO()
+    protected UnauthorizedObjectResult HandleUnAuthorizedRequest() =>
+        this.Unauthorized(new ResponseDTO()
         {
             Data = ExceptionConstants.UserUnauthorizedMessageConstant,
             StatusCode = (int)HttpStatusCode.Unauthorized,
             IsSuccess = false,
         });
-    }
+
+
+    /// <summary>
+    /// Handles the task cancelled response.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <returns>The conflict object result.</returns>
+    protected ConflictObjectResult HandleTaskCancelledResponse(
+        string message
+    ) =>
+        this.Conflict(new ResponseDTO
+        {
+            Data = message,
+            IsSuccess = false,
+            StatusCode = (int)HttpStatusCode.Conflict
+        });
+
 
     #region PRIVATE METHODS
 

@@ -6,9 +6,9 @@ import {
 } from "@fluentui/react-components";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import IBBSComponent from "@components/IBBS";
+import IBBSComponent from "@/app/components/ibbs";
 import { PageConstants } from "@helpers/ibbs.constants";
-import { ThemeContext } from "@context/ThemeContext";
+import { ThemeContext } from "@context/theme-context";
 
 /**
  * @component

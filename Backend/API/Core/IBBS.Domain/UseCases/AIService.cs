@@ -1,8 +1,9 @@
-﻿using System.Globalization;
+﻿using IBBS.Domain.Contracts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
+using IBBS.Domain.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,224 +15,339 @@ namespace IBBS.Domain.UseCases;
 /// <summary>
 /// The AI Service.
 /// </summary>
+/// <param name="correlationContext">The correlation context used to track requests.</param>
 /// <param name="logger">The logger service.</param>
 /// <param name="aiAgentsService">The ai agent service.</param>
 /// <param name="commonDataManager">The common data manager.</param>
 /// <param name="configuration">The configuration.</param>
 /// <seealso cref="IBBS.Domain.DrivingPorts.IAIService" />
-public sealed class AIService(ILogger<AIService> logger, IAiAgentsService aiAgentsService, ICommonDataManager commonDataManager, IConfiguration configuration) : IAIService
+public sealed class AIService(
+    ICorrelationContext correlationContext,
+    ILogger<AIService> logger,
+    IAiAgentsService aiAgentsService,
+    ICommonDataManager commonDataManager,
+    IConfiguration configuration) : IAIService
 {
-
-    /// <summary>
-    /// Rewrites the provided story using AI processing.
-    /// </summary>
-    /// <param name="userName">The username of the user requesting the rewrite.</param>
-    /// <param name="requestDTO">The story content to be rewritten.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the AI-rewritten story.</returns>
-    public async Task<string> RewriteWithAIAsync(string userName, UserStoryRequestDomain requestDTO)
+    /// <inheritdoc/>
+    public async Task<string> RewriteWithAIAsync(
+        string userName,
+        UserStoryRequestDomain requestDTO,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(RewriteWithAIAsync), DateTime.UtcNow, userName));
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDTO, userName })
+            );
 
-            var chatRequestModel = new WorkspaceAgentChatRequestDomain()
-            {
-                AgentId = configuration[RewriteTextAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, RewriteTextAgent.Id)),
-                ApplicationName = configuration[IbbsPluginsWorkspace.WorkspaceName] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceName)),
-                WorkspaceId = configuration[IbbsPluginsWorkspace.WorkspaceId] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceId)),
-                ConversationId = Guid.NewGuid().ToString(),
-                UserMessage = requestDTO.Story
-            };
-            return await aiAgentsService.InvokeWorkspaceAgentAsync(chatRequestModel).ConfigureAwait(false);
+            var agentId = configuration[RewriteTextAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, RewriteTextAgent.Id));
+            var chatRequestModel = DomainUtilities.PrepareWorkspaceAgentChatRequestDomain(
+                configuration,
+                agentId,
+                requestDTO
+            );
+
+            response = await aiAgentsService.InvokeWorkspaceAgentAsync(
+                chatRequestModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(RewriteWithAIAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(RewriteWithAIAsync), DateTime.UtcNow, userName));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(RewriteWithAIAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDTO, userName, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Generates a genre tag for the provided story using AI processing.
-    /// </summary>
-    /// <param name="userName">The username of the user requesting the tag generation.</param>
-    /// <param name="requestDTO">The story content for which to generate a tag.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the generated genre tag.</returns>
-    public async Task<string> GenerateTagForStoryAsync(string userName, UserStoryRequestDomain requestDTO)
+    /// <inheritdoc/>
+    public async Task<string> GenerateTagForStoryAsync(
+        string userName,
+        UserStoryRequestDomain requestDTO,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GenerateTagForStoryAsync), DateTime.UtcNow, userName));
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDTO, userName })
+            );
 
-            var chatRequestModel = new WorkspaceAgentChatRequestDomain()
-            {
-                AgentId = configuration[GenerateTagAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateTagAgent.Id)),
-                ApplicationName = configuration[IbbsPluginsWorkspace.WorkspaceName] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceName)),
-                WorkspaceId = configuration[IbbsPluginsWorkspace.WorkspaceId] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceId)),
-                ConversationId = Guid.NewGuid().ToString(),
-                UserMessage = requestDTO.Story
-            };
-            return await aiAgentsService.InvokeWorkspaceAgentAsync(chatRequestModel).ConfigureAwait(false);
+            var agentId = configuration[GenerateTagAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateTagAgent.Id));
+            var chatRequestModel = DomainUtilities.PrepareWorkspaceAgentChatRequestDomain(
+                configuration,
+                agentId,
+                requestDTO
+            );
+
+            response = await aiAgentsService.InvokeWorkspaceAgentAsync(
+                chatRequestModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GenerateTagForStoryAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GenerateTagForStoryAsync), DateTime.UtcNow, userName));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GenerateTagForStoryAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDTO, userName, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Moderates the content of the provided story using AI processing.
-    /// </summary>
-    /// <param name="userName">The username of the user requesting content moderation.</param>
-    /// <param name="requestDTO">The story content to be moderated.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the content rating.</returns>
-    public async Task<string> ModerateContentDataAsync(string userName, UserStoryRequestDomain requestDTO)
+    /// <inheritdoc/>
+    public async Task<string> ModerateContentDataAsync(
+        string userName,
+        UserStoryRequestDomain requestDTO,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(ModerateContentDataAsync), DateTime.UtcNow, userName));
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(ModerateContentDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDTO, userName })
+            );
 
-            var chatRequestModel = new WorkspaceAgentChatRequestDomain()
-            {
-                AgentId = configuration[ModerateContentAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, ModerateContentAgent.Id)),
-                ApplicationName = configuration[IbbsPluginsWorkspace.WorkspaceName] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceName)),
-                WorkspaceId = configuration[IbbsPluginsWorkspace.WorkspaceId] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceId)),
-                ConversationId = Guid.NewGuid().ToString(),
-                UserMessage = requestDTO.Story
-            };
-            return await aiAgentsService.InvokeWorkspaceAgentAsync(chatRequestModel).ConfigureAwait(false);
+            var agentId = configuration[ModerateContentAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, ModerateContentAgent.Id));
+            var chatRequestModel = DomainUtilities.PrepareWorkspaceAgentChatRequestDomain(
+                configuration,
+                agentId,
+                requestDTO
+            );
+
+            response = await aiAgentsService.InvokeWorkspaceAgentAsync(
+                chatRequestModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(ModerateContentDataAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(ModerateContentDataAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(ModerateContentDataAsync), DateTime.UtcNow, userName));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(ModerateContentDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, requestDTO, userName, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Generate the bug severity using LLM.
-    /// </summary>
-    /// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
-    /// <returns>The bug severity.</returns>
-    public async Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDomain bugSeverityAiRequest)
+    /// <inheritdoc/>
+    public async Task<string> GenerateBugSeverityAsync(
+        BugSeverityAIRequestDomain bugSeverityAiRequest,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GenerateBugSeverityAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, bugSeverityAiRequest })
+            );
 
-            var chatRequestModel = new WorkspaceAgentChatRequestDomain()
-            {
-                AgentId = configuration[GenerateBugSeverityAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateBugSeverityAgent.Id)),
-                ApplicationName = configuration[IbbsPluginsWorkspace.WorkspaceName] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceName)),
-                WorkspaceId = configuration[IbbsPluginsWorkspace.WorkspaceId] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsPluginsWorkspace.WorkspaceId)),
-                ConversationId = Guid.NewGuid().ToString(),
-                UserMessage = JsonConvert.SerializeObject(new { Title = bugSeverityAiRequest.BugTitle, Description = bugSeverityAiRequest.BugDescription })
-            };
-            return await aiAgentsService.InvokeWorkspaceAgentAsync(chatRequestModel).ConfigureAwait(false);
+            var agentId = configuration[GenerateBugSeverityAgent.Id] ?? throw new Exception(string.Format(ExceptionConstants.AgentNotFoundMessageConstant, GenerateBugSeverityAgent.Id));
+            var chatRequestModel = DomainUtilities.PrepareWorkspaceAgentChatRequestDomain(
+                configuration,
+                agentId,
+                requestDTO: bugSeverityAiRequest
+            );
+
+            response = await aiAgentsService.InvokeWorkspaceAgentAsync(
+                chatRequestModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GenerateBugSeverityAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GenerateBugSeverityAsync), DateTime.UtcNow, bugSeverityAiRequest.BugTitle));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GenerateBugSeverityAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, bugSeverityAiRequest, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Posts the ai result feedback asynchronous.
-    /// </summary>
-    /// <param name="aiResponseFeedback">The ai response feedback.</param>
-    /// <param name="userEmail">The user email address.</param>
-    /// <returns>
-    /// The boolean for success/failure.
-    /// </returns>
-    public async Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDomain aiResponseFeedback, string userEmail)
+    /// <inheritdoc/>
+    public async Task<bool> PostAiResultFeedbackAsync(
+        AIResponseFeedbackDomain aiResponseFeedback,
+        string userEmail,
+        CancellationToken cancellationToken = default
+    )
     {
+        // TODO: Needs to be implemented
+        bool response = false;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail));
-            await Task.Delay(300);
-            return true;
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, aiResponseFeedback, userEmail })
+            );
+            await Task.Delay(
+                millisecondsDelay: 300,
+                cancellationToken
+            ).ConfigureAwait(false);
+            response = true;
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, userEmail));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(PostAiResultFeedbackAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, aiResponseFeedback, userEmail, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Gets the sample prompts for chatbot asynchronous.
-    /// </summary>
-    /// <returns>
-    /// The list of <see cref="LookupMasterDomain" />
-    /// </returns>
-    public async Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync()
+    /// <inheritdoc/>
+    public async Task<IEnumerable<LookupMasterDomain>> GetSamplePromptsForChatbotAsync(
+        CancellationToken cancellationToken = default
+    )
     {
+        IEnumerable<LookupMasterDomain> response = [];
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
-            return await commonDataManager.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, correlationContext.CorrelationId
+            );
+
+            response = await commonDataManager.GetSamplePromptsForChatbotAsync(
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, string.Empty));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetSamplePromptsForChatbotAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+            );
         }
     }
 
-    /// <summary>
-    /// Gets the chatbot response using LLM.
-    /// </summary>
-    /// <param name="userQueryRequest">The user query request domain model.</param>
-    /// <returns>The AI response string.</returns>
-    public async Task<string> GetChatbotResponseAsync(UserQueryRequestDomain userQueryRequest)
+    /// <inheritdoc/>
+    public async Task<string> GetChatbotResponseAsync(
+        UserQueryRequestDomain userQueryRequest,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(LoggingConstants.MethodStartedMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(userQueryRequest));
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userQueryRequest })
+            );
 
-            var chatRequestModel = new WorkspaceAgentChatRequestDomain()
-            {
-                ApplicationName = configuration[IbbsGroupchatWorkspace.WorkspaceName] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsGroupchatWorkspace.WorkspaceName)),
-                WorkspaceId = configuration[IbbsGroupchatWorkspace.WorkspaceId] ?? throw new Exception(string.Format(ExceptionConstants.WorkspaceNotFoundMessageConstant, IbbsGroupchatWorkspace.WorkspaceId)),
-                ConversationId = Guid.NewGuid().ToString(),
-                UserMessage = userQueryRequest.UserQuery
-            };
-            return await aiAgentsService.GetWorkspaceGroupChatResponseAsync(chatRequestModel).ConfigureAwait(false);
+            var chatRequestModel = DomainUtilities.PrepareWorkspaceAgentChatRequestDomain(
+                configuration,
+                requestDTO: userQueryRequest
+            );
+
+            response = await aiAgentsService.GetWorkspaceGroupChatResponseAsync(
+                chatRequestModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, ex.Message);
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(LoggingConstants.MethodEndedMessageConstant, nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(userQueryRequest));
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetChatbotResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userQueryRequest, response })
+            );
         }
     }
 }

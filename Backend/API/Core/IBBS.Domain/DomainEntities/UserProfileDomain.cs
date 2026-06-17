@@ -21,7 +21,7 @@ public sealed record UserProfileDomain
     /// <value>
     /// The user posts.
     /// </value>
-    public List<UserPostDomain> UserPosts { get; set; } = [];
+    public IEnumerable<UserPostDomain> UserPosts { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the user post ratings.
@@ -29,5 +29,5 @@ public sealed record UserProfileDomain
     /// <value>
     /// The user post ratings.
     /// </value>
-    public List<UserPostRatingDomain> UserPostRatings { get; set; } = [];
+    public IEnumerable<UserPostRatingDomain> UserPostRatings { get; set; } = [];
 }

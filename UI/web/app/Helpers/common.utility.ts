@@ -1,4 +1,4 @@
-import { ConsoleMessage } from "@helpers/ibbs.constants";
+import { ApplicationConstants } from "@helpers/ibbs.constants";
 
 /**
  * Renders a custom console log message with author information
@@ -6,7 +6,7 @@ import { ConsoleMessage } from "@helpers/ibbs.constants";
 export const ConsoleLogMessage = console.log(
 	"%c %s",
 	"color:red; font-size: 22pt; font-family: 'Source Code Pro'",
-	ConsoleMessage
+	ApplicationConstants.ConsoleMessage,
 );
 
 /**
@@ -30,7 +30,7 @@ export const SnapScrollHandler = (
 	container: any,
 	currentSection: number,
 	setCurrentSection: Function,
-	contentSectionRef: any
+	contentSectionRef: any,
 ) => {
 	let isScrolling = false;
 	let scrollTimeout: any;
@@ -51,7 +51,7 @@ export const SnapScrollHandler = (
 
 		if (currentSection === 1) {
 			const contentSection: any = contentSectionRef.current;
-			if (contentSection && contentSection.contains(e.target)) {
+			if (contentSection?.contains(e.target)) {
 				// Only allow scrolling back to hero section if at the very top of content
 				if (e.deltaY < 0 && contentSection.scrollTop <= 5) {
 					e.preventDefault();
@@ -90,7 +90,7 @@ export const SnapScrollHandler = (
 			// If not past header yet, just scroll normally
 			window.scrollTo({
 				top: headerHeight,
-				behavior: 'smooth'
+				behavior: "smooth",
 			});
 			isScrolling = false;
 			return;
@@ -108,7 +108,7 @@ export const SnapScrollHandler = (
 	const handleTouchMove = (e: Event) => {
 		if (currentSection === 1) {
 			const contentSection: any = contentSectionRef.current;
-			if (contentSection && contentSection.contains(e.target)) {
+			if (contentSection?.contains(e.target)) {
 				return;
 			}
 		}
@@ -132,7 +132,7 @@ export const SnapScrollHandler = (
 
 		if (currentSection === 1) {
 			const contentSection: any = contentSectionRef.current;
-			if (contentSection && contentSection.contains(e.target)) {
+			if (contentSection?.contains(e.target)) {
 				if (
 					touchDiff < -minSwipeDistance &&
 					contentSection.scrollTop <= 5
@@ -160,13 +160,17 @@ export const SnapScrollHandler = (
 		isScrolling = true;
 
 		// Only trigger content section when scroll position is at or past the header
-		if (currentSection === 0 && touchDiff > minSwipeDistance && scrollY >= headerHeight) {
+		if (
+			currentSection === 0 &&
+			touchDiff > minSwipeDistance &&
+			scrollY >= headerHeight
+		) {
 			setCurrentSection(1);
 		} else if (currentSection === 0 && touchDiff > minSwipeDistance) {
 			// If not past header yet, just scroll normally
 			window.scrollTo({
 				top: headerHeight,
-				behavior: 'smooth'
+				behavior: "smooth",
 			});
 			isScrolling = false;
 			return;

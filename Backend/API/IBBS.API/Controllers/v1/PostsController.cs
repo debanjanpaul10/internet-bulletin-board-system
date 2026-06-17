@@ -1,8 +1,11 @@
 ﻿using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models.Posts;
 using IBBS.API.Helpers;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using static IBBS.API.Helpers.APIConstants;
 using static IBBS.API.Helpers.SwaggerConstants.PostsController;
@@ -16,9 +19,17 @@ namespace IBBS.API.Controllers.v1;
 /// <param name="httpContextAccessor">The http context accessor.</param>
 /// <param name="postsHandler">The Posts api adapter handler.</param>
 /// <param name="configuration">The configuration service.</param>
+/// <param name="correlationContext">The correlation context used for logging requests.</param>
+/// <param name="logger">The logger service.</param>
+/// <seealso cref="BaseController"/>
 [ApiController]
 [Route(RouteConstants.PostsController.BaseRoute)]
-public sealed class PostsController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IPostsHandler postsHandler) : BaseController(httpContextAccessor, configuration)
+public sealed class PostsController(
+    IHttpContextAccessor httpContextAccessor,
+    IConfiguration configuration,
+    ICorrelationContext correlationContext,
+    ILogger<PostsController> logger,
+    IPostsHandler postsHandler) : BaseController(httpContextAccessor, configuration)
 {
     /// <summary>
     /// Gets all posts data asynchronous.
@@ -30,12 +41,52 @@ public sealed class PostsController(IHttpContextAccessor httpContextAccessor, IC
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = GetAllPostsDataAction.Summary, Description = GetAllPostsDataAction.Description, OperationId = GetAllPostsDataAction.OperationId)]
+    [SwaggerOperation(
+        Summary = GetAllPostsDataAction.Summary,
+        Description = GetAllPostsDataAction.Description,
+        OperationId = GetAllPostsDataAction.OperationId)]
     public async Task<IActionResult> GetAllPostsDataAsync()
     {
-        var result = await postsHandler.GetAllPostsAsync(UserEmail ?? string.Empty);
-        if (result is not null) return HandleSuccessResult(result);
-        else return HandleBadRequest(ExceptionConstants.SomethingWentWrongMessageConstant);
+        IEnumerable<PostWithRatingsDTO> response = [];
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetAllPostsDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail })
+            );
+
+            response = await postsHandler.GetAllPostsAsync(
+                userName: UserEmail ?? string.Empty,
+                cancellationToken: HttpContext.RequestAborted
+            ).ConfigureAwait(false);
+
+            return base.HandleSuccessResult(response);
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllPostsDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleTaskCancelledResponse(message: ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllPostsDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, ex.Message })
+            );
+            return base.HandleBadRequest(message: ex.Message);
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetAllPostsDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, base.UserEmail, response })
+            );
+        }
     }
 
     /// <summary>
