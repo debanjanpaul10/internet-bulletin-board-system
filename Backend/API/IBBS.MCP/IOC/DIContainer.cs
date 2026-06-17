@@ -56,11 +56,11 @@ internal static class DIContainer
     internal static WebApplicationBuilder AddAuthorizationPolicyBuilder(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthorizationBuilder()
-          .AddPolicy(ConfigurationConstants.DefaultAuthorizationPolicy, policy =>
-          {
-              policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-              policy.RequireAuthenticatedUser();
-          });
+        .AddPolicy(ConfigurationConstants.DefaultAuthorizationPolicy, policy =>
+        {
+            policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+            policy.RequireAuthenticatedUser();
+        });
 
         return builder;
     }
@@ -186,8 +186,6 @@ internal static class DIContainer
         );
 
         context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        await context.HttpContext.Response.WriteAsync(
-            authenticationFailedException.Message
-        ).ConfigureAwait(false);
+        await context.HttpContext.Response.WriteAsync(authenticationFailedException.Message).ConfigureAwait(false);
     }
 }

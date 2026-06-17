@@ -15,7 +15,7 @@ namespace IBBS.AI.Agents.Adapters.AgentManagers;
 /// <param name="correlationContext">The correlation context.</param>
 /// <param name="httpClientHelper">The http client helper service.</param>
 /// <param name="logger">The logger service.</param>
-/// <seealso cref="IBBS.Domain.DrivenPorts.IAiAgentsService" />
+/// <seealso cref="IAiAgentsService" />
 public sealed class AiAgentsService(
     ICorrelationContext correlationContext,
     IHttpClientHelper httpClientHelper,
