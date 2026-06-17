@@ -1,9 +1,10 @@
-﻿using IBBS.Domain.DomainEntities.Posts;
+﻿using IBBS.Domain.Contracts;
+using IBBS.Domain.DomainEntities.Posts;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
 using IBBS.Domain.Helpers;
-using InternetBulletin.Data.Contracts;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
 
 namespace IBBS.Domain.UseCases;
@@ -12,90 +13,285 @@ namespace IBBS.Domain.UseCases;
 /// The Posts BusinessManager Class.
 /// </summary>
 /// <param name="logger">The logger.</param>
+/// <param name="correlationContext">The correlation context.</param>
 /// <param name="postsDataService">The Posts Data Service.</param>
 /// <param name="postRatingsDataService">The post ratings data service.</param>
 /// <seealso cref="IPostsService"/>
-public class PostsService(ILogger<PostsService> logger, IPostsDataService postsDataService, IPostRatingsDataService postRatingsDataService) : IPostsService
+public sealed class PostsService(
+    ILogger<PostsService> logger,
+    ICorrelationContext correlationContext,
+    IPostsDataService postsDataService,
+    IPostRatingsDataService postRatingsDataService) : IPostsService
 {
-    /// <summary>
-    /// Gets the post asynchronous.
-    /// </summary>
-    /// <param name="postId">The post identifier.</param>
-    /// <param name="userName">The user name.</param>
-    /// <returns>
-    /// The specific post.
-    /// </returns>
-    public async Task<PostDomain> GetPostAsync(string postId, string userName)
+    /// <inheritdoc />
+    public async Task<PostDomain> GetPostAsync(
+        string postId,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
     {
-        var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
-        var result = await postsDataService.GetPostAsync(postGuid, userName, true).ConfigureAwait(false);
-        return DomainUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, logger);
-    }
-
-    /// <summary>
-    /// Adds the new post asynchronous.
-    /// </summary>
-    /// <param name="newPost">The new post.</param>
-    /// <returns>
-    /// The boolean for success or failure.
-    /// </returns>
-    public async Task<bool> AddNewPostAsync(AddPostDomain newPost, string userName)
-    {
-        DomainUtilities.ThrowIfNull(newPost, ExceptionConstants.NullPostMessageConstant, logger);
-        return await postsDataService.AddNewPostAsync(newPost, userName).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Updates the post asynchronous.
-    /// </summary>
-    /// <param name="updatedPost">The updated post.</param>
-    /// <returns>The updated post data.</returns>
-    public async Task<PostDomain> UpdatePostAsync(UpdatePostDomain updatedPost, string userName)
-    {
-        DomainUtilities.ThrowIfNull(updatedPost, ExceptionConstants.NullPostMessageConstant, logger);
-        var result = await postsDataService.UpdatePostAsync(updatedPost, userName, false).ConfigureAwait(false);
-        return DomainUtilities.ThrowIfNull(result, ExceptionConstants.PostNotFoundMessageConstant, logger);
-    }
-
-    /// <summary>
-    /// Deletes the post asynchronous.
-    /// </summary>
-    /// <param name="postId">The post identifier.</param>
-    /// <param name="userName">The user name.</param>
-    /// <returns>The boolean for success / failure</returns>
-    public async Task<bool> DeletePostAsync(string postId, string userName)
-    {
-        var postGuid = DomainUtilities.ValidateAndParsePostId(postId, logger);
-        return await postsDataService.DeletePostAsync(postGuid, userName).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Gets all posts asynchronous.
-    /// </summary>
-    /// <param name="userName">The user name</param>
-    /// <returns>The list of <see cref="PostWithRatingsDTO"/></returns>
-    public async Task<List<PostWithRatingsDomain>> GetAllPostsAsync(string userName)
-    {
-        if (string.IsNullOrWhiteSpace(userName)) // Consider IsNullOrWhiteSpace for robustness
+        PostDomain response = new();
+        try
         {
-            var result = await postsDataService.GetAllPostsAsync().ConfigureAwait(false);
-            var postsData = result.Select(post => new PostWithRatingsDomain
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName })
+            );
+
+            var postGuid = DomainUtilities.ValidateAndParsePostId(
+                postId,
+                logger
+            );
+
+            var result = await postsDataService.GetPostAsync(
+                postId: postGuid,
+                userName,
+                isForCurrentUser: true,
+                cancellationToken
+            ).ConfigureAwait(false);
+
+            response = DomainUtilities.ThrowIfNull(
+                obj: result,
+                message: ExceptionConstants.PostNotFoundMessageConstant,
+                commonLogger: logger
+            );
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetPostAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName, response })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> AddNewPostAsync(
+        AddPostDomain newPost,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
+    {
+        bool response = false;
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(AddNewPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, newPost, userName }));
+
+            DomainUtilities.ThrowIfNull(
+                obj: newPost,
+                message: ExceptionConstants.NullPostMessageConstant,
+                commonLogger: logger
+            );
+
+            response = await postsDataService.AddNewPostAsync(
+                newPost,
+                userName,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(AddNewPostAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(AddNewPostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, newPost, userName, response })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<PostDomain> UpdatePostAsync(
+        UpdatePostDomain updatedPost,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
+    {
+        PostDomain response = new();
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(UpdatePostAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, updatedPost, userName })
+            );
+
+            DomainUtilities.ThrowIfNull(
+                obj: updatedPost,
+                message: ExceptionConstants.NullPostMessageConstant,
+                commonLogger: logger
+            );
+
+            var result = await postsDataService.UpdatePostAsync(
+                updatedPost,
+                userName,
+                isRatingUpdate: false,
+                cancellationToken
+            ).ConfigureAwait(false);
+
+            response = DomainUtilities.ThrowIfNull(
+                obj: result,
+                message: ExceptionConstants.PostNotFoundMessageConstant,
+                commonLogger: logger
+            );
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(UpdatePostAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(UpdatePostAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, updatedPost, userName, response })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> DeletePostAsync(
+        string postId,
+        string userName,
+        CancellationToken cancellationToken = default
+    )
+    {
+        bool response = false;
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(DeletePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName })
+            );
+
+            var postGuid = DomainUtilities.ValidateAndParsePostId(
+                postId,
+                logger
+            );
+
+            response = await postsDataService.DeletePostAsync(
+                postId: postGuid,
+                userName,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(DeletePostAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(DeletePostAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, postId, userName, response })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<List<PostWithRatingsDomain>> GetAllPostsAsync(
+        string userName,
+        CancellationToken cancellationToken = default
+    )
+    {
+        List<PostWithRatingsDomain> response = [];
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetAllPostsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userName })
+            );
+
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                PostId = post.PostId,
-                PostTitle = post.PostTitle,
-                PostContent = post.PostContent,
-                PostCreatedDate = post.PostCreatedDate,
-                PostOwnerUserName = post.PostOwnerUserName,
-                Ratings = post.Ratings,
-                IsActive = post.IsActive,
-            }).ToList();
+                var result = await postsDataService.GetAllPostsAsync(
+                    cancellationToken
+                ).ConfigureAwait(false);
 
-            return postsData;
+                var postsData = result.Select(post => new PostWithRatingsDomain
+                {
+                    PostId = post.PostId,
+                    PostTitle = post.PostTitle,
+                    PostContent = post.PostContent,
+                    PostCreatedDate = post.PostCreatedDate,
+                    PostOwnerUserName = post.PostOwnerUserName,
+                    Ratings = post.Ratings,
+                    IsActive = post.IsActive,
+                }).ToList();
+
+                response = postsData;
+            }
+            else
+            {
+                response = await postRatingsDataService.GetAllPostsWithRatingsAsync(
+                    userName
+                ).ConfigureAwait(false);
+            }
+
+            return response;
         }
-        else
+        catch (Exception ex)
         {
-            return await postRatingsDataService.GetAllPostsWithRatingsAsync(userName).ConfigureAwait(false);
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetAllPostsAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetAllPostsAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userName, response })
+            );
         }
     }
-
 }

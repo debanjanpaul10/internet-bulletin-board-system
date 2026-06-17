@@ -3,7 +3,7 @@ namespace IBBS.Domain.DomainEntities.AI;
 /// <summary>
 /// The moderation content response domain model.
 /// </summary>
-public class ModerationContentDomain
+public sealed record ModerationContentDomain
 {
     /// <summary>
     /// The content rating for the user story.

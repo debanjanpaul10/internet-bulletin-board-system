@@ -2,6 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text;
 using IBBS.AI.Agents.Adapters.Contracts;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,64 +14,83 @@ namespace IBBS.AI.Agents.Adapters.Helpers;
 /// <summary>
 /// Http client helper service.
 /// </summary>
+/// <param name="correlationContext">The correlation context.</param>
 /// <param name="logger">The Logger</param>
 /// <param name="configuration">The configuration.</param>
 /// <param name="httpClientFactory">The http client factory.</param>
 /// <seealso cref="IHttpClientHelper"/>
 [ExcludeFromCodeCoverage]
-public class HttpClientHelper(ILogger<HttpClientHelper> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) : IHttpClientHelper
+public sealed class HttpClientHelper(
+    ICorrelationContext correlationContext,
+    ILogger<HttpClientHelper> logger,
+    IConfiguration configuration,
+    IHttpClientFactory httpClientFactory) : IHttpClientHelper
 {
-	/// <summary>
-	/// Gets the ai response asynchronous.
-	/// </summary>
-	/// <typeparam name="T">The input data.</typeparam>
-	/// <param name="data">The data.</param>
-	/// <param name="apiUrl">The api url.</param>
-	/// <returns>
-	/// The response from AI
-	/// </returns>
-	public async Task<HttpResponseMessage> GetAIResponseAsync<T>(T data, string apiUrl)
-	{
-		try
-		{
-			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodStart, nameof(GetAIResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? string.Empty));
-			ArgumentException.ThrowIfNullOrEmpty(apiUrl);
+    /// <inheritdoc/>
+    public async Task<HttpResponseMessage> GetAIResponseAsync<T>(
+        T data,
+        string apiUrl,
+        CancellationToken cancellationToken = default
+    )
+    {
+        HttpResponseMessage response = new();
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetAIResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, data, apiUrl })
+            );
 
-			var client = httpClientFactory.CreateClient(ConfigurationConstants.AiAgentsHttpClient);
-			await PrepareHttpClientFactoryAsync(client, TokenHelper.GetAiAgentsLabTokenAsync(configuration, logger));
+            ArgumentException.ThrowIfNullOrEmpty(apiUrl);
 
-			var inputJson = JsonConvert.SerializeObject(data);
-			var contentData = new StringContent(content: inputJson, encoding: Encoding.UTF8, ConfigurationConstants.ApplicationJsonConstant);
+            var client = httpClientFactory.CreateClient(name: ConfigurationConstants.AiAgentsHttpClient);
+            var authenticationToken = await TokenHelper.GetAiAgentsLabTokenAsync(
+                configuration,
+                logger,
+                correlationId: correlationContext.CorrelationId,
+                cancellationToken
+            ).ConfigureAwait(false);
 
-			var response = await client.PostAsync(apiUrl, contentData).ConfigureAwait(false);
-			if (!response.IsSuccessStatusCode)
-				return response.EnsureSuccessStatusCode();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                scheme: ConfigurationConstants.BearerConstant,
+                parameter: authenticationToken
+            );
 
-			return response;
-		}
-		catch (Exception ex)
-		{
-			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAIResponseAsync), DateTime.UtcNow, ex.Message));
-			throw;
-		}
-		finally
-		{
-			logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodEnded, nameof(GetAIResponseAsync), DateTime.UtcNow, data?.GetType().Name ?? string.Empty));
-		}
-	}
+            var inputJson = JsonConvert.SerializeObject(data);
+            var contentData = new StringContent(
+                content: inputJson,
+                encoding: Encoding.UTF8,
+                mediaType: ConfigurationConstants.ApplicationJsonConstant
+            );
 
-	#region PRIVATE Methods
+            response = await client.PostAsync(
+                requestUri: apiUrl,
+                content: contentData,
+                cancellationToken
+            ).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+                return response.EnsureSuccessStatusCode();
 
-	/// <summary>
-	/// Prepares http client factory async.
-	/// </summary>
-	/// <param name="client">The client.</param>
-	/// <param name="tokenTask">The task to get the token.</param>
-	private static async Task PrepareHttpClientFactoryAsync(HttpClient client, Task<string> tokenTask)
-	{
-		var token = await tokenTask.ConfigureAwait(false);
-		client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(ConfigurationConstants.BearerConstant, token);
-	}
-
-	#endregion
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAIResponseAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetAIResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, data, apiUrl, response })
+            );
+        }
+    }
 }

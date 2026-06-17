@@ -1,5 +1,5 @@
 ﻿using IBBS.Domain.DrivenPorts;
-using IBBS.Infrastructure.MongoDB.Adapters.MongoDBManager;
+using IBBS.Infrastructure.MongoDB.Adapters.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -19,7 +19,8 @@ public static class DIContainer
 	/// <param name="configuration">The configuration.</param>
 	/// <returns>The service collection.</returns>
 	public static IServiceCollection AddMongoDbAdapterDependencies(this IServiceCollection services, IConfiguration configuration) =>
-		services.ConfigureMongoDbServer(configuration).AddScoped<IMongoDbDatabaseManager, MongoDbDatabaseManager>();
+		services.ConfigureMongoDbServer(configuration)
+		.AddDataManagers().AddRepositories();
 
 	/// <summary>
 	/// Configures the mongo database server.
@@ -51,4 +52,20 @@ public static class DIContainer
 
 		return services;
 	}
+
+	/// <summary>
+	/// Adds the data managers.
+	/// </summary>
+	/// <param name="services">The service collection.</param>
+	/// <returns>The updated service collection.</returns>
+	private static IServiceCollection AddDataManagers(this IServiceCollection services) =>
+		services;
+
+	/// <summary>
+	/// Adds the data repositories.
+	/// </summary>
+	/// <param name="services">The service collection.</param>
+	/// <returns>The updated service collection.</returns>
+	private static IServiceCollection AddRepositories(this IServiceCollection services) =>
+		services.AddScoped<IMongoDatabaseRepository, IMongoDatabaseRepository>();
 }

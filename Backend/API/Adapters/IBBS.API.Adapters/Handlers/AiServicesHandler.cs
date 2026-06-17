@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using IBBS.API.Adapters.Contracts;
+﻿using IBBS.API.Adapters.Contracts;
 using IBBS.API.Adapters.Models;
 using IBBS.API.Adapters.Models.AI;
-using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivingPorts;
-using Microsoft.Extensions.Configuration;
-using static IBBS.Domain.Helpers.DomainConstants;
+using static IBBS.API.Adapters.Mapping.DomainToResponseMapper;
+using static IBBS.API.Adapters.Mapping.RequestToDomainMapper;
 
 namespace IBBS.API.Adapters.Handlers;
 
@@ -13,103 +11,103 @@ namespace IBBS.API.Adapters.Handlers;
 /// The AI Services API adapter handler.
 /// </summary>
 /// <param name="aiServices">The ai services.</param>
-/// <param name="mapper">The mapper.</param>
-/// <param name="configuration">The configuration.</param>
-/// <seealso cref="IBBS.API.Adapters.Contracts.IAiServicesHandler" />
-public class AiServicesHandler(IAIService aiServices, IMapper mapper, IConfiguration configuration) : IAiServicesHandler
+/// <seealso cref="IAiServicesHandler" />
+public sealed class AiServicesHandler(IAIService aiServices) : IAiServicesHandler
 {
-    /// <summary>
-    /// Generate the bug severity using LLM.
-    /// </summary>
-    /// <param name="bugSeverityAiRequest">The bug severity AI request model.</param>
-    /// <returns>The bug severity.</returns>
-    public async Task<string> GenerateBugSeverityAsync(BugSeverityAIRequestDTO bugSeverityAiRequest)
+    /// <inheritdoc/>
+    public async Task<string> GenerateBugSeverityAsync(
+        BugSeverityAIRequestDTO bugSeverityAiRequest,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainRequest = mapper.Map<BugSeverityAIRequestDomain>(bugSeverityAiRequest);
-        return await aiServices.GenerateBugSeverityAsync(domainRequest).ConfigureAwait(false);
+        var domainRequest = MapToDomain(requestDto: bugSeverityAiRequest);
+        return await aiServices.GenerateBugSeverityAsync(
+            bugSeverityAiRequest: domainRequest,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Generates the tag for story asynchronous.
-    /// </summary>
-    /// <param name="userName">The current user name.</param>
-    /// <param name="requestDTO">The story.</param>
-    /// <returns>
-    /// The genre tag response.
-    /// </returns>
-    public async Task<string> GenerateTagForStoryAsync(string userName, UserStoryRequestDTO requestDTO)
+    /// <inheritdoc/>
+    public async Task<string> GenerateTagForStoryAsync(
+        string userName,
+        UserStoryRequestDTO requestDTO,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainRequest = mapper.Map<UserStoryRequestDomain>(requestDTO);
-        return await aiServices.GenerateTagForStoryAsync(userName, domainRequest).ConfigureAwait(false);
+        var domainRequest = MapToDomain(requestDto: requestDTO);
+        return await aiServices.GenerateTagForStoryAsync(
+            userName,
+            requestDTO: domainRequest,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Gets the chatbot response asynchronous.
-    /// </summary>
-    /// <param name="chatMessageRequest">The user query request.</param>
-    /// <returns>
-    /// The ai agent response.
-    /// </returns>
-    public async Task<AIChatbotResponseDTO> GetChatbotResponseAsync(UserQueryRequestDTO chatMessageRequest)
+    /// <inheritdoc/>
+    public async Task<string> GetChatbotResponseAsync(
+        UserQueryRequestDTO userQueryRequest,
+        CancellationToken cancellationToken = default
+    )
     {
-        var areFollowupQuestionsEnabled = bool.TryParse(configuration[ConfigurationConstants.AreFollowupQuestionsEnabled], out var parsedValue) && parsedValue;
-
-        var domainInput = mapper.Map<UserQueryRequestDomain>(chatMessageRequest);
-        var domainResponse = await aiServices.GetChatbotResponseAsync(domainInput, areFollowupQuestionsEnabled).ConfigureAwait(false);
-        return mapper.Map<AIChatbotResponseDTO>(domainResponse);
+        var domainInput = MapToDomain(requestDto: userQueryRequest);
+        return await aiServices.GetChatbotResponseAsync(
+            userQueryRequest: domainInput,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Gets the sample prompts for chatbot asynchronous.
-    /// </summary>
-    /// <returns>
-    /// The list of <see cref="LookupMasterDTO" />
-    /// </returns>
-    public async Task<IEnumerable<LookupMasterDTO>> GetSamplePromptsForChatbotAsync()
+    /// <inheritdoc/>
+    public async Task<IEnumerable<LookupMasterDTO>> GetSamplePromptsForChatbotAsync(
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainResult = await aiServices.GetSamplePromptsForChatbotAsync().ConfigureAwait(false);
-        return mapper.Map<IEnumerable<LookupMasterDTO>>(domainResult);
+        var domainResult = await aiServices.GetSamplePromptsForChatbotAsync(
+            cancellationToken
+        ).ConfigureAwait(false);
+        return [.. domainResult.Select(MapToResponse)];
     }
 
-    /// <summary>
-    /// Moderates the content data asynchronous.
-    /// </summary>
-    /// <param name="userName">The current user name.</param>
-    /// <param name="requestDTO">The story.</param>
-    /// <returns>
-    /// The moderation content response.
-    /// </returns>
-    public async Task<string> ModerateContentDataAsync(string userName, UserStoryRequestDTO requestDTO)
+    /// <inheritdoc/>
+    public async Task<string> ModerateContentDataAsync(
+        string userName,
+        UserStoryRequestDTO requestDTO,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainRequest = mapper.Map<UserStoryRequestDomain>(requestDTO);
-        return await aiServices.ModerateContentDataAsync(userName, domainRequest).ConfigureAwait(false);
+        var domainRequest = MapToDomain(requestDto: requestDTO);
+        return await aiServices.ModerateContentDataAsync(
+            userName,
+            requestDTO: domainRequest,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Posts the ai result feedback asynchronous.
-    /// </summary>
-    /// <param name="aiResponseFeedback">The ai response feedback.</param>
-    /// <param name="userEmail">The user email.</param>
-    /// <returns>
-    /// The boolean for success/failure.
-    /// </returns>
-    public async Task<bool> PostAiResultFeedbackAsync(AIResponseFeedbackDTO aiResponseFeedback, string userEmail)
+    /// <inheritdoc/>
+    public async Task<bool> PostAiResultFeedbackAsync(
+        AIResponseFeedbackDTO aiResponseFeedback,
+        string userEmail,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainInput = mapper.Map<AIResponseFeedbackDomain>(aiResponseFeedback);
-        return await aiServices.PostAiResultFeedbackAsync(domainInput, userEmail).ConfigureAwait(false);
+        var domainInput = MapToDomain(requestDto: aiResponseFeedback);
+        return await aiServices.PostAiResultFeedbackAsync(
+            aiResponseFeedback: domainInput,
+            userEmail,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Rewrites with AI asynchronously.
-    /// </summary>
-    /// <param name="userName">The current user name.</param>
-    /// <param name="requestDTO">The story.</param>
-    /// <returns>
-    /// The AI response data
-    /// </returns>
-    public async Task<string> RewriteWithAIAsync(string userName, UserStoryRequestDTO requestDTO)
+    /// <inheritdoc/>
+    public async Task<string> RewriteWithAIAsync(
+        string userName,
+        UserStoryRequestDTO requestDTO,
+        CancellationToken cancellationToken = default
+    )
     {
-        var domainRequest = mapper.Map<UserStoryRequestDomain>(requestDTO);
-        return await aiServices.RewriteWithAIAsync(userName, domainRequest).ConfigureAwait(false);
+        var domainRequest = MapToDomain(requestDto: requestDTO);
+        return await aiServices.RewriteWithAIAsync(
+            userName,
+            requestDTO: domainRequest,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 }

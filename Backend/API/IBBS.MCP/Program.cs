@@ -42,12 +42,14 @@ builder.Services.AddMcpServer().WithHttpTransport().WithToolsFromAssembly();
 
 var app = builder.Build();
 
+app.UseCorrelationIdMiddleware();
+app.UseRequestLogging();
 app.UseExceptionMiddleware();
 app.UseHttpsRedirection();
-app.UseCors();
-
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapMcp("/ibbs").RequireAuthorization();
 
-app.Run();
+app.UseCors();
+app.MapMcp(McpToolBaseUrl).RequireAuthorization();
+
+await app.RunAsync();

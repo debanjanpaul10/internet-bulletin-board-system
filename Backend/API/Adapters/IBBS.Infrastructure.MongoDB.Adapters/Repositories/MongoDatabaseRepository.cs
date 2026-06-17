@@ -1,0 +1,220 @@
+using System.Data.SqlTypes;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
+using IBBS.Infrastructure.MongoDB.Adapters.Contracts;
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using Newtonsoft.Json;
+using static IBBS.Infrastructure.MongoDB.Adapters.Helpers.Constants;
+
+namespace IBBS.Infrastructure.MongoDB.Adapters.Repositories;
+
+/// <summary>
+/// Provides a repository implementation for interacting with MongoDB, allowing for saving, retrieving, updating, and deleting data in specified databases and collections.
+/// </summary>
+/// <remarks>This repository interacts with the MongoDB.Driver to perform CRUD operations on the specified database and collection, while also implementing structured logging and exception handling to ensure robust data management. 
+/// The repository methods are designed to be asynchronous to optimize performance and scalability when dealing with potentially large datasets in MongoDB.</remarks>
+/// <param name="mongoClient">The mongo database client service.</param>
+/// <param name="logger">The logger service.</param>
+/// <param name="correlationContext">The correlation context used for logging.</param>
+/// <seealso cref="IMongoDatabaseRepository"/>
+public sealed class MongoDatabaseRepository(
+    IMongoClient mongoClient,
+    ICorrelationContext correlationContext,
+    ILogger<MongoDatabaseRepository> logger) : IMongoDatabaseRepository
+{
+    /// <inheritdoc />
+    public async Task<IEnumerable<TResult>> GetDataFromCollectionAsync<TResult>(
+        string databaseName,
+        string collectionName,
+        FilterDefinition<TResult> filter,
+        CancellationToken cancellationToken = default
+    )
+    {
+        IEnumerable<TResult>? response = null;
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetDataFromCollectionAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName })
+            );
+
+            var mongoDatabase = mongoClient.GetDatabase(databaseName);
+            var collectionData = mongoDatabase.GetCollection<TResult>(collectionName);
+            if (collectionData is not null)
+            {
+                response = await collectionData
+                    .Find(filter)
+                    .ToListAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                return response;
+            }
+
+            throw new SqlTypeException(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetDataFromCollectionAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetDataFromCollectionAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName, response })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> SaveDataAsync<TInput>(
+        TInput data,
+        string databaseName,
+        string collectionName,
+        bool bypassDocumentValidation = false,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(SaveDataAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName, bypassDocumentValidation })
+            );
+
+            var mongoDatabase = mongoClient.GetDatabase(databaseName);
+            var collectionData = mongoDatabase.GetCollection<TInput>(collectionName);
+            if (collectionData is not null)
+            {
+                var insertOptions = new InsertOneOptions() { BypassDocumentValidation = bypassDocumentValidation };
+                await collectionData.InsertOneAsync(
+                    document: data,
+                    options: insertOptions,
+                    cancellationToken: cancellationToken
+                ).ConfigureAwait(false);
+                return true;
+            }
+
+            throw new SqlTypeException(ExceptionConstants.SomethingWentWrongMessageConstant);
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(SaveDataAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(SaveDataAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName, bypassDocumentValidation })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> UpdateDataInCollectionAsync<TDocument>(
+        FilterDefinition<TDocument> filter,
+        UpdateDefinition<TDocument> update,
+        string databaseName,
+        string collectionName,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(UpdateDataInCollectionAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName })
+            );
+
+            var mongoDatabase = mongoClient.GetDatabase(databaseName);
+            var collectionData = mongoDatabase.GetCollection<TDocument>(collectionName) ?? throw new FileNotFoundException(ExceptionConstants.CollectionDoesNotExistsMessage);
+            var result = await collectionData.UpdateManyAsync(
+                filter,
+                update,
+                cancellationToken: cancellationToken
+            ).ConfigureAwait(false);
+            return result.ModifiedCount > 0;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(UpdateDataInCollectionAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(UpdateDataInCollectionAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> DeleteDataFromCollectionAsync<TDocument>(
+        FilterDefinition<TDocument> filter,
+        string databaseName,
+        string collectionName,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(DeleteDataFromCollectionAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName })
+            );
+
+            var mongoDatabase = mongoClient.GetDatabase(databaseName);
+            var collectionData = mongoDatabase.GetCollection<TDocument>(collectionName) ?? throw new FileNotFoundException(ExceptionConstants.CollectionDoesNotExistsMessage);
+            var result = await collectionData.DeleteOneAsync(
+                filter,
+                cancellationToken: cancellationToken
+            ).ConfigureAwait(false);
+            return result.DeletedCount > 0;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant, nameof(DeleteDataFromCollectionAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(DeleteDataFromCollectionAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, databaseName, collectionName })
+            );
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"paths": {
+			"@/*": ["./*"],
+			"@components/*": ["./app/components/*"],
+			"@helpers/*": ["./app/helpers/*"],
+			"@store/*": ["./app/store/*"],
+			"@styles/*": ["./app/Styles/*"],
+			"@models/*": ["./app/models/*"],
+			"@services/*": ["./app/services/*"],
+			"@context/*": ["./app/context/*"],
+			"@assets/*": ["./assets/*"],
+			"@animations/*": ["./app/animations/*"],
+			"@types/*": ["./app/types/*"],
+			"@environment": [
+				"./environments/environment.development.ts",
+				"./environments/environment.ts"
+			]
+		},
+		"plugins": [{ "name": "mkcert()" }]
+	},
+	"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+	"exclude": ["node_modules", "dist"]
+}

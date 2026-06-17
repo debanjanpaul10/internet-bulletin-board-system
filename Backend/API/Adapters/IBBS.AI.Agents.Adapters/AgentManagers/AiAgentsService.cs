@@ -1,8 +1,8 @@
-﻿using System.Globalization;
-using IBBS.AI.Agents.Adapters.Contracts;
-using IBBS.AI.Agents.Adapters.Helpers;
+﻿using IBBS.AI.Agents.Adapters.Contracts;
+using IBBS.Domain.Contracts;
 using IBBS.Domain.DomainEntities.AI;
 using IBBS.Domain.DrivenPorts;
+using IBBS.Domain.Helpers;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static IBBS.AI.Agents.Adapters.Helpers.Constants;
@@ -12,204 +12,104 @@ namespace IBBS.AI.Agents.Adapters.AgentManagers;
 /// <summary>
 /// The AI Agents Service.
 /// </summary>
+/// <param name="correlationContext">The correlation context.</param>
 /// <param name="httpClientHelper">The http client helper service.</param>
 /// <param name="logger">The logger service.</param>
-/// <seealso cref="IBBS.Domain.DrivenPorts.IAiAgentsService" />
-public class AiAgentsService(IHttpClientHelper httpClientHelper, ILogger<AiAgentsService> logger) : IAiAgentsService
+/// <seealso cref="IAiAgentsService" />
+public sealed class AiAgentsService(
+    ICorrelationContext correlationContext,
+    IHttpClientHelper httpClientHelper,
+    ILogger<AiAgentsService> logger) : IAiAgentsService
 {
-    #region CHATBOT
-
-    /// <summary>
-    /// Detects the user intent asynchronous.
-    /// </summary>
-    /// <param name="userQueryRequest">The user query request.</param>
-    /// <returns>
-    /// The intent string.
-    /// </returns>
-    public async Task<string> DetectUserIntentAsync(UserQueryRequestDomain userQueryRequest)
+    /// <inheritdoc/>
+    public async Task<string> InvokeWorkspaceAgentAsync(
+        WorkspaceAgentChatRequestDomain chatRequestModel,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(DetectUserIntentAsync), DateTime.UtcNow, userQueryRequest.UserQuery));
-            var response = await httpClientHelper.GetAIResponseAsync(userQueryRequest, AIAgentsRoutesConstants.DetectUserIntent_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync();
-            return CommonUtilities.PrepareAgentStringResponse(responseString);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(DetectUserIntentAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(DetectUserIntentAsync), DateTime.UtcNow, userQueryRequest.UserQuery));
-        }
-    }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(InvokeWorkspaceAgentAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, chatRequestModel })
+            );
 
-    /// <summary>
-    /// Gets the list of followup questions.
-    /// </summary>
-    /// <param name="followupQuestionsRequestDomain">The followup questions request.</param>
-    /// <returns>
-    /// The list of followup questions.
-    /// </returns>
-    /// <exception cref="System.Exception"></exception>
-    public async Task<IEnumerable<string>> GetFollowupQuestionsResponseAsync(FollowupQuestionsRequestDomain followupQuestionsRequestDomain)
-    {
-        try
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GetFollowupQuestionsResponseAsync), DateTime.UtcNow, followupQuestionsRequestDomain.UserQuery));
-            var response = await httpClientHelper.GetAIResponseAsync(followupQuestionsRequestDomain, AIAgentsRoutesConstants.GetFollowupQuestionsResponse_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync();
+            var httpResponse = await httpClientHelper.GetAIResponseAsync(
+                data: chatRequestModel,
+                apiUrl: AIAgentsRoutesConstants.InvokeWorkspaceAgent_ApiRoute,
+                cancellationToken
+            ).ConfigureAwait(false);
+            var responseString = await httpResponse.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
             var aiResponse = JsonConvert.DeserializeObject<AIAgentResponse>(responseString) ?? new AIAgentResponse();
-            return JsonConvert.DeserializeObject<IEnumerable<string>>(JsonConvert.SerializeObject(aiResponse.ResponseData))
-                ?? throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
+            response = aiResponse.ResponseData.ToString() ?? throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GetFollowupQuestionsResponseAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(InvokeWorkspaceAgentAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GetFollowupQuestionsResponseAsync), DateTime.UtcNow, followupQuestionsRequestDomain.UserQuery));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(InvokeWorkspaceAgentAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, chatRequestModel, response }));
         }
     }
 
-    /// <summary>
-    /// Gets the SQL query markdown response asynchronous.
-    /// </summary>
-    /// <param name="sqlQueryResult">The SQL query result.</param>
-    /// <returns>
-    /// The sql markdown response.
-    /// </returns>
-    public async Task<string> GetSQLQueryMarkdownResponseAsync(SqlQueryResult sqlQueryResult)
+    /// <inheritdoc/>
+    public async Task<string> GetWorkspaceGroupChatResponseAsync(
+        WorkspaceAgentChatRequestDomain chatRequestModel,
+        CancellationToken cancellationToken = default
+    )
     {
+        string response = string.Empty;
         try
         {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(GetSQLQueryMarkdownResponseAsync), DateTime.UtcNow, string.Empty));
-            var response = await httpClientHelper.GetAIResponseAsync(sqlQueryResult, AIAgentsRoutesConstants.GetSQLQueryMarkdownResponse_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync();
-            return CommonUtilities.PrepareAgentStringResponse(responseString);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(GetSQLQueryMarkdownResponseAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(GetSQLQueryMarkdownResponseAsync), DateTime.UtcNow, string.Empty));
-        }
-    }
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodStart,
+                nameof(GetWorkspaceGroupChatResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, chatRequestModel })
+            );
 
-    /// <summary>
-    /// Handles the nl to SQL response asynchronous.
-    /// </summary>
-    /// <param name="nltosqlInput">The nltosql input.</param>
-    /// <returns>
-    /// The ai generated response.
-    /// </returns>
-    public async Task<string> HandleNLToSQLResponseAsync(NltosqlInputDomain nltosqlInput)
-    {
-        try
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(HandleNLToSQLResponseAsync), DateTime.UtcNow, nltosqlInput.UserQuery));
-            var response = await httpClientHelper.GetAIResponseAsync(nltosqlInput, AIAgentsRoutesConstants.GetNlToSqlResponse_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync();
-            return CommonUtilities.PrepareAgentStringResponse(responseString);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(HandleNLToSQLResponseAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(HandleNLToSQLResponseAsync), DateTime.UtcNow, nltosqlInput.UserQuery));
-        }
-    }
-
-    /// <summary>
-    /// Handles the rag text response asynchronous.
-    /// </summary>
-    /// <param name="skillsInputDomain">The skills input domain.</param>
-    /// <returns>
-    /// The ai generated response.
-    /// </returns>
-    public async Task<string> HandleRAGTextResponseAsync(SkillsInputDomain skillsInputDomain)
-    {
-        try
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(HandleRAGTextResponseAsync), DateTime.UtcNow, skillsInputDomain.UserQuery));
-            var response = await httpClientHelper.GetAIResponseAsync(skillsInputDomain, AIAgentsRoutesConstants.GetRAGTextResponse_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync();
-            return CommonUtilities.PrepareAgentStringResponse(responseString);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(HandleRAGTextResponseAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(HandleRAGTextResponseAsync), DateTime.UtcNow, skillsInputDomain.UserQuery));
-        }
-    }
-
-    /// <summary>
-    /// Handles the user greeting intent asynchronous.
-    /// </summary>
-    /// <returns>
-    /// The greeting from ai agent.
-    /// </returns>
-    public async Task<string> HandleUserGreetingIntentAsync()
-    {
-        try
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodStart, nameof(HandleUserGreetingIntentAsync), DateTime.UtcNow, string.Empty));
-            var response = await httpClientHelper.GetAIResponseAsync(string.Empty, AIAgentsRoutesConstants.GetUserGreetingResponse_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync();
-            return CommonUtilities.PrepareAgentStringResponse(responseString);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodFailed, nameof(HandleUserGreetingIntentAsync), DateTime.UtcNow, ex.Message));
-            throw;
-        }
-        finally
-        {
-            logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.LogHelperMethodEnded, nameof(HandleUserGreetingIntentAsync), DateTime.UtcNow, string.Empty));
-        }
-    }
-
-    #endregion
-
-    /// <summary>
-    /// Gets the ai agent response data asynchronous.
-    /// </summary>
-    /// <param name="chatRequestDomainModel">The chat request domain model.</param>
-    /// <returns>The AI response string.</returns>
-    public async Task<string> GetAiAgentResponseDataAsync(ChatRequestDomainModel chatRequestDomainModel)
-    {
-        try
-        {
-            logger.LogInformation(LoggingConstants.LogHelperMethodStart, nameof(GetAiAgentResponseDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(chatRequestDomainModel));
-            var response = await httpClientHelper.GetAIResponseAsync(chatRequestDomainModel, AIAgentsRoutesConstants.InvokeAgent_ApiRoute).ConfigureAwait(false);
-            var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var httpResponse = await httpClientHelper.GetAIResponseAsync(
+                data: chatRequestModel,
+                apiUrl: AIAgentsRoutesConstants.GetWorkspaceGroupChatResponse_ApiRoute,
+                cancellationToken
+            ).ConfigureAwait(false);
+            var responseString = await httpResponse.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
             var aiResponse = JsonConvert.DeserializeObject<AIAgentResponse>(responseString) ?? new AIAgentResponse();
-            return aiResponse.ResponseData.ToString() ?? throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
+            response = aiResponse.ResponseData.ToString() ?? throw new Exception(ExceptionConstants.AiServicesCannotBeAvailedExceptionConstant);
+            return response;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, LoggingConstants.LogHelperMethodFailed, nameof(GetAiAgentResponseDataAsync), DateTime.UtcNow, ex.Message);
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetWorkspaceGroupChatResponseAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
         }
         finally
         {
-            logger.LogInformation(LoggingConstants.LogHelperMethodEnded, nameof(GetAiAgentResponseDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(chatRequestDomainModel));
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetWorkspaceGroupChatResponseAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, chatRequestModel, response })
+            );
         }
+
     }
 }

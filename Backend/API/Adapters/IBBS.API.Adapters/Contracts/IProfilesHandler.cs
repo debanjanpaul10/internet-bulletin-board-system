@@ -11,6 +11,10 @@ public interface IProfilesHandler
 	/// Gets the user profile data asynchronous.
 	/// </summary>
 	/// <param name="userEmail">The user email.</param>
+	/// <param name="cancellationToken">The cancellation token used to cancel requests.</param>
 	/// <returns>The user profile dto.</returns>
-	Task<UserProfileDto> GetUserProfileDataAsync(string userEmail);
+	Task<UserProfileDto> GetUserProfileDataAsync(
+		string userEmail,
+		CancellationToken cancellationToken = default
+	);
 }

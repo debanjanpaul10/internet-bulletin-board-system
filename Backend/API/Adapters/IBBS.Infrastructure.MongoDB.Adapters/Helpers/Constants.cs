@@ -52,5 +52,10 @@ internal static class Constants
 		/// Something went wrong message constant
 		/// </summary>
 		internal const string SomethingWentWrongMessageConstant = "Oops! Something went wrong while processing this request!";
+
+		/// <summary>
+		/// The collection does not exists message
+		/// </summary>
+		internal const string CollectionDoesNotExistsMessage = "Oops! It seems the collection does not exists";
 	}
 }

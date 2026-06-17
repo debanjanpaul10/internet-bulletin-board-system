@@ -1,8 +1,10 @@
-﻿using System.Globalization;
+﻿using IBBS.Domain.Contracts;
 using IBBS.Domain.DomainEntities;
 using IBBS.Domain.DrivenPorts;
 using IBBS.Domain.DrivingPorts;
+using IBBS.Domain.Helpers;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using static IBBS.Domain.Helpers.DomainConstants;
 
 namespace IBBS.Domain.UseCases;
@@ -12,52 +14,90 @@ namespace IBBS.Domain.UseCases;
 /// </summary>
 /// <param name="commonDataManager">The common data manager.</param>
 /// <param name="logger">The logger service.</param>
-/// <seealso cref="IBBS.Domain.DrivingPorts.ICommonService" />
-public class CommonService(ILogger<CommonService> logger, ICommonDataManager commonDataManager) : ICommonService
+/// <param name="correlationContext">The correlation context used to track requests.</param>
+/// <seealso cref="ICommonService" />
+public sealed class CommonService(
+    ICorrelationContext correlationContext,
+    ILogger<CommonService> logger,
+    ICommonDataManager commonDataManager) : ICommonService
 {
-	/// <summary>
-	/// Gets the lookup master data async.
-	/// </summary>
-	/// <returns>The list of <see cref="LookupMasterDomain"/></returns>
-	public async Task<IEnumerable<LookupMasterDomain>> GetLookupMasterDataAsync()
-	{
-		try
-		{
-			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
-			return await commonDataManager.GetLookupMasterDataAsync().ConfigureAwait(false);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, ex.Message));
-			throw;
-		}
-		finally
-		{
-			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(GetLookupMasterDataAsync), DateTime.UtcNow, string.Empty));
-		}
-	}
+    /// <inheritdoc />
+    public async Task<IEnumerable<LookupMasterDomain>> GetLookupMasterDataAsync(
+        CancellationToken cancellationToken = default
+    )
+    {
+        IEnumerable<LookupMasterDomain> response = [];
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(GetLookupMasterDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId })
+            );
 
-	/// <summary>
-	/// Submits the bug report data asynchronous.
-	/// </summary>
-	/// <param name="addBugReportModel">The add bug report model.</param>
-	/// <returns>The boolean for success/failure.</returns>
-	public async Task<bool> SubmitBugReportDataAsync(BugReportDomain addBugReportModel)
-	{
-		try
-		{
-			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodStartedMessageConstant, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, addBugReportModel.Title));
-			addBugReportModel.ModifiedBy = addBugReportModel.CreatedBy;
-			return await commonDataManager.SubmitBugReportDataAsync(addBugReportModel).ConfigureAwait(false);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodFailedWithMessageConstant, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, ex.Message));
-			throw;
-		}
-		finally
-		{
-			logger.LogInformation(string.Format(CultureInfo.CurrentCulture, LoggingConstants.MethodEndedMessageConstant, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, addBugReportModel.Title));
-		}
-	}
+            response = await commonDataManager.GetLookupMasterDataAsync(
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant,
+                nameof(GetLookupMasterDataAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(GetLookupMasterDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, response })
+            );
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> SubmitBugReportDataAsync(
+        BugReportDomain addBugReportModel,
+        CancellationToken cancellationToken = default
+    )
+    {
+        bool response = false;
+        try
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodStartedMessageConstant,
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, addBugReportModel })
+            );
+
+            addBugReportModel.ModifiedBy = addBugReportModel.CreatedBy;
+            response = await commonDataManager.SubmitBugReportDataAsync(
+                newBugReportData: addBugReportModel,
+                cancellationToken
+            ).ConfigureAwait(false);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.MethodFailedWithMessageConstant, nameof(SubmitBugReportDataAsync), DateTime.UtcNow, ex.Message
+            );
+            throw new IBBSBusinessException(
+                message: ex.Message,
+                correlationId: correlationContext.CorrelationId
+            );
+        }
+        finally
+        {
+            logger.LogAppInformation(
+                LoggingConstants.MethodEndedMessageConstant,
+                nameof(SubmitBugReportDataAsync), DateTime.UtcNow, JsonConvert.SerializeObject(new { correlationContext.CorrelationId, addBugReportModel, response })
+            );
+        }
+    }
 }

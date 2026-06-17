@@ -1,7 +1,11 @@
 ﻿using System.ComponentModel;
 using IBBS.API.Adapters.Contracts;
+using IBBS.API.Adapters.Models.Posts;
+using IBBS.Domain.Contracts;
+using IBBS.Domain.Helpers;
 using InternetBulletin.Shared.DTOs;
 using ModelContextProtocol.Server;
+using Newtonsoft.Json;
 using static IBBS.MCP.Helpers.MCPConstants;
 using static IBBS.MCP.Helpers.ToolsConstants.PostsDataTool;
 
@@ -11,43 +15,82 @@ namespace IBBS.MCP.Tools;
 /// Provides functionality to retrieve and manage post ratings for users.
 /// </summary>
 /// <remarks>This tool is intended for server-side operations involving user post ratings. It relies on dependency
-/// injection for logging and data access, and is designed to be used within the context of the application's tool
-/// infrastructure.</remarks>
-/// <param name="logger">The logger instance used to record diagnostic and operational information for the tool. Cannot be null.</param>
+/// injection for logging and data access, and is designed to be used within the context of the application's tool infrastructure.</remarks>
+/// <param name="logger">The logger.</param>
+/// <param name="correlationContext">The correlation context.</param>
+/// <param name="configuration">The configuration service.</param>
+/// <param name="httpContextAccessor">The http context accessor service.</param>
 /// <param name="postRatingsHandler">The handler responsible for accessing and managing post ratings data. Cannot be null.</param>
+/// <seealso cref="BaseTool"/>
 [McpServerToolType]
-public class PostRatingsTool(ILogger<PostRatingsTool> logger, IPostRatingsHandler postRatingsHandler) : BaseTool
+public sealed class PostRatingsTool(
+    ILogger<PostRatingsTool> logger,
+    ICorrelationContext correlationContext,
+    IConfiguration configuration,
+    IHttpContextAccessor httpContextAccessor,
+    IPostRatingsHandler postRatingsHandler) : BaseTool(httpContextAccessor, configuration)
 {
     /// <summary>
-    /// Retrieves all post ratings associated with the specified user email address asynchronously.
+    /// Gets all user ratings asynchronous.
     /// </summary>
-    /// <remarks>If no ratings are found for the specified user, the response will indicate a bad request.
-    /// This method logs its execution and may throw exceptions encountered during processing.</remarks>
-    /// <param name="userEmail">The email address of the user whose post ratings are to be retrieved. Cannot be null or empty.</param>
-    /// <returns>A <see cref="ResponseDTO"/> containing the user's post ratings if found; otherwise, a response indicating a bad
-    /// request.</returns>
+    /// <param name="userEmail">The user email.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="ResponseDTO"/> containing the user's post ratings if found; otherwise, a response indicating a bad request.</returns>
     [McpServerTool]
     [Description(GetAllUserRatingsAction.Description)]
-    public async Task<ResponseDTO> GetAllUserRatingsAsync([Description(GetAllUserRatingsAction.InputDescription)] string userEmail)
+    public async Task<ResponseDTO> GetAllUserRatingsAsync(
+        [Description(GetAllUserRatingsAction.InputDescription)] string userEmail,
+        CancellationToken cancellationToken = default
+    )
     {
+        IEnumerable<PostRatingDTO> response = [];
         try
         {
-            logger.LogInformation(LoggingConstants.LogHelperMethodStart, nameof(GetAllUserRatingsAsync), DateTime.UtcNow, userEmail);
+            logger.LogAppInformation(
+               LoggingConstants.LogHelperMethodStart,
+               nameof(GetAllUserRatingsAsync), DateTime.UtcNow,
+                   JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userEmail })
+            );
 
-            var result = await postRatingsHandler.GetAllUserPostRatingsAsync(userEmail).ConfigureAwait(false);
-            if (result is not null)
-                return HandleSuccessResult(result);
-            else
-                return this.HandleBadRequest(ExceptionConstants.UnableToGetUserPostRatingsMessageConstant);
+            if (base.IsAuthorized())
+            {
+                response = await postRatingsHandler.GetAllUserPostRatingsAsync(
+                    userName: userEmail,
+                    cancellationToken
+                ).ConfigureAwait(false);
+
+                return HandleSuccessResult(response);
+            }
+
+            return HandleUnAuthorizedRequest();
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+            );
+            return HandleTaskCancelledResponse(message: ex.Message);
         }
         catch (Exception ex)
         {
-            logger.LogInformation(string.Format(LoggingConstants.LogHelperMethodFailed, nameof(GetAllUserRatingsAsync), DateTime.UtcNow, ex.Message));
-            throw;
+            logger.LogAppError(
+                ex,
+                LoggingConstants.LogHelperMethodFailed,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, ex.Message })
+            );
+            return HandleBadRequest(message: ex.Message);
         }
         finally
         {
-            logger.LogInformation(LoggingConstants.LogHelperMethodEnded, nameof(GetAllUserRatingsAsync), DateTime.UtcNow, userEmail);
+            logger.LogAppInformation(
+                LoggingConstants.LogHelperMethodEnded,
+                nameof(GetAllUserRatingsAsync), DateTime.UtcNow,
+                    JsonConvert.SerializeObject(new { correlationContext.CorrelationId, userEmail, response })
+            );
         }
     }
 }

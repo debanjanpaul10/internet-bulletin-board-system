@@ -3,14 +3,14 @@
 /// <summary>
 /// The Chat Message Request domain.
 /// </summary>
-public class UserQueryRequestDomain
+public sealed record UserQueryRequestDomain
 {
-	/// <summary>
-	/// Gets or sets the chat message.
-	/// </summary>
-	/// <value>
-	/// The chat message.
-	/// </value>
-	public string UserQuery { get; set; } = string.Empty;
+    /// <summary>
+    /// Gets or sets the chat message.
+    /// </summary>
+    /// <value>
+    /// The chat message.
+    /// </value>
+    public string UserQuery { get; set; } = string.Empty;
 }
 

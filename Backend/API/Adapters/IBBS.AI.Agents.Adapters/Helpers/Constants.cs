@@ -142,5 +142,15 @@ internal static class Constants
         /// The invoke agent API route.
         /// </summary>
         internal const string InvokeAgent_ApiRoute = "v2/chat/invokeagent";
+
+        /// <summary>
+        /// The invoke workspace agent API route.
+        /// </summary>
+        internal const string InvokeWorkspaceAgent_ApiRoute = "v2/workspaces/invokeworkspaceagent";
+
+        /// <summary>
+        /// The get workspace group chat response API rote.
+        /// </summary>
+        internal const string GetWorkspaceGroupChatResponse_ApiRoute = "v2/workspaces/workspacegroupchatresponse";
     }
 }

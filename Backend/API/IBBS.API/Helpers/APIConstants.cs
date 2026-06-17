@@ -6,6 +6,27 @@
 internal static class APIConstants
 {
     /// <summary>
+    /// The header constants class.
+    /// </summary>
+    internal static class HeaderConstants
+    {
+        /// <summary>
+        /// The not applicable string constant.
+        /// </summary>
+        internal const string NotApplicableStringConstant = "NA";
+
+        /// <summary>
+        /// The client id claim constant.
+        /// </summary>
+        public const string ClientIdClaimConstant = "aud";
+
+        /// <summary>
+        /// The user display name constant.
+        /// </summary>
+        internal const string UserEmailClaimConstant = "name";
+    }
+
+    /// <summary>
     /// The Configuration Constants class.
     /// </summary>
     internal static class ConfigurationConstants
@@ -59,11 +80,6 @@ internal static class APIConstants
         /// The application json constant
         /// </summary>
         internal const string ApplicationJsonConstant = "application/json";
-
-        /// <summary>
-        /// The user display name constant.
-        /// </summary>
-        internal const string UserEmailClaimConstant = "name";
     }
 
     /// <summary>
@@ -151,8 +167,6 @@ internal static class APIConstants
         /// </summary>
         public const string UserIdCannotBeNullMessageConstant = "The user id passed must be a valid integer boss!";
 
-
-
         /// <summary>
         /// The un authorized constant
         /// </summary>
@@ -179,19 +193,26 @@ internal static class APIConstants
     /// </summary>
     internal static class LoggingConstants
     {
-        /// <summary>
-        /// The log helper method start
-        /// </summary>
         internal const string LogHelperMethodStart = "{0} started at {1} for {2}";
-
-        /// <summary>
-        /// The log helper method ended
-        /// </summary>
         internal const string LogHelperMethodEnded = "{0} ended at {1} for {2}";
+        internal const string LogHelperMethodFailed = "{0} failed at {1} with message {2}";
+
+        internal const string CorrelationIdHeader = "X-Correlation-ID";
+
+        internal const string HttpLoggingMessage = "HTTP {Method} {Path} started";
+        internal const string HttpLoggingMessageWithTime = "HTTP {Method} {Path} responded {StatusCode} in {ElapsedMilliseconds}ms";
+        internal const string UnhandledExceptionMessage = "Unhandled exception occurred. CorrelationId: {CorrelationId}, Path: {Path}, Method: {Method}";
+        internal const string OperationCancelledExceptionMessage = "Operation was canceled.";
 
         /// <summary>
-        /// The log helper method failed
+        /// The header logging constants class.
         /// </summary>
-        internal const string LogHelperMethodFailed = "{0} failed at {1} with message {2}";
+        internal static class HeaderLoggingConstants
+        {
+            internal const string CorrelationId = "CorrelationId";
+            internal const string RequestPath = "RequestPath";
+            internal const string RequestMethod = "RequestMethod";
+            internal const string StatusCode = "StatusCode";
+        }
     }
 }

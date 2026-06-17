@@ -3,7 +3,7 @@ namespace IBBS.Domain.DomainEntities.AI;
 /// <summary>
 /// The user story tag response domain model.
 /// </summary>
-public class TagResponseDomain
+public sealed record TagResponseDomain
 {
     /// <summary>
     /// The user story genre.

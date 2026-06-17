@@ -1,6 +1,8 @@
-﻿using IBBS.Domain.DrivenPorts;
-using IBBS.Infrastructure.Persistence.Adapters.DataServices;
-using InternetBulletin.Data.Contracts;
+﻿using System.Diagnostics.CodeAnalysis;
+using IBBS.Domain.DrivenPorts;
+using IBBS.Infrastructure.Persistence.Adapters.Contracts;
+using IBBS.Infrastructure.Persistence.Adapters.DataManager;
+using IBBS.Infrastructure.Persistence.Adapters.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,7 @@ namespace IBBS.Infrastructure.Persistence.Adapters.IOC;
 /// <summary>
 /// The Dependency Injection container.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class DIContainer
 {
     /// <summary>
@@ -19,26 +22,61 @@ public static class DIContainer
     /// <param name="services">The services.</param>
     /// <param name="configuration">The configuration.</param>
     /// <param name="isDevelopmentMode">if set to <c>true</c> [is development mode].</param>
-    public static IServiceCollection AddDataDependencies(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode) =>
-        services.ConfigureSqlDatabase(configuration, isDevelopmentMode).AddDataManagers();
+    public static IServiceCollection AddDataDependencies(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode)
+    {
+        var currentSqlServiceProvider = configuration[ConfigurationConstants.CurrentSQLProviderConstant] ?? throw new Exception(ExceptionConstants.DatabaseConnectionNotFound);
+        switch (currentSqlServiceProvider)
+        {
+            case DatabaseConstants.AzureSQLConstant:
+                services.ConfigureAzureSqlDatabase(configuration, isDevelopmentMode);
+                break;
+            case DatabaseConstants.PostgreSQLConstant:
+                services.ConfigurePostgreSqlDatabase(configuration);
+                break;
+        }
+
+        return services.AddDataManagers().AddRepositories();
+    }
+
 
     /// <summary>
-    /// Configures the SQL database.
+    /// Configures the Postgre SQL database.
     /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="configuration">The configuration.</param>
-    /// <param name="isDevelopmentMode">if set to <c>true</c> [is development mode].</param>
-    private static IServiceCollection ConfigureSqlDatabase(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode)
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns>The service collection.</returns>
+    private static IServiceCollection ConfigurePostgreSqlDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var sqlConnectionString = isDevelopmentMode
-            ? configuration[ConfigurationConstants.LocalSqlConnectionStringConstant]
-            : configuration[ConfigurationConstants.SqlConnectionStringConstant];
+        var sqlConnectionString = configuration[ConfigurationConstants.PostgreSQLConnectionStringConstant];
         ArgumentException.ThrowIfNullOrWhiteSpace(sqlConnectionString);
 
         return services.AddDbContext<SqlDbContext>(options =>
-            options.UseSqlServer(sqlConnectionString, options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null))
+            options.UseNpgsql(
+                connectionString: sqlConnectionString,
+                npgsqlOptionsAction: options => options.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorCodesToAdd: null)));
+    }
+
+
+    /// <summary>
+    /// Configures the Azure SQL database.
+    /// </summary>
+    /// <param name="services">The services collection.</param>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="isDevelopmentMode">The is development mode flag.</param>
+    /// <returns>The service collection.</returns>
+    private static IServiceCollection ConfigureAzureSqlDatabase(this IServiceCollection services, IConfiguration configuration, bool isDevelopmentMode)
+    {
+        var sqlConnectionString = isDevelopmentMode
+            ? configuration[ConfigurationConstants.LocalSqlConnectionStringConstant] : configuration[ConfigurationConstants.AzureSqlConnectionStringConstant];
+        ArgumentException.ThrowIfNullOrWhiteSpace(sqlConnectionString);
+
+        return services.AddDbContext<SqlDbContext>(options =>
+            options.UseSqlServer(
+                connectionString: sqlConnectionString,
+                sqlServerOptionsAction: options => options.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null))
         );
     }
+
 
     /// <summary>
     /// Configures the data manager dependencies.
@@ -49,5 +87,17 @@ public static class DIContainer
             .AddScoped<IPostRatingsDataService, PostRatingsDataService>()
             .AddScoped<ICommonDataManager, CommonDataManager>()
             .AddScoped<IProfilesDataService, ProfilesDataService>();
+
+    /// <summary>
+    /// Adds the repositories.
+    /// </summary>
+    /// <param name="services">The services.</param>
+    /// <returns>The service collection.</returns>
+    private static IServiceCollection AddRepositories(this IServiceCollection services) =>
+        services.AddScoped<IUnitOfWork, UnitOfWork>()
+            .AddScoped<IMasterDataRepository, MasterDataRepository>()
+            .AddScoped<IPostRatingsRepository, PostRatingsRepository>()
+            .AddScoped<IProfilesRepository, ProfilesRepository>()
+            .AddScoped<IPostsRepository, PostsRepository>();
 
 }
